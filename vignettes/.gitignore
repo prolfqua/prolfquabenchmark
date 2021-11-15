@@ -1,0 +1,13 @@
+*.csv
+*.xlsx
+*.html
+*.R
+*.pdf
+*.tex
+*.log
+.build.timestamp
+*.bib.bak
+*.bib.sav
+*.docx
+ExDesignSurvey/*
+*_files/*
