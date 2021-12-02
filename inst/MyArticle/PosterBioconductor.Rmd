@@ -88,7 +88,7 @@ The IonStar  [@shen2018ionstar] benchmark dataset contains _H. sapiens_ proteins
 
 ```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%'}
 library(prolfqua)
-d <- prolfqua::data_ionstar$filtered()
+d <- prolfqua_data('data_ionstar')$filtered()
 lfqd <- LFQData$new(d$data, d$config) 
 t <- lfqd$get_Transformer()
 lfqd <-  t$log2()$robscale()$lfq
@@ -165,7 +165,7 @@ res <- mutate(res , pAUC_10n = pAUC_10 - meanpAUC_10)
 
 resAllB <- res %>% dplyr::filter(contrast == "all")
 
-p1 <- ggplot(resAllB, aes(x = Name, y = pAUC_10)) +
+p1 <- ggplot2::ggplot(resAllB, aes(x = Name, y = pAUC_10)) +
   geom_bar(stat = "identity") +
   facet_wrap(~whatfix)  + 
   coord_cartesian(ylim = c(min(resAllB$pAUC_10),max(resAllB$pAUC_10))) + 
@@ -173,7 +173,7 @@ p1 <- ggplot(resAllB, aes(x = Name, y = pAUC_10)) +
   theme(axis.text.x = element_text(angle = -90, vjust = 0.5)) +
   geom_hline(aes(yintercept = meanpAUC_10), color = "red") + xlab("")
 
-p2 <- ggplot(res, aes(x = contrast, y = pAUC_10n, group = Name)) +
+p2 <- ggplot2::ggplot(res, aes(x = contrast, y = pAUC_10n, group = Name)) +
   geom_line(stat = "identity", aes(linetype = Name, color = Name), size = 1) + 
   facet_wrap(~ whatfix, scales = "free") +
   theme_minimal() + 

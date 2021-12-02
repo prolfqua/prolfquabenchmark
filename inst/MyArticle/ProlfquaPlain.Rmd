@@ -171,7 +171,7 @@ Figure \@ref(fig:scaling) shows the distribution of the peptide intensities with
 (ref:scaling) Density plot of peptide intensities before (panel A) and after (panel B) data transformation and scaling.
 
 ```{r scaling, fig.cap="(ref:scaling)", fig.width=7, fig.height=7}
-is <- prolfqua::data_ionstar
+is <- prolfqua_data('data_ionstar')
 pepsum <- is$filtered()
 summarised <- is$subset_normalized()
 

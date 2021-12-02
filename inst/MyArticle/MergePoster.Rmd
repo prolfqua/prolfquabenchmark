@@ -199,7 +199,7 @@ Peptide intensities are $\log_2$ transformed and robust z-score scaled but then 
 
 ```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%', fig.width = 8, fig.height = 8}
 library(prolfqua)
-d <- prolfqua::data_ionstar$filtered()
+d <- prolfqua_data('data_ionstar')$filtered()
 lfqd <- LFQData$new(d$data, d$config) 
 t <- lfqd$get_Transformer()
 lfqd <-  t$log2()$robscale()$lfq
@@ -289,6 +289,7 @@ By plotting the $TPR$ versus the $FPR$ we obtain the receiver operator character
 
 
 ```{r}
+
 allBenchmarks <- readRDS("../../inst/Benchresults/allBenchmarks.RDS")
 benchmark_msstats <- readRDS("../../inst/Benchresults/benchmark_msstats.RDS")
 benchmark_prodA <- readRDS("../../inst/Benchresults/benchmark_medpolish_proDA.RDS")
@@ -298,6 +299,7 @@ allBenchmarks$benchmark_mssstats <- benchmark_msstats
 allBenchmarks$benchmark_msFragger <- msFragger
 allBenchmarks$benchmark_proDA <- benchmark_prodA
 allBenchmarks <- allBenchmarks[c("benchmark_imputation","benchmark_ProtModerated",  "benchmark_mixedModerated", "benchmark_ropeca","benchmark_merged","benchmark_mssstats","benchmark_proDA"   )]
+
 ```
 
 (ref:benchmarkROC) Left panel - Partial area under the ROC curve at $10\%$ FPR for all contrasts. Red line average area under the curve. Left panel - Difference to mean partial area under the ROC curve for various models, at $10\%$ FPR, by fold change.
@@ -350,8 +352,11 @@ We also benchmark if the $FDR$ obtained from a model is an unbiased estimate of 
 ```{r FDRfdp, fig.cap = "(ref:FDRfdp)", out.width = '90%', fig.width=12, fig.height=10}
 
 dd <- map_df(allBenchmarks, function(x){res <- x$smc$summary; res$name <- x$model_name;res})
+dd
 dd <- dd %>% mutate(nrcontrasts = protein_Id * (4 - nr_missing))
+dd
 dds <- dd %>% group_by(name) %>% summarize(nrcontrasts = sum(nrcontrasts))
+dds
 dds$percent <- dds$nrcontrasts/max(dds$nrcontrasts) * 100
 
 nrgg <- dds %>% ggplot(aes(x = name, y = nrcontrasts )) + 
@@ -362,7 +367,7 @@ nrgg <- dds %>% ggplot(aes(x = name, y = nrcontrasts )) +
             vjust = 1, hjust = -0.2, angle = -90) + 
   geom_text(aes(label = paste0("(",round(percent, digits = 1),"%)")),
             vjust = -1, hjust = -0.2, angle = -90) 
-p1 <- nrgg
+p3 <- nrgg
 
 dd <- map_df(allBenchmarks, function(x){res <- x$get_confusion_FDRvsFDP(); res$name <- x$model_name;res})
 
@@ -371,13 +376,13 @@ ddb <- dd %>% dplyr::filter(contrast == "dilution_(7.5/6)_1.25")
 ddb <- dd %>% dplyr::filter(contrast == "all")
 
 
-p2 <- ddb %>% ggplot(aes(y = FDP_,  x  = scorecol )) + 
+p4 <- ddb %>% ggplot(aes(y = FDP_,  x  = scorecol )) + 
   geom_line(aes(color = model_name, linetype = model_name)) +
   facet_wrap(~contrast) + 
    geom_abline(intercept = 0, slope = 1, color = 2) + 
    theme(legend.position = "bottom")
 
-gridExtra::grid.arrange(p1, p2, ncol = 2)
+gridExtra::grid.arrange(p3, p4, ncol = 2)
 
 ```
 

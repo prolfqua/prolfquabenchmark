@@ -9,11 +9,14 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 VignetteBuilder: knitr
+URL: https://github.com/wolski/proLFQuaBenchmark
+BugReports: https://github.com/wolski/proLFQuaBenchmark/issues
 LazyData: true
 Imports:
     bookdown,
     prolfqua,
-    prolfquaData
+    prolfquaData,
+    knitr
 RoxygenNote: 7.1.2
 Roxygen: list(r6 = TRUE)
 Depends: 

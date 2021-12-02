@@ -1,0 +1,89 @@
+---
+title: "Benchmark Saint Express"
+author: "Witold Wolski"
+date: "12/2/2021"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      toc_collapsed: false
+papersize: a4
+geometry: margin=.5in
+vignette: >
+  %\VignetteIndexEntry{Benchmarking normalization, aggregation and models using the Ionstar Dataset} 
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Setting up and SaintExpress analysis.
+
+
+```{r}
+
+library(tidyverse)
+library(prolfqua)
+#xx <- prolfqua_data('data_IonstarProtein_subsetNorm')
+
+datadir <- file.path(find.package("prolfquaData") , "quantdata")
+inputMQfile <-  file.path(datadir,
+                          "MAXQuant_IonStar2018_PXD003881.zip")
+inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
+mqdata <- list()
+mqdata$data <- tidyMQ_Peptides(inputMQfile)
+
+inputMQfile <-  file.path(datadir, "MAXQuant_IonStar2018_PXD003881.zip")
+
+exampleDat <- xx$data %>% dplyr::mutate(CorT = case_when(dilution. == "a" ~ "C", TRUE ~ "T"))
+exampleDat$protein_Id <- gsub("~.*","", exampleDat$protein_Id)
+
+# sample protein lengths
+
+
+Ecolifasta <- system.file("fastaDBs/uniprot-proteome_UP000000625_reviewed_yes.fasta.gz",package = "prolfquaData")
+Humanfasta <- system.file("fastaDBs/uniprot-proteome_UP000005640_reviewed_yes.fasta.gz",package = "prolfquaData")
+
+Ecolifasta <- prozor::readPeptideFasta(Ecolifasta)
+Humanfasta <- prozor::readPeptideFasta(Humanfasta)
+fasta <- c(Ecolifasta, Humanfasta)
+names(fasta)[1:10]
+
+exampleDat <- prolfqua::addProteinLengths(exampleDat, fasta)
+
+
+
+res <- protein_2localSaint(exampleDat,quantcolumn = "medpolish",
+                           proteinID = "protein_Id",
+                           proteinLength = "protein.length",
+                           IP_name = "raw.file",
+                           baitCol = "dilution.",
+                           CorTCol = "CorT"
+)
+stopifnot(names(res) == c( "inter", "prey",  "bait"))
+resSaint <- runSaint(res,filedir = tempdir())
+
+```
+
+
+
+```{r}
+reslist <- resSaint$list
+par(mfrow = c(2,2))
+hist(reslist$SaintScore)
+reslist <- dplyr::mutate(reslist, PeP = 1 - SaintScore)
+hist(reslist$PeP)
+reslist <- arrange(reslist, PeP)
+reslist <- mutate(reslist, myFDR = cummean(PeP))
+hist(reslist$myFDR)
+plot(reslist$BFDR, reslist$myFDR)
+abline(c(0,1),col = 2, lwd = 2)
+
+```
+
