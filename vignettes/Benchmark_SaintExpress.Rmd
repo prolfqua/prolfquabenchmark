@@ -20,18 +20,16 @@ vignette: >
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+evalAll <- TRUE
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 ```
 
 # Setting up and SaintExpress analysis.
 
 
-```{r}
-
-library(tidyverse)
+```{r fromPeptideTXT , eval = evalAll}
 library(prolfqua)
-#xx <- prolfqua_data('data_IonstarProtein_subsetNorm')
-
+library(tidyverse)
 datadir <- file.path(find.package("prolfquaData") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
@@ -39,9 +37,44 @@ inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 mqdata <- list()
 mqdata$data <- tidyMQ_Peptides(inputMQfile)
 
-inputMQfile <-  file.path(datadir, "MAXQuant_IonStar2018_PXD003881.zip")
+length(unique(mqdata$data$proteins))
+mqdata$config <- prolfqua::create_config_MQ_peptide()
 
-exampleDat <- xx$data %>% dplyr::mutate(CorT = case_when(dilution. == "a" ~ "C", TRUE ~ "T"))
+annotation <- readxl::read_xlsx(inputAnnotation)
+
+res <- add_annotation(
+  mqdata$data,
+  annotation,
+  fileName = "raw.file"
+)
+
+mqdata$config$table$factors[["dilution."]] = "sample"
+mqdata$config$table$factors[["run_Id"]] = "run_ID"
+mqdata$config$table$factorDepth <- 1
+mqdata$data <- setup_analysis(res, mqdata$config)
+
+
+lfqdata <- LFQData$new(mqdata$data, mqdata$config)
+lfqdata$data <- lfqdata$data %>% filter(!grepl("^REV__|^CON__", protein_Id)) 
+lfqdata$filter_proteins_by_peptide_count()
+lfqdata$hierarchy_counts()
+lfqdata$remove_small_intensities()
+
+tr <- lfqdata$get_Transformer()
+subset_h <- lfqdata$get_copy()
+subset_h$data <- subset_h$data %>% dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h <- subset_h$get_Transformer()$log2()$lfq
+lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
+
+lfqAggMedpol <- lfqdataNormalized$get_Aggregator()
+lfqAggMedpol$medpolish()
+lfqtrans <- lfqAggMedpol$lfq_agg
+```
+
+
+```{r}
+
+exampleDat <- lfqtrans$data %>% dplyr::mutate(CorT = case_when(dilution. == "a" ~ "C", TRUE ~ "T"))
 exampleDat$protein_Id <- gsub("~.*","", exampleDat$protein_Id)
 
 # sample protein lengths
@@ -71,19 +104,111 @@ resSaint <- runSaint(res,filedir = tempdir())
 
 ```
 
+# Saint Express BFDR.
 
 
-```{r}
+http://varianceexplained.org/r/bayesian_fdr_baseball/
+
+The BFDR can be derived from the posterior error probability (PEP).
+SaintExpress does not report the PEP. My best guess is that $PEP = 1 - SaintScore$.
+The BFDR equals the cumulative mean of the PEP.
+
+```{r }
+
+
+computeFDR <- function(mdata ){
+    mdata <- dplyr::mutate(mdata, PEP = 1 - SaintScore)
+    mdata <- mdata %>% arrange(PEP)
+    mdata <- mdata %>% mutate( myFDR = cummean(PEP))
+    return(mdata)
+}
+```
+
+
+```{r fig.cap="BFDR vs myFDR for all Baits."}
 reslist <- resSaint$list
-par(mfrow = c(2,2))
-hist(reslist$SaintScore)
-reslist <- dplyr::mutate(reslist, PeP = 1 - SaintScore)
-hist(reslist$PeP)
-reslist <- arrange(reslist, PeP)
-reslist <- mutate(reslist, myFDR = cummean(PeP))
-hist(reslist$myFDR)
-plot(reslist$BFDR, reslist$myFDR)
-abline(c(0,1),col = 2, lwd = 2)
 
+reslist <- computeFDR(reslist)
+ggplot(reslist, aes(x= BFDR, y = myFDR)) + geom_point() + geom_abline(slope=1,color="red")
+```
+
+
+```{r fig.cap = "BFDR vs myFDR for each Bait."}
+ad <- list()
+for(i in unique(reslist$Bait)){
+    print(i)
+    set <- filter(reslist, Bait == i)
+    ad[[i]] <- computeFDR(set)
+}
+ad <- bind_rows(ad)
+
+ggplot(ad, aes(x = BFDR, y = myFDR)) + geom_point() + facet_wrap(~Bait) + ggplot2::geom_abline(slope=1,colour=2)
+```
+
+
+
+
+## Benchmarking
+
+```{r setUPBenchmark, eval = evalAll}
+bb <- ctr$get_contrasts()
+bb <- mutate(bb , PEP = 1-SaintScore)
+ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "Prey" )
+benchmark_SaintExpres <- make_benchmark(ttd$data,
+                                   contrast = "Bait",
+                                fcestimate = "log2FC",
+                                toscale = NULL,
+                                benchmark = list(
+                                  list(sc = "log2FC", desc = TRUE),    
+                                  list(sc = "SaintScore", desc = TRUE),
+                                  list(sc = "BFDR", desc = FALSE)
+                                ),  
+                                model_description = "SaintExpress_medpolishInt",
+                                model_name = "SaintExpress_medpolishInt",
+                                FDRvsFDP = list(list(sc = "BFDR", desc = FALSE))
+, hierarchy = c("Prey"), summarizeNA = "SaintScore"
+)
+colnames(ttd$data)
+sum(benchmark_proDA$smc$summary$Prey)
+sumarry <- benchmark_proDA$smc$summary
+table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
+
+```
+
+
+```{r prepBenchmarkforComparison, include= FALSE, eval = evalAll}
+xdd <- ttd$data %>% dplyr::rename(protein_Id = Prey ,
+                                  contrast = Bait,
+                                  estimate = log2FC,
+                                  statistic = SaintScore,
+                                  p.value = PEP,
+                                  FDR = BFDR  
+)
+
+benchmark2_SaintExpress <- make_benchmark(xdd, model_description = "SaintExpress_medpolishInt", model_name = "proDA")
+```
+
+```{r eval=FALSE, include=FALSE}
+saveRDS(benchmark_SaintExpres, file = "../inst/Benchresults/benchmark_medpolish_proDA.RDS")
+
+```
+
+```{r rocCurve, fig.cap="ROC curves", eval = evalAll}
+res <- benchmark_proDA$pAUC_summaries()
+knitr::kable(res$ftable$content,caption = res$ftable$caption)
+res$barp
+```
+
+```{r pAUC02, fig.cap="plot ROC curves", eval = evalAll}
+#res$ftable
+benchmark_SaintExpres$plot_ROC(xlim = 0.2)
+```
+
+```{r fdrfdp, fig.cap = "plot FDR vs FDP",eval = evalAll}
+benchmark_SaintExpres$plot_FDRvsFDP()
+```
+
+```{r fdptpr,eval = evalAll}
+benchmark_SaintExpres$plot_FDPvsTPR()
 ```
 
