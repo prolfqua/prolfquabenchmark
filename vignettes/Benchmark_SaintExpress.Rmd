@@ -24,8 +24,10 @@ evalAll <- TRUE
 knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 ```
 
-# Setting up and SaintExpress analysis.
+# Importing MQ data into proLFQua
 
+
+First read data and annotation.
 
 ```{r fromPeptideTXT , eval = evalAll}
 library(prolfqua)
@@ -33,28 +35,37 @@ library(tidyverse)
 datadir <- file.path(find.package("prolfquaData") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
+data <- tidyMQ_Peptides(inputMQfile)
+
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
-mqdata <- list()
-mqdata$data <- tidyMQ_Peptides(inputMQfile)
-
-length(unique(mqdata$data$proteins))
-mqdata$config <- prolfqua::create_config_MQ_peptide()
-
 annotation <- readxl::read_xlsx(inputAnnotation)
+```
 
+Create proLFQua configruation for MQ peptide.txt file and annotate data. 
+
+```{r}
+config <- prolfqua::create_config_MQ_peptide()
 res <- add_annotation(
-  mqdata$data,
+  data,
   annotation,
   fileName = "raw.file"
 )
 
-mqdata$config$table$factors[["dilution."]] = "sample"
-mqdata$config$table$factors[["run_Id"]] = "run_ID"
-mqdata$config$table$factorDepth <- 1
-mqdata$data <- setup_analysis(res, mqdata$config)
+config$table$factors[["dilution."]] = "sample"
+config$table$factors[["run_Id"]] = "run_ID"
+config$table$factorDepth <- 1
+data <- setup_analysis(res, config)
+```
 
+Setup LFQData class, filter, transform and aggregate peptide intensities:
+- remove proteins with only one peptide identified (`filter_proteins_by_peptide_count`).
+- remove small (zero) intensities (`remove_small_intensities`)
+- log2 transform and scale intensities (`get_Transformer`)
+- aggregate peptides to proteins (`get_Aggregator`)
 
-lfqdata <- LFQData$new(mqdata$data, mqdata$config)
+```{r}
+
+lfqdata <- LFQData$new(data,config)
 lfqdata$data <- lfqdata$data %>% filter(!grepl("^REV__|^CON__", protein_Id)) 
 lfqdata$filter_proteins_by_peptide_count()
 lfqdata$hierarchy_counts()
@@ -70,6 +81,13 @@ lfqAggMedpol <- lfqdataNormalized$get_Aggregator()
 lfqAggMedpol$medpolish()
 lfqtrans <- lfqAggMedpol$lfq_agg
 ```
+
+# Prepare protein data for SaintExpress analysis and run SaintExpress
+
+- Specify control and treatment samples using `case_when`
+- add protein lengths (`readPeptideFasta`,`addProteinLengths`)
+- create SaintExpress compatible inputs (`protein_2localSaint`)
+- run saintExpress (`runSaint`)
 
 
 ```{r}
@@ -106,12 +124,16 @@ resSaint <- runSaint(res,filedir = tempdir())
 
 # Saint Express BFDR.
 
+SaintExpress infers several statistics.
+- the SaintScore - Saint Probability, vaguely - probability that the protein is an interactor.
+- the BFDR Bayesian FDR.
 
-http://varianceexplained.org/r/bayesian_fdr_baseball/
 
-The BFDR can be derived from the posterior error probability (PEP).
-SaintExpress does not report the PEP. My best guess is that $PEP = 1 - SaintScore$.
+
+The following article [http://varianceexplained.org/r/bayesian_fdr_baseball/] describes how the BFDR can be derived from the posterior error probability (PEP).
 The BFDR equals the cumulative mean of the PEP.
+
+SaintExpress does not report the PEP. But assuming that $PEP = 1 - SaintScore$ we can comput the BFDR:
 
 ```{r }
 
@@ -124,6 +146,7 @@ computeFDR <- function(mdata ){
 }
 ```
 
+There are two options, either to determine the BFDR for all Baits (first code snipped) or for each Bait (second one with the `for` loop).
 
 ```{r fig.cap="BFDR vs myFDR for all Baits."}
 reslist <- resSaint$list
@@ -145,10 +168,12 @@ ad <- bind_rows(ad)
 ggplot(ad, aes(x = BFDR, y = myFDR)) + geom_point() + facet_wrap(~Bait) + ggplot2::geom_abline(slope=1,colour=2)
 ```
 
-
+The SE BFDR is quite similar to the FDR we estimated from the SaintScore. It also seems that SaintExpress computes the BFDR for all Baits not for each.
 
 
 ## Benchmarking
+
+Here we benchmark SaintExpress using the Ionstar dataset. We are using here the lowest ECOLI spike in concentration as control.
 
 ```{r setUPBenchmark, eval = evalAll}
 bb <- ctr$get_contrasts()
@@ -211,4 +236,9 @@ benchmark_SaintExpres$plot_FDRvsFDP()
 ```{r fdptpr,eval = evalAll}
 benchmark_SaintExpres$plot_FDPvsTPR()
 ```
+
+# Conclusions
+
+Please do compare the scores reported here with those obtained from proLFQua or proDA.
+
 
