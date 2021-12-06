@@ -183,7 +183,7 @@ saveRDS(benchmark_SaintExpres, file = "../inst/Benchresults/benchmark_medpolish_
 ```
 
 ```{r rocCurve, fig.cap="ROC curves", eval = evalAll}
-res <- benchmark_proDA$pAUC_summaries()
+res <- benchmark_SaintExpres$pAUC_summaries()
 knitr::kable(res$ftable$content,caption = res$ftable$caption)
 res$barp
 ```
@@ -203,7 +203,14 @@ benchmark_SaintExpres$plot_FDPvsTPR()
 
 # Conclusions
 
-Please do compare the scores reported here with those obtained from proLFQua or proDA.
+There are several problems with the results produced by _SaintExpress_:
+
+
+- First, the fold changes reported, have no relation with the true fold change (see volcano plots)
+- Secondly, the score with the highest performance (largest AUC) is the log2 fold change. Our expectations would be however, that SaintScore or BFDR should perform better, when assuming that they correctly model the observed variances.
+- Third, the performance of _SaintExpress_  is significantly worse when compared with other algorithms, e.g. _limma_, _proDA_ or _PRORA_ (see other benchmark vignettes).
+
+
 
 
 
