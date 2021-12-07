@@ -63,7 +63,7 @@ Setup LFQData class, filter, transform and aggregate peptide intensities:
 - log2 transform and scale intensities (`get_Transformer`)
 - aggregate peptides to proteins (`get_Aggregator`)
 
-```{r}
+```{r normalizeAndAggregate}
 
 lfqdata <- LFQData$new(data,config)
 lfqdata$data <- lfqdata$data %>% filter(!grepl("^REV__|^CON__", protein_Id)) 
@@ -92,7 +92,7 @@ SeintExpress requires specifying a control condition.  As control `C` we will us
 - run saintExpress (`runSaint`)
 
 
-```{r}
+```{r annotateProteins}
 
 exampleDat <- lfqtrans$data %>% dplyr::mutate(CorT = case_when(dilution. == "a" ~ "C", TRUE ~ "T"))
 exampleDat$protein_Id <- gsub("~.*","", exampleDat$protein_Id)
@@ -127,7 +127,7 @@ ctr <- prolfqua::ContrastsSaintExpress$new(resSaint$list)
 
 
 
-```{r fig.cap="Scatter plot showing the dependence of the SaintScore on the log2FC."}
+```{r , fig.cap="Scatter plot showing the dependence of the SaintScore on the log2FC."}
 pl <- ctr$get_Plotter()
 pl$score_plot()$SaintScore
 pl$histogram()
@@ -177,8 +177,8 @@ xdd <- ttd$data %>% dplyr::rename(protein_Id = Prey ,
 benchmark2_SaintExpress <- make_benchmark(xdd, model_description = "SaintExpress_medpolishInt", model_name = "proDA")
 ```
 
-```{r eval=FALSE, include=FALSE}
-saveRDS(benchmark_SaintExpres, file = "../inst/Benchresults/benchmark_medpolish_proDA.RDS")
+```{r seveBenchresults, eval=FALSE, include=FALSE}
+saveRDS(benchmark_SaintExpres, file = "../inst/Benchresults/benchmark_medpolish_SaintExpress.RDS")
 
 ```
 
@@ -205,19 +205,15 @@ benchmark_SaintExpres$plot_FDPvsTPR()
 
 There are several problems with the results produced by _SaintExpress_:
 
-
 - First, the fold changes reported, have no relation with the true fold change (see volcano plots)
-- Secondly, the score with the highest performance (largest AUC) is the log2 fold change. Our expectations would be however, that SaintScore or BFDR should perform better, when assuming that they correctly model the observed variances.
-- Third, the performance of _SaintExpress_  is significantly worse when compared with other algorithms, e.g. _limma_, _proDA_ or _PRORA_ (see other benchmark vignettes).
-
-
-
+- Secondly, the score with the highest performance (largest pAUC) is the $\log_2(FC)$. However, since the _SaintScore_ also model the observed variances we would expect to perform better.
+- Third, the performance of _SaintExpress_  is significantly worse when compared with other algorithms, e.g. _limma_ or _PRORA_ implemented in prolfqua or _proDA_ (see other benchmark vignettes).
 
 
 # Saint Express BFDR.
 
-SaintExpress infers several statistics.
-- the SaintScore - Saint Probability, vaguely - probability that the protein is a true interactor.
+_SaintExpress_ infers several statistics.
+- the _SaintScore_ - Saint Probability, vaguely - probability that the protein is a true interactor.
 - the BFDR Bayesian FDR.
 
 
@@ -225,11 +221,9 @@ SaintExpress infers several statistics.
 The following article [http://varianceexplained.org/r/bayesian_fdr_baseball/] describes how the BFDR can be derived from the posterior error probability (PEP).
 The BFDR equals the cumulative mean of the PEP.
 
-_SaintExpress_ does not report the PEP. But assuming that $PEP = 1 - SaintScore$ we can compute the BFDR:
+_SaintExpress_ does not report the PEP. But if the _SaintScore_ is the probability that a protein is an interactor then, $1 - SaintScore$ can be interpreted as posterior error probability (that it is not an interactor) and hence we can compute the BFDR:
 
-```{r }
-
-
+```{r defFunction}
 computeFDR <- function(mdata ){
     mdata <- dplyr::mutate(mdata, PEP = 1 - SaintScore)
     mdata <- mdata %>% arrange(PEP)
@@ -241,7 +235,7 @@ computeFDR <- function(mdata ){
 
 There are two options, either to determine the BFDR for all Baits (first code snipped) or for each Bait (second one with the `for` loop).
 
-```{r fig.cap="BFDR vs myFDR for all Baits."}
+```{r BFDRvsMyFDRglobal, fig.cap="BFDR vs myFDR for all Baits."}
 reslist <- resSaint$list
 
 reslist <- computeFDR(reslist)
@@ -249,7 +243,7 @@ ggplot(reslist, aes(x = BFDR, y = myFDR)) + geom_point() + geom_abline(slope = 1
 ```
 
 
-```{r fig.cap = "BFDR vs myFDR for each Bait."}
+```{r BFDRvsMyFDRlocal, fig.cap = "BFDR vs myFDR for each Bait."}
 ad <- list()
 for(i in unique(reslist$Bait)){
     print(i)
