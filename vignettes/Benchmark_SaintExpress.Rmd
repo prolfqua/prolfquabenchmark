@@ -53,7 +53,7 @@ res <- add_annotation(
 config$table$factors[["dilution."]] = "sample"
 config$table$factors[["run_Id"]] = "run_ID"
 config$table$factorDepth <- 1
-data <- setup_analysis(res, config)
+data <- prolfqua::setup_analysis(res, config)
 ```
 
 Setup LFQData class, filter, transform and aggregate peptide intensities:
@@ -142,7 +142,7 @@ We benchmark _SaintExpress_ using the _Ionstar_ dataset. We are using here the l
 bb <- ctr$get_contrasts()
 bb <- mutate(bb , PEP = 1-SaintScore)
 ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "Prey" )
-benchmark_SaintExpres <- make_benchmark(ttd$data,
+benchmark_SaintExpres <- prolfqua::make_benchmark(ttd$data,
                                    contrast = "Bait",
                                 fcestimate = "log2FC",
                                 toscale = NULL,
@@ -159,7 +159,7 @@ benchmark_SaintExpres <- make_benchmark(ttd$data,
 colnames(ttd$data)
 sum(benchmark_SaintExpres$smc$summary$Prey)
 sumarry <- benchmark_SaintExpres$smc$summary
-table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
+prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
 
 ```
 
@@ -173,7 +173,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = Prey ,
                                   FDR = BFDR  
 )
 
-benchmark2_SaintExpress <- make_benchmark(xdd, model_description = "SaintExpress_medpolishInt", model_name = "proDA")
+benchmark2_SaintExpress <- prolfqua::make_benchmark(xdd, model_description = "SaintExpress_medpolishInt", model_name = "proDA")
 ```
 
 ```{r seveBenchresults, eval=FALSE, include=FALSE}
@@ -249,7 +249,7 @@ for(i in unique(reslist$Bait)){
     set <- filter(reslist, Bait == i)
     ad[[i]] <- computeFDR(set)
 }
-ad <- bind_rows(ad)
+ad <- dplyr::bind_rows(ad)
 
 ggplot(ad, aes(x = BFDR, y = myFDR)) + geom_point() + facet_wrap(~Bait) + ggplot2::geom_abline(slope = 1,colour = 2)
 ```

@@ -117,7 +117,7 @@ library(prolfqua)
 ttd <- prolfqua::ionstar_bench_preprocess(bb, idcol = "Protein")
 
 
-benchmark_msstats <- make_benchmark(ttd$data,
+benchmark_msstats <- prolfqua::make_benchmark(ttd$data,
                                    contrast = "Label",
                                 toscale = c("pvalue"),
                                 fcestimate = "log2FC",
@@ -148,7 +148,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = Protein ,
                                   FDR = adj.pvalue  
 )
 
-benchmark2_msstats <- make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")
+benchmark2_msstats <- prolfqua::make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")
 saveRDS(benchmark2_msstats, file = "../inst/Benchresults/benchmark_msstats.RDS")
 ```
 

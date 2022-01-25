@@ -35,12 +35,12 @@ inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 mqdata <- list()
-mqdata$data <- tidyMQ_Peptides(inputMQfile)
+mqdata$data <- prolfqua::tidyMQ_Peptides(inputMQfile)
 length(unique(mqdata$data$proteins))
 mqdata$config <- prolfqua::create_config_MQ_peptide()
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- add_annotation(
+res <- prolfqua::add_annotation(
   mqdata$data,
   annotation,
   fileName = "raw.file"
@@ -49,10 +49,10 @@ res <- add_annotation(
 mqdata$config$table$factors[["dilution."]] = "sample"
 mqdata$config$table$factors[["run_Id"]] = "run_ID"
 mqdata$config$table$factorDepth <- 1
-mqdata$data <- setup_analysis(res, mqdata$config)
+mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
 
 
-lfqdata <- LFQData$new(mqdata$data, mqdata$config)
+lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
 lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
 lfqdata$filter_proteins_by_peptide_count()
 lfqdata$hierarchy_counts()
@@ -106,7 +106,7 @@ contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(contrast = "dilution_(6/4.5)_1.
 contr[["dilution_(4.5/3)_1.5"]] <- data.frame(contrast = "dilution_(4.5/3)_1.5", 
                                               test_diff(fit, contrast ="dilution.b - dilution.a" ))
 
-bb <- bind_rows(contr)
+bb <- dplyr::bind_rows(contr)
 # End Not Run
 
 ```
@@ -120,7 +120,7 @@ bb <- bind_rows(contr)
 bb$name |> unique() |> length()
 ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
 
-benchmark_proDA <- make_benchmark(ttd$data,
+benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
                                    contrast = "contrast",
                                 toscale = c("pval"),
                                 fcestimate = "diff",
@@ -137,7 +137,7 @@ benchmark_proDA <- make_benchmark(ttd$data,
 
 sum(benchmark_proDA$smc$summary$name)
 sumarry <- benchmark_proDA$smc$summary
-table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
+prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
 
 ```
 
@@ -151,7 +151,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
                                   FDR = adj_pval  
 )
 
-benchmark2_proDA <- make_benchmark(xdd, model_description = "proDA_medpolishInt", model_name = "proDA")
+benchmark2_proDA <- prolfqua::make_benchmark(xdd, model_description = "proDA_medpolishInt", model_name = "proDA")
 ```
 
 ```{r eval=FALSE, include=FALSE}

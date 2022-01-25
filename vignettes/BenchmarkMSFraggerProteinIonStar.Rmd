@@ -72,8 +72,8 @@ atable$factorDepth <- 1
 
 config <- AnalysisConfiguration$new(atable)
 
-adata <- setup_analysis(merged, config)
-lfqdata <- LFQData$new(adata, config)
+adata <- prolfqua::setup_analysis(merged, config)
+lfqdata <- prolfqua::LFQData$new(adata, config)
 lfqdata$remove_small_intensities()
 ```
 
@@ -143,7 +143,7 @@ cp$volcano()
 
 ```{r bnechmark}
 ttd <- prolfqua::ionstar_bench_preprocess(contrdf)
-medpol_benchmark <- make_benchmark(ttd$data,
+medpol_benchmark <- prolfqua::make_benchmark(ttd$data,
                                    model_description = "MSFragger med. polish and lm. density",
                                    model_name = "MSFragger_prot_med_lm",
                                    FDRvsFDP = list(list(sc = "FDR", desc = FALSE))
