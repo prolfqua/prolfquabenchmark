@@ -20,7 +20,7 @@ editor_options:
 
 
 
-Please download and install the `prolfquaData` package from github
+Please download and install the `prolfquadata` package from github
 
 
 ```{r setup, include=FALSE}
@@ -35,11 +35,6 @@ fig.height = 5
 
 
 ```{r loadRequiredPackages}
-rm(list = ls())
-library(conflicted)
-library(prolfqua)
-library(tidyverse)
-library(dplyr)
 conflicted::conflict_prefer("filter", "dplyr")
 
 ```
@@ -53,11 +48,11 @@ SUBSETNORM <- TRUE
 ```
 
 
-We start by loading the IonStar dataset and the annotation from the `prolfquaData` package. The method `add_annotation` adds the annotation to the data.
+We start by loading the IonStar dataset and the annotation from the `prolfquadata` package. The method `add_annotation` adds the annotation to the data.
 
 ```{r loadMQData}
 
-datadir <- file.path(find.package("prolfquaData") , "quantdata")
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
@@ -97,7 +92,7 @@ First we remove all contaminant, decoy proteins from the list, than we remove 0 
 
 ```{r filterForHumans}
 lfqdata <- LFQData$new(mqdata$data, mqdata$config)
-lfqdata$data <- lfqdata$data %>% filter(!grepl("^REV__|^CON__", protein_Id)) 
+lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
 lfqdata$filter_proteins_by_peptide_count()
 sr <- lfqdata$get_Summariser()
 lfqdata$remove_small_intensities()
@@ -113,7 +108,7 @@ To this task we subset the dataset by filtering for HUMAN proteins only and then
 ```{r}
 tr <- lfqdata$get_Transformer()
 subset_h <- lfqdata$get_copy()
-subset_h$data <- subset_h$data %>% dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
 subset_h <- subset_h$get_Transformer()$log2()$lfq
 lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h,  preserveMean = FALSE )$lfq
 
@@ -407,7 +402,7 @@ pl$histogram()
 allContrasts$Prot <- contrProt$get_contrasts()
 
 ttd <- prolfqua::ionstar_bench_preprocess(contrProt$get_contrasts())
-ttd$data$protein_Id %>% unique %>% length
+ttd$data$protein_Id |> unique |> length
 
 benchmark_Prot <- make_benchmark(ttd$data,
                                    model_description = "med. polish and lm",
@@ -428,7 +423,7 @@ allBenchmarks$benchmark_Prot <- benchmark_Prot
 
 contrProtModerated <- ContrastsModerated$new(contrProt)
 contrProtModerated$get_Plotter()$volcano()
-contrProtModerated$get_contrasts()$protein_Id %>% unique %>% length
+contrProtModerated$get_contrasts()$protein_Id |> unique |> length
 
 ```
 
@@ -459,7 +454,7 @@ pl$volcano()
 pl$histogram()
 
 pl <- contrProtMixed$get_contrasts()
-pl$protein_Id %>% unique %>% length
+pl$protein_Id |> unique |> length
 ```
 
 
@@ -521,8 +516,8 @@ allBenchmarks$benchmark_mixedModerated <- benchmark_mixedModerated
 To estimate regulation probabilities using the ROPECA approach we can chain the contrast computation methods. First we compute contrasts on peptide level, than we moderated the variance, t-statistics and p-values and finally we aggregate the fold change estimates and p-values.
 
 ```{r contrastROPECA}
-contrROPECA <- prolfqua::Contrasts$new(modLMPepLevel, relevantContrasts) %>%
-  ContrastsModerated$new() %>%
+contrROPECA <- prolfqua::Contrasts$new(modLMPepLevel, relevantContrasts) |>
+  ContrastsModerated$new() |>
   ContrastsROPECA$new()
 
 contrROPECA$get_Plotter()$volcano()
@@ -652,9 +647,9 @@ The table below summarizes the contrast estimates produced which will be benchma
 ```{r fig.cap="Partial area under the ROC curve at 10% FPR."}
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
 res <- map_df(allBenchmarks, function(x){x$pAUC()})
-resAllB <- res %>% dplyr::filter(contrast == "all")
+resAllB <- res |> dplyr::filter(contrast == "all")
 
-bb <- resAllB %>% mutate(whatfix = case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
+bb <- resAllB |> mutate(whatfix = case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
 
 ggplot(bb, aes(x = Name, y = pAUC_10)) +
   geom_bar(stat = "identity") +
@@ -682,10 +677,10 @@ ggplot(bb, aes(x = Name, y = pAUC_20)) +
 dd <- map_df(allBenchmarks, function(x){res <- x$smc$summary; res$name <- x$model_name;res})
 
 
-dd <- dd %>% mutate(nrcontrasts = protein_Id * (4 - as.integer(nr_missing)))
-dds <- dd %>% group_by(name) %>% summarize(nrcontrasts = sum(nrcontrasts))
+dd <- dd |> mutate(nrcontrasts = protein_Id * (4 - as.integer(nr_missing)))
+dds <- dd |> group_by(name) |> summarize(nrcontrasts = sum(nrcontrasts))
 
-dds %>% ggplot(aes(x = name, y = (nrcontrasts - min(nrcontrasts)))) + 
+dds |> ggplot(aes(x = name, y = (nrcontrasts - min(nrcontrasts)))) + 
   geom_bar(stat="identity") + 
   theme(axis.text.x = element_text(angle = -90, vjust = 0.5)) +
   geom_text(aes(label= nrcontrasts), position = position_dodge(width=0.9), vjust=-0.25)
@@ -697,7 +692,7 @@ dds %>% ggplot(aes(x = name, y = (nrcontrasts - min(nrcontrasts)))) +
 ```{r FDRfdp, fig.cap = "Compare FDR estimate with false discovery proportion (FDP).", fig.width=8, fig.height=8}
 dd <- map_df(allBenchmarks, function(x){res <- x$get_confusion_FDRvsFDP(); res$name <- x$model_name;res})
 
-dd %>% ggplot(aes(y = FDP_,  x  = scorecol )) + 
+dd |> ggplot(aes(y = FDP_,  x  = scorecol )) + 
   geom_line(aes(color = model_name)) +
   facet_wrap(~contrast) + 
    geom_abline(intercept = 0, slope = 1, color = 2)

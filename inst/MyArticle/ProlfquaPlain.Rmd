@@ -15,9 +15,6 @@ bibliography: bibliography.bib
 # Introduction
 
 ```{r setup, include=FALSE}
-library(tidyverse)
-library(prolfqua)
-library(ggplot2)
 
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
@@ -129,7 +126,7 @@ Contrasts <- c(
 )
 
 tt <- data.frame(contrastsName = names(Contrasts),  contrasts = Contrasts)
-tt <- tt %>% separate(contrastsName, c("dilution", "ratio", "expected fold change"), sep =  "_", remove = FALSE)
+tt <- tt |> separate(contrastsName, c("dilution", "ratio", "expected fold change"), sep =  "_", remove = FALSE)
 
 ```
 
@@ -138,7 +135,7 @@ tt <- tt %>% separate(contrastsName, c("dilution", "ratio", "expected fold chang
 ```{r usedContrasts}
 relevantContrasts <- c("dilution_(9/7.5)_1.2","dilution_(7.5/6)_1.25", "dilution_(6/4.5)_1.3(3)", "dilution_(4.5/3)_1.5" )
 
-tt <- tt %>% dplyr::filter(contrastsName  %in% relevantContrasts)
+tt <- tt |> dplyr::filter(contrastsName  %in% relevantContrasts)
 tt <- dplyr::select(tt, all_of(c("contrasts","ratio", "expected fold change")))
 knitr::kable(tt, caption = "Contrasts used for benchmark.")
 
@@ -281,11 +278,11 @@ allBenchmarks <- allBenchmarks[c("benchmark_imputation","benchmark_ProtModerated
 ```{r  fig.cap="Number and percentage of estimated contrasts by modelling method.", fig.width=5, fig.height=7}
 
 dd <- map_df(allBenchmarks, function(x){res <- x$smc$summary; res$name <- x$model_name;res})
-dd <- dd %>% mutate(nrcontrasts = protein_Id * (4 - nr_missing))
-dds <- dd %>% group_by(name) %>% summarize(nrcontrasts = sum(nrcontrasts))
+dd <- dd |> mutate(nrcontrasts = protein_Id * (4 - nr_missing))
+dds <- dd |> group_by(name) |> summarize(nrcontrasts = sum(nrcontrasts))
 dds$percent <- dds$nrcontrasts/max(dds$nrcontrasts) * 100
 
-nrgg <- dds %>% ggplot(aes(x = name, y = nrcontrasts )) + 
+nrgg <- dds |> ggplot(aes(x = name, y = nrcontrasts )) + 
   geom_bar(stat = "identity", fill="white", colour = "black") + 
   coord_cartesian(ylim = c(min(dds$nrcontrasts) - 100, max(dds$nrcontrasts) + 10)) +
   theme(axis.text.x = element_text(angle = -90, vjust = 0.5)) +
@@ -302,20 +299,20 @@ nrgg
 
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
 res <- map_df(allBenchmarks, function(x){x$pAUC()})
-res <- res %>% mutate(whatfix = case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
+res <- res |> mutate(whatfix = case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
 
-res$contrast %>% unique()
-#resAllB <- res %>% dplyr::filter(contrast == "dilution_(9/7.5)_1.2")
-#resAllB <- res %>% dplyr::filter(contrast == "dilution_(4.5/3)_1.5")
-#resAllB <- res %>% dplyr::filter(contrast == "dilution_(7.5/6)_1.25")
+res$contrast |> unique()
+#resAllB <- res |> dplyr::filter(contrast == "dilution_(9/7.5)_1.2")
+#resAllB <- res |> dplyr::filter(contrast == "dilution_(4.5/3)_1.5")
+#resAllB <- res |> dplyr::filter(contrast == "dilution_(7.5/6)_1.25")
 
 
 
-norm <- res %>% group_by(contrast,whatfix) %>% summarize(meanpAUC_10 = mean(pAUC_10))
+norm <- res |> group_by(contrast,whatfix) |> summarize(meanpAUC_10 = mean(pAUC_10))
 res <- inner_join(res, norm)
 res <- mutate(res , pAUC_10n = pAUC_10 - meanpAUC_10)
 
-resAllB <- res %>% dplyr::filter(contrast == "all")
+resAllB <- res |> dplyr::filter(contrast == "all")
 
 p1 <- ggplot(resAllB, aes(x = Name, y = pAUC_10)) +
   geom_bar(stat = "identity") +
@@ -346,11 +343,11 @@ p2
 ```{r FDRfdp, fig.cap = "Compare FDR estimate with false discovery proportion (FDP).", fig.width=8, fig.height=8}
 dd <- map_df(allBenchmarks, function(x){res <- x$get_confusion_FDRvsFDP(); res$name <- x$model_name;res})
 ddb <- filter(dd, contrast == "dilution_(4.5/3)_1.5")
-ddb <- dd %>% dplyr::filter(contrast == "dilution_(7.5/6)_1.25")
-ddb <- dd %>% dplyr::filter(contrast == "all")
+ddb <- dd |> dplyr::filter(contrast == "dilution_(7.5/6)_1.25")
+ddb <- dd |> dplyr::filter(contrast == "all")
 
 
-ddb %>% ggplot(aes(y = FDP_,  x  = scorecol )) + 
+ddb |> ggplot(aes(y = FDP_,  x  = scorecol )) + 
   geom_line(aes(color = model_name, linetype = model_name)) +
   facet_wrap(~contrast) + 
    geom_abline(intercept = 0, slope = 1, color = 2)
@@ -360,7 +357,7 @@ ddb %>% ggplot(aes(y = FDP_,  x  = scorecol )) +
 
 
 ```{r fig.cap="Distribution of the FDR values produced."}
-dd %>% ggplot(aes(x = scorecol)) + geom_histogram() + facet_wrap(~model_name)
+dd |> ggplot(aes(x = scorecol)) + geom_histogram() + facet_wrap(~model_name)
 ```
 
 

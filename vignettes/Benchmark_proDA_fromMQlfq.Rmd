@@ -32,11 +32,10 @@ evalAll <- require(proDA)
 
 ```{r normalizeDataUsingProlfqua, eval = evalAll}
 library(proDA)
-library(tidyverse)
 library(prolfqua)
 
 # Read in MaxQuant files
-datadir <- file.path(find.package("prolfquaData") , "quantdata")
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
@@ -44,7 +43,7 @@ inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 
 
 mqdata <- tidyMQ_ProteinGroups(inputMQfile)
-mqdata <- mqdata %>% filter(!grepl("^REV__|^CON__", proteinID))
+mqdata <- mqdata |> dplyr::filter(!grepl("^REV__|^CON__", proteinID))
 
 annotation <- readxl::read_xlsx(inputAnnotation)
 res <- add_annotation(
@@ -52,7 +51,7 @@ res <- add_annotation(
   annotation,
   fileName = "raw.file"
 )
-res <- filter(res, nr.peptides > 1)
+res <- dplyr::filter(res, nr.peptides > 1)
 
 config <- prolfqua::AnalysisTableAnnotation$new()
 config$factors[["dilution."]] = "sample"
@@ -77,7 +76,7 @@ Calibrate the data using the human protein subset.
 
 ```{r scaleData, fig.cap="Distribution of intensites before (left panel) and after (right panel) robscaling.", eval = evalAll}
 
-lfqhum <- lfqPROT$get_subset(filter(lfqPROT$data, grepl("HUMAN", proteinID)))
+lfqhum <- lfqPROT$get_subset(dplyr::filter(lfqPROT$data, grepl("HUMAN", proteinID)))
 
 tr <- lfqPROT$get_Transformer()
 log2data <- tr$log2()$lfq
@@ -125,7 +124,7 @@ contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(contrast = "dilution_(6/4.5)_1.
 contr[["dilution_(4.5/3)_1.5"]] <- data.frame(contrast = "dilution_(4.5/3)_1.5", 
                                               test_diff(fit, contrast ="dilution.b - dilution.a" ))
 
-bb <- bind_rows(contr)
+bb <- dplyr::bind_rows(contr)
 # End Not Run
 
 ```
@@ -136,7 +135,7 @@ bb <- bind_rows(contr)
 
 ```{r setUPBenchmark, eval = evalAll}
 
-bb$name %>% unique() %>% length()
+bb$name |> unique() |> length()
 ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
 
 benchmark_proDA <- make_benchmark(ttd$data,
@@ -162,7 +161,7 @@ table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrast
 
 
 ```{r prepBenchmarkforComparison, include= FALSE, eval = evalAll}
-xdd <- ttd$data %>% dplyr::rename(protein_Id = name ,
+xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
                                   contrast = contrast,
                                   estimate = diff,
                                   statistic = t_statistic,

@@ -36,7 +36,7 @@ The following code reads the data and creates and MSStats compatible annotation 
 ```{r eval = evalAll}
 
 # Read in MaxQuant files
-datadir <- file.path(find.package("prolfquaData") , "quantdata")
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
@@ -46,9 +46,9 @@ proteinGroups <- read.table(unz(inputMQfile,"proteinGroups.txt"), sep = "\t", he
 infile <- read.table(unz(inputMQfile,"evidence.txt"), sep="\t", header = TRUE)
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-msstas_annotation <- annotation %>% dplyr::select(raw.file, Condition = sample, BioReplicate = run_ID)
+msstas_annotation <- annotation |> dplyr::select(raw.file, Condition = sample, BioReplicate = run_ID)
 msstas_annotation$IsotopeLabelType <- "L"
-msstas_annotation <- msstas_annotation %>% tidyr::unite("Experiment", Condition, BioReplicate, sep="_", remove = FALSE)
+msstas_annotation <- msstas_annotation |> tidyr::unite("Experiment", Condition, BioReplicate, sep="_", remove = FALSE)
 # Read in annotation including condition and biological replicates per run.
 # Users should make this annotation file. It is not the output from MaxQuant.
 
@@ -140,7 +140,7 @@ table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrast
 
 ```{r include=FALSE, eval=storeBench}
 
-xdd <- ttd$data %>% dplyr::rename(protein_Id = Protein ,
+xdd <- ttd$data |> dplyr::rename(protein_Id = Protein ,
                                   contrast = Label,
                                   estimate = log2FC,
                                   statistic = Tvalue,

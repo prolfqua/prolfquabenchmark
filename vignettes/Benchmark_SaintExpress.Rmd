@@ -31,8 +31,7 @@ First read data and annotation.
 
 ```{r fromPeptideTXT , eval = evalAll}
 library(prolfqua)
-library(tidyverse)
-datadir <- file.path(find.package("prolfquaData") , "quantdata")
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
 data <- tidyMQ_Peptides(inputMQfile)
@@ -65,15 +64,15 @@ Setup LFQData class, filter, transform and aggregate peptide intensities:
 
 ```{r normalizeAndAggregate}
 
-lfqdata <- LFQData$new(data,config)
-lfqdata$data <- lfqdata$data %>% filter(!grepl("^REV__|^CON__", protein_Id)) 
+lfqdata <- prolfqua::LFQData$new(data,config)
+lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
 lfqdata$filter_proteins_by_peptide_count()
 lfqdata$hierarchy_counts()
 lfqdata$remove_small_intensities()
 
 tr <- lfqdata$get_Transformer()
 subset_h <- lfqdata$get_copy()
-subset_h$data <- subset_h$data %>% dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
 subset_h <- subset_h$get_Transformer()$log2()$lfq
 lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
 
@@ -94,14 +93,14 @@ SeintExpress requires specifying a control condition.  As control `C` we will us
 
 ```{r annotateProteins}
 
-exampleDat <- lfqtrans$data %>% dplyr::mutate(CorT = case_when(dilution. == "a" ~ "C", TRUE ~ "T"))
+exampleDat <- lfqtrans$data |> dplyr::mutate(CorT = case_when(dilution. == "a" ~ "C", TRUE ~ "T"))
 exampleDat$protein_Id <- gsub("~.*","", exampleDat$protein_Id)
 
 # sample protein lengths
 
 
-Ecolifasta <- system.file("fastaDBs/uniprot-proteome_UP000000625_reviewed_yes.fasta.gz",package = "prolfquaData")
-Humanfasta <- system.file("fastaDBs/uniprot-proteome_UP000005640_reviewed_yes.fasta.gz",package = "prolfquaData")
+Ecolifasta <- system.file("fastaDBs/uniprot-proteome_UP000000625_reviewed_yes.fasta.gz",package = "prolfquadata")
+Humanfasta <- system.file("fastaDBs/uniprot-proteome_UP000005640_reviewed_yes.fasta.gz",package = "prolfquadata")
 
 Ecolifasta <- prozor::readPeptideFasta(Ecolifasta)
 Humanfasta <- prozor::readPeptideFasta(Humanfasta)
@@ -166,7 +165,7 @@ table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrast
 
 
 ```{r prepBenchmarkforComparison, include= FALSE, eval = evalAll}
-xdd <- ttd$data %>% dplyr::rename(protein_Id = Prey ,
+xdd <- ttd$data |> dplyr::rename(protein_Id = Prey ,
                                   contrast = Bait,
                                   estimate = log2FC,
                                   statistic = SaintScore,
@@ -226,8 +225,8 @@ _SaintExpress_ does not report the PEP. But if the _SaintScore_ is the probabili
 ```{r defFunction}
 computeFDR <- function(mdata ){
     mdata <- dplyr::mutate(mdata, PEP = 1 - SaintScore)
-    mdata <- mdata %>% arrange(PEP)
-    mdata <- mdata %>% mutate( myFDR = cummean(PEP))
+    mdata <- mdata |> arrange(PEP)
+    mdata <- mdata |> mutate( myFDR = cummean(PEP))
     return(mdata)
 }
 

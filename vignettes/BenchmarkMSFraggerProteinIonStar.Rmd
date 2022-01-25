@@ -18,7 +18,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-Please download and install the `prolfquaData` package from github
+Please download and install the `prolfquadata` package from github
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -31,23 +31,18 @@ fig.height = 10
 ```
 
 ```{r}
-rm(list = ls())
-library(conflicted)
-library(prolfqua)
-library(tidyverse)
-library(dplyr)
 conflicted::conflict_prefer("filter", "dplyr")
 
 ```
 
 ## Load data
 
-We start by loading the IonStar dataset and the annotation from the `prolfquaData` package. The method `add_annotation` adds the annotation to the data.
+We start by loading the IonStar dataset and the annotation from the `prolfquadata` package. The method `add_annotation` adds the annotation to the data.
 
 
 
 ```{r}
-datadir <- file.path(find.package("prolfquaData") , "quantdata")
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 annotation <- readxl::read_xlsx(inputAnnotation)
@@ -55,7 +50,7 @@ annotation <- readxl::read_xlsx(inputAnnotation)
 protein <- as_tibble(read.csv(unz(inputMQfile,"IonstarWithMSFragger/combined_protein.tsv"),
                              header = TRUE, sep = "\t", stringsAsFactors = FALSE))
 protein <- tidy_MSFragger_combined_protein(protein)
-protein <- protein %>% dplyr::filter(unique.stripped.peptides > 1)
+protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
 
 merged <- inner_join(annotation, protein)
 ```
@@ -89,7 +84,7 @@ pl <- lfqdata$get_Plotter()
 pl$intensity_distribution_density()
 
 subset_h <- lfqdata$get_copy()$get_Transformer()$log2()$lfq
-subset_h$data <- subset_h$data %>% dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
 tr <- lfqdata$get_Transformer()
 lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
 

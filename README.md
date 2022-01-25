@@ -19,11 +19,11 @@ Or in the R session:
 install.packages("prolfqua_X.Y.Z.tar.gz",repos = NULL, type="source")
 ```
 
-Afterwards you also will need to install the `prolfquaData` package
+Afterwards you also will need to install the `prolfquadata` package
 
 ```
 install.packages('remotes')
-remotes::install_gitlab("wolski/prolfquaData", host="gitlab.bfabric.org")
+remotes::install_gitlab("wolski/prolfquadata", host="gitlab.bfabric.org")
 
 ```
 

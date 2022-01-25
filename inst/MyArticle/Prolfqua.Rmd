@@ -42,9 +42,6 @@ separate page at the end of the document.
 # Introduction
 
 ```{r setup, include=FALSE}
-library(tidyverse)
-library(prolfqua)
-library(ggplot2)
 
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
@@ -155,7 +152,7 @@ Contrasts <- c(
 )
 
 tt <- data.frame(contrastsName = names(Contrasts),  contrasts = Contrasts)
-tt <- tt %>% separate(contrastsName, c("dilution", "ratio", "expected fold change"), sep =  "_", remove = FALSE)
+tt <- tt |> separate(contrastsName, c("dilution", "ratio", "expected fold change"), sep =  "_", remove = FALSE)
 
 tt
 ```
@@ -165,7 +162,7 @@ tt
 ```{r usedContrasts}
 relevantContrasts <- c("dilution_(9/7.5)_1.2","dilution_(7.5/6)_1.25", "dilution_(6/4.5)_1.3(3)", "dilution_(4.5/3)_1.5" )
 
-tt <- tt %>% dplyr::filter(contrastsName  %in% relevantContrasts)
+tt <- tt |> dplyr::filter(contrastsName  %in% relevantContrasts)
 tt <- select(tt, all_of(c("contrasts","ratio", "expected fold change")))
 knitr::kable(tt, caption = "Contrasts used for benchmark.", format = "latex")
 

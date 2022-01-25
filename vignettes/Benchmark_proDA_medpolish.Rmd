@@ -21,8 +21,6 @@ editor_options:
 ```{r setup, include=TRUE} 
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 evalAll <- require(proDA)
-library(prolfqua)
-library(tidyverse)
 
 
 ```
@@ -32,7 +30,7 @@ library(tidyverse)
 
 
 ```{r fromPeptideTXT , eval = evalAll}
-datadir <- file.path(find.package("prolfquaData") , "quantdata")
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
@@ -55,7 +53,7 @@ mqdata$data <- setup_analysis(res, mqdata$config)
 
 
 lfqdata <- LFQData$new(mqdata$data, mqdata$config)
-lfqdata$data <- lfqdata$data %>% filter(!grepl("^REV__|^CON__", protein_Id)) 
+lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
 lfqdata$filter_proteins_by_peptide_count()
 lfqdata$hierarchy_counts()
 
@@ -64,7 +62,7 @@ lfqdata$hierarchy_counts()
 
 tr <- lfqdata$get_Transformer()
 subset_h <- lfqdata$get_copy()
-subset_h$data <- subset_h$data %>% dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
 subset_h <- subset_h$get_Transformer()$log2()$lfq
 lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
 
@@ -119,7 +117,7 @@ bb <- bind_rows(contr)
 
 ```{r setUPBenchmark, eval = evalAll}
 
-bb$name %>% unique() %>% length()
+bb$name |> unique() |> length()
 ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
 
 benchmark_proDA <- make_benchmark(ttd$data,
@@ -145,7 +143,7 @@ table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrast
 
 
 ```{r prepBenchmarkforComparison, include= FALSE, eval = evalAll}
-xdd <- ttd$data %>% dplyr::rename(protein_Id = name ,
+xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
                                   contrast = contrast,
                                   estimate = diff,
                                   statistic = t_statistic,
