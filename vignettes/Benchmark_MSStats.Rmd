@@ -134,7 +134,7 @@ benchmark_msstats <- prolfqua::make_benchmark(ttd$data,
 sum(benchmark_msstats$smc$summary$Protein)
 
 sumarry <- benchmark_msstats$smc$summary
-table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
+prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
 ```
 
 
