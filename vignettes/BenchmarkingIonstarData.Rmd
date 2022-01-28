@@ -44,6 +44,7 @@ Decide if you work with all data or for speedup with subset of data:
 ```{r}
 SUBSET <- FALSE
 SUBSETNORM <- TRUE
+SAVE <- FALSE
 
 ```
 
@@ -58,14 +59,14 @@ inputMQfile <-  file.path(datadir,
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 mqdata <- list()
 
-mqdata$data <- tidyMQ_Peptides(inputMQfile)
+mqdata$data <- prolfqua::tidyMQ_Peptides(inputMQfile)
 length(unique(mqdata$data$proteins))
 
 mqdata$config <- prolfqua::create_config_MQ_peptide()
 
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- add_annotation(
+res <- prolfqua::add_annotation(
   mqdata$data,
   annotation,
   fileName = "raw.file"
@@ -80,7 +81,7 @@ The `setup_analysis` asserts that all columns specified in the configruation are
 mqdata$config$table$factors[["dilution."]] = "sample"
 mqdata$config$table$factors[["run_Id"]] = "run_ID"
 mqdata$config$table$factorDepth <- 1
-mqdata$data <- setup_analysis(res, mqdata$config)
+mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
 
 ```
 
@@ -196,7 +197,7 @@ lfqNormSubset$config$table$getWorkIntensity()
 
 pl <- lfqNormSubset$get_Plotter()
 pl$intensity_distribution_density()
-lfqAggMedpol <- LFQDataAggregator$new(lfqNormSubset, prefix = "protein")
+lfqAggMedpol <- lfqNormSubset$get_Aggregator()
 lfqAggMedpol$medpolish()
 
 #xx <- lfqAggMedpol$plot()
@@ -244,7 +245,7 @@ lmmodel <- "~ dilution."
 lmmodel <- paste0(protLFQ$config$table$getWorkIntensity() , lmmodel)
 
 lfqNormSubset$config$table$hierarchyDepth <- 1
-modelFunction <- strategy_lm( lmmodel, model_name = "Model")
+modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
 
 modLinearProt <- prolfqua::build_model(protLFQ$data, modelFunction)
 modLinearProt$anova_histogram()$plot
@@ -260,7 +261,7 @@ modLinearProt$anova_histogram()$plot
 lmmodel <- "~ dilution. + (1|peptide_Id) + (1|sampleName)"
 lmmodel <- paste0(lfqNormSubset$config$table$getWorkIntensity() , lmmodel)
 lfqNormSubset$config$table$hierarchyDepth <- 1
-modelFunction <- strategy_lmer( lmmodel, model_name = "Model")
+modelFunction <- prolfqua::strategy_lmer( lmmodel, model_name = "Model")
 modMixedProtLevel <- prolfqua::build_model(lfqNormSubset$data, modelFunction)
 modMixedProtLevel$anova_histogram()$plot
 
@@ -277,7 +278,7 @@ lfqNormSubset$config$table$hierarchyDepth <- 2
 
 lmmodel <- paste0(lfqNormSubset$config$table$getWorkIntensity() , lmmodel)
 
-modelFunction <- strategy_lm( lmmodel, model_name = "Model")
+modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
 modLMPepLevel <- prolfqua::build_model(lfqNormSubset$data,
                                        modelFunction,
                                        subject_Id = lfqNormSubset$subjectId())
@@ -340,12 +341,12 @@ There are, as of today, four contrasts classes in the package _prolfqua_+
 - 'ContrastsSimpleImputed' : contrast computation with imputation of fold changes and t-statistic estimation using pooled variances.
 - 'Contrasts'  : uses Wald test, 
 - 'ContrastsModerated' : applies variance moderation:, 
-- 'ContrastsROPECA' implements estimate and p-value aggregation
+- 'ContrastsROPECA' implements difference and p-value aggregation
 
 
 ## Contrasts with Imputation
 
-In order to estimate fold-changes, statistics and p-values of proteins for which linear models could not be fitted because of an excess of missing measurements, the following procedure is applied. The mean intensity of a protein in a condition is computed. For the proteins with no observation in a condition, we infer their intensities by using the mean of the 10% smallest average peptide intensities in the dataset. The standard deviation of the protein is estimated using the pooled variances of the condition where the variance could be estimated.
+In order to estimate differences (fold-changes), statistics and p-values of proteins for which linear models could not be fitted because of an excess of missing measurements, the following procedure is applied. The mean intensity of a protein in a condition is computed. For the proteins with no observation in a condition, we infer their intensities by using the mean of the 10% smallest average peptide intensities in the dataset. The standard deviation of the protein is estimated using the pooled variances of the condition where the variance could be estimated.
 
 
 
@@ -402,7 +403,7 @@ pl$histogram()
 allContrasts$Prot <- contrProt$get_contrasts()
 
 ttd <- prolfqua::ionstar_bench_preprocess(contrProt$get_contrasts())
-ttd$data$protein_Id |> unique |> length
+ttd$data$protein_Id |> unique() |> length()
 
 benchmark_Prot <- prolfqua::make_benchmark(ttd$data,
                                    model_description = "med. polish and lm",
@@ -414,6 +415,7 @@ prolfqua::table_facade(benchmark_Prot$smc$summary, caption = "Nr of proteins wit
 #benchmark_Prot$plot_score_distribution()
 benchmark_Prot$plot_FDRvsFDP()
 allBenchmarks$benchmark_Prot <- benchmark_Prot
+
 ```
 
 
@@ -421,9 +423,9 @@ allBenchmarks$benchmark_Prot <- benchmark_Prot
 
 ```{r contrastModel1Moderation}
 
-contrProtModerated <- ContrastsModerated$new(contrProt)
-contrProtModerated$get_Plotter()$volcano()
-contrProtModerated$get_contrasts()$protein_Id |> unique |> length
+contrProtModerated <- prolfqua::ContrastsModerated$new(contrProt)
+contrProtModerated$get_Plotter()$volcano()$FDR
+contrProtModerated$get_contrasts()$protein_Id |> unique() |> length()
 
 ```
 
@@ -450,11 +452,12 @@ allBenchmarks$benchmark_ProtModerated <- benchmark_ProtModerated
 contrProtMixed <- prolfqua::Contrasts$new(modMixedProtLevel, relevantContrasts, modelName = "WaldTestMixed")
 
 pl <- contrProtMixed$get_Plotter()
-pl$volcano()
-pl$histogram()
+pl$volcano()$FDR
+pl$histogram()$p.value
+pl$histogram()$FDR
 
 pl <- contrProtMixed$get_contrasts()
-pl$protein_Id |> unique |> length
+pl$protein_Id |> unique() |> length()
 ```
 
 
@@ -476,7 +479,7 @@ allBenchmarks$benchmark_mixed <- benchmark_mixed
 
 ### Adding Moderation
 
-Since moderation requires a good degrees of freedom estimate to estimate the prior degrees of freedom we examine the denominator degrees of freedom produced by the methods implemented in lmerTest (see Histogram).
+Since moderation requires a degrees of freedom estimate to determine the prior degrees of freedom we examine the denominator degrees of freedom produced by the methods implemented in lmerTest (see Histogram).
 
 ```{r distributionOfDFModel2, fig.cap="Histogram of degrees of freedom for mixed model"}
 ctr <- contrProtMixed$get_contrasts()
@@ -488,8 +491,8 @@ hist(df, breaks = 100, xlim = c(0,61))
 
 
 ```{r contrastModel2Moderation}
-contrProtMixedModerated <- ContrastsModerated$new(contrProtMixed)
-contrProtMixedModerated$get_Plotter()$volcano()
+contrProtMixedModerated <- prolfqua::ContrastsModerated$new(contrProtMixed)
+contrProtMixedModerated$get_Plotter()$volcano()$FDR
 
 ```
 
@@ -502,8 +505,7 @@ ttd <- prolfqua::ionstar_bench_preprocess(contrProtMixedModerated$get_contrasts(
 benchmark_mixedModerated <- prolfqua::make_benchmark(ttd$data,
                                    model_description = "mixed effect model moderated",
                                    model_name = "prot_mixed_effect_moderated")
-
-prolfqua::table_facade(benchmark_mixedModerated$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
+prolfqua::table_facade(benchmark_mixedModerated$smc$summary, caption = "Nr of proteins with Nr of computed contrasts.")
 
 #benchmark_mixedModerated$plot_score_distribution()
 benchmark_mixedModerated$plot_FDRvsFDP()
@@ -517,8 +519,8 @@ To estimate regulation probabilities using the ROPECA approach we can chain the 
 
 ```{r contrastROPECA}
 contrROPECA <- prolfqua::Contrasts$new(modLMPepLevel, relevantContrasts) |>
-  ContrastsModerated$new() |>
-  ContrastsROPECA$new()
+  prolfqua::ContrastsModerated$new() |>
+  prolfqua::ContrastsROPECA$new()
 
 contrROPECA$get_Plotter()$volcano()
 contrROPECA$get_Plotter()$histogram()
@@ -530,10 +532,11 @@ contrROPECA$get_Plotter()$histogram()
 allContrasts$contrProtMixedModerated <- contrProtMixedModerated$get_contrasts()
 
 ttd <- prolfqua::ionstar_bench_preprocess(contrROPECA$get_contrasts())
+ttd$data
 benchmark_ropeca <- prolfqua::make_benchmark(ttd$data,
                                 toscale = c("beta.based.significance"),
                                 benchmark = list(
-                                  list(sc = "estimate", desc = TRUE),
+                                  list(sc = "diff", desc = TRUE),
                                   list(sc = "statistic", desc = TRUE),
                                   list(sc = "scaled.beta.based.significance", desc = TRUE)
                                 ),  
@@ -543,8 +546,9 @@ benchmark_ropeca <- prolfqua::make_benchmark(ttd$data,
 )
 
 
-prolfqua::table_facade(benchmark_ropeca$smc$summary,
-                       caption = "Nr of proteins with Nr of estimated contrasts.")
+prolfqua::table_facade(
+    benchmark_ropeca$smc$summary,
+    caption = "Nr of proteins with Nr of estimated contrasts.")
 
 benchmark_ropeca$plot_ROC(0.1)
 benchmark_ropeca$plot_FDRvsFDP()
@@ -589,9 +593,7 @@ allBenchmarks$benchmark_merged <- benchmark_merged
 
 ```{r same, eval=FALSE}
 same <- all$same
-
 allBenchmarks$benchmark_Prot$smc$summary
-
 
 ttd <- prolfqua::ionstar_bench_preprocess(same$get_contrasts())
 benchmark_same <- prolfqua::make_benchmark(ttd$data,
@@ -599,8 +601,6 @@ benchmark_same <- prolfqua::make_benchmark(ttd$data,
                                    model_name = "imputed_same_as_lm")
 
 prolfqua::table_facade(benchmark_same$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
-
-
 benchmark_same$plot_FDRvsFDP()
 
 ```
@@ -616,18 +616,18 @@ allBenchmarks$benchmark_same <- benchmark_same
 
 
 
-```{r eval=FALSE, include=FALSE}
+```{r include=FALSE}
 
-if (SUBSETNORM) {
- saveRDS(allContrasts, file = "../inst/Benchresults/allContrasts.RDS")
-} else{
- saveRDS(allContrasts, file = "../inst/Benchresults/allContrastsNORMAL.RDS")
-}
-
-if (SUBSETNORM) {
- saveRDS(allBenchmarks, file = "../inst/Benchresults/allBenchmarks.RDS")
-} else{
- saveRDS(allBenchmarks, file = "../inst/Benchresults/allBenchmarksNORMAL.RDS")
+if(SAVE){
+    if (SUBSETNORM) {
+        saveRDS(allBenchmarks, file = "../inst/Benchresults/allBenchmarks.RDS")
+        saveRDS(allContrasts, file = "../inst/Benchresults/allContrasts.RDS")
+    } else{
+        saveRDS(allContrasts, file = "../inst/Benchresults/allContrastsNORMAL.RDS")
+        saveRDS(allBenchmarks, file = "../inst/Benchresults/allBenchmarksNORMAL.RDS")
+    }
+    
+    
 }
 
 ```
@@ -646,27 +646,27 @@ The table below summarizes the contrast estimates produced which will be benchma
 
 ```{r fig.cap="Partial area under the ROC curve at 10% FPR."}
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
-res <- map_df(allBenchmarks, function(x){x$pAUC()})
+res <- purrr::map_df(allBenchmarks, function(x){x$pAUC()})
 resAllB <- res |> dplyr::filter(contrast == "all")
 
-bb <- resAllB |> mutate(whatfix = case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
+bb <- resAllB |> dplyr::mutate(whatfix = dplyr::case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
 
-ggplot(bb, aes(x = Name, y = pAUC_10)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~whatfix)  + 
-  coord_cartesian(ylim = c(min(bb$pAUC_10),max(bb$pAUC_10))) + 
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = -90, vjust = 0.5))
+ggplot2::ggplot(bb, ggplot2::aes(x = Name, y = pAUC_10)) +
+  ggplot2::geom_bar(stat = "identity") +
+  ggplot2::facet_wrap(~whatfix)  + 
+  ggplot2::coord_cartesian(ylim = c(min(bb$pAUC_10),max(bb$pAUC_10))) + 
+  ggplot2::theme_minimal() + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5))
 
 ```
 
 ```{r fig.caption="Partial area under the ROC curve at 20% FPR."}
-ggplot(bb, aes(x = Name, y = pAUC_20)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~whatfix)  +
-  coord_cartesian(ylim = c(min(bb$pAUC_20),max(bb$pAUC_20))) + 
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = -90, vjust = 0.5))  
+ggplot2::ggplot(bb, ggplot2::aes(x = Name, y = pAUC_20)) +
+  ggplot2::geom_bar(stat = "identity") +
+  ggplot2::facet_wrap(~whatfix)  +
+  ggplot2::coord_cartesian(ylim = c(min(bb$pAUC_20),max(bb$pAUC_20))) + 
+  ggplot2::theme_minimal() + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5))  
 
 ```
 
@@ -674,28 +674,28 @@ ggplot(bb, aes(x = Name, y = pAUC_20)) +
 ### Look at the nr of estimated contrasts.
 
 ```{r fig.cap="NR of estimated contrasts", fig.width=5, fig.height=5}
-dd <- map_df(allBenchmarks, function(x){res <- x$smc$summary; res$name <- x$model_name;res})
+dd <- purrr::map_df(allBenchmarks, function(x){res <- x$smc$summary; res$name <- x$model_name;res})
 
 
-dd <- dd |> mutate(nrcontrasts = protein_Id * (4 - as.integer(nr_missing)))
-dds <- dd |> group_by(name) |> summarize(nrcontrasts = sum(nrcontrasts))
+dd <- dd |> dplyr::mutate(nrcontrasts = protein_Id * (4 - as.integer(nr_missing)))
+dds <- dd |> dplyr::group_by(name) |> dplyr::summarize(nrcontrasts = sum(nrcontrasts))
 
-dds |> ggplot(aes(x = name, y = (nrcontrasts - min(nrcontrasts)))) + 
-  geom_bar(stat="identity") + 
-  theme(axis.text.x = element_text(angle = -90, vjust = 0.5)) +
-  geom_text(aes(label= nrcontrasts), position = position_dodge(width=0.9), vjust=-0.25)
+dds |> ggplot2::ggplot(ggplot2::aes(x = name, y = (nrcontrasts - min(nrcontrasts)))) + 
+  ggplot2::geom_bar(stat="identity") + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
+  ggplot2::geom_text(ggplot2::aes(label= nrcontrasts), position = ggplot2::position_dodge(width=0.9), vjust=-0.25)
 
 ```
 
 ### Plot FDR vs FDP
 
 ```{r FDRfdp, fig.cap = "Compare FDR estimate with false discovery proportion (FDP).", fig.width=8, fig.height=8}
-dd <- map_df(allBenchmarks, function(x){res <- x$get_confusion_FDRvsFDP(); res$name <- x$model_name;res})
+dd <- purrr::map_df(allBenchmarks, function(x){res <- x$get_confusion_FDRvsFDP(); res$name <- x$model_name;res})
 
-dd |> ggplot(aes(y = FDP_,  x  = scorecol )) + 
-  geom_line(aes(color = model_name)) +
-  facet_wrap(~contrast) + 
-   geom_abline(intercept = 0, slope = 1, color = 2)
+dd |> ggplot2::ggplot(ggplot2::aes(y = FDP_,  x  = scorecol )) + 
+  ggplot2::geom_line(ggplot2::aes(color = model_name)) +
+  ggplot2::facet_wrap(~contrast) + 
+  ggplot2::geom_abline(intercept = 0, slope = 1, color = 2)
 
 ```
 

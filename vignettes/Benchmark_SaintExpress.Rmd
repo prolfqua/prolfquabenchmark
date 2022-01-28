@@ -24,7 +24,18 @@ evalAll <- TRUE
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-# Importing MQ data into proLFQua
+SAINT express provides only binaries for WINDOWS and LINUX. Therefore If you are on MacOS this vingette will not render.
+
+
+```{r}
+if( Sys.info()["sysname"] == "Darwin")
+{
+    evalAll = FALSE
+}
+```
+
+
+# Importing MQ data into SAINTExpress
 
 
 First read data and annotation.
@@ -42,7 +53,7 @@ annotation <- readxl::read_xlsx(inputAnnotation)
 
 Create `proLFQua` configruation for MQ `peptide.txt` file and annotate data. 
 
-```{r}
+```{r, eval = evalAll}
 config <- prolfqua::create_config_MQ_peptide()
 res <- add_annotation(
   data,
@@ -62,7 +73,7 @@ Setup LFQData class, filter, transform and aggregate peptide intensities:
 - log2 transform and scale intensities (`get_Transformer`)
 - aggregate peptides to proteins (`get_Aggregator`)
 
-```{r normalizeAndAggregate}
+```{r normalizeAndAggregate, eval = evalAll}
 
 lfqdata <- prolfqua::LFQData$new(data,config)
 lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
@@ -91,7 +102,7 @@ SeintExpress requires specifying a control condition.  As control `C` we will us
 - run saintExpress (`runSaint`)
 
 
-```{r annotateProteins}
+```{r annotateProteins, eval = evalAll}
 
 exampleDat <- lfqtrans$data |> dplyr::mutate(CorT = case_when(dilution. == "a" ~ "C", TRUE ~ "T"))
 exampleDat$protein_Id <- gsub("~.*","", exampleDat$protein_Id)
@@ -126,7 +137,7 @@ ctr <- prolfqua::ContrastsSaintExpress$new(resSaint$list)
 
 
 
-```{r , fig.cap="Scatter plot showing the dependence of the SaintScore on the log2FC."}
+```{r , fig.cap="Scatter plot showing the dependence of the SaintScore on the log2FC.", eval = evalAll}
 pl <- ctr$get_Plotter()
 pl$score_plot()$SaintScore
 pl$histogram()
@@ -176,7 +187,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = Prey ,
 benchmark2_SaintExpress <- prolfqua::make_benchmark(xdd, model_description = "SaintExpress_medpolishInt", model_name = "proDA")
 ```
 
-```{r seveBenchresults, eval=FALSE, include=FALSE}
+```{r seveBenchresults, , eval = evalAll, include=FALSE}
 saveRDS(benchmark_SaintExpres, file = "../inst/Benchresults/benchmark_medpolish_SaintExpress.RDS")
 
 ```
@@ -222,7 +233,7 @@ The BFDR equals the cumulative mean of the PEP.
 
 _SaintExpress_ does not report the PEP. But if the _SaintScore_ is the probability that a protein is an interactor then, $1 - SaintScore$ can be interpreted as posterior error probability (that it is not an interactor) and hence we can compute the BFDR:
 
-```{r defFunction}
+```{r defFunction, eval = evalAll}
 computeFDR <- function(mdata ){
     mdata <- dplyr::mutate(mdata, PEP = 1 - SaintScore)
     mdata <- mdata |> arrange(PEP)
@@ -234,7 +245,7 @@ computeFDR <- function(mdata ){
 
 There are two options, either to determine the BFDR for all Baits (first code snipped) or for each Bait (second one with the `for` loop).
 
-```{r BFDRvsMyFDRglobal, fig.cap="BFDR vs myFDR for all Baits."}
+```{r BFDRvsMyFDRglobal, fig.cap="BFDR vs myFDR for all Baits.", eval = evalAll}
 reslist <- resSaint$list
 
 reslist <- computeFDR(reslist)
@@ -242,7 +253,7 @@ ggplot(reslist, aes(x = BFDR, y = myFDR)) + geom_point() + geom_abline(slope = 1
 ```
 
 
-```{r BFDRvsMyFDRlocal, fig.cap = "BFDR vs myFDR for each Bait."}
+```{r BFDRvsMyFDRlocal, fig.cap = "BFDR vs myFDR for each Bait.", eval = evalAll}
 ad <- list()
 for(i in unique(reslist$Bait)){
     print(i)

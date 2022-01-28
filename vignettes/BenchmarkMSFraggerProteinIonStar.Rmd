@@ -30,7 +30,7 @@ fig.height = 10
 )
 ```
 
-```{r}
+```{r conflicted}
 conflicted::conflict_prefer("filter", "dplyr")
 
 ```
@@ -41,25 +41,26 @@ We start by loading the IonStar dataset and the annotation from the `prolfquadat
 
 
 
-```{r}
+```{r loaddata}
 datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 annotation <- readxl::read_xlsx(inputAnnotation)
 
-protein <- as_tibble(read.csv(unz(inputMQfile,"IonstarWithMSFragger/combined_protein.tsv"),
+protein <- tibble::as_tibble(read.csv(unz(inputMQfile,"IonstarWithMSFragger/combined_protein.tsv"),
                              header = TRUE, sep = "\t", stringsAsFactors = FALSE))
-protein <- tidy_MSFragger_combined_protein(protein)
+#debug( prolfqua::tidy_MSFragger_combined_protein)
+protein <- prolfqua::tidy_MSFragger_combined_protein(protein)
 protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
+merged <- dplyr::inner_join(annotation, protein)
 
-merged <- inner_join(annotation, protein)
 ```
 
 ## Create prolfqua configuration
 
 ```{r setupConfigs}
 
-atable <- AnalysisTableAnnotation$new()
+atable <- prolfqua::AnalysisTableAnnotation$new()
 atable$fileName = "raw.file"
 atable$hierarchy[["protein_Id"]] <- c("protein")
 
@@ -70,7 +71,7 @@ atable$factors[["run"]] = "run_ID"
 atable$factorDepth <- 1
 
 
-config <- AnalysisConfiguration$new(atable)
+config <- prolfqua::AnalysisConfiguration$new(atable)
 
 adata <- prolfqua::setup_analysis(merged, config)
 lfqdata <- prolfqua::LFQData$new(adata, config)
@@ -126,7 +127,7 @@ Contrasts <- c(
 lmmodel <- "~ dilution."
 lmmodel <- paste0(lfqdataNormalized$config$table$getWorkIntensity() , lmmodel)
 
-modelFunction <- strategy_lm( lmmodel, model_name = "Model")
+modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
 
 mod <- prolfqua::build_model(lfqdataNormalized$data, modelFunction)
 
@@ -141,14 +142,14 @@ cp$volcano()
 ## Benchmark data
 
 
-```{r bnechmark}
+```{r benchmark}
 ttd <- prolfqua::ionstar_bench_preprocess(contrdf)
 medpol_benchmark <- prolfqua::make_benchmark(ttd$data,
                                    model_description = "MSFragger med. polish and lm. density",
                                    model_name = "MSFragger_prot_med_lm",
                                    FDRvsFDP = list(list(sc = "FDR", desc = FALSE))
 )
-#saveRDS(medpol_benchmark, file = "../inst/Benchresults/MSFragger_medpol_benchmark.RDS")
+
 prolfqua::table_facade(medpol_benchmark$smc$summary, "Nr of estimated contrasts")
 medpol_benchmark$plot_score_distribution()
 medpol_benchmark$plot_ROC(0.05)
