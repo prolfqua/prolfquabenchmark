@@ -16,12 +16,11 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
+  markdown: 
+    wrap: sentence
 ---
 
-
-
 Please download and install the `prolfquadata` package from github
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -32,7 +31,6 @@ fig.width = 5,
 fig.height = 5
 )
 ```
-
 
 ```{r loadRequiredPackages}
 conflicted::conflict_prefer("filter", "dplyr")
@@ -48,8 +46,8 @@ SAVE <- FALSE
 
 ```
 
-
-We start by loading the IonStar dataset and the annotation from the `prolfquadata` package. The method `add_annotation` adds the annotation to the data.
+We start by loading the IonStar dataset and the annotation from the `prolfquadata` package.
+The method `add_annotation` adds the annotation to the data.
 
 ```{r loadMQData}
 
@@ -74,8 +72,8 @@ res <- prolfqua::add_annotation(
 
 ```
 
-The `setup_analysis` asserts that all columns specified in the configruation are present in the data. For more details about the `prolfqua` configuration see the vignette "Creating Configurations".
-
+The `setup_analysis` asserts that all columns specified in the configruation are present in the data.
+For more details about the `prolfqua` configuration see the vignette "Creating Configurations".
 
 ```{r annotateData}
 mqdata$config$table$factors[["dilution."]] = "sample"
@@ -85,9 +83,7 @@ mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
 
 ```
 
-
 ## Data normalization
-
 
 First we remove all contaminant, decoy proteins from the list, than we remove 0 intensity values, then filter for 2 peptides per protein.
 
@@ -102,9 +98,9 @@ sr$hierarchy_counts()
 
 ```
 
-We will normalize the data using the 'LFQTransformer' class. Since we know that the Human proteins are the Matrix in the experiment we will normalize the data using HUMAN proteins only.
+We will normalize the data using the 'LFQTransformer' class.
+Since we know that the Human proteins are the Matrix in the experiment we will normalize the data using HUMAN proteins only.
 To this task we subset the dataset by filtering for HUMAN proteins only and then use the `LFQDataTransformer` to normalize the data.
-
 
 ```{r}
 tr <- lfqdata$get_Transformer()
@@ -114,7 +110,6 @@ subset_h <- subset_h$get_Transformer()$log2()$lfq
 lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h,  preserveMean = FALSE )$lfq
 
 ```
-
 
 The figures below show the intensity distribution before and after normalization.
 
@@ -127,7 +122,6 @@ after <- lfqdataNormalized$get_Plotter()
 after$intensity_distribution_density()
 
 ```
-
 
 Create a sample of N proteins to speed up computations of models and contrasts.
 
@@ -143,10 +137,6 @@ if (SUBSET) {
   lfqNormSubset$hierarchy_counts()
 }
 ```
-
-
-
-
 
 ```{r R6Ionstar, echo =  FALSE, include = FALSE}
 IonstarData <- R6::R6Class(
@@ -186,10 +176,10 @@ ionstar <- IonstarData$new(mqdataSubset$data, mqdataSubset$config,
 
 ```
 
+# Inferring Protein intensities
 
-# Inferring Protein intensities 
-
-We will be using the `LFQDataAggregator` class. To estimate protein intensities using Tukey's median polish we need to use log2 transformed peptide intensities.
+We will be using the `LFQDataAggregator` class.
+To estimate protein intensities using Tukey's median polish we need to use log2 transformed peptide intensities.
 The figure below shows the the peptide intensities used for estimation and the protein intensity estimates (black dashed line).
 
 ```{r aggregateMedpolish, fig.width=10, fig.height=10}
@@ -204,8 +194,6 @@ lfqAggMedpol$medpolish()
 #gridExtra::grid.arrange(grobs =  xx$plots[1:6])
 ```
 
-
-
 ```{r storeProteinAggregates, echo = FALSE, include = FALSE}
 data_IonstarProtein_subsetNorm <- list(
   data = lfqAggMedpol$lfq_agg$data,
@@ -216,7 +204,9 @@ data_IonstarProtein_subsetNorm <- list(
 
 ```
 
-We can also estimate the protein intensities using the top N most abundant peptides. In this case we are using the untransformed protein intensities. The figure below shows the estimated protein intensities.
+We can also estimate the protein intensities using the top N most abundant peptides.
+In this case we are using the untransformed protein intensities.
+The figure below shows the estimated protein intensities.
 
 ```{r topNAggregation, echo = TRUE, eval=FALSE}
 
@@ -229,12 +219,13 @@ topN$plots[[1]]
 
 # Model Fitting
 
-We will be fitting tree models to the data. The first model is a linear model as implemented by the R function `lm` fitted to protein intensities inferred from peptide intensities using the LFQAggregator.
-The second model is mixed effects model as implemented in the R function `lmer` fitted to peptide level intensites, where we model the peptide measurements as repeated measurements of the protein. The third is again a linear model but fitted to peptide intensities. By this we obtain for each peptide intensites a linear model. 
-
+We will be fitting tree models to the data.
+The first model is a linear model as implemented by the R function `lm` fitted to protein intensities inferred from peptide intensities using the LFQAggregator.
+The second model is mixed effects model as implemented in the R function `lmer` fitted to peptide level intensites, where we model the peptide measurements as repeated measurements of the protein.
+The third is again a linear model but fitted to peptide intensities.
+By this we obtain for each peptide intensites a linear model.
 
 ## Fitting a linear model to the protein intensities
-
 
 ```{r buildModelLM}
 protLFQ <- lfqAggMedpol$lfq_agg
@@ -253,7 +244,6 @@ modLinearProt$anova_histogram()$plot
 ```
 
 ## Fitting a mixed effects model to peptide intensities
-
 
 ```{r buildModelLMer}
 
@@ -286,11 +276,10 @@ modLMPepLevel$anova_histogram()$plot
 
 ```
 
+# Computing Contrasts
 
-#  Computing Contrasts
-
-
-Once models are fitted contrasts can be computed. The R code below defines all possible contrasts among conditions for the ionstar dataset.
+Once models are fitted contrasts can be computed.
+The R code below defines all possible contrasts among conditions for the ionstar dataset.
 
 ```{r defineContrasts}
 DEBUG <- FALSE
@@ -320,7 +309,6 @@ prolfqua::table_facade(tt, caption = "All possible Contrasts given 5 E. coli dil
 
 ```
 
-
 ```{r usedContrasts}
 relevantContrasts <- c("dilution_(9/7.5)_1.2",
                        "dilution_(7.5/6)_1.25",
@@ -336,19 +324,15 @@ relevantContrasts <- Contrasts[names(Contrasts) %in% relevantContrasts]
 
 ```
 
-
-There are, as of today, four contrasts classes in the package _prolfqua_+
-- 'ContrastsSimpleImputed' : contrast computation with imputation of fold changes and t-statistic estimation using pooled variances.
-- 'Contrasts'  : uses Wald test, 
-- 'ContrastsModerated' : applies variance moderation:, 
-- 'ContrastsROPECA' implements difference and p-value aggregation
-
+There are, as of today, four contrasts classes in the package *prolfqua*+ - 'ContrastsSimpleImputed' : contrast computation with imputation of fold changes and t-statistic estimation using pooled variances.
+- 'Contrasts' : uses Wald test, - 'ContrastsModerated' : applies variance moderation:, - 'ContrastsROPECA' implements difference and p-value aggregation
 
 ## Contrasts with Imputation
 
-In order to estimate differences (fold-changes), statistics and p-values of proteins for which linear models could not be fitted because of an excess of missing measurements, the following procedure is applied. The mean intensity of a protein in a condition is computed. For the proteins with no observation in a condition, we infer their intensities by using the mean of the 10% smallest average peptide intensities in the dataset. The standard deviation of the protein is estimated using the pooled variances of the condition where the variance could be estimated.
-
-
+In order to estimate differences (fold-changes), statistics and p-values of proteins for which linear models could not be fitted because of an excess of missing measurements, the following procedure is applied.
+The mean intensity of a protein in a condition is computed.
+For the proteins with no observation in a condition, we infer their intensities by using the mean of the 10% smallest average peptide intensities in the dataset.
+The standard deviation of the protein is estimated using the pooled variances of the condition where the variance could be estimated.
 
 ```{r contrastImputed}
 # ContrastsSimpleImpute$debug("get_contrasts")
@@ -363,8 +347,6 @@ plc <- contrImp$get_Plotter()
 plc$volcano()
 plc$histogram()
 ```
-
-
 
 ```{r benchmarkImputed}
 allContrasts <- list()
@@ -386,7 +368,6 @@ allBenchmarks$benchmark_imputation <- benchmark_imputation
 
 ```
 
-
 ## Contrasts from linear model
 
 ```{r contrastModel1}
@@ -397,7 +378,6 @@ pl <- contrProt$get_Plotter()
 pl$volcano()
 pl$histogram()
 ```
-
 
 ```{r benchmarkModel1}
 allContrasts$Prot <- contrProt$get_contrasts()
@@ -418,7 +398,6 @@ allBenchmarks$benchmark_Prot <- benchmark_Prot
 
 ```
 
-
 ### Adding Moderation
 
 ```{r contrastModel1Moderation}
@@ -428,7 +407,6 @@ contrProtModerated$get_Plotter()$volcano()$FDR
 contrProtModerated$get_contrasts()$protein_Id |> unique() |> length()
 
 ```
-
 
 ```{r benchmarkModel1Moderation}
 allContrasts$ProtModerated <- contrProtModerated$get_contrasts()
@@ -460,7 +438,6 @@ pl <- contrProtMixed$get_contrasts()
 pl$protein_Id |> unique() |> length()
 ```
 
-
 ```{r benchmarkModel2}
 allContrasts$contrProtMixed <- contrProtMixed$get_contrasts()
 ttd <- prolfqua::ionstar_bench_preprocess(contrProtMixed$get_contrasts())
@@ -489,13 +466,11 @@ range(df)
 hist(df, breaks = 100, xlim = c(0,61))
 ```
 
-
 ```{r contrastModel2Moderation}
 contrProtMixedModerated <- prolfqua::ContrastsModerated$new(contrProtMixed)
 contrProtMixedModerated$get_Plotter()$volcano()$FDR
 
 ```
-
 
 ```{r benchmarkModel2Moderation}
 allContrasts$contrProtMixedModerated <- contrProtMixedModerated$get_contrasts()
@@ -512,10 +487,10 @@ benchmark_mixedModerated$plot_FDRvsFDP()
 allBenchmarks$benchmark_mixedModerated <- benchmark_mixedModerated
 ```
 
-
 ## Protein level contrasts from peptide models
 
-To estimate regulation probabilities using the ROPECA approach we can chain the contrast computation methods. First we compute contrasts on peptide level, than we moderated the variance, t-statistics and p-values and finally we aggregate the fold change estimates and p-values.
+To estimate regulation probabilities using the ROPECA approach we can chain the contrast computation methods.
+First we compute contrasts on peptide level, than we moderated the variance, t-statistics and p-values and finally we aggregate the fold change estimates and p-values.
 
 ```{r contrastROPECA}
 contrROPECA <- prolfqua::Contrasts$new(modLMPepLevel, relevantContrasts) |>
@@ -526,7 +501,6 @@ contrROPECA$get_Plotter()$volcano()
 contrROPECA$get_Plotter()$histogram()
 
 ```
-
 
 ```{r benchmarkROPECA}
 allContrasts$contrProtMixedModerated <- contrProtMixedModerated$get_contrasts()
@@ -589,8 +563,6 @@ allBenchmarks$benchmark_merged <- benchmark_merged
 
 ```
 
-
-
 ```{r same, eval=FALSE}
 same <- all$same
 allBenchmarks$benchmark_Prot$smc$summary
@@ -605,7 +577,6 @@ benchmark_same$plot_FDRvsFDP()
 
 ```
 
-
 ```{r storeSame, fig.width=10, fig.height=10, fig.cap="ROC curves for merged benchmark", eval=FALSE}
 benchmark_same$plot_ROC(xlim = 0.15)
 benchmark_same$pAUC_summaries()
@@ -613,8 +584,6 @@ allBenchmarks$benchmark_same <- benchmark_same
 
 
 ```
-
-
 
 ```{r include=FALSE}
 
@@ -636,13 +605,12 @@ if(SAVE){
 
 The table below summarizes the contrast estimates produced which will be benchmarked.
 
-|                    | Model                   | Contrast   | Moderation   | Aggregation  |
-|--------------------|:-----------------------:|------------|--------------|--------------|
-| Protein Intensity  |  lm                     | o          |  o           |              |
-| Protein Intensity Imputed | pooled variance  | o          |  o           |              |
-| Peptide Intensity  |  lmer                   | o          |  o           |              |
-| Peptide Intensity  |  lm                     |            |              |  o           |
-
+|                           |      Model      | Contrast | Moderation | Aggregation |
+|---------------------------|:---------------:|----------|------------|-------------|
+| Protein Intensity         |       lm        | o        | o          |             |
+| Protein Intensity Imputed | pooled variance | o        | o          |             |
+| Peptide Intensity         |      lmer       | o        | o          |             |
+| Peptide Intensity         |       lm        |          |            | o           |
 
 ```{r fig.cap="Partial area under the ROC curve at 10% FPR."}
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
@@ -669,7 +637,6 @@ ggplot2::ggplot(bb, ggplot2::aes(x = Name, y = pAUC_20)) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5))  
 
 ```
-
 
 ### Look at the nr of estimated contrasts.
 
@@ -698,5 +665,3 @@ dd |> ggplot2::ggplot(ggplot2::aes(y = FDP_,  x  = scorecol )) +
   ggplot2::geom_abline(intercept = 0, slope = 1, color = 2)
 
 ```
-
-

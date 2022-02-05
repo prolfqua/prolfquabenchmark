@@ -55,19 +55,15 @@ See ACS guidelines [https://publish.acs.org/publish/author_guidelines?coden=anch
 
 # Abstract (80–250 words) 
 
-[Copied this paragraph from a different article. Needs to be adjusted for prolfqua and this article]
-"Protein mass spectrometry with label-free quantification is widely used for quantitative proteomics studies. Nevertheless, well-principled statistical inference procedures are still lacking, and most practitioners adopt methods from transcriptomics. These, however, cannot properly treat the principal complication of label-free proteomics, namely many non-randomly missing values." (rewrite this sentence)
-
-The _prolfqua_ package integrates essential steps of the mass spectrometry based label free quantification data analysis workflow: quality control, data normalization, protein aggregation, modeling, hypothesis testing and sample size estimation. We use _prolfqua_ to develop highly customizable, visually appealing, and interactive data analysis reports in pdf or HTML format.  We use _prolfqua_ to visualize and model simple experimental designs with a single explanatory variable and complex experiments with multiple factors. Furthermore, we use _prolfqua_ to benchmark data acquisition, data preprocessing or data modeling methods. We developed and improved the package by applying the "Eating your own dog food" principle, making it easy to use.
-
-
+Protein mass spectrometry is widely used for quantitative proteomics studies and in particular for relative protein quantification. Nevertheless, there is still a need for a flexible and easy-to-use, transparently supporting a variety of well principled statistical inference procedures data analysis application programmer interface in R. 
+The _prolfqua_ R package integrates essential steps of the mass spectrometry-based label-free quantification data analysis workflow: quality control, data normalization, protein aggregation, statistical modeling, hypothesis testing, and sample size estimation. We use _prolfqua_ to visualize and model simple experimental designs with a single explanatory variable and complex experiments with multiple factors. Furthermore, we use _prolfqua_ to benchmark data acquisition, data preprocessing or data modeling methods. Furthermore, we use _prolfqua_ to develop highly customizable, visually appealing, and interactive data analysis reports in pdf or HTML format. The R package is available from https://github.com/fgcz/prolfqua.
 
 
 
 # Introduction
 
-[Jonas/Paolo could you provide some references here [...] doi's will do.]
-Proteins are carriers of function and structure in living cells. Hence, measuring changes in protein abundance is the subject of active research [....]. However, identifying and quantifying intact proteins in complex samples containing hundreds of proteins is not possible using existing methods at the moment. Hence, the bottom-up mass spectrometric method is employed [...]. Proteins that are extracted from biological samples are specifically and reproducible digested into protein fragments - peptides. The peptides are first separated by their chemical and physical properties using High-Pressure Liquid Chromatography (HPLC). Afterward, they are weighted, identified, and quantified using mass spectrometric techniques, e.g., Electro-Spray-Ionization Mass Spectrometry (ESI-MS). Finally, peptide identification is achieved by fragmenting and matching the measured fragment masses to theoretical masses computed from known peptide sequences[...]. For quantification, intact peptide ions [DDA ref - method and sofware] or products of peptide ion fragmentation [DIA ref method and software] are counted and aggregated. Finally, the identified and quantified peptides are assigned to proteins based on protein sequence information [...prot inference ref].
+
+Proteins are carriers of function and structure in living cells. Hence, measuring changes in protein abundance is the subject of active research [@vidova2017review]. However, identifying and quantifying intact proteins in complex samples containing hundreds of proteins is not possible using existing methods at the moment. Hence, the bottom-up mass spectrometric method is employed [@Bubis2017, @da2020philosopher]. Proteins that are extracted from biological samples are specifically and reproducible digested into protein fragments - peptides. The peptides are first separated by their chemical and physical properties using High-Pressure Liquid Chromatography (HPLC). Afterward, they are weighted, identified, and quantified using mass spectrometric techniques, e.g., Electro-Spray-Ionization Mass Spectrometry (ESI-MS). Finally, peptide identification is achieved by fragmenting and matching the measured fragment masses to theoretical masses computed from known peptide sequences[@eng2015deeper, @yu2016pipi, @kong2017msfragger]. For quantification, intact peptide ions [@yu2020fast, @Cox2008MaxQuant] or products of peptide ion fragmentation [@rost2014openswath, @demichev2020dia] are counted and aggregated. Finally, the identified and quantified peptides are assigned to proteins based on protein sequence information.
 
 Label-Free Quantification (LFQ) Proteomics Experiments enable monitoring relative abundances of thousands of proteins in biological samples. For most studies, parallel designs with a single explanatory variable are used, e.g., treatment vs. control. More recently, more complex experimental designs are implemented with increasing numbers of samples, i.e., factorial designs and longitudinal studies (time series), sometimes with repeated measurements on the same subject [...]. The obtained data can be modeled using linear fixed, mixed, or random-effects models [@Bates2015FittingJSS]. Based on these models, tests can be applied to examine whether a factor or interactions are significant, or differences between factor levels can be estimated, and their significance tested.  Proteins can be ordered or grouped using the estimated fold-change, t-statistics, scaled p-value, or false discovery rate (FDR) and then subjected to gene set enrichment or over-representation analysis [...] or validation experiments.
 
@@ -207,13 +203,13 @@ t <- lfqd$get_Transformer()
 lfqd <-  t$log2()$robscale()$lfq
 pl <- lfqd$get_Plotter()
 p_a <- pl$intensity_distribution_density() +
-  labs(tag = "A") + theme(legend.position = "none")
+  ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
 agr <- lfqd$get_Aggregator()
 lfqp <- agr$medpolish()
-p_b <- agr$plot()$plots[[1]] + labs(tag = "B")
-p_c <- lfqp$get_Stats()$violin() + labs(tag = "C")
+p_b <- agr$plot()$plots[[1]] + ggplot2::labs(tag = "B")
+p_c <- lfqp$get_Stats()$violin() + ggplot2::labs(tag = "C")
 pl <- lfqp$get_Plotter()
-p_d <- pl$boxplots()$boxplot[[1]] + labs(tag = "D")
+p_d <- pl$boxplots()$boxplot[[1]] + ggplot2::labs(tag = "D")
 ggpubr::ggarrange(p_a, p_b, p_c, p_d)
 
 ```
@@ -248,7 +244,7 @@ tmp <- prolfqua::addContrastResults(prefer = contr, add = conI)
 pl <- tmp$merged$get_Plotter()
 p1 <- pl$histogram()$p.value
 p2 <- pl$volcano()$FDR +
-   theme(legend.position = "bottom")
+   ggplot2::theme(legend.position = "bottom")
 gridExtra::grid.arrange(p1, p2, ncol = 2)
 
 ```
@@ -290,7 +286,7 @@ $$
 By plotting the $TPR$ versus the $FPR$ we obtain the receiver operator characteristic curve (ROC curve). The area under the curve (AUC) or partial areas under the curve (pAUC), at various values of the $FPR$, are measures of performance derived from the ROC curve. By using these measures we can compare the performances of the statistics produced by the various methods examined.
 
 
-(TODO(CP): benchmark load from package - first build package with vignettes )
+(TODO(CP): benchmark load from package - first build package with vignettes)
 ```{r}
 
 allBenchmarks <- readRDS("../../inst/Benchresults/allBenchmarks.RDS")
@@ -310,30 +306,30 @@ allBenchmarks <- allBenchmarks[c("benchmark_imputation","benchmark_ProtModerated
 ```{r benchmarkROC, fig.cap="(ref:benchmarkROC)", out.width = '90%', fig.width=12, fig.height=10}
 
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
-res <- map_df(allBenchmarks, function(x){x$pAUC()})
-res <- res |> mutate(whatfix = case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
+res <- purrr::map_df(allBenchmarks, function(x){x$pAUC()})
+res <- res |> dplyr::mutate(whatfix = case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
 
-norm <- res |> group_by(contrast,whatfix) |> summarize(meanpAUC_10 = mean(pAUC_10))
-res <- inner_join(res, norm)
-res <- mutate(res , pAUC_10n = pAUC_10 - meanpAUC_10)
+norm <- res |> dplyr::group_by(contrast,whatfix) |> dplyr::summarize(meanpAUC_10 = mean(pAUC_10))
+res <- dplyr::inner_join(res, norm)
+res <- dplyr::mutate(res , pAUC_10n = pAUC_10 - meanpAUC_10)
 
 resAllB <- res |> dplyr::filter(contrast == "all")
 
-p1 <- ggplot(resAllB, aes(x = Name, y = pAUC_10)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~whatfix)  + 
-  coord_cartesian(ylim = c(min(resAllB$pAUC_10),max(resAllB$pAUC_10))) + 
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = -90, vjust = 0.5)) +
-  geom_hline(aes(yintercept = meanpAUC_10), color = "red") + xlab("")
+p1 <- ggplot2::ggplot(resAllB, ggplot2::aes(x = Name, y = pAUC_10)) +
+  ggplot2::geom_bar(stat = "identity") +
+  ggplot2::facet_wrap(~whatfix)  + 
+  ggplot2::coord_cartesian(ylim = c(min(resAllB$pAUC_10),max(resAllB$pAUC_10))) + 
+  ggplot2::theme_minimal() + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
+  ggplot2::geom_hline(ggplot2::aes(yintercept = meanpAUC_10), color = "red") + xlab("")
 
-p2 <- ggplot(res, aes(x = contrast, y = pAUC_10n, group = Name)) +
-  geom_line(stat = "identity", aes(linetype = Name, color = Name), size = 1) + 
-  facet_wrap(~ whatfix, scales = "free") +
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = -90, vjust = 0.5)) +
-  geom_hline(aes(yintercept = 0), color = "red") + 
-   theme(legend.position = "bottom", legend.title = element_blank())
+p2 <- ggplot2::ggplot(res, ggplot2::aes(x = contrast, y = pAUC_10n, group = Name)) +
+  ggplot2::geom_line(stat = "identity", ggplot2::aes(linetype = Name, color = Name), size = 1) + 
+  ggplot2::facet_wrap(~ whatfix, scales = "free") +
+  ggplot2::theme_minimal() + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
+  ggplot2::geom_hline(aes(yintercept = 0), color = "red") + 
+   ggplot2::theme(legend.position = "bottom", legend.title = element_blank())
 
 gridExtra::grid.arrange(p1, p2, ncol = 2)
 
@@ -390,11 +386,15 @@ gridExtra::grid.arrange(p3, p4, ncol = 2)
 ```
 
 
-# Conclusions
 
-We focused on comparing models to estimate fold changes, variances and to obtain false discovery rates. However, an essential parameter, not discussed further, is the normalization of the intensities within the samples to make them comparable. For this benchmark dataset, the fraction of regulated proteins (ECOLI) is relatively large. Therefore, to calibrate the measurement, we used human proteins only. In practice, it is unknown which proteins do and which don't change. Therefore, the assumption used when normalizing, scaling the data, and thus calibrating the measurement is that only a small subset of the proteins in the dataset is differentially regulated.
+# Results and Discussion.
 
-The method used to infer protein intensities from more peptide intensities is an additional important factor. The original _proDA_ publication uses MaxLFQ [@cox2014accurate] protein estimates. When using those, _proDA_ performs significantly worse than _proDA_ when using the protein estimates obtained from peptide intensity estimates using Tukey's median polish,  $pAUC_10(t-statistics) = 66%$ and $pAUC_10(t-statistics) = 73%$ respectively (see Articles on [@prolfquaGithubIO] for more details).
+We focused on comparing models to estimate fold changes, variances and to obtain false discovery rates. 
+
+[Goes in the discussion or introduction, and give references for normalization e.g. VSN paper.] However, an essential parameter, not discussed further, is the normalization of the intensities within the samples to make them comparable. For this benchmark dataset, the fraction of regulated proteins (ECOLI) is relatively large. Therefore, to calibrate the measurement, we used human proteins only. In practice, it is unknown which proteins do and which don't change. Therefore, the assumption used when normalizing, scaling the data, and thus calibrating the measurement is that only a small subset of the proteins in the dataset is differentially regulated.
+
+[Goes to discussion] The method used to infer protein intensities from more peptide intensities is an additional important factor. The original _proDA_ publication uses MaxLFQ [@cox2014accurate] protein estimates. When using those, _proDA_ performs significantly worse than _proDA_ when using the protein estimates obtained from peptide intensity estimates using Tukey's median polish,  $pAUC_10(t-statistics) = 66%$ and $pAUC_10(t-statistics) = 73%$ respectively (see Articles on [@prolfquaGithubIO] for more details).
+ 
 
 We assessed the performance of different modeling approaches implemented in prolfqua, MSstats and proDA, using a benchmark dataset whose ground truth was known. However, the dataset used has several limitations: first, the design is a parallel-group design, i.e. we could not benchmark how well interactions are modelled; secondly, essential sources of variation present in every experiment, such as the biochemical and biological, are not measured. The dataset captures only the variance from the chromatography, electro-spray, and mass spectrometric measurement method. Thus, while we can extrapolate some of the results obtained to more realistic datasets, we need to be careful not to over-interpret the results.
 
@@ -425,6 +425,8 @@ remotes::install_github('wolski/prolfqua',
                         build_vignettes = TRUE)
 
 ```
+
+# Conclusion (tbd)
 
 
 # Supplement
