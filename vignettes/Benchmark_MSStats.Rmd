@@ -116,19 +116,18 @@ library(prolfqua)
 
 ttd <- prolfqua::ionstar_bench_preprocess(bb, idcol = "Protein")
 
-
 benchmark_msstats <- prolfqua::make_benchmark(ttd$data,
                                    contrast = "Label",
                                 toscale = c("pvalue"),
                                 fcestimate = "log2FC",
                                 benchmark = list(
-                                  list(sc = "log2FC", desc = TRUE),
-                                  list(sc = "Tvalue", desc = TRUE),
-                                  list(sc = "scaled.pvalue", desc = TRUE)
+                                  list(score = "log2FC", desc = TRUE),
+                                  list(score = "Tvalue", desc = TRUE),
+                                  list(score = "scaled.pvalue", desc = TRUE)
                                 ),  
                                 model_description = "MSStats",
                                 model_name = "MSStats",
-                                FDRvsFDP = list(list(sc = "adj.pvalue", desc = FALSE))
+                                FDRvsFDP = list(list(score = "adj.pvalue", desc = FALSE))
 , hierarchy = c("Protein"), summarizeNA = "Tvalue"
 )
 sum(benchmark_msstats$smc$summary$Protein)
@@ -147,12 +146,12 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = Protein ,
                                   p.value = pvalue,
                                   FDR = adj.pvalue  
 )
-
 benchmark2_msstats <- prolfqua::make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")
 saveRDS(benchmark2_msstats, file = "../inst/Benchresults/benchmark_msstats.RDS")
 ```
 
 ```{r fig.cap="ROC curves", eval = evalAll}
+
 res <- benchmark_msstats$pAUC_summaries()
 res$barp
 ```

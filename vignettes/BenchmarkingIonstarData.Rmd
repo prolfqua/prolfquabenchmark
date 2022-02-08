@@ -353,12 +353,16 @@ allContrasts <- list()
 allContrasts$imputation <- contrImp$get_contrasts()
 ttd <- prolfqua::ionstar_bench_preprocess(contrImp$get_contrasts())
 
-benchmark_imputation <- prolfqua::make_benchmark(ttd$data,
-                                   model_description = "med. polish and lm. imputation",
-                                   model_name = "prot_imputation",
-                                   FDRvsFDP = list(list(sc = "FDR", desc = FALSE))
+benchmark_imputation <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "med. polish and lm. imputation",
+    model_name = "prot_imputation",
+    FDRvsFDP = list(list(score = "FDR", desc = FALSE))
 )
+benchmark_imputation$get_confusion_FDRvsFDP()
 benchmark_imputation$plot_ROC(xlim = 0.1)
+
+
 benchmark_imputation$plot_FDRvsFDP()
 
 prolfqua::table_facade(benchmark_imputation$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
@@ -377,6 +381,7 @@ contrProt <- prolfqua::Contrasts$new(modLinearProt, relevantContrasts)
 pl <- contrProt$get_Plotter()
 pl$volcano()
 pl$histogram()
+
 ```
 
 ```{r benchmarkModel1}
@@ -385,12 +390,13 @@ allContrasts$Prot <- contrProt$get_contrasts()
 ttd <- prolfqua::ionstar_bench_preprocess(contrProt$get_contrasts())
 ttd$data$protein_Id |> unique() |> length()
 
-benchmark_Prot <- prolfqua::make_benchmark(ttd$data,
-                                   model_description = "med. polish and lm",
-                                   model_name = "prot_med_lm"
+benchmark_Prot <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "med. polish and lm",
+    model_name = "prot_med_lm"
 )
-prolfqua::table_facade(benchmark_Prot$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
 
+prolfqua::table_facade(benchmark_Prot$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
 
 #benchmark_Prot$plot_score_distribution()
 benchmark_Prot$plot_FDRvsFDP()
@@ -412,9 +418,10 @@ contrProtModerated$get_contrasts()$protein_Id |> unique() |> length()
 allContrasts$ProtModerated <- contrProtModerated$get_contrasts()
 
 ttd <- prolfqua::ionstar_bench_preprocess(contrProtModerated$get_contrasts())
-benchmark_ProtModerated <- prolfqua::make_benchmark(ttd$data,
-                                   model_description = "med. polish and lm moderated",
-                                   model_name = "prot_med_lm_moderated")
+benchmark_ProtModerated <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "med. polish and lm moderated",
+    model_name = "prot_med_lm_moderated")
 
 prolfqua::table_facade(benchmark_ProtModerated$smc$summary,
                        caption = "Nr of proteins with Nr of estimated contrasts.")
@@ -441,9 +448,10 @@ pl$protein_Id |> unique() |> length()
 ```{r benchmarkModel2}
 allContrasts$contrProtMixed <- contrProtMixed$get_contrasts()
 ttd <- prolfqua::ionstar_bench_preprocess(contrProtMixed$get_contrasts())
-benchmark_mixed <- prolfqua::make_benchmark(ttd$data,
-                                   model_description = "mixed effect model",
-                                   model_name = "prot_mixed_effect"
+benchmark_mixed <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "mixed effect model",
+    model_name = "prot_mixed_effect"
 )
 benchmark_mixed$complete(FALSE)
 prolfqua::table_facade(benchmark_mixed$smc$summary,
@@ -477,9 +485,10 @@ allContrasts$contrProtMixedModerated <- contrProtMixedModerated$get_contrasts()
 
 ttd <- prolfqua::ionstar_bench_preprocess(contrProtMixedModerated$get_contrasts())
 
-benchmark_mixedModerated <- prolfqua::make_benchmark(ttd$data,
-                                   model_description = "mixed effect model moderated",
-                                   model_name = "prot_mixed_effect_moderated")
+benchmark_mixedModerated <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "mixed effect model moderated",
+    model_name = "prot_mixed_effect_moderated")
 prolfqua::table_facade(benchmark_mixedModerated$smc$summary, caption = "Nr of proteins with Nr of computed contrasts.")
 
 #benchmark_mixedModerated$plot_score_distribution()
@@ -507,16 +516,17 @@ allContrasts$contrProtMixedModerated <- contrProtMixedModerated$get_contrasts()
 
 ttd <- prolfqua::ionstar_bench_preprocess(contrROPECA$get_contrasts())
 ttd$data
-benchmark_ropeca <- prolfqua::make_benchmark(ttd$data,
-                                toscale = c("beta.based.significance"),
-                                benchmark = list(
-                                  list(sc = "diff", desc = TRUE),
-                                  list(sc = "statistic", desc = TRUE),
-                                  list(sc = "scaled.beta.based.significance", desc = TRUE)
-                                ),  
-                                model_description = "Ropeca",
-                                model_name = "ropeca",
-                                FDRvsFDP = list(list(sc = "FDR.beta.based.significance", desc = FALSE))
+benchmark_ropeca <- prolfqua::make_benchmark(
+    ttd$data,
+    toscale = c("beta.based.significance"),
+    benchmark = list(
+        list(score = "diff", desc = TRUE),
+        list(score = "statistic", desc = TRUE),
+        list(score = "scaled.beta.based.significance", desc = TRUE)
+    ),  
+    model_description = "Ropeca",
+    model_name = "ropeca",
+    FDRvsFDP = list(list(score = "FDR.beta.based.significance", desc = FALSE))
 )
 
 
@@ -544,9 +554,10 @@ all <- prolfqua::addContrastResults(prefer = contrProtModerated, add = contrImp)
 
 merged <- all$merged
 ttd <- prolfqua::ionstar_bench_preprocess(merged$get_contrasts())
-benchmark_merged <- prolfqua::make_benchmark(ttd$data,
-                                   model_description = "merge of prot moderated and imputed",
-                                   model_name = "prot_merged")
+benchmark_merged <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "merge of prot moderated and imputed",
+    model_name = "prot_merged")
 
 prolfqua::table_facade(benchmark_merged$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
 #benchmark_mixedModerated$plot_score_distribution()
@@ -568,9 +579,10 @@ same <- all$same
 allBenchmarks$benchmark_Prot$smc$summary
 
 ttd <- prolfqua::ionstar_bench_preprocess(same$get_contrasts())
-benchmark_same <- prolfqua::make_benchmark(ttd$data,
-                                   model_description = "imputed_same_as_lm",
-                                   model_name = "imputed_same_as_lm")
+benchmark_same <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "imputed_same_as_lm",
+    model_name = "imputed_same_as_lm")
 
 prolfqua::table_facade(benchmark_same$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
 benchmark_same$plot_FDRvsFDP()
