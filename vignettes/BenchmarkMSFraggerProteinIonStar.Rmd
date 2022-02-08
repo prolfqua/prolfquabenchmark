@@ -147,7 +147,7 @@ ttd <- prolfqua::ionstar_bench_preprocess(contrdf)
 medpol_benchmark <- prolfqua::make_benchmark(ttd$data,
                                    model_description = "MSFragger med. polish and lm. density",
                                    model_name = "MSFragger_prot_med_lm",
-                                   FDRvsFDP = list(list(sc = "FDR", desc = FALSE))
+                                   FDRvsFDP = list(list(score = "FDR", desc = FALSE))
 )
 
 prolfqua::table_facade(medpol_benchmark$smc$summary, "Nr of estimated contrasts")

@@ -158,13 +158,13 @@ benchmark_SaintExpres <- prolfqua::make_benchmark(ttd$data,
                                 fcestimate = "log2FC",
                                 toscale = NULL,
                                 benchmark = list(
-                                  list(sc = "log2FC", desc = TRUE),    
-                                  list(sc = "SaintScore", desc = TRUE),
-                                  list(sc = "BFDR", desc = FALSE)
+                                  list(score = "log2FC", desc = TRUE),    
+                                  list(score = "SaintScore", desc = TRUE),
+                                  list(score = "BFDR", desc = FALSE)
                                 ),  
                                 model_description = "SaintExpress_medpolishInt",
                                 model_name = "SaintExpress_medpolishInt",
-                                FDRvsFDP = list(list(sc = "BFDR", desc = FALSE))
+                                FDRvsFDP = list(list(score = "BFDR", desc = FALSE))
 , hierarchy = c("Prey"), summarizeNA = "SaintScore"
 )
 colnames(ttd$data)

@@ -141,13 +141,13 @@ benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
                                 toscale = c("pval"),
                                 fcestimate = "diff",
                                 benchmark = list(
-                                  list(sc = "diff", desc = TRUE),
-                                  list(sc = "t_statistic", desc = TRUE),
-                                  list(sc = "scaled.pval", desc = TRUE)
+                                  list(score = "diff", desc = TRUE),
+                                  list(score = "t_statistic", desc = TRUE),
+                                  list(score = "scaled.pval", desc = TRUE)
                                 ),  
                                 model_description = "proDA_lfqInt",
                                 model_name = "proDA_lfqInt",
-                                FDRvsFDP = list(list(sc = "adj_pval", desc = FALSE))
+                                FDRvsFDP = list(list(score = "adj_pval", desc = FALSE))
 , hierarchy = c("name"), summarizeNA = "t_statistic"
 )
 
