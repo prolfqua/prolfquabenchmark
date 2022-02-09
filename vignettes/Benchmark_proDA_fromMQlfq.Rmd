@@ -135,9 +135,9 @@ bb <- dplyr::bind_rows(contr)
 
 bb$name |> unique() |> length()
 ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
-
 benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
                                    contrast = "contrast",
+                                avgInt = "avg_abundance",
                                 toscale = c("pval"),
                                 fcestimate = "diff",
                                 benchmark = list(
@@ -161,16 +161,21 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 ```{r prepBenchmarkforComparison, include= FALSE, eval = evalAll}
 xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
                                   contrast = contrast,
-                                  estimate = diff,
+                                  avgInt = avg_abundance,
+                                  diff = diff,
                                   statistic = t_statistic,
                                   p.value = pval,
                                   FDR = adj_pval  
 )
+#head(xdd)
+#debug( prolfqua::make_benchmark)
 
+#prolfqua::Benchmark$debug("initialize")
 benchmark2_proDA <- prolfqua::make_benchmark(xdd, model_description = "proDA", model_name = "proDA")
+
 ```
 
-```{r eval=FALSE, include=FALSE}
+```{r eval=TRUE, include=FALSE}
 saveRDS(benchmark2_proDA, file = "../inst/Benchresults/benchmark_LFQquant_proDA.RDS")
 ```
 
