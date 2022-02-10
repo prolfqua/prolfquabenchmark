@@ -145,13 +145,14 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 ```{r prepBenchmarkforComparison, include= FALSE, eval = evalAll}
 xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
                                   contrast = contrast,
-                                  estimate = diff,
+                                  avgInt = avg_abundance,
+                                  diff = diff,
                                   statistic = t_statistic,
                                   p.value = pval,
                                   FDR = adj_pval  
 )
-
 benchmark2_proDA <- prolfqua::make_benchmark(xdd, model_description = "proDA_medpolishInt", model_name = "proDA")
+
 ```
 
 ```{r eval=FALSE, include=FALSE}
