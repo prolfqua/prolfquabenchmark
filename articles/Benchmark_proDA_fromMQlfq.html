@@ -5,20 +5,22 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities • proLFQuaBenchmark</title>
+<title>Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities • prolfquabenchmark</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities">
-<meta property="og:description" content="proLFQuaBenchmark">
+<meta property="og:description" content="prolfquabenchmark">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -30,19 +32,13 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">proLFQuaBenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -54,13 +50,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/BenchmarkingIonstarData.html">Benchmarking normalization, aggregation and models using the Ionstar Dataset</a>
-    </li>
-    <li>
       <a href="../articles/BenchmarkMSFraggerProteinIonStar.html">Benchmarking MSFragger output using Ionstar Dataset</a>
     </li>
     <li>
       <a href="../articles/Benchmark_MSStats.html">Benchmarking MSstats using the Ionstar Dataset</a>
+    </li>
+    <li>
+      <a href="../articles/Benchmark_SaintExpress.html">Benchmarking SaintExpress</a>
     </li>
     <li>
       <a href="../articles/Benchmark_proDA_fromMQlfq.html">Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities</a>
@@ -69,14 +65,14 @@
       <a href="../articles/Benchmark_proDA_medpolish.html">Benchmarking the proDA package using the Ionstar Dataset starting from peptides</a>
     </li>
     <li>
-      <a href="../articles/Benchmark_SaintExpress.html">Benchmarking SaintExpress</a>
+      <a href="../articles/BenchmarkingIonstarData.html">Benchmarking normalization, aggregation and models using the Ionstar Dataset</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/wolski/proLFQuaBenchmark/">
+  <a href="https://github.com/wolski/proLFQuaBenchmark/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -94,68 +90,66 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities</h1>
-                        <h4 class="author">FGCZ - (Draft)</h4>
+      <h1 data-toc-skip>Benchmarking the proDA package using the Ionstar
+Dataset MQ LFQ intensities</h1>
+                        <h4 data-toc-skip class="author">FGCZ -
+(Draft)</h4>
             
-            <h4 class="date">07 December, 2021</h4>
+            <h4 data-toc-skip class="date">10 February, 2022</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/master/../vignettes/Benchmark_proDA_fromMQlfq.Rmd"><code>../vignettes/Benchmark_proDA_fromMQlfq.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/../vignettes/Benchmark_proDA_fromMQlfq.Rmd" class="external-link"><code>../vignettes/Benchmark_proDA_fromMQlfq.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_proDA_fromMQlfq.Rmd</code></div>
 
     </div>
 
     
     
-<div id="proda-benchmark-based-on-maxquant-lfq-intensities" class="section level1">
-<h1 class="hasAnchor">
-<a href="#proda-benchmark-based-on-maxquant-lfq-intensities" class="anchor"></a>proDA benchmark based on maxquant lfq intensities</h1>
+<div class="section level2">
+<h2 id="proda-benchmark-based-on-maxquant-lfq-intensities">proDA benchmark based on maxquant lfq intensities<a class="anchor" aria-label="anchor" href="#proda-benchmark-based-on-maxquant-lfq-intensities"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/const-ae/proDA">proDA</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wolski/prolfqua">prolfqua</a></span><span class="op">)</span>
-
-<span class="co"># Read in MaxQuant files</span>
-<span class="va">datadir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/find.package.html">find.package</a></span><span class="op">(</span><span class="st">"prolfquaData"</span><span class="op">)</span> , <span class="st">"quantdata"</span><span class="op">)</span>
-<span class="va">inputMQfile</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">datadir</span>,
+<code class="sourceCode R"><span class="co"># Read in MaxQuant files</span>
+<span class="va">datadir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/find.package.html" class="external-link">find.package</a></span><span class="op">(</span><span class="st">"prolfquadata"</span><span class="op">)</span> , <span class="st">"quantdata"</span><span class="op">)</span>
+<span class="va">inputMQfile</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>,
                           <span class="st">"MAXQuant_IonStar2018_PXD003881.zip"</span><span class="op">)</span>
-<span class="va">inputAnnotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"annotation_Ionstar2018_PXD003881.xlsx"</span><span class="op">)</span>
+<span class="va">inputAnnotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"annotation_Ionstar2018_PXD003881.xlsx"</span><span class="op">)</span>
 
 
 
-<span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/tidyMQ_ProteinGroups.html">tidyMQ_ProteinGroups</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span>
-<span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="va">mqdata</span> <span class="op"><a href="https://rdrr.io/pkg/prolfqua/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"^REV__|^CON__"</span>, <span class="va">proteinID</span><span class="op">)</span><span class="op">)</span>
+<span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/tidyMQ_ProteinGroups.html" class="external-link">tidyMQ_ProteinGroups</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span>
+<span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="va">mqdata</span> |&gt; <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^REV__|^CON__"</span>, <span class="va">proteinID</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/add_annotation.html">add_annotation</a></span><span class="op">(</span>
+<span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/add_annotation.html" class="external-link">add_annotation</a></span><span class="op">(</span>
   <span class="va">mqdata</span>,
   <span class="va">annotation</span>,
   fileName <span class="op">=</span> <span class="st">"raw.file"</span>
 <span class="op">)</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">nr.peptides</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">nr.peptides</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>
 
-<span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/AnalysisTableAnnotation.html">AnalysisTableAnnotation</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
+<span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/AnalysisTableAnnotation.html" class="external-link">AnalysisTableAnnotation</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
 <span class="va">config</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"dilution."</span><span class="op">]</span><span class="op">]</span> <span class="op">=</span> <span class="st">"sample"</span>
 <span class="va">config</span><span class="op">$</span><span class="va">fileName</span> <span class="op">=</span> <span class="st">"raw.file"</span>
 <span class="va">config</span><span class="op">$</span><span class="va">workIntensity</span> <span class="op">=</span> <span class="st">"mq.protein.lfq.intensity"</span>
 <span class="va">config</span><span class="op">$</span><span class="va">hierarchy</span><span class="op">[[</span><span class="st">"proteinID"</span><span class="op">]</span><span class="op">]</span> <span class="op">=</span> <span class="st">"proteinID"</span>
 
-<span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/AnalysisConfiguration.html">AnalysisConfiguration</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">config</span><span class="op">)</span>
+<span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/AnalysisConfiguration.html" class="external-link">AnalysisConfiguration</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">config</span><span class="op">)</span>
 
 
 
-<span class="va">lfqdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/setup_analysis.html">setup_analysis</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">config</span><span class="op">)</span>
-<span class="va">lfqPROT</span> <span class="op">&lt;-</span> <span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/LFQData.html">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">lfqdata</span>, <span class="va">config</span><span class="op">)</span>
+<span class="va">lfqdata</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">config</span><span class="op">)</span>
+<span class="va">lfqPROT</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">lfqdata</span>, <span class="va">config</span><span class="op">)</span>
 <span class="va">lfqPROT</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">sr</span> <span class="op">&lt;-</span> <span class="va">lfqPROT</span><span class="op">$</span><span class="fu">get_Summariser</span><span class="op">(</span><span class="op">)</span>
 <span class="va">sr</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## # A tibble: 1 x 2
-##   isotopeLabel proteinID
-##   &lt;chr&gt;            &lt;int&gt;
-## 1 light             4235</code></pre>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 1 × 2</span></span>
+<span class="co">##   isotopeLabel proteinID</span>
+<span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="co">## <span style="color: #BCBCBC;">1</span> light             <span style="text-decoration: underline;">4</span>235</span></code></pre>
 <p>Calibrate the data using the human protein subset.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lfqhum</span> <span class="op">&lt;-</span> <span class="va">lfqPROT</span><span class="op">$</span><span class="fu">get_subset</span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">lfqPROT</span><span class="op">$</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"HUMAN"</span>, <span class="va">proteinID</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">lfqhum</span> <span class="op">&lt;-</span> <span class="va">lfqPROT</span><span class="op">$</span><span class="fu">get_subset</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">lfqPROT</span><span class="op">$</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"HUMAN"</span>, <span class="va">proteinID</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">lfqPROT</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span>
 <span class="va">log2data</span> <span class="op">&lt;-</span> <span class="va">tr</span><span class="op">$</span><span class="fu">log2</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">lfq</span>
@@ -166,80 +160,84 @@
 <span class="va">pl</span> <span class="op">&lt;-</span> <span class="va">lfqtrans</span><span class="op">$</span><span class="fu">get_Plotter</span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="va">pl</span><span class="op">$</span><span class="fu">intensity_distribution_density</span><span class="op">(</span><span class="op">)</span>
-<span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html">grid.arrange</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></code></pre></div>
+<span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="Benchmark_proDA_fromMQlfq_files/figure-html/scaleData-1.png" alt="Distribution of intensites before (left panel) and after (right panel) robscaling." width="700"><p class="caption">
-Distribution of intensites before (left panel) and after (right panel) robscaling.
+Distribution of intensites before (left panel) and after (right panel)
+robscaling.
 </p>
 </div>
-<p>To use <code>proDA</code>, we need to create an <code>SummarizedExperiment</code>, which is easily to be done using the <code>to_wide</code> function of <code>prolfqua</code>.</p>
+<p>To use <code>proDA</code>, we need to create an
+<code>SummarizedExperiment</code>, which is easily to be done using the
+<code>to_wide</code> function of <code>prolfqua</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment">SummarizedExperiment</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span>
 <span class="va">wide</span> <span class="op">&lt;-</span> <span class="va">lfqtrans</span><span class="op">$</span><span class="fu">to_wide</span><span class="op">(</span>as.matrix <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment">SummarizedExperiment</a></span><span class="op">)</span>
-<span class="va">ann</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">wide</span><span class="op">$</span><span class="va">annotation</span><span class="op">)</span>
-<span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames</a></span><span class="op">(</span><span class="va">ann</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">wide</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">sampleName</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span>
+<span class="va">ann</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">wide</span><span class="op">$</span><span class="va">annotation</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">ann</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">wide</span><span class="op">$</span><span class="va">annotation</span><span class="op">$</span><span class="va">sampleName</span>
 
-<span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html">SummarizedExperiment</a></span><span class="op">(</span><span class="fu">SimpleList</span><span class="op">(</span>LFQ<span class="op">=</span><span class="va">wide</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>, colData <span class="op">=</span> <span class="va">ann</span><span class="op">)</span>
+<span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span><span class="fu">SimpleList</span><span class="op">(</span>LFQ<span class="op">=</span><span class="va">wide</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>, colData <span class="op">=</span> <span class="va">ann</span><span class="op">)</span>
 <span class="va">se</span></code></pre></div>
-<pre><code>## class: SummarizedExperiment 
-## dim: 4235 20 
-## metadata(0):
-## assays(1): LFQ
-## rownames(4235): sp|A0A0U1RRL7|MMPOS_HUMAN sp|A0AVT1|UBA6_HUMAN ...
-##   sp|Q9Y6X9|MORC2_HUMAN sp|Q9Y6Y8|S23IP_HUMAN
-## rowData names(0):
-## colnames(20): a a~1 ... e~2 e~3
-## colData names(3): sampleName raw.file dilution.</code></pre>
-<div id="defining-contrasts-and-computing-group-comparisons" class="section level2">
-<h2 class="hasAnchor">
-<a href="#defining-contrasts-and-computing-group-comparisons" class="anchor"></a>Defining Contrasts and computing group comparisons</h2>
-<p>As usual, two steps are required, first fit the models, then comptue the contrasts.</p>
+<pre><code><span class="co">## class: SummarizedExperiment </span>
+<span class="co">## dim: 4235 20 </span>
+<span class="co">## metadata(0):</span>
+<span class="co">## assays(1): LFQ</span>
+<span class="co">## rownames(4235): sp|A0A0U1RRL7|MMPOS_HUMAN sp|A0AVT1|UBA6_HUMAN ...</span>
+<span class="co">##   sp|Q9Y6X9|MORC2_HUMAN sp|Q9Y6Y8|S23IP_HUMAN</span>
+<span class="co">## rowData names(0):</span>
+<span class="co">## colnames(20): a a~1 ... e~2 e~3</span>
+<span class="co">## colData names(3): sampleName raw.file dilution.</span></code></pre>
+<div class="section level3">
+<h3 id="defining-contrasts-and-computing-group-comparisons">Defining Contrasts and computing group comparisons<a class="anchor" aria-label="anchor" href="#defining-contrasts-and-computing-group-comparisons"></a>
+</h3>
+<p>As usual, two steps are required, first fit the models, then comptue
+the contrasts.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Not Run</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/proDA/man/proDA.html">proDA</a></span><span class="op">(</span><span class="va">se</span>, design <span class="op">=</span> <span class="op">~</span> <span class="va">dilution.</span> <span class="op">-</span> <span class="fl">1</span>,data_is_log_transformed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">contr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">contr</span><span class="op">[[</span><span class="st">"dilution_(9/7.5)_1.2"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>contrast <span class="op">=</span> <span class="st">"dilution_(9/7.5)_1.2"</span>,
-                                              <span class="fu"><a href="https://rdrr.io/pkg/proDA/man/test_diff.html">test_diff</a></span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span> <span class="st">"dilution.e - dilution.d"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">contr</span><span class="op">[[</span><span class="st">"dilution_(7.5/6)_1.25"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>contrast <span class="op">=</span> <span class="st">"dilution_(7.5/6)_1.25"</span>,
-                                               <span class="fu"><a href="https://rdrr.io/pkg/proDA/man/test_diff.html">test_diff</a></span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span> <span class="st">"dilution.d - dilution.c"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">contr</span><span class="op">[[</span><span class="st">"dilution_(6/4.5)_1.3(3)"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>contrast <span class="op">=</span> <span class="st">"dilution_(6/4.5)_1.3(3)"</span>, 
-                                                 <span class="fu"><a href="https://rdrr.io/pkg/proDA/man/test_diff.html">test_diff</a></span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span><span class="st">"dilution.c - dilution.b"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">contr</span><span class="op">[[</span><span class="st">"dilution_(4.5/3)_1.5"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>contrast <span class="op">=</span> <span class="st">"dilution_(4.5/3)_1.5"</span>, 
-                                              <span class="fu"><a href="https://rdrr.io/pkg/proDA/man/test_diff.html">test_diff</a></span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span><span class="st">"dilution.b - dilution.a"</span> <span class="op">)</span><span class="op">)</span>
+<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">proDA</span><span class="op">(</span><span class="va">se</span>, design <span class="op">=</span> <span class="op">~</span> <span class="va">dilution.</span> <span class="op">-</span> <span class="fl">1</span>,data_is_log_transformed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">contr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">contr</span><span class="op">[[</span><span class="st">"dilution_(9/7.5)_1.2"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>contrast <span class="op">=</span> <span class="st">"dilution_(9/7.5)_1.2"</span>,
+                                              <span class="fu">test_diff</span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span> <span class="st">"dilution.e - dilution.d"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">contr</span><span class="op">[[</span><span class="st">"dilution_(7.5/6)_1.25"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>contrast <span class="op">=</span> <span class="st">"dilution_(7.5/6)_1.25"</span>,
+                                               <span class="fu">test_diff</span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span> <span class="st">"dilution.d - dilution.c"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">contr</span><span class="op">[[</span><span class="st">"dilution_(6/4.5)_1.3(3)"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>contrast <span class="op">=</span> <span class="st">"dilution_(6/4.5)_1.3(3)"</span>, 
+                                                 <span class="fu">test_diff</span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span><span class="st">"dilution.c - dilution.b"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">contr</span><span class="op">[[</span><span class="st">"dilution_(4.5/3)_1.5"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>contrast <span class="op">=</span> <span class="st">"dilution_(4.5/3)_1.5"</span>, 
+                                              <span class="fu">test_diff</span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span><span class="st">"dilution.b - dilution.a"</span> <span class="op">)</span><span class="op">)</span>
 
-<span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="va">contr</span><span class="op">)</span>
+<span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">contr</span><span class="op">)</span>
 <span class="co"># End Not Run</span></code></pre></div>
 </div>
-<div id="benchmarking" class="section level2">
-<h2 class="hasAnchor">
-<a href="#benchmarking" class="anchor"></a>Benchmarking</h2>
+<div class="section level3">
+<h3 id="benchmarking">Benchmarking<a class="anchor" aria-label="anchor" href="#benchmarking"></a>
+</h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bb</span><span class="op">$</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/pkg/prolfqua/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/prolfqua/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 4235</code></pre>
+<code class="sourceCode R"><span class="va">bb</span><span class="op">$</span><span class="va">name</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 4235</span></code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ttd</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/ionstar_bench_preprocess.html">ionstar_bench_preprocess</a></span><span class="op">(</span> <span class="va">bb</span> , idcol <span class="op">=</span> <span class="st">"name"</span> <span class="op">)</span>
-
-<span class="va">benchmark_proDA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/make_benchmark.html">make_benchmark</a></span><span class="op">(</span><span class="va">ttd</span><span class="op">$</span><span class="va">data</span>,
+<code class="sourceCode R"><span class="va">ttd</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/ionstar_bench_preprocess.html" class="external-link">ionstar_bench_preprocess</a></span><span class="op">(</span> <span class="va">bb</span> , idcol <span class="op">=</span> <span class="st">"name"</span> <span class="op">)</span>
+<span class="va">benchmark_proDA</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/make_benchmark.html" class="external-link">make_benchmark</a></span><span class="op">(</span><span class="va">ttd</span><span class="op">$</span><span class="va">data</span>,
                                    contrast <span class="op">=</span> <span class="st">"contrast"</span>,
-                                toscale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pval"</span><span class="op">)</span>,
+                                avgInt <span class="op">=</span> <span class="st">"avg_abundance"</span>,
+                                toscale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pval"</span><span class="op">)</span>,
                                 fcestimate <span class="op">=</span> <span class="st">"diff"</span>,
-                                benchmark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-                                  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sc <span class="op">=</span> <span class="st">"diff"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-                                  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sc <span class="op">=</span> <span class="st">"t_statistic"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-                                  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sc <span class="op">=</span> <span class="st">"scaled.pval"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+                                benchmark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+                                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"diff"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+                                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"t_statistic"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+                                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"scaled.pval"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
                                 <span class="op">)</span>,  
                                 model_description <span class="op">=</span> <span class="st">"proDA_lfqInt"</span>,
                                 model_name <span class="op">=</span> <span class="st">"proDA_lfqInt"</span>,
-                                FDRvsFDP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sc <span class="op">=</span> <span class="st">"adj_pval"</span>, desc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
-, hierarchy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"name"</span><span class="op">)</span>, summarizeNA <span class="op">=</span> <span class="st">"t_statistic"</span>
+                                FDRvsFDP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"adj_pval"</span>, desc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
+, hierarchy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span><span class="op">)</span>, summarizeNA <span class="op">=</span> <span class="st">"t_statistic"</span>
 <span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">benchmark_proDA</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 4235</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">benchmark_proDA</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 4235</span></code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sumarry</span> <span class="op">&lt;-</span> <span class="va">benchmark_proDA</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span>
-<span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/table_facade.html">table_facade</a></span><span class="op">(</span><span class="va">sumarry</span>, caption <span class="op">=</span> <span class="st">"nr of proteins with 0, 1, 2, 3 missing contrasts."</span><span class="op">)</span></code></pre></div>
+<span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">sumarry</span>, caption <span class="op">=</span> <span class="st">"nr of proteins with 0, 1, 2, 3 missing contrasts."</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>nr of proteins with 0, 1, 2, 3 missing contrasts.</caption>
 <thead><tr class="header">
@@ -259,9 +257,10 @@ Distribution of intensites before (left panel) and after (right panel) robscalin
 </table>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">benchmark_proDA</span><span class="op">$</span><span class="fu">pAUC_summaries</span><span class="op">(</span><span class="op">)</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">content</span>,caption <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">caption</span><span class="op">)</span></code></pre></div>
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">content</span>,caption <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">caption</span><span class="op">)</span></code></pre></div>
 <table class="table">
-<caption>AUC, and pAUC at 0.1 and 0.2 FPR for (NC) proDA_lfqInt</caption>
+<caption>AUC, and pAUC at 0.1 and 0.2 FPR for (NC)
+proDA_lfqInt</caption>
 <thead><tr class="header">
 <th align="left">contrast</th>
 <th align="left">what</th>
@@ -273,107 +272,107 @@ Distribution of intensites before (left panel) and after (right panel) robscalin
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">87.09823</td>
-<td align="right">49.75084</td>
-<td align="right">65.40733</td>
+<td align="right">87.10145</td>
+<td align="right">49.73266</td>
+<td align="right">65.37854</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.pval</td>
-<td align="right">88.71083</td>
-<td align="right">65.69871</td>
-<td align="right">70.85510</td>
+<td align="right">88.72410</td>
+<td align="right">65.75524</td>
+<td align="right">70.90152</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">88.71083</td>
-<td align="right">65.69871</td>
-<td align="right">70.85510</td>
+<td align="right">88.72410</td>
+<td align="right">65.75524</td>
+<td align="right">70.90152</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">86.63638</td>
-<td align="right">42.39602</td>
+<td align="right">86.66073</td>
+<td align="right">42.39689</td>
 <td align="right">58.71742</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.pval</td>
-<td align="right">87.88752</td>
-<td align="right">63.23122</td>
-<td align="right">67.08551</td>
+<td align="right">87.89965</td>
+<td align="right">63.23296</td>
+<td align="right">67.08638</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">t_statistic</td>
-<td align="right">87.88752</td>
-<td align="right">63.23122</td>
-<td align="right">67.08551</td>
+<td align="right">87.89965</td>
+<td align="right">63.23296</td>
+<td align="right">67.08638</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">84.52691</td>
-<td align="right">51.29541</td>
-<td align="right">64.69962</td>
+<td align="right">84.53841</td>
+<td align="right">51.30192</td>
+<td align="right">64.70265</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.pval</td>
-<td align="right">87.53746</td>
-<td align="right">64.36997</td>
-<td align="right">69.17364</td>
+<td align="right">87.54346</td>
+<td align="right">64.42692</td>
+<td align="right">69.20386</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">t_statistic</td>
-<td align="right">87.53746</td>
-<td align="right">64.36997</td>
-<td align="right">69.17364</td>
+<td align="right">87.54346</td>
+<td align="right">64.42692</td>
+<td align="right">69.20386</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">87.07622</td>
-<td align="right">48.46915</td>
-<td align="right">65.07183</td>
+<td align="right">87.04766</td>
+<td align="right">48.35716</td>
+<td align="right">64.93792</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.pval</td>
-<td align="right">88.67133</td>
-<td align="right">64.51084</td>
-<td align="right">70.58587</td>
+<td align="right">88.66102</td>
+<td align="right">64.50910</td>
+<td align="right">70.58000</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">t_statistic</td>
-<td align="right">88.67133</td>
-<td align="right">64.51084</td>
-<td align="right">70.58587</td>
+<td align="right">88.66102</td>
+<td align="right">64.50910</td>
+<td align="right">70.58000</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">89.93044</td>
-<td align="right">58.24190</td>
-<td align="right">73.47746</td>
+<td align="right">89.92553</td>
+<td align="right">58.26577</td>
+<td align="right">73.48897</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.pval</td>
-<td align="right">90.74202</td>
-<td align="right">69.98932</td>
-<td align="right">76.26479</td>
+<td align="right">90.78894</td>
+<td align="right">70.18455</td>
+<td align="right">76.43762</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">t_statistic</td>
-<td align="right">90.74202</td>
-<td align="right">69.98932</td>
-<td align="right">76.26479</td>
+<td align="right">90.78894</td>
+<td align="right">70.18455</td>
+<td align="right">76.43762</td>
 </tr>
 </tbody>
 </table>
@@ -417,11 +416,14 @@ plot FDR vs FDP
 
 
       <footer><div class="copyright">
-  <p>Developed by The package maintainer.</p>
+  <p></p>
+<p>Developed by The package maintainer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
@@ -429,6 +431,8 @@ plot FDR vs FDP
 
   
 
+
+  
 
   </body>
 </html>

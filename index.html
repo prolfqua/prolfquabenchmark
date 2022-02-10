@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Benchmarking Vignettes for prolfqua Packge • proLFQuaBenchmark</title>
+<title>Benchmarking Vignettes for prolfqua Packge • prolfquabenchmark</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,19 +33,13 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">proLFQuaBenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <a class="navbar-link" href="index.html">prolfquabenchmark</a>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -55,13 +51,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/BenchmarkingIonstarData.html">Benchmarking normalization, aggregation and models using the Ionstar Dataset</a>
-    </li>
-    <li>
       <a href="articles/BenchmarkMSFraggerProteinIonStar.html">Benchmarking MSFragger output using Ionstar Dataset</a>
     </li>
     <li>
       <a href="articles/Benchmark_MSStats.html">Benchmarking MSstats using the Ionstar Dataset</a>
+    </li>
+    <li>
+      <a href="articles/Benchmark_SaintExpress.html">Benchmarking SaintExpress</a>
     </li>
     <li>
       <a href="articles/Benchmark_proDA_fromMQlfq.html">Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities</a>
@@ -70,14 +66,14 @@
       <a href="articles/Benchmark_proDA_medpolish.html">Benchmarking the proDA package using the Ionstar Dataset starting from peptides</a>
     </li>
     <li>
-      <a href="articles/Benchmark_SaintExpress.html">Benchmarking SaintExpress</a>
+      <a href="articles/BenchmarkingIonstarData.html">Benchmarking normalization, aggregation and models using the Ionstar Dataset</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/wolski/proLFQuaBenchmark/">
+  <a href="https://github.com/wolski/proLFQuaBenchmark/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -94,43 +90,81 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+<div class="section level1">
+<div class="page-header"><h1 id="prolfquabenchmark---benchmarking-lfq-data-analysis-using-the-prolfqua-package">proLFQuaBenchmark - Benchmarking LFQ data analysis using the
+prolfqua package.<a class="anchor" aria-label="anchor" href="#prolfquabenchmark---benchmarking-lfq-data-analysis-using-the-prolfqua-package"></a>
+</h1></div>
+<p>This package contains vignettes only. The vignettes show how we used
+benchmark datasets to asses the performance of the methods implemented
+in prolfqua and other packages. The results best be studied here by
+browsing the vignettes online : <a href="https://wolski.github.io/proLFQuaBenchmark/" class="external-link uri">https://wolski.github.io/proLFQuaBenchmark/</a>.</p>
+<div class="section level2">
+<h2 id="how-to-install-and-generate-the-vignettes">How to install and generate the vignettes<a class="anchor" aria-label="anchor" href="#how-to-install-and-generate-the-vignettes"></a>
+</h2>
+<p>Download the latest prolfqua release from from <a href="https://github.com/wolski/prolfqua/releases" class="external-link uri">https://github.com/wolski/prolfqua/releases</a></p>
+<p>And then install it by running on the command:</p>
+<pre><code>R CMD INSTALL prolfqua_X.Y.Z.tar.gz</code></pre>
+<p>Or in the R session:</p>
+<pre><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"prolfqua_X.Y.Z.tar.gz"</span>,repos <span class="op">=</span> <span class="cn">NULL</span>, type<span class="op">=</span><span class="st">"source"</span><span class="op">)</span></code></pre>
+<p>Afterwards you also will need to install the
+<code>prolfquadata</code> package</p>
+<pre><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'remotes'</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_gitlab.html" class="external-link">install_gitlab</a></span><span class="op">(</span><span class="st">"wolski/prolfquadata"</span>, host<span class="op">=</span><span class="st">"gitlab.bfabric.org"</span><span class="op">)</span></code></pre>
+<p>Finally you can clone the repository and open it in RStudio and build
+the vignettes with</p>
+<pre class="{r}"><code><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/build_vignettes.html" class="external-link">build_vignettes</a></span><span class="op">(</span><span class="op">)</span></code></pre>
+<p>Or build them on the command line by running</p>
+<pre class="{r}"><code>R CMD build prolfquaBenchmark</code></pre>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/wolski/proLFQuaBenchmark/">https://​github.com/​wolski/​proLFQuaBenchmark/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/wolski/proLFQuaBenchmark/issues">https://​github.com/​wolski/​proLFQuaBenchmark/​issues</a>
-</li>
+<li><a href="https://github.com/wolski/proLFQuaBenchmark/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/wolski/proLFQuaBenchmark/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>What license is it under?</li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing prolfquabenchmark</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>The package maintainer <br><small class="roles"> Maintainer </small>  </li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by The package maintainer.</p>
+  <p></p>
+<p>Developed by The package maintainer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
@@ -138,6 +172,8 @@ More about what it does (maybe more than one line)
 
   
 
+
+  
 
   </body>
 </html>
