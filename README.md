@@ -1,7 +1,7 @@
 # proLFQuaBenchmark - Benchmarking LFQ data analysis using the prolfqua package.
 
 This package contains vignettes only. The vignettes show how we used benchmark datasets to asses the performance of the methods implemented in prolfqua and other packages.
-The results best be studied here by browsing the vignettes online : https://wolski.github.io/proLFQuaBenchmark/.
+The results best be studied here by browsing the vignettes online : https://wolski.github.io/prolfquabenchmark/.
 
 
 ## How to install and generate the vignettes
