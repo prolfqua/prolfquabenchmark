@@ -28,7 +28,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```{r}
 library(magrittr)
 evalAll <- require("MSstats")
-storeBench <- FALSE & evalAll
+storeBench <- TRUE & evalAll
 ```
 
 The following code reads the data and creates and MSStats compatible annotation file.
@@ -141,12 +141,14 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 
 xdd <- ttd$data |> dplyr::rename(protein_Id = Protein ,
                                   contrast = Label,
-                                  estimate = log2FC,
+                                  diff = log2FC,
                                   statistic = Tvalue,
                                   p.value = pvalue,
                                   FDR = adj.pvalue  
 )
+xdd |> head()
 benchmark2_msstats <- prolfqua::make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")
+
 saveRDS(benchmark2_msstats, file = "../inst/Benchresults/benchmark_msstats.RDS")
 ```
 

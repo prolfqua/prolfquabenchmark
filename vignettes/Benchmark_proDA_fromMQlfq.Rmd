@@ -13,7 +13,6 @@ geometry: margin=.5in
 vignette: >
   %\VignetteIndexEntry{Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities} 
   %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
 editor_options:
   chunk_output_type: console
 ---
@@ -21,6 +20,7 @@ editor_options:
 ```{r setup, include=FALSE} 
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 evalAll <- require(proDA)
+SAVE <- TRUE
 
 
 ```
@@ -175,7 +175,7 @@ benchmark2_proDA <- prolfqua::make_benchmark(xdd, model_description = "proDA", m
 
 ```
 
-```{r eval=TRUE, include=FALSE}
+```{r eval=SAVE, include=FALSE}
 saveRDS(benchmark2_proDA, file = "../inst/Benchresults/benchmark_LFQquant_proDA.RDS")
 ```
 

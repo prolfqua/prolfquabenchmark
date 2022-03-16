@@ -149,6 +149,7 @@ medpol_benchmark <- prolfqua::make_benchmark(ttd$data,
                                    model_name = "MSFragger_prot_med_lm",
                                    FDRvsFDP = list(list(score = "FDR", desc = FALSE))
 )
+saveRDS(medpol_benchmark, "../inst/Benchresults/MSFragger_medpol_benchmark.RDS")
 
 prolfqua::table_facade(medpol_benchmark$smc$summary, "Nr of estimated contrasts")
 medpol_benchmark$plot_score_distribution()

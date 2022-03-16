@@ -42,7 +42,7 @@ Decide if you work with all data or for speedup with subset of data:
 ```{r}
 SUBSET <- FALSE
 SUBSETNORM <- TRUE
-SAVE <- FALSE
+SAVE <- TRUE
 
 ```
 

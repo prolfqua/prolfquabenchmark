@@ -21,7 +21,7 @@ editor_options:
 ```{r setup, include=TRUE} 
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 evalAll <- require(proDA)
-
+SAVE = TRUE
 
 ```
 
@@ -155,7 +155,7 @@ benchmark2_proDA <- prolfqua::make_benchmark(xdd, model_description = "proDA_med
 
 ```
 
-```{r eval=FALSE, include=FALSE}
+```{r eval=SAVE, include=FALSE}
 saveRDS(benchmark2_proDA, file = "../inst/Benchresults/benchmark_medpolish_proDA.RDS")
 
 ```
