@@ -84,7 +84,6 @@ Models in _prolfqua_ are specified using R’s linear model and mixed model form
 An important aspect of mass spectrometric data are missing values. Missing values lead to groups of varying size. Linear and mixed effect models can handle unbalanced designs, i.e. different group sizes. As long as there is at least one observation per group they do produce unbiased estimates. We use this feature instead of imputing missing observations. 
 However, if there are no observation in one of the groups, then contrasts involving this group can not be estimated. To address this, for the group without observations, we use a point prior equal to the average of $3\%$ smallest group intensities means in the dataset and infer the variance using the pooled the variance of other groups. Proteins for which the fold change was imputed in such a way are explicitely annotated in the result table.
 
-Other means of modelling missing information in proteomics data using the Hurdle model is discussed by [@goeminne2020msqrob], while the R package _proDA_ models missingness using probabilistic dropout models [@bioxrvproDA2020]. 
 
 Other means of modelling missing information in proteomics data using the Hurdle model is discussed by [@goeminne2020msqrob], while the R package _proDA_ models missingness using probabilistic dropout models [@bioxrvproDA2020]. 
 
