@@ -86,6 +86,8 @@ However, if there are no observation in one of the groups, then contrasts involv
 
 Other means of modelling missing information in proteomics data using the Hurdle model is discussed by [@goeminne2020msqrob], while the R package _proDA_ models missingness using probabilistic dropout models [@bioxrvproDA2020]. 
 
+Other means of modelling missing information in proteomics data using the Hurdle model is discussed by [@goeminne2020msqrob], while the R package _proDA_ models missingness using probabilistic dropout models [@bioxrvproDA2020]. 
+
 
 Furthermore, the functionality of _prolfqua_ also includes methods specific to proteomics data. For example, we implemented strategies to estimate protein intensities from peptide intensities: top N, Tukey's median polish, robust linear models [@Grossmann2010,@goeminne2020msqrob]. Furthermore, peptide or protein intensities can be scaled using the robust scaling method or transformed using _quantile_ normalization or _vsn_ to remove systematic differences among samples and heteroscedasticity. In this respect, _prolfqua_ can be compared with other R packages such _DEP_ [@DEP2018] or POMA [@POMA2021] which support the entire LFQ analysis pipeline. However, we also implemented functionality to streamline the benchmarking of the implemented methods. We use the Ionstar [@shen2018ionstar] dataset to benchmark the analysis pipeline and modeling methods implemented within _prolfqua_ and to compare our results with those of _MSstats_ and _proDA_.
 
