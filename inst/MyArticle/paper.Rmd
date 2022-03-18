@@ -1,29 +1,12 @@
 ---
 title: prolfqua - An R-package for Analysing Proteomics Label Free Quantification Experiments
 author: 
-  - name: Witold Wolski
-    affil: 1; 2
-    orcid: '0000-0002-6468-120X'
-  - name: Paolo Nanni
-    affil: 1
-    orcid: '0000-0001-8429-3557'
-  - name: Jonas Grossmann
-    affil: 1; 2
-    orcid: '0000-0002-6899-9020'
-  - name: Maria D'Errico
-    affil: 1; 2
-    orcid: '0000-0001-9467-9058'
-  - name: Ralph Schlapbach
-    affil: 1
-    orcid: '0000-0002-7488-4262'
-  - name: Christian Panse
-    affil: 1; 2
-    orcid: '0000-0003-1975-3064'
-affiliation:
-  - num: 1
-    address: Functional Genomics Center Zurich (FGCZ) - Swiss Federal Institute of Technology in Zurich and University of Zurich
-  - num: 2
-    address: Swiss Institute of Bioinformatics (SIB)
+  - Witold E. Wolski^[Functional Genomics Center Zurich (FGCZ) - Swiss Federal Institute of Technology in Zurich \| University of Zurich]
+  - Paolo Nanni$^*$
+  - Jonas Grossmann$^*$
+  - Maria d'Errico$^*$
+  - Ralph Schlapbach$^*$
+  - Christian Panse$^*$
 output: 
   bookdown::pdf_document2:
     toc: true
