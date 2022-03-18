@@ -46,8 +46,6 @@ See ACS guidelines [https://publish.acs.org/publish/author_guidelines?coden=anch
 Protein mass spectrometry is widely used for quantitative proteomics studies and in particular for relative protein quantification. Nevertheless, there is still a need for a flexible and easy-to-use, transparently supporting a variety of well principled statistical inference procedures data analysis application programmer interface in R. 
 The _prolfqua_ R package integrates essential steps of the mass spectrometry-based label-free quantification data analysis workflow: quality control, data normalization, protein aggregation, statistical modeling, hypothesis testing, and sample size estimation. We use _prolfqua_ to visualize and model simple experimental designs with a single explanatory variable and complex experiments with multiple factors. Furthermore, we use _prolfqua_ to benchmark data acquisition, data preprocessing or data modeling methods. Furthermore, we use _prolfqua_ to develop highly customizable, visually appealing, and interactive data analysis reports in pdf or HTML format. The R package is available from https://github.com/fgcz/prolfqua.
 
-
-
 # Introduction
 
 Proteins are carriers of function and structure in living cells. Hence, measuring changes in protein abundance is the subject of active research [@vidova2017review]. However, identifying and quantifying intact proteins in complex samples containing hundreds of proteins is not possible using existing methods at the moment. Hence, the bottom-up mass spectrometric method is employed [@Bubis2017, @da2020philosopher]. Proteins that are extracted from biological samples are specifically and reproducible digested into protein fragments - peptides. The peptides are first separated by their chemical and physical properties using High-Pressure Liquid Chromatography (HPLC). Afterward, they are weighted, identified, and quantified using mass spectrometric techniques, e.g., Electro-Spray-Ionization Mass Spectrometry (ESI-MS). Finally, peptide identification is achieved by fragmenting and matching the measured fragment masses to theoretical masses computed from known peptide sequences[@eng2015deeper, @yu2016pipi, @kong2017msfragger]. For quantification, intact peptide ions [@yu2020fast, @Cox2008MaxQuant] or products of peptide ion fragmentation [@rost2014openswath, @demichev2020dia] are counted and aggregated. Finally, the identified and quantified peptides are assigned to proteins based on protein sequence information.
@@ -145,7 +143,7 @@ Where, $n_g$ is the number of groups and $n$ is the number of observations.
 This methods are implemented in the class `ContrastSimpleImpute` (see Figure \@ref(fig:ContrastUML)).
 
 
-### P-value moderation
+### $p$-value moderation
 
 From the linear and the mixed effect models, we can obtain the residual standard deviation $\sigma$, and degrees of freedom $df$. [@Smyth2004linear] discuss how, using the empirical Bayes paradigm, to use the $\sigma$ and $df$ of all models to estimate a prior $\sigma$ and prior $df$, and posterior $\tilde \sigma$. These can be used to moderate the $t$-statistics by:
 
@@ -417,8 +415,28 @@ remotes::install_github('wolski/prolfqua',
 # Conclusion (tbd)
 
 
-# Supplement
+# Acknoledgements
 
+The authors thank the technology platform fund (TPF) of the University of Zurich.
+
+
+# Abbreviations
+
+|       |                                                   |
+|:------|:--------------------------------------------------|
+|ESI-MS |Electro-Spray-Ionization Mass Spectrometry         |
+|FDR    |False Discovery Rate                               |
+|HPLC   |High-Pressure Liquid Chromatography                |
+|LC-MS  |Liquid Chromatography followed by Mass Spectrometry|
+|LFQ    |Label-Free Quantification                          |
+|OO     |Object-Oriented                                    |
+|MS     |mass spectrometry                                  |
+
+# References {-}
+
+<div id="refs"></div>
+
+# Supplement
 
 ## Comparing benchmark results
 
@@ -458,12 +476,12 @@ ggplot2::ggplot(x,ggplot2::aes( x = diff.imp, y = diff.proda) ) + ggplot2::geom_
 ```
 
 
+## Session information
 
-# Acknoledgements
-
-The authors thank the technology platform fund of the University of Zurich.
-
-
+```{r sessioninfo, echo=FALSE}
+sessionInfo()
+```
 
 
-# References
+
+
