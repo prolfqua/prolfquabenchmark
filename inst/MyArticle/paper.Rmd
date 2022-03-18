@@ -164,8 +164,6 @@ This methods are implemented in the class `ContrastSimpleImpute` (see Figure \@r
 
 From the linear and the mixed effect models, we can obtain the residual standard deviation $\sigma$, and degrees of freedom $df$. [@Smyth2004linear] discuss how, using the empirical Bayes paradigm, to use the $\sigma$ and $df$ of all models to estimate a prior $\sigma$ and prior $df$, and posterior $\tilde \sigma$. These can be used to moderate the $t$-statistics by:
 
-
-
 \begin{equation} 
 \tilde{t}_{pj} = \frac{t_{pj} s_p}{\tilde{s}_p}
 \end{equation} 
@@ -199,27 +197,37 @@ Because we used the median as the i-th order statistic  $i = \frac{n}{2} + 0.5$.
 
 # Example Analysis
 
+The code snippets in this section demonstrate the basic usage of the `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package.
 Peptide intensities are $\log_2$ transformed and robust z-score scaled but then rescaled to preserves the original range of the data using the method `robscale`. We show the distribution of the normalized intensities in Figure \@ref(fig:prepro) Panel A. Protein intensities are estimated using Tukey's median polish. Figure \@ref(fig:prepro) Panel B shows the peptide intensities and the estimated protein intensities. The boxplot (Panel D) shows the distribution of the protein intensity estimate in each condition. Finally, Panel C shows the distribution of the protein standard deviations for each condition.
 
 
 ```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%', fig.width = 8, fig.height = 8}
-library(prolfqua)
-d <- prolfqua_data('data_ionstar')$filtered()
-lfqd <- LFQData$new(d$data, d$config) 
+## load peptide level data
+d <- prolfqua::prolfqua_data('data_ionstar')$filtered()
+
+## create R6 obejct
+lfqd <- prolfqua::LFQData$new(d$data, d$config) 
+
+##  transform intensities
 t <- lfqd$get_Transformer()
+
 lfqd <-  t$log2()$robscale()$lfq
+
+## plotting
 pl <- lfqd$get_Plotter()
 p_a <- pl$intensity_distribution_density() +
   ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
+
+## infer protein intensities from peptide intens
 agr <- lfqd$get_Aggregator()
 lfqp <- agr$medpolish()
 
+## plotting
 p_b <- agr$plot()$plots[[1]] + ggplot2::labs(tag = "B")
 p_c <- lfqp$get_Stats()$violin() + ggplot2::labs(tag = "C")
 pl <- lfqp$get_Plotter()
 p_d <- pl$boxplots()$boxplot[[1]] + ggplot2::labs(tag = "D")
 ggpubr::ggarrange(p_a, p_b, p_c, p_d)
-
 ```
 
 
@@ -235,30 +243,34 @@ contrasts <- c(
   "dilution_(9/7.5)_1.2" =   "dilution.e - dilution.d",
   "dilution_(7.5/6)_1.25" =   "dilution.d - dilution.c"
 )
-# fit model
+## fit model
 lmmodel <- paste(lfqp$intensity_column()," ~ dilution.")
-modelFunction <- strategy_lm( lmmodel, model_name = "lm")
-models <- build_model(lfqp, modelFunction)
+modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "lm")
+models <- prolfqua::build_model(lfqp, modelFunction)
 p0 <- models$anova_histogram()
-# compute contrasts from linear model and with imputation
+
+## compute contrasts from linear model and with imputation
 contr <- prolfqua::Contrasts$new(models, contrasts) |> 
   prolfqua::ContrastsModerated$new()
+
 conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts) |> 
   prolfqua::ContrastsModerated$new()
+
+# TODO(wew): give tmp a meaningful name
 tmp <- prolfqua::addContrastResults(prefer = contr, add = conI)
-# visualize results
+
+## visualize results
 pl <- tmp$merged$get_Plotter()
 p1 <- pl$histogram()$p.value
 p2 <- pl$volcano()$FDR +
    ggplot2::theme(legend.position = "bottom")
-p1
-gridExtra::grid.arrange(p1, p2, ncol = 2)
 
+gridExtra::grid.arrange(p1, p2, ncol = 2)
 ```
 
 # Benchmarking
 
-The peptide intensities from the _peptide.txt_ file were $log_2$ transformed, and subsequent robust z-score transformation, where median and the mean average deviation (mad) were obtained from the human proteins only. We removed _one hit wonders_, i.e. proteins with a single peptide assignment. No further data filtering was used. We also did not use imputation. The protein level linear model was fitted to the protein intensities inferred from the peptide intensities using the Tukey's median polish. The mixed effect linear model, and the `r BiocStyle::Biocpkg("PECA")` model were fitted to the peptide intensities. The details of the `r BiocStyle::Githubpkg("fgcz/prolfqua")` benchmark implementation are available online  [BenchmarkingIonstarData](https://wolski.github.io/prolfqua/articles/BenchmarkingIonstarData.html).
+The peptide intensities from the MaxQuant _peptide.txt_ file were $log_2$ transformed, and subsequent robust z-score transformation, where median and the mean average deviation (mad) were obtained from the human proteins only. We removed _one hit wonders_, i.e. proteins with a single peptide assignment. No further data filtering was used. We also did not use imputation. The protein level linear model was fitted to the protein intensities inferred from the peptide intensities using the Tukey's median polish. The mixed effect linear model, and the `r BiocStyle::Biocpkg("PECA")` model were fitted to the peptide intensities. The details of the `r BiocStyle::Githubpkg("fgcz/prolfqua")` benchmark implementation are available online  [BenchmarkingIonstarData](https://wolski.github.io/prolfqua/articles/BenchmarkingIonstarData.html).
 
 For benchmarking of MSstats we used the defaults specified in the [Benchmarking_MSstats](https://wolski.github.io/prolfqua/articles/)
 
@@ -453,7 +465,11 @@ The authors thank the technology platform fund (TPF) of the University of Zurich
 
 <div id="refs"></div>
 
-# Supplement
+# Supplements
+
+## Creating a prolfqa configuration
+
+The following code snipet demomnstarte the usage from MSFragger ouput.
 
 ## Comparing benchmark results
 
