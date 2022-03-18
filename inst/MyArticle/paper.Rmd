@@ -488,7 +488,6 @@ imp <- allBenchmarks$benchmark_imputation$data()
 
 x <- dplyr::inner_join(imp, proda, by = c("contrast","protein_Id", "TP", "species"), suffix = c(".imp",".proda"))
 ggplot2::ggplot(x,ggplot2::aes( x = diff.imp, y = diff.proda) ) + ggplot2::geom_point() + ggplot2::facet_wrap(~contrast + species) + ggplot2::geom_hline(yintercept = 0, color="red") + ggplot2::geom_vline(xintercept = 0, color="red")
-
 ```
 
 
@@ -496,6 +495,15 @@ ggplot2::ggplot(x,ggplot2::aes( x = diff.imp, y = diff.proda) ) + ggplot2::geom_
 
 ```{r sessioninfo, echo=FALSE}
 sessionInfo()
+```
+
+## Package sticker
+
+```{r proLFQuaSticker, echo=TRUE, out.height="5cm", eval=TRUE, fig.cap="Sticker maintainer: Witold E. Wolski; License: Creative Commons Attribution CC-BY. Feel free to share and adapt, but don't forget to credit the author."}
+
+file.path(system.file(package = "prolfqua"), 
+          "Figures/hexStickerProlfqua.png") |>
+  knitr::include_graphics()
 ```
 
 
