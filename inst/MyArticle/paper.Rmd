@@ -46,18 +46,13 @@ See ACS guidelines [https://publish.acs.org/publish/author_guidelines?coden=anch
 Protein mass spectrometry is widely used for quantitative proteomics studies and in particular for relative protein quantification. Nevertheless, there is still a need for a flexible and easy-to-use, transparently supporting a variety of well principled statistical inference procedures data analysis application programmer interface in R. 
 The _prolfqua_ R package integrates essential steps of the mass spectrometry-based label-free quantification data analysis workflow: quality control, data normalization, protein aggregation, statistical modeling, hypothesis testing, and sample size estimation. We use _prolfqua_ to visualize and model simple experimental designs with a single explanatory variable and complex experiments with multiple factors. Furthermore, we use _prolfqua_ to benchmark data acquisition, data preprocessing or data modeling methods. Furthermore, we use _prolfqua_ to develop highly customizable, visually appealing, and interactive data analysis reports in pdf or HTML format. The R package is available from https://github.com/fgcz/prolfqua.
 
-
-
 # Introduction
-
 
 Proteins are carriers of function and structure in living cells. Hence, measuring changes in protein abundance is the subject of active research [@vidova2017review]. However, identifying and quantifying intact proteins in complex samples containing hundreds of proteins is not possible using existing methods at the moment. Hence, the bottom-up mass spectrometric method is employed [@Bubis2017, @da2020philosopher]. Proteins that are extracted from biological samples are specifically and reproducible digested into protein fragments - peptides. The peptides are first separated by their chemical and physical properties using High-Pressure Liquid Chromatography (HPLC). Afterward, they are weighted, identified, and quantified using mass spectrometric techniques, e.g., Electro-Spray-Ionization Mass Spectrometry (ESI-MS). Finally, peptide identification is achieved by fragmenting and matching the measured fragment masses to theoretical masses computed from known peptide sequences[@eng2015deeper, @yu2016pipi, @kong2017msfragger]. For quantification, intact peptide ions [@yu2020fast, @Cox2008MaxQuant] or products of peptide ion fragmentation [@rost2014openswath, @demichev2020dia] are counted and aggregated. Finally, the identified and quantified peptides are assigned to proteins based on protein sequence information.
 
-Label-Free Quantification (LFQ) Proteomics Experiments enable monitoring relative abundances of thousands of proteins in biological samples. For most studies, parallel group designs are used, e.g., treatment vs. control are used[cite]. More recently, more complex experimental designs are implemented with increasing numbers of samples, i.e., factorial designs and longitudinal studies (time series), sometimes with repeated measurements on the same subject[cite]. The obtained data can be modeled using linear fixed, mixed, or random-effects models [@Bates2015FittingJSS]. Based on these models, tests can be applied to examine whether a factor or interactions are significant, or differences between factor levels can be estimated, and their significance tested.  Proteins can be ordered or grouped using the estimated fold-change, t-statistics, scaled p-value, or false discovery rate (FDR) and then subjected to gene set enrichment or over-representation analysis [...] or validation experiments.
+Label-Free Quantification (LFQ) Proteomics Experiments enable monitoring relative abundances of thousands of proteins in biological samples. For most studies, parallel group designs are used, e.g., treatment vs. control are used [TODO: cite]. More recently, more complex experimental designs are implemented with increasing numbers of samples, i.e., factorial designs and longitudinal studies (time series), sometimes with repeated measurements on the same subject [TODO: cite]. The obtained data can be modeled using linear fixed-, mixed-, or random-effects models [@Bates2015FittingJSS]. Based on these models, tests can be applied to examine whether a factor or interactions are significant, or differences between factor levels can be estimated, and their significance tested.  Proteins can be ordered or grouped using the estimated fold-change, $t$-statistics, scaled $p$-value, or false discovery rate (FDR) and then subjected to gene set enrichment or over-representation analysis [TODO ...] or validation experiments.
 
-
-Several packages exist to model mass spectrometry LFQ experiments, e.g. _limma_[@Ritchie2015], _MSStats_[@Choi2014], _ROPECA_[@Suomi2017bEnhanced],  _MSqRob2_ [@Goeminne2016] or _proDA_ [@bioxrvproDA2020], to mention some, all implemented in the R. Each of them has some unique features. For example, _MSStats_ infers the model from the sample annotation and generates the model formula. At the same time, _limma_ allows to specify a linear model formula and implements the empirical Bayes variance shrinkage method. The R-package _ROPECA_, performs a roll-up of peptide level fold change and p-value estimates, obtained from _limma_, to protein level estimates. Furthermore, _MSqRob2_ implements two models: robust linear models fitted to protein intensities and robust ridge regression fitted to peptide intensities and combines them with empirical Baye's variance shrinkage known from _limma_. The _proDA_ package implements a linear probabilistic dropout model to account for missing data without imputation.
-
+Several packages exist to model mass spectrometry LFQ experiments, e.g., `r BiocStyle::Biocpkg("limma")` [@Ritchie2015], `r BiocStyle::Biocpkg("MSstats")` [@Choi2014], _ROPECA_[@Suomi2017bEnhanced],  `r BiocStyle::Biocpkg("msqrob2")` [@Goeminne2016] or `r BiocStyle::Biocpkg("proDA")` [@bioxrvproDA2020], to mention some, all implemented in the R. Each of them has some unique features. For example, `r BiocStyle::Biocpkg("MSstats")` infers the model from the sample annotation and generates the model formula. At the same time, `r BiocStyle::Biocpkg("limma")` allows to specify a linear model formula and implements the empirical Bayes variance shrinkage method. The R-package _ROPECA_, performs a roll-up of peptide level fold change and $p$-value estimates, obtained from `r BiocStyle::Biocpkg("limma")`, to protein level estimates. Furthermore, `r BiocStyle::Biocpkg("msqrob2")` implements two models: robust linear models fitted to protein intensities and robust ridge regression fitted to peptide intensities and combines them with empirical Bayes variance shrinkage known from `r BiocStyle::Biocpkg("limma")`. The `r BiocStyle::Biocpkg("proDA")` package implements a linear probabilistic dropout model to account for missing data without imputation.
 
 When analyzing parallel group designs using a single explanatory variable, we can use all packages for the statistical data analysis of the data; however, if we want to model factorial designs or repeated measurements, we can use only some of them. Table \@ref(tab:tableOverview) gives an overview of the models and features supported by these packages.
 
@@ -76,20 +71,18 @@ rownames(bb) <- names(xx)
 knitr::kable(data.frame(bb), caption = "Rows - R package, Columns - types of models supported: pd - parallel design, rm - repeated measurements, fd - factorial design, int - interactions among factors, mem - mixed effect models, eb - empirical Bayes, md - missing data modelling. Y - yes, y - yes but only for random effects, * - repeated measurements are only modeled using a fixed effects. ? - the hurdle model is not implemented in the msqrob2 package yet.")
 ```
 
+We were inspired by the R package `r BiocStyle::CRANpkg("caret")` [@caret2008], which enables to call various machine learning (ML) methods, making selecting the best ML algorithm for your problem easy. We aimed for a similar R package for the analysis of LFQ data. However, after examining the R packages for modeling proteomics quantification data, we observed that model specification, input, and output formats differ widely and wildly. However, all of them fit some type of linear model either to peptide or protein intensities, determine contrasts among conditions, and afterward, some of them apply empirical Bayes variance shrinkage. Therefore, the revised goal was to provide a modular object oriented (OO) design, with R linear models as a core, where features such as $p$-value aggregation (_ROPECA_) or variance shrinkage could be easily enabled (see Figure \@ref(fig:ContrastUML)).
 
-We were inspired by the R package caret [@caret2008], which enables to call various machine learning methods, making selecting the best ML algorithm for your problem easy. We aimed for a similar R package for the analysis of LFQ data. However, after examining the R packages for modeling proteomics quantification data, we observed that model specification, input, and output formats differ widely and wildly. However, all of them fit some type of linear model either to peptide or protein intensities, determine contrasts among conditions, and afterward, some of them apply empirical Bayes variance shrinkage. Therefore, the revised goal was to provide a modular object oriented design, with R linear models as a core, where features such as p-value aggregation (ROPECA) or variance shrinkage could be easily enabled (see Figure \@ref(fig:ContrastUML)).
-
-Models in _prolfqua_ are specified using R’s linear model and mixed model formula interface. Therefore, knowledge of the R regression model infrastructure [@faraway2016extending,@MASS2002] is an advantage when using our package. Furthermore, this glass box approach should make it easy to reimplement an analysis which was performed with _prolfqua_ using base R or other programming languages by reading the analysis script. However, acknowledging the R formula interface’s complexity to non-statisticians and the popularity of _MSstats_, we provide the functionality to suggest a model formula from the sample annotation provided in tabular form similarily to MSStats [@Choi2014].
+Models in `r BiocStyle::Githubpkg("prolfqua")` are specified using R’s linear model and mixed model formula interface. Therefore, knowledge of the R regression model infrastructure [@faraway2016extending,@MASS2002] is an advantage when using our package. Furthermore, this glass box approach should make it easy to reimplement an analysis which was performed with `r BiocStyle::Githubpkg("prolfqua")` using base R or other programming languages by reading the analysis script. However, acknowledging the R formula interface’s complexity to non-statisticians and the popularity of `r BiocStyle::Biocpkg("MSstats")`, we provide the functionality to suggest a model formula from the sample annotation provided in tabular form similarily to `r BiocStyle::Biocpkg("MSstats")` [@Choi2014].
 
 An important aspect of mass spectrometric data are missing values. Missing values lead to groups of varying size. Linear and mixed effect models can handle unbalanced designs, i.e. different group sizes. As long as there is at least one observation per group they do produce unbiased estimates. We use this feature instead of imputing missing observations. 
-However, if there are no observation in one of the groups, then contrasts involving this group can not be estimated. To address this, for the group without observations, we use a point prior equal to the average of $3\%$ smallest group intensities means in the dataset and infer the variance using the pooled the variance of other groups. Proteins for which the fold change was imputed in such a way are explicitely annotated in the result table.
+However, if there are no observation in one of the groups, then contrasts involving this group can not be estimated. To address this, for the group without observations, we use a point prior equal to the average of $3\%$ smallest group intensities means in the dataset and infer the variance using the pooled the variance of other groups. Proteins for which the fold change was imputed in such a way are explicitly annotated in the result table.
 
+Other means of modelling missing information in proteomics data using the Hurdle model is discussed by [@goeminne2020msqrob], while the R package `r BiocStyle::Biocpkg("proDA")` models missingness using probabilistic dropout models [@bioxrvproDA2020]. 
 
-Other means of modelling missing information in proteomics data using the Hurdle model is discussed by [@goeminne2020msqrob], while the R package _proDA_ models missingness using probabilistic dropout models [@bioxrvproDA2020]. 
+Other means of modelling missing information in proteomics data using the Hurdle model is discussed by [@goeminne2020msqrob], while the R package `r BiocStyle::Biocpkg("proDA")` models missingness using probabilistic dropout models [@bioxrvproDA2020]. 
 
-
-Furthermore, the functionality of _prolfqua_ also includes methods specific to proteomics data. For example, we implemented strategies to estimate protein intensities from peptide intensities: top N, Tukey's median polish, robust linear models [@Grossmann2010,@goeminne2020msqrob]. Furthermore, peptide or protein intensities can be scaled using the robust scaling method or transformed using _quantile_ normalization or _vsn_ to remove systematic differences among samples and heteroscedasticity. In this respect, _prolfqua_ can be compared with other R packages such _DEP_ [@DEP2018] or POMA [@POMA2021] which support the entire LFQ analysis pipeline. However, we also implemented functionality to streamline the benchmarking of the implemented methods. We use the Ionstar [@shen2018ionstar] dataset to benchmark the analysis pipeline and modeling methods implemented within _prolfqua_ and to compare our results with those of _MSstats_ and _proDA_.
-
+Furthermore, the functionality of `r BiocStyle::Githubpkg("fgcz/prolfqua")` also includes methods specific to proteomics data. For example, we implemented strategies to estimate protein intensities from peptide intensities: top N, Tukey's median polish, robust linear models [@Grossmann2010, @goeminne2020msqrob]. Furthermore, peptide or protein intensities can be scaled using the robust scaling method or transformed using _quantile_ normalization or `r BiocStyle::Biocpkg("vsa")` to remove systematic differences among samples and heteroscedasticity. In this respect, `r BiocStyle::Githubpkg("fgcz/prolfqua")` can be compared with other R packages such `r BiocStyle::Biocpkg("DEP")` [@DEP2018] or `r BiocStyle::Biocpkg("POMA")` [@POMA2021] which support the entire LFQ analysis pipeline. However, we also implemented functionality to streamline the benchmarking of the implemented methods. We use the Ionstar [@shen2018ionstar] dataset to benchmark the analysis pipeline and modeling methods implemented within `r BiocStyle::Githubpkg("fgcz/prolfqua")` and to compare our results with those of `r BiocStyle::Biocpkg("MSstats")` and `r BiocStyle::Biocpkg("proDA")`.
 
 # Implementation & Methods (Experimental Section)
 
@@ -150,7 +143,7 @@ Where, $n_g$ is the number of groups and $n$ is the number of observations.
 This methods are implemented in the class `ContrastSimpleImpute` (see Figure \@ref(fig:ContrastUML)).
 
 
-### P-value moderation
+### $p$-value moderation
 
 From the linear and the mixed effect models, we can obtain the residual standard deviation $\sigma$, and degrees of freedom $df$. [@Smyth2004linear] discuss how, using the empirical Bayes paradigm, to use the $\sigma$ and $df$ of all models to estimate a prior $\sigma$ and prior $df$, and posterior $\tilde \sigma$. These can be used to moderate the $t$-statistics by:
 
@@ -422,8 +415,28 @@ remotes::install_github('wolski/prolfqua',
 # Conclusion (tbd)
 
 
-# Supplement
+# Acknoledgements
 
+The authors thank the technology platform fund (TPF) of the University of Zurich.
+
+
+# Abbreviations
+
+|       |                                                   |
+|:------|:--------------------------------------------------|
+|ESI-MS |Electro-Spray-Ionization Mass Spectrometry         |
+|FDR    |False Discovery Rate                               |
+|HPLC   |High-Pressure Liquid Chromatography                |
+|LC-MS  |Liquid Chromatography followed by Mass Spectrometry|
+|LFQ    |Label-Free Quantification                          |
+|OO     |Object-Oriented                                    |
+|MS     |mass spectrometry                                  |
+
+# References {-}
+
+<div id="refs"></div>
+
+# Supplement
 
 ## Comparing benchmark results
 
@@ -463,12 +476,12 @@ ggplot2::ggplot(x,ggplot2::aes( x = diff.imp, y = diff.proda) ) + ggplot2::geom_
 ```
 
 
+## Session information
 
-# Acknoledgements
-
-The authors thank the technology platform fund of the University of Zurich.
-
-
+```{r sessioninfo, echo=FALSE}
+sessionInfo()
+```
 
 
-# References
+
+
