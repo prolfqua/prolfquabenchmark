@@ -93,7 +93,7 @@ We store all the data needed for analysis in a single data frame in a tidy table
 knitr::include_graphics("LFQDataUML.png")
 ```
 
-__R__ linear model and linear mixed effect models allow modeling parallel designs, repeated measurements, factorial designs, and many more. __R__'s formula interface for linear models is flexible, widely used, and well documented (TODO(wew): cite the docu). This makes it easy to reproduce an analysis performed with `r BiocStyle::Githubpkg("fgcz/prolfqua")` in other statistical programming languages. We implemented features specific to high throughput experiments, such as the experimental Bayes variance and $p$-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We use R6 to model the statistical modeling functionality in `r BiocStyle::Biocpkg("prolfqua")` (see Figure \@ref(fig:ContrastUML)).
+__R__ linear model and linear mixed effect models allow modeling parallel designs, repeated measurements, factorial designs, and many more. __R__'s formula interface for linear models is flexible, widely used, and well documented ([@faraway2016extending], page : ). This makes it easy to reproduce an analysis performed with `r BiocStyle::Githubpkg("fgcz/prolfqua")` in other statistical programming languages. We implemented features specific to high throughput experiments, such as the experimental Bayes variance and $p$-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We use R6 to model the statistical modeling functionality in `r BiocStyle::Biocpkg("prolfqua")` (see Figure \@ref(fig:ContrastUML)).
 
 (ref:ContrastUML) UML diagram of modeling and contrast related classes. Different strategies, e.g., _lm_, _lmer_, and _glm_ can be used to fit various types of models using a model builder (see code). All classes computing contrasts implement the _Contrast_ interface.
 
@@ -104,7 +104,6 @@ __R__ linear model and linear mixed effect models allow modeling parallel design
 knitr::include_graphics("ContrastClassesUML.png")
 ```
 
-[TODO SAINTExpress integration, proDA]
 
 ## Dataset
 
@@ -169,7 +168,7 @@ Afterwards, the median scaled $p$-value $\tilde{p}_s$ is determined and using th
 \tilde{p} = 1 - |\tilde{p}_{s}|
 \end{equation}
 
-Because we used the median as the i-th order statistic $i = \frac{n}{2} + 0.5$. Therefore, $\gamma = i = \frac{n}{2} + 0.5$ and $\delta = n - i + 1 = n - (\frac{n}{2} + 0.5) + 1 = \frac{n}{2} + 0.5 = \gamma$ are used to parameterize the (TODO(wew): what is CDF) CDF of the Beta distribution. We implemented this method in the class `ContrastROPECA` (Figure \@ref(fig:ContrastUML)).
+Because we used the median as the i-th order statistic $i = \frac{n}{2} + 0.5$. Therefore, $\gamma = i = \frac{n}{2} + 0.5$ and $\delta = n - i + 1 = n - (\frac{n}{2} + 0.5) + 1 = \frac{n}{2} + 0.5 = \gamma$ are used to parameterize the cumulative distribution function (CDF) of the Beta distribution. We implemented this method in the class `ContrastROPECA` (Figure \@ref(fig:ContrastUML)).
 
 ## Usage
 
@@ -383,13 +382,13 @@ We can conclude that if we want to order the proteins according to the likelihoo
 
 For the fixed effect linear model, the empirical Bayes variance shrinkage, as suggested by [@Smyth2004linear], consistently improves compared with the unmoderated estimates (data not shown). However, there is no such effect for the mixed effect model, most likely because the degrees of freedom are erroneously estimated for a large proportion of models.
 
-Computing the statistics at the peptide level, e.g., the $t$-statistics or $p$-value, then summarizing these statistics using their median produces the highest AUC scores among all the tested models. By using the beta distribution to model the number of peptides observed, we can further improve the pAUC scores (see Figure TODO(wew)). However, the properties of beta-based probabilities are not well understood; for instance, they have no uniform distribution under the null hypothesis. The FDR estimates obtained when correcting multiple testing with the Benjamini-Hochberg method are strongly biased (see Figure \@ref(fig:FDRfdp) right panel). Therefore, we can not recommend this method if an unbiased estimate of FDR is essential, which is frequently the case. Furthermore, peptides are stronger affected by missing values, reducing the number of contrasts we could estimate for the dataset (see Figure \@ref(fig:FDRfdp) left panel). To address the issue of missing observation, we could either run `r BiocStyle::Biocpkg("proDA")` or the imputation of group averages method discussed here and afterwards apply `r BiocStyle::Biocpkg("PECA")`.
+Computing the statistics at the peptide level, e.g., the $t$-statistics or $p$-value, then summarizing these statistics using their median produces the highest AUC scores among all the tested models. By using the beta distribution to model the number of peptides observed, we can further improve the pAUC scores (see Figure TODO(wew)). However, the properties of beta-based probabilities are not well understood; for instance, they have no uniform distribution under the null hypothesis (TODO remove they). The FDR estimates obtained when correcting multiple testing with the Benjamini-Hochberg method are strongly biased (see Figure \@ref(fig:FDRfdp) right panel). Therefore, we can not recommend this method if an unbiased estimate of FDR is essential, which is frequently the case. Furthermore, peptides are stronger affected by missing values, reducing the number of contrasts we could estimate for the dataset (see Figure \@ref(fig:FDRfdp) left panel). To address the issue of missing observation, we could either run `r BiocStyle::Biocpkg("proDA")` or the imputation of group averages method discussed here and afterwards apply `r BiocStyle::Biocpkg("PECA")`.
 
 The probabilistic dropout analysis implemented in the `r BiocStyle::Biocpkg("proDA")` produces inferences comparable to other methods (Figure \@ref(fig:FDRfdp) for the largest number of proteins (Figure \@ref(fig:FDRfdp) left panel). Moreover, the estimated fold changes are unbiased and show high diagnostic accuracy. Furthermore, the scaled $p$-values and $t$-statistics are on par with those obtained by the linear model with variance moderation. Therefore, we plan to integrate the `r BiocStyle::Biocpkg("proDA")` package as an additional modeling option into `r BiocStyle::Githubpkg("fgcz/prolfqua")` (see Figure \@ref(fig:ContrastUML)).
 
 Leveraging on these computer experiments, we can provide the following advice. First, aggregate the peptide intensities to protein intensities using a robust regression method. Second, use linear models as long as they suffice to model your experimental design. Use mixed effect models only if you have to, e.g., repeated measurements. If you use fixed-effect linear models, apply variance moderation since this improves the $t$-statistics and $p$-value estimates. If you want to sort your protein lists to perform gene set enrichment analysis, use the $t$-statistic instead of the fold change. You can select proteins to study them further based on the FDR, although expect a $bias$.
 
-`r BiocStyle::Githubpkg("fgcz/prolfqua")` allows for considerable flexibility to model your experiments. Various types of models are available (for an overview see table TODO(wew)), and the contrast specification is consistent and intuitive for all models. The benchmarking results are comparable with existing methods. The modular design of `r BiocStyle::Githubpkg("fgcz/prolfqua")`, allows for customizing the analysis or adding new features, e.g., generalized linear models (_glm_'s) for missing data modeling or robust linear models (_rlm_'s), quickly.
+`r BiocStyle::Githubpkg("fgcz/prolfqua")` allows for considerable flexibility to model your experiments. Various types of models are available (for an overview see table TODO(wew) create table with methods implemented in prolfqua), and the contrast specification is consistent and intuitive for all models. The benchmarking results are comparable with existing methods. The modular design of `r BiocStyle::Githubpkg("fgcz/prolfqua")`, allows for customizing the analysis or adding new features, e.g., generalized linear models (_glm_'s) for missing data modeling or robust linear models (_rlm_'s), quickly.
 
 Using the tidy table to model the data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")`. Furthermore, the use of `R6` classes, which encapsulate the configuration and the data, allows writing very concise code (no function arguments needed), and auto-completion support in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality. 
 
@@ -407,6 +406,7 @@ The authors thank the technology platform fund (TPF) of the University of Zurich
 |       |                                                   |
 |:------|:--------------------------------------------------|
 |AUC    |Area Under the Curve                               |
+|CDF    |Cumulative Distribution Function                   |
 |ESI-MS |Electro-Spray-Ionization Mass Spectrometry         |
 |FC     |Fold Change                                        |
 |$FDP$  |False Discovery Proportion                         |
