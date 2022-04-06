@@ -1,7 +1,7 @@
 ---
 title: prolfqua (prodea) - An R-package for Proteomics Differential Expression Analysis.
 author: 
-  - Witold E. Wolski^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - Swiss Federal Institute of Technology in Zurich \| University of Zurich]
+  - Witold E. Wolski $^{\star,}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - Swiss Federal Institute of Technology in Zurich \| University of Zurich; Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. Correspondence$^\star$\texttt{wew@fgcz.ethz.ch}]
   - Paolo Nanni$^*$
   - Jonas Grossmann$^*$
   - Maria d'Errico$^*$
@@ -19,19 +19,19 @@ abstract: |
   Nevertheless, there is still a need for a flexible and easy-to-use, 
   transparently supporting a variety of well principled statistical
   inference procedures data analysis application programmer interface
-  in R. The `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package integrates
   essential steps of the mass spectrometry-based label-free quantification
-  data analysis workflow as: quality control, data normalization, protein
   aggregation, statistical modeling, hypothesis testing, and sample size
   estimation.
-  We use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to visualize and model
   simple experimental designs with a single explanatory variable and complex
   experiments with multiple factors.
-  Furthermore, we use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to benchmark
   data acquisition, data preprocessing or data modeling methods. Furthermore,
-  we apply `r BiocStyle::Githubpkg("fgcz/prolfqua")` to develop highly
   customizable, visually appealing, and interactive data analysis reports
   in PDF or HTML format.
+  in R. The `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package integrates
+  data analysis workflow as: quality control, data normalization, protein
+  We use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to visualize and model
+  Furthermore, we use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to benchmark
+  we apply `r BiocStyle::Githubpkg("fgcz/prolfqua")` to develop highly
   The R package is available through https://github.com/fgcz/prolfqua.
 ---
 
