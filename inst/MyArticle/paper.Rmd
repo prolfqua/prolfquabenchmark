@@ -177,16 +177,16 @@ Because we used the median as the i-th order statistic $i = \frac{n}{2} + 0.5$. 
 
 ```{r prolfquaModels}
 xM <- data.frame( 
-    lm = c("lm", "linear model on peptide or protein abundances", "strategy_lm, build_models, Contrasts"),
-    lmer = c("lmer" , "mixed effect models on peptide and protein abundances", "strategy_lmer, build,models, Contrasts"),
+    lm = c("lm", "linear model for peptides or proteins", "strategy_lm, Contrasts"),
+    lmer = c("lmer" , "mixed effect models for peptides or proteins", "strategy_lmer, Contrasts"),
     gmi = c("group mean imputation", "impute missing group means", "ContrastsSimpleImpute"),
-    ROPECA = c("ROPECA","linear models on peptide abundances", "strategy_lm, build_models, Contrast, ContrastsROPECA"),
+    ROPECA = c("ROPECA"," ", "ContrastsROPECA"),
     limma = c("limma" , "empirical Bayes variance shrinkage", "ContrastsModerated"),
-    pic = c("Protein interaction scoring", "by wrapping SAINT express binaries", "runSaint, ContrastsSaintExpress"),
-    prodA = c("dropout model", "by warpping proDA functionality", "strategy_proDA, build_models, ContrastsProDa"), check.names =  FALSE)
+    pic = c("SAINTexpress", "protein interaction scoring", "runSaint, ContrastsSaintExpress"),
+    prodA = c("proDA", "dropout models", "strategy_proDA, Contrasts_proDa"), check.names =  FALSE)
 xM <- data.frame(t(xM))
-colnames(xM) <- c("m", "model", "prolfqua functions")
-knitr::kable(xM[,2:3], caption = "Models available in prolfqua.")
+colnames(xM) <- c("id", "model", "prolfqua functions")
+knitr::kable(tibble::as_tibble(xM[,1:3]), caption = "Models available in prolfqua.")
 
 ```
 
