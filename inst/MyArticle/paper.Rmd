@@ -186,8 +186,9 @@ xM <- data.frame(
     prodA = c("dropout model", "by warpping proDA functionality", "strategy_proDA, build_models, ContrastsProDa"), check.names =  FALSE)
 xM <- data.frame(t(xM))
 colnames(xM) <- c("m", "model", "prolfqua functions")
-knitr::kable(xM[,2:3], caption = "Models available in prolfqua.")
-
+knitr::kable(xM[,2:3], caption = "Models available in prolfqua.",
+             format = "latex", booktabs=TRUE) |>
+    kableExtra::kable_styling(latex_options="scale_down")
 ```
 
 
@@ -263,14 +264,11 @@ gridExtra::grid.arrange(p1, p2, ncol = 2)
 
 ## Benchmarking
 
-
-
 The Benchmark functionality of `r BiocStyle::Githubpkg("fgcz/prolfqua")` includes ROC curves and computes partial areas under those curves (pAUC) and other scores, e.g., the false discovery proportion FDP. We use those plots to study how well linear, mixed effect models or $p$-value moderation models quantitative mass spectrometric high throughput experiments and compare them with results produced by `r BiocStyle::Biocpkg("MSstats")` [@MSstats2014] and `r BiocStyle::Biocpkg("proDA")` [@bioxrvproDA2020] (see also Figure \@ref(fig:FDRfdp))
 
 The peptide intensities from the _MaxQuant_ _peptide.txt_ file were $log_2$ transformed, and subsequent robust z-score transformation, where median and the mean average deviation (mad) were obtained from the human proteins only. We removed _one hit wonders_, i.e. proteins with a single peptide assignment. No further data filtering was used. We also did not use imputation. The protein level linear model was fitted to the protein intensities inferred from the peptide intensities using the Tukey's median polish. The mixed effect linear model, and the `r BiocStyle::Biocpkg("PECA")` model were fitted to the peptide intensities. The details of the `r BiocStyle::Githubpkg("fgcz/prolfqua")` benchmark implementation are available online  [BenchmarkingIonstarData](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html).
 
 For benchmarking of `r BiocStyle::Biocpkg("MSstats")` we used the MSstats default parameters (for details see: [Benchmarking_MSstats](https://wolski.github.io/prolfquabenchmark/articles/))
-
 
 The IonStar [@shen2018ionstar] dataset contains _H. sapiens_ proteins with constant concentrations and _E. coli_ proteins with varying concentrations. We know that for _H. sapiens_ proteins, the difference $\beta$ between two dilutions should be $\beta = 0$. While for _E. coli_ proteins, we know that the difference between dilutions should be $\beta \ne 0$. To compare the performance of the various methods implemented in `r BiocStyle::Githubpkg("fgcz/prolfqua")` we use only the contrasts resulting in small fold-changes $\beta = (1.20, 1.25, 1.30, 1.50)$.
 
@@ -294,7 +292,6 @@ FDP &= \frac{FP}{TP + FP} = \frac{FP}{R}
 \end{eqnarray}
 
 By plotting the $TPR$ versus the $FPR$ we obtain the receiver operator characteristic curve (ROC curve). The area under the curve (AUC) or partial areas under the curve (pAUC), at various values of the $FPR$, are measures of performance derived from the ROC curve. By using these measures we can compare the performances of the statistics produced by the various methods examined.
-
 
 ```{r readBenchmarkData}
 allBenchmarks <- readRDS("../../inst/Benchresults/allBenchmarks.RDS")
@@ -351,7 +348,6 @@ We also benchmark, if the $FDR$ obtained from a model is an unbiased estimate of
 
 (ref:FDRfdp) Left panel - Partial area under the ROC curve at $10\%$ FPR for all contrasts and three different statistics: the difference among conditions, the scaled $p$-value (sign(diff) * p.value) and the $t$-statistics (higher is better). The red line average area under the curve. Left panel - Number and percentage of estimated contrasts for each modeling method (higher is better). Right panel - Compare FDR estimate with false discovery proportion (FDP) closer to the diagnoal (red continous line is better).
 
-
 ```{r FDRfdp, fig.cap = "(ref:FDRfdp)", out.width = '90%', fig.width=12, fig.height=10}
 dd <- purrr::map_df(allBenchmarks, function(x){res <- x$smc$summary; res$name <- x$model_name;res})
 dd <- dd |> dplyr::mutate(nrcontrasts = protein_Id * (4 - nr_missing))
@@ -389,8 +385,6 @@ hlay = rbind(c(1,1),
 gridExtra::grid.arrange(p1_pAUC, p3, p4, layout_matrix=hlay)
 ```
 
-
-
 # Results and Discussion.
 
 We focused on comparing models to estimate fold changes, variances and to obtain false discovery rates. 
@@ -407,15 +401,11 @@ The probabilistic dropout analysis implemented in the `r BiocStyle::Biocpkg("pro
 
 Leveraging on these computer experiments, we can provide the following advice. First, aggregate the peptide intensities to protein intensities using a robust regression method. Second, use linear models as long as they suffice to model your experimental design. Use mixed effect models only if you have to, e.g., repeated measurements. If you use fixed-effect linear models, apply variance moderation since this improves the $t$-statistics and $p$-value estimates. If you want to sort your protein lists to perform gene set enrichment analysis, use the $t$-statistic instead of the fold change. You can select proteins to study them further based on the FDR, although expect a $bias$.
 
-
 `r BiocStyle::Githubpkg("fgcz/prolfqua")` allows for considerable flexibility to model your experiments. Various types of models are available (see Figure \@ref(fig:ContrastUML) and Table \@ref(tab:prolfquaModels)), and the contrast specification is consistent and intuitive for all models. The benchmarking results are comparable with existing methods. The modular design of `r BiocStyle::Githubpkg("fgcz/prolfqua")`, allows for customizing the analysis or adding new features, e.g., generalized linear models (_glm_'s) for missing data modeling or robust linear models (_rlm_'s), quickly.
 
 Using the tidy table to model the data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")`. Furthermore, the use of `R6` classes, which encapsulate the configuration and the data, allows writing very concise code (no function arguments needed), and auto-completion support in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality. 
 
 In summary `r BiocStyle::Githubpkg("fgcz/prolfqua")` is an easy-to-use and feature rich R package to analyse quantitative mass spectrometric data, report results, and benchmark MS software and statistical methods. We provide more details at the website https://github.com/fgcz/prolfqua/.
-
-
-
 
 # Conclusion (tbd)
 
@@ -424,27 +414,36 @@ In summary `r BiocStyle::Githubpkg("fgcz/prolfqua")` is an easy-to-use and featu
 
 The authors thank the technology platform fund (TPF) of the University of Zurich.
 
+
 # Abbreviations
 
-|       |                                                   |
-|:------|:--------------------------------------------------|
-|AUC    |Area Under the Curve                               |
-|CDF    |Cumulative Distribution Function                   |
-|ESI-MS |Electro-Spray-Ionization Mass Spectrometry         |
-|FC     |Fold Change                                        |
-|$FDP$  |False Discovery Proportion                         |
-|$FDR$  |False Discovery Rate                               |
-|HPLC   |High-Pressure Liquid Chromatography                |
-|LC-MS  |Liquid Chromatography followed by Mass Spectrometry|
-|LFQ    |Label-Free Quantification                          |
-|LOD    |Limit Of Detection                                 |
-|MS     |mass spectrometry                                  |
-|OO     |Object-Oriented                                    |
-|UML    |Unified Modeling Language                          |
+\begin{table}[H]
+\centering
+\begin{tabular}[H]{ll}
+\toprule
+Abbreviations & Explaination\\
+\midrule
+AUC    &Area Under the Curve                               \\
+CDF    &Cumulative Distribution Function                   \\
+ESI-MS &Electro-Spray-Ionization Mass Spectrometry         \\
+FC     &Fold Change                                        \\
+$FDP$  &False Discovery Proportion                         \\
+$FDR$  &False Discovery Rate                               \\
+HPLC   &High-Pressure Liquid Chromatography                \\
+LC-MS  &Liquid Chromatography followed by Mass Spectrometry\\
+LFQ    &Label-Free Quantification                          \\
+LOD    &Limit Of Detection                                 \\
+MS     &mass spectrometry                                  \\
+OO     &Object-Oriented                                    \\
+UML     &       Unified Modeling Language                  \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 # References {-}
 
 <div id="refs"></div>
+
 
 # Supplements
 
