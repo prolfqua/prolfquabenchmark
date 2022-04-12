@@ -1,5 +1,5 @@
 ---
-title: prolfqua (prodea) - An R-package for Proteomics Differential Expression Analysis.
+title: prolfqua - An R-package for Proteomics Differential Expression Analysis.
 author: 
   - Witold E. Wolski $^{\star,}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - Swiss Federal Institute of Technology in Zurich \| University of Zurich; Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. Correspondence$^\star$\texttt{wew@fgcz.ethz.ch}]
   - Paolo Nanni$^*$
