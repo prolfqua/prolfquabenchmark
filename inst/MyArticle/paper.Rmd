@@ -1,12 +1,12 @@
 ---
 title: prolfqua - An R-package for Proteomics Differential Expression Analysis.
 author: 
-  - Witold E. Wolski $^{\star}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - Swiss Federal Institute of Technology in Zurich \| University of Zurich; Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. Correspondence$^\star$\texttt{wew@fgcz.ethz.ch}]
   - Paolo Nanni$^{\star}$
   - Jonas Grossmann$^{\star}$
   - Maria d'Errico$^{\star}$
   - Ralph Schlapbach$^{\star}$
   - Christian Panse$^{\star}$
+  - Witold E. Wolski $^{\star}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - Swiss Federal Institute of Technology in Zurich \| University of Zurich; Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. Correspondence$^\star$\texttt{wew@fgcz.ethz.ch}]
 output: 
   bookdown::pdf_document2:
     toc: true
@@ -14,25 +14,10 @@ bibliography: bibliography.bib
 editor_options: 
   chunk_output_type: console
 abstract: |
-  Protein mass spectrometry is widely used for quantitative proteomics
-  studies and in particular for relative protein quantification.
-  Nevertheless, there is still a need for a flexible and easy-to-use, 
-  transparently supporting a variety of well principled statistical
-  inference procedures data analysis application programmer interface
-  essential steps of the mass spectrometry-based label-free quantification
-  aggregation, statistical modeling, hypothesis testing, and sample size
-  estimation.
-  simple experimental designs with a single explanatory variable and complex
-  experiments with multiple factors.
-  data acquisition, data preprocessing or data modeling methods. Furthermore,
-  customizable, visually appealing, and interactive data analysis reports
-  in PDF or HTML format.
-  in R. The `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package integrates
-  data analysis workflow as: quality control, data normalization, protein
-  We use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to visualize and model
-  Furthermore, we use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to benchmark
-  we apply `r BiocStyle::Githubpkg("fgcz/prolfqua")` to develop highly
-  The R package is available through https://github.com/fgcz/prolfqua.
+    Protein mass spectrometry is widely used for quantitative proteomics studies, relative protein quantification, and differential expression analysis of proteins. Nevertheless, there is still a need for a flexible and easy-to-use application programmer interface in R that transparently supports a variety of well principled statistical inference procedures.
+    The `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package integrates essential steps of the mass spectrometry-based label-free quantification data analysis workflow: quality control, data normalization, protein aggregation, statistical modeling, hypothesis testing, and sample size estimation. The package can model simple experimental designs with a single explanatory variable and complex experiments with multiple factors using various statistical models. It also can be used to develop applications that produce interactive data analysis reports in PDF or HTML format. 
+     Furthermore, the package can be used to benchmark data acquisition, data preprocessing, or data modeling methods using gold standard datasets. The R package is available through https://github.com/fgcz/prolfqua.
+
 ---
 
 
