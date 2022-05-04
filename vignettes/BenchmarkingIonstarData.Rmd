@@ -28,7 +28,8 @@ echo = TRUE,
 message = FALSE,
 warning = FALSE,
 fig.width = 5,
-fig.height = 5
+fig.height = 5,
+knitr.table.format="pipe"
 )
 ```
 
@@ -303,7 +304,7 @@ tt <- Reduce(rbind, strsplit(names(Contrasts),split = "_"))
 tt <- data.frame(tt)[,2:3]
 colnames(tt) <- c("ratio" , "expected fold-change")
 tt <- tibble::add_column(tt, contrast =  Contrasts, .before = 1)
-prolfqua::table_facade(tt, caption = "All possible Contrasts given 5 E. coli dilutions of the Ionstar Dataset")
+prolfqua::table_facade(tt, caption = "All possible Contrasts given 5 E. coli dilutions of the Ionstar Dataset", digits=1)
 
 ```
 
@@ -317,7 +318,7 @@ tt <- Reduce(rbind, strsplit(relevantContrasts,split = "_"))
 tt <- data.frame(tt)[,2:3]
 colnames(tt) <- c("ratio" , "expected fold-change")
 tt <- tibble::add_column(tt, contrast =  Contrasts[names(Contrasts) %in% relevantContrasts], .before = 1)
-prolfqua::table_facade(tt, caption = "Contrasts used for benchmark.")
+prolfqua::table_facade(tt, caption = "Contrasts used for benchmark.", digits=1)
 relevantContrasts <- Contrasts[names(Contrasts) %in% relevantContrasts]
 
 ```
@@ -364,13 +365,12 @@ benchmark_imputation <- prolfqua::make_benchmark(
     FDRvsFDP = list(list(score = "FDR", desc = FALSE))
 )
 
-benchmark_imputation$get_confusion_FDRvsFDP()
 benchmark_imputation$plot_ROC(xlim = 0.1)
 
 
 benchmark_imputation$plot_FDRvsFDP()
 
-prolfqua::table_facade(benchmark_imputation$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.")
+prolfqua::table_facade(benchmark_imputation$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
 ```
 
 ```{r fig.cap = "Summary of partial area under the ROC curve."}
@@ -381,7 +381,7 @@ bb$barp
 
 
 ```{r}
-prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption)
+prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits=1)
 
 allBenchmarks <- list()
 allBenchmarks$benchmark_imputation <- benchmark_imputation
@@ -404,7 +404,6 @@ pl$histogram()
 allContrasts$Prot <- contrProt$get_contrasts()
 
 ttd <- prolfqua::ionstar_bench_preprocess(contrProt$get_contrasts())
-ttd$data$protein_Id |> unique() |> length()
 
 benchmark_Prot <- prolfqua::make_benchmark(
     ttd$data,
@@ -412,7 +411,7 @@ benchmark_Prot <- prolfqua::make_benchmark(
     model_name = "prot_med_lm"
 )
 
-prolfqua::table_facade(benchmark_Prot$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.")
+prolfqua::table_facade(benchmark_Prot$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
 
 #benchmark_Prot$plot_score_distribution()
 benchmark_Prot$plot_FDRvsFDP()
@@ -440,7 +439,7 @@ benchmark_ProtModerated <- prolfqua::make_benchmark(
     model_name = "prot_med_lm_moderated")
 
 prolfqua::table_facade(benchmark_ProtModerated$smc$summary,
-                       caption = "Nr of proteins with Nr of not estimated contrasts.")
+                       caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
 
 benchmark_ProtModerated$plot_FDRvsFDP()
 allBenchmarks$benchmark_ProtModerated <- benchmark_ProtModerated
@@ -471,7 +470,7 @@ benchmark_mixed <- prolfqua::make_benchmark(
 )
 benchmark_mixed$complete(FALSE)
 prolfqua::table_facade(benchmark_mixed$smc$summary,
-                       caption = "Nr of proteins with Nr of not estimated contrasts.")
+                       caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
 
 #benchmark_mixed$plot_score_distribution()
 benchmark_mixed$plot_FDRvsFDP()
@@ -505,7 +504,7 @@ benchmark_mixedModerated <- prolfqua::make_benchmark(
     ttd$data,
     model_description = "mixed effect model moderated",
     model_name = "prot_mixed_effect_moderated")
-prolfqua::table_facade(benchmark_mixedModerated$smc$summary, caption = "Nr of proteins with Nr of computed contrasts.")
+prolfqua::table_facade(benchmark_mixedModerated$smc$summary, caption = "Nr of proteins with Nr of computed contrasts.", digits=1)
 
 #benchmark_mixedModerated$plot_score_distribution()
 benchmark_mixedModerated$plot_FDRvsFDP()
@@ -531,7 +530,6 @@ contrROPECA$get_Plotter()$histogram()
 allContrasts$contrProtMixedModerated <- contrProtMixedModerated$get_contrasts()
 
 ttd <- prolfqua::ionstar_bench_preprocess(contrROPECA$get_contrasts())
-ttd$data
 benchmark_ropeca <- prolfqua::make_benchmark(
     ttd$data,
     toscale = c("beta.based.significance"),
@@ -548,7 +546,7 @@ benchmark_ropeca <- prolfqua::make_benchmark(
 
 prolfqua::table_facade(
     benchmark_ropeca$smc$summary,
-    caption = "Nr of proteins with Nr of not estimated contrasts.")
+    caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
 
 benchmark_ropeca$plot_ROC(0.1)
 benchmark_ropeca$plot_FDRvsFDP()
@@ -565,7 +563,7 @@ bb$barp
 
 
 ```{r}
-prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption)
+prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits=1)
 
 ```
 
@@ -583,7 +581,7 @@ benchmark_merged <- prolfqua::make_benchmark(
     model_description = "merge of prot moderated and imputed",
     model_name = "prot_merged")
 
-prolfqua::table_facade(benchmark_merged$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.")
+prolfqua::table_facade(benchmark_merged$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
 #benchmark_mixedModerated$plot_score_distribution()
 
 benchmark_merged$plot_FDRvsFDP()
@@ -596,7 +594,9 @@ benchmark_merged$plot_ROC(xlim = 0.15)
 bb <- benchmark_merged$pAUC_summaries()
 bb$barp
 
-prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption)
+tmp <- prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits=1)
+print(tmp)
+knitr::kable((bb$ftable$content))
 
 allBenchmarks$benchmark_merged <- benchmark_merged
 
@@ -613,7 +613,7 @@ benchmark_same <- prolfqua::make_benchmark(
     model_description = "imputed_same_as_lm",
     model_name = "imputed_same_as_lm")
 
-prolfqua::table_facade(benchmark_same$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.")
+prolfqua::table_facade(benchmark_same$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
 benchmark_same$plot_FDRvsFDP()
 
 ```
@@ -623,7 +623,7 @@ benchmark_same$plot_ROC(xlim = 0.15)
 bb <- benchmark_same$pAUC_summaries()
 bb$barp
 
-prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption)
+prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits=1)
 
 allBenchmarks$benchmark_same <- benchmark_same
 
