@@ -176,11 +176,10 @@ ionstar <- IonstarData$new(mqdataSubset$data, mqdataSubset$config,
 
 ```
 
-# Inferring Protein intensities
+# Inferring Protein abundances from Peptide abundances
 
 We will be using the `LFQDataAggregator` class.
-To estimate protein intensities using Tukey's median polish we need to use log2 transformed peptide intensities.
-The figure below shows the the peptide intensities used for estimation and the protein intensity estimates (black dashed line).
+To estimate protein abundances using Tukey's median polish we need to use log2 transformed peptide abundances
 
 ```{r aggregateMedpolish, fig.width=10, fig.height=10}
 lfqNormSubset$config$table$getWorkIntensity()
@@ -189,9 +188,13 @@ pl <- lfqNormSubset$get_Plotter()
 pl$intensity_distribution_density()
 lfqAggMedpol <- lfqNormSubset$get_Aggregator()
 lfqAggMedpol$medpolish()
+```
 
-#xx <- lfqAggMedpol$plot()
-#gridExtra::grid.arrange(grobs =  xx$plots[1:6])
+The figure below shows the the peptide abundances used for estimation and the protein abundance estimates (black line).
+
+```{r}
+xx <- lfqAggMedpol$plot()
+gridExtra::grid.arrange(grobs =  xx$plots[1:3])
 ```
 
 ```{r storeProteinAggregates, echo = FALSE, include = FALSE}
@@ -199,18 +202,13 @@ data_IonstarProtein_subsetNorm <- list(
   data = lfqAggMedpol$lfq_agg$data,
   config = lfqAggMedpol$lfq_agg$config
 )
-
-#usethis::use_data(data_IonstarProtein_subsetNorm, overwrite = TRUE)
-
 ```
 
-We can also estimate the protein intensities using the top N most abundant peptides.
-In this case we are using the untransformed protein intensities.
-The figure below shows the estimated protein intensities.
+We can also estimate the protein abundances by adding the abundances of the top N most abundant peptides.
+In this case we are using the untransformed peptide abudances.
 
 ```{r topNAggregation, echo = TRUE, eval=FALSE}
-
-lfqAggregator <- LFQDataAggregator$new(mqdataSubset, "protein_topN")
+lfqAggregator <- lfqdata$get_Aggregator()
 lfqAggregator$mean_topN()
 topN <- lfqAggregator$plot()
 topN$plots[[1]]
@@ -219,13 +217,13 @@ topN$plots[[1]]
 
 # Model Fitting
 
-We will be fitting tree models to the data.
-The first model is a linear model as implemented by the R function `lm` fitted to protein intensities inferred from peptide intensities using the LFQAggregator.
-The second model is mixed effects model as implemented in the R function `lmer` fitted to peptide level intensites, where we model the peptide measurements as repeated measurements of the protein.
-The third is again a linear model but fitted to peptide intensities.
-By this we obtain for each peptide intensites a linear model.
+We will be fitting tree models to the data:
 
-## Fitting a linear model to the protein intensities
+- The first model is a linear model as implemented by the R function `lm` fitted to protein abundances inferred from peptide abundances using the LFQAggregator.
+- The second model is mixed effects model implemented in the R function `lmer` fitted to peptide abundances, where we model the peptide measurements as repeated measurements of the protein.
+- The third model again is a linear model but fitted to peptide abundances. By this we obtain for each peptide a linear model can compute contrasts and then can aggregate them using the ROPECA method.
+
+## Fitting a linear model to the protein abundances
 
 ```{r buildModelLM}
 protLFQ <- lfqAggMedpol$lfq_agg
@@ -243,7 +241,7 @@ modLinearProt$anova_histogram()$plot
 
 ```
 
-## Fitting a mixed effects model to peptide intensities
+## Fitting a mixed effects model to peptide abundances
 
 ```{r buildModelLMer}
 
@@ -324,29 +322,35 @@ relevantContrasts <- Contrasts[names(Contrasts) %in% relevantContrasts]
 
 ```
 
-There are, as of today, four contrasts classes in the package *prolfqua*+ - 'ContrastsSimpleImputed' : contrast computation with imputation of fold changes and t-statistic estimation using pooled variances.
-- 'Contrasts' : uses Wald test, - 'ContrastsModerated' : applies variance moderation:, - 'ContrastsROPECA' implements difference and p-value aggregation
+There are, as of today, four contrasts classes in the package *prolfqua*:
+
+- 'ContrastsSimpleImputed' : contrast computation with imputation of fold changes and t-statistic estimation using pooled variances.
+- 'Contrasts' : uses Wald test, 
+- 'ContrastsModerated' : applies variance moderation,
+- 'ContrastsROPECA' implements difference and p-value aggregation
 
 ## Contrasts with Imputation
 
 In order to estimate differences (fold-changes), statistics and p-values of proteins for which linear models could not be fitted because of an excess of missing measurements, the following procedure is applied.
-The mean intensity of a protein in a condition is computed.
-For the proteins with no observation in a condition, we infer their intensities by using the mean of the 10% smallest average peptide intensities in the dataset.
+The mean abundance of a protein in a condition is computed.
+For the proteins with no observation in a condition, we infer their abundances by using the mean protein abundances observed only in one sample per group.
 The standard deviation of the protein is estimated using the pooled variances of the condition where the variance could be estimated.
 
 ```{r contrastImputed}
-# ContrastsSimpleImpute$debug("get_contrasts")
 contrImp <- prolfqua::ContrastsSimpleImpute$new(
   protLFQ,
-  relevantContrasts,
-  probs = 0.01)
-
+  relevantContrasts)
 
 bb <- contrImp$get_contrasts()
+
 plc <- contrImp$get_Plotter()
 plc$volcano()
+plc$ma_plot()
 plc$histogram()
+
 ```
+
+
 
 ```{r benchmarkImputed}
 allContrasts <- list()
@@ -359,14 +363,26 @@ benchmark_imputation <- prolfqua::make_benchmark(
     model_name = "prot_imputation",
     FDRvsFDP = list(list(score = "FDR", desc = FALSE))
 )
+
 benchmark_imputation$get_confusion_FDRvsFDP()
 benchmark_imputation$plot_ROC(xlim = 0.1)
 
 
 benchmark_imputation$plot_FDRvsFDP()
 
-prolfqua::table_facade(benchmark_imputation$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
-benchmark_imputation$pAUC_summaries()
+prolfqua::table_facade(benchmark_imputation$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.")
+```
+
+```{r fig.cap = "Summary of partial area under the ROC curve."}
+
+bb <- benchmark_imputation$pAUC_summaries()
+bb$barp
+```
+
+
+```{r}
+prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption)
+
 allBenchmarks <- list()
 allBenchmarks$benchmark_imputation <- benchmark_imputation
 
@@ -396,7 +412,7 @@ benchmark_Prot <- prolfqua::make_benchmark(
     model_name = "prot_med_lm"
 )
 
-prolfqua::table_facade(benchmark_Prot$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
+prolfqua::table_facade(benchmark_Prot$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.")
 
 #benchmark_Prot$plot_score_distribution()
 benchmark_Prot$plot_FDRvsFDP()
@@ -424,7 +440,7 @@ benchmark_ProtModerated <- prolfqua::make_benchmark(
     model_name = "prot_med_lm_moderated")
 
 prolfqua::table_facade(benchmark_ProtModerated$smc$summary,
-                       caption = "Nr of proteins with Nr of estimated contrasts.")
+                       caption = "Nr of proteins with Nr of not estimated contrasts.")
 
 benchmark_ProtModerated$plot_FDRvsFDP()
 allBenchmarks$benchmark_ProtModerated <- benchmark_ProtModerated
@@ -455,7 +471,7 @@ benchmark_mixed <- prolfqua::make_benchmark(
 )
 benchmark_mixed$complete(FALSE)
 prolfqua::table_facade(benchmark_mixed$smc$summary,
-                       caption = "Nr of proteins with Nr of estimated contrasts.")
+                       caption = "Nr of proteins with Nr of not estimated contrasts.")
 
 #benchmark_mixed$plot_score_distribution()
 benchmark_mixed$plot_FDRvsFDP()
@@ -532,7 +548,7 @@ benchmark_ropeca <- prolfqua::make_benchmark(
 
 prolfqua::table_facade(
     benchmark_ropeca$smc$summary,
-    caption = "Nr of proteins with Nr of estimated contrasts.")
+    caption = "Nr of proteins with Nr of not estimated contrasts.")
 
 benchmark_ropeca$plot_ROC(0.1)
 benchmark_ropeca$plot_FDRvsFDP()
@@ -541,8 +557,16 @@ allBenchmarks$benchmark_ropeca <- benchmark_ropeca
 
 ```
 
+```{r fig.cap = "Summary of partial area under the ROC curve."}
+bb <- benchmark_ropeca$pAUC_summaries()
+bb$barp
+```
+
+
+
 ```{r}
-benchmark_ropeca$pAUC_summaries()$ftable$content
+prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption)
+
 ```
 
 ## Merging contrasts
@@ -559,7 +583,7 @@ benchmark_merged <- prolfqua::make_benchmark(
     model_description = "merge of prot moderated and imputed",
     model_name = "prot_merged")
 
-prolfqua::table_facade(benchmark_merged$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
+prolfqua::table_facade(benchmark_merged$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.")
 #benchmark_mixedModerated$plot_score_distribution()
 
 benchmark_merged$plot_FDRvsFDP()
@@ -568,7 +592,12 @@ benchmark_merged$plot_FDRvsFDP()
 
 ```{r fig.width=10, fig.height=10, fig.cap="ROC curves for merged benchmark"}
 benchmark_merged$plot_ROC(xlim = 0.15)
-benchmark_merged$pAUC_summaries()$ftable$content
+
+bb <- benchmark_merged$pAUC_summaries()
+bb$barp
+
+prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption)
+
 allBenchmarks$benchmark_merged <- benchmark_merged
 
 
@@ -584,14 +613,18 @@ benchmark_same <- prolfqua::make_benchmark(
     model_description = "imputed_same_as_lm",
     model_name = "imputed_same_as_lm")
 
-prolfqua::table_facade(benchmark_same$smc$summary, caption = "Nr of proteins with Nr of estimated contrasts.")
+prolfqua::table_facade(benchmark_same$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.")
 benchmark_same$plot_FDRvsFDP()
 
 ```
 
 ```{r storeSame, fig.width=10, fig.height=10, fig.cap="ROC curves for merged benchmark", eval=FALSE}
 benchmark_same$plot_ROC(xlim = 0.15)
-benchmark_same$pAUC_summaries()
+bb <- benchmark_same$pAUC_summaries()
+bb$barp
+
+prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption)
+
 allBenchmarks$benchmark_same <- benchmark_same
 
 
@@ -617,12 +650,12 @@ if(SAVE){
 
 The table below summarizes the contrast estimates produced which will be benchmarked.
 
-|                           |      Model      | Contrast | Moderation | Aggregation |
-|---------------------------|:---------------:|----------|------------|-------------|
-| Protein Intensity         |       lm        | o        | o          |             |
-| Protein Intensity Imputed | pooled variance | o        | o          |             |
-| Peptide Intensity         |      lmer       | o        | o          |             |
-| Peptide Intensity         |       lm        |          |            | o           |
+|                          |      Model      | Contrast | Moderation | Aggregation |
+|--------------------------|:---------------:|----------|------------|-------------|
+| Protein abudance         |       lm        | o        | o          |             |
+| Protein abudance Imputed | pooled variance | o        | o          |             |
+| Peptide abudance         |      lmer       | o        | o          |             |
+| Peptide abudance         |       lm        |          |            | o           |
 
 ```{r fig.cap="Partial area under the ROC curve at 10% FPR."}
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
