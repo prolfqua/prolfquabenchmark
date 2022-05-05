@@ -118,7 +118,7 @@ For estimating contrasts from mixed effects models we used the function `contest
 
 If there is no observation in a group, we assume that the protein was unobserved because the protein abundance is below the limit of detection (LOD) of the MS instrument. We estimate the detection limit as follows: if a protein is quantified just in a single sample of a treatment group, then it is at the instrument's detection limit. We compute the mean of those abundances and use it as the group mean if a protein is absent in a treatment group. 
 
-When computing differences among two groups $a$ and $b$, we will use the group mean $\bar{a}$ estimated from the data or the detection limit $a_d$ if no observations are present in the group. If for instance there are no observations in group $b$, then, $\Delta_{a,b} = \bar{a} - b_{dl}$ if $a > b_{dl}$ or $\Delta = 0$ if $a < b_{dl}$.
+When computing differences among two groups $a$ and $b$, we will use the group mean $\bar{a}$ estimated from the data or the detection limit $a_d$ if no observations are present in the group. If for instance there are no observations in group $b$, then, $\Delta_{a,b} = \bar{a} - b_{dl}$ if $\bar{a} > b_{dl}$ or $\Delta_{a,b} = 0$ if $\bar{a} < b_{dl}$.
 
 Furthermore, we assume that the variance of the protein is constant in all the conditions. To estimate the variance in the condition, we use the pooled variance based on all conditions: 
 
