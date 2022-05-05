@@ -394,7 +394,7 @@ Computing the statistics at the peptide level, e.g., the $t$-statistics or $p$-v
 The probabilistic dropout analysis implemented in the `r BiocStyle::Biocpkg("proDA")` produces inferences comparable to other methods (Figure \@ref(fig:FDRfdp) for the largest number of proteins (Figure \@ref(fig:FDRfdp) left panel). Moreover, the estimated fold changes are unbiased and show high diagnostic accuracy. Furthermore, the scaled $p$-values or the $t$-statistics are on par with those obtained by the linear model with variance moderation. Therefore, we plan to integrate the `r BiocStyle::Biocpkg("proDA")` package as an additional modeling option into `r BiocStyle::Githubpkg("fgcz/prolfqua")` (see Figure \@ref(fig:ContrastUML)).
 
 
-Using the tidy table to model the data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")`. Furthermore, the use of `R6` classes, which encapsulate the configuration and the data, allows writing very concise code (no function arguments needed), and auto-completion support in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality. 
+Using the tidy table to model the data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")`. Furthermore, the consistent implementation of `R6` classes, which encapsulate the configuration and the data, allows writing very concise code (no function arguments needed), and auto-completion support in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality. 
 
 # Conclusion
 
