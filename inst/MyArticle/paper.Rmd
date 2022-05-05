@@ -1,7 +1,7 @@
 ---
 title: prolfqua - An R-package for Proteomics Differential Expression Analysis.
 author: 
-  - Witold E. Wolski $^{\dagger}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - Swiss Federal Institute of Technology in Zurich \| University of Zurich; Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. $^\dagger$Correspondence \texttt{wew@fgcz.ethz.ch}]
+  - Witold E. Wolski $^{\dagger}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - [Swiss Federal Institute of Technology in Zurich](https://ethz.ch) \| [University of Zurich](https://uzh.ch); Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. $^\dagger$Correspondence \texttt{wew@fgcz.ethz.ch}]
   - Paolo Nanni$^{\ast}$
   - Jonas Grossmann$^{\ast}$
   - Maria d'Errico$^{\ast}$
@@ -246,13 +246,15 @@ conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts) |>
 
 contrasts <- prolfqua::addContrastResults(prefer = contr, add = conI)
 
-## visualize results
-pl <- contrasts$merged$get_Plotter()
-p1 <- pl$histogram()$p.value
-p2 <- pl$volcano()$FDR +
-   ggplot2::theme(legend.position = "bottom")
+## visualize results in panels
+pl <- contrasts$merged$get_Plotter() 
+panelA <- pl$histogram()$p.value + ggplot2::labs(tag = "A")                                                        
+panelB <- pl$volcano()$FDR +
+   ggplot2::theme(legend.position = "bottom") +
+   ggplot2::labs(tag = "B")
 
-gridExtra::grid.arrange(p1, p2, ncol = 2)
+
+gridExtra::grid.arrange(panelA, panelB, ncol = 2)
 ```
 
 ## Benchmarking
@@ -306,7 +308,8 @@ ttt <- sapply(allBenchmarks, function(x){x$complete(TRUE)})
 res <- purrr::map_df(allBenchmarks, function(x){x$pAUC()})
 res <- res |> dplyr::mutate(whatfix = dplyr::case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
 
-norm <- res |> dplyr::group_by(contrast,whatfix) |> dplyr::summarize(meanpAUC_10 = mean(pAUC_10))
+norm <- res |> dplyr::group_by(contrast,whatfix) |>
+    dplyr::summarize(meanpAUC_10 = mean(pAUC_10))
 res <- dplyr::inner_join(res, norm)
 res <- dplyr::mutate(res , pAUC_10n = pAUC_10 - meanpAUC_10)
 
@@ -318,7 +321,9 @@ p1_pAUC <- ggplot2::ggplot(resAllB, ggplot2::aes(x = Name, y = pAUC_10)) +
   ggplot2::coord_cartesian(ylim = c(min(resAllB$pAUC_10),max(resAllB$pAUC_10))) + 
   ggplot2::theme_minimal() + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
-  ggplot2::geom_hline(ggplot2::aes(yintercept = meanpAUC_10), color = "red") + ggplot2::xlab("")
+  ggplot2::geom_hline(ggplot2::aes(yintercept = meanpAUC_10), color = "red") +
+  ggplot2::xlab("") +
+  ggplot2::labs(tag = "A")
 
 p2_compare_variousLevels <- ggplot2::ggplot(res, ggplot2::aes(x = contrast, y = pAUC_10n, group = Name)) +
   ggplot2::geom_line(stat = "identity", ggplot2::aes(linetype = Name, color = Name), size = 1) + 
@@ -355,7 +360,7 @@ nrgg <- dds |> ggplot2::ggplot(ggplot2::aes(x = name, y = nrcontrasts )) +
             vjust = 1, hjust = -0.2, angle = -90) + 
   ggplot2::geom_text(ggplot2::aes(label = paste0("(",round(percent, digits = 1),"%)")),
             vjust = -1, hjust = -0.2, angle = -90) 
-p3 <- nrgg
+p3 <- nrgg + ggplot2::labs(tag = "B")
 
 dd <- purrr::map_df(allBenchmarks, function(x){res <- x$get_confusion_FDRvsFDP(); res$name <- x$model_name;res})
 
@@ -368,7 +373,8 @@ p4 <- ddb |> ggplot2::ggplot(ggplot2::aes(y = FDP_,  x  = scorecol )) +
   ggplot2::geom_line(ggplot2::aes(color = model_name, linetype = model_name)) +
   ggplot2::facet_wrap(~contrast) + 
    ggplot2::geom_abline(intercept = 0, slope = 1, color = 2) + 
-   ggplot2::theme(legend.position = "bottom")
+   ggplot2::theme(legend.position = "bottom") +
+  ggplot2::labs(tag = "C")
 
 
 hlay = rbind(c(1,1),
