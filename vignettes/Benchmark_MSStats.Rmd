@@ -78,7 +78,7 @@ raw3 <- raw2[ !grepl("CON__",raw$ProteinName),]
 
 
 ```{r dataPreprocess, eval = evalAll}
-QuantData <- dataProcess(raw3)
+QuantData <- dataProcess(raw3, use_log_file = FALSE, verbose = FALSE)
 # Profile plot
 #dataProcessPlots(data=QuantData, type = "ProfilePlot")
 # Quality control plot 

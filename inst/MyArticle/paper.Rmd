@@ -392,7 +392,6 @@ However, there is no such effect for the mixed effect model, most likely because
 
 Computing the statistics at the peptide level, e.g., the $t$-statistics or $p$-value, then summarizing these statistics using their median produces the highest AUC scores among all the tested models (see Figure \@ref(fig:FDRfdp) Panel A left). By using the beta distribution to model the number of peptides observed, we can further improve the pAUC scores (see Figure \@ref(fig:FDRfdp) Panel A center). However, the properties of beta-based probabilities are not well understood; for instance, the p-values are not uniformely distributed under the null hypothesis (not shown). Furthermore, the FDR estimates obtained when correcting for multiple testing with the Benjamini-Hochberg method are biased overestimating the false discovery proportion (see Figure \@ref(fig:FDRfdp) Panel C). Therefore, we can not recommend this method if an unbiased estimate of FDR is essential, which is frequently the case. In addition, peptides are stronger affected by missing values, reducing the number of contrasts we could estimate for the dataset using this method (see Figure \@ref(fig:FDRfdp) Panel C).
 
-
 The probabilistic dropout analysis implemented in the `r BiocStyle::Biocpkg("proDA")` produces inferences comparable to those of other methods (Figure \@ref(fig:FDRfdp) Panel A) for the largest number of proteins (Figure \@ref(fig:FDRfdp) Panel B). Moreover, the estimated fold changes are unbiased (not shown) and show high diagnostic accuracy (\@ref(fig:FDRfdp) Panel A). Furthermore, the scaled $p$-values or the $t$-statistics are on par with those obtained by the linear model with variance moderation. Therefore, we plan to integrate the `r BiocStyle::Biocpkg("proDA")` package as an additional modeling option into `r BiocStyle::Githubpkg("fgcz/prolfqua")` (see Figure \@ref(fig:ContrastUML)).
 
 Using the tidy table to model the data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")`. Furthermore, the use of `R6` classes, which encapsulate the configuration and the data, allows writing very concise code (no function arguments needed), and auto-completion support in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality. To simplify integration of prolfqua with Bioconductor based workflows there is an method to convert the LFQData class into a `r BiocStyle::Biocpkg("SummarizedExperiment")`.
@@ -406,7 +405,6 @@ When comparing statistical modeling methods for the differential expression anal
 The r-package proDA and prolfqua model the missing data directly, performing similarly, while MSstats imputes the data using an accelerated failure model. MSstats estimates group differences for fewer proteins and does not achieve a higher pAUC score despite imputation. Furthermore, \@ref(fig:FDRfdp) Panel C shows that when using MSstats the false proportion of false discoveries might be very high even when filtering for a low FDR. 
 
 In summary, `r BiocStyle::Githubpkg("fgcz/prolfqua")` is an easy-to-use and feature-rich R package to analyze quantitative mass spectrometric data, report results, and benchmark MS software and statistical methods. We provide more details at the website https://github.com/fgcz/prolfqua/.
-
 
 
 # Acknoledgements
@@ -448,9 +446,45 @@ UML     &       Unified Modeling Language                  \\
 
 ## Creating a prolfqa configuration
 
-The following code snipet demomnstarte the usage from MSFragger ouput.
+The following code demonstrates how an analysis of MSFragger ouput can be performed using prolfqua.
 
 ```{r}
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
+inputFragfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
+inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
+# read input annotation
+annotation <- readxl::read_xlsx(inputAnnotation)
+
+protein <- tibble::as_tibble(read.csv(unz(inputFragfile,"IonstarWithMSFragger/combined_protein.tsv"),
+                             header = TRUE, sep = "\t", stringsAsFactors = FALSE))
+
+# read combined_protein.tsv 
+protein <- prolfqua::tidy_MSFragger_combined_protein(protein)
+# remove proteins identified by a single peptide
+protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
+
+# annotate the data
+merged <- dplyr::inner_join(annotation, protein)
+
+atable <- prolfqua::AnalysisTableAnnotation$new()
+atable$fileName = "raw.file"
+# specify column containing protein identifiers
+atable$hierarchy[["protein_Id"]] <- c("protein")
+
+# column with protein abundances
+atable$setWorkIntensity("total.intensity")
+
+# the factors of the analysis
+atable$factors[["dilution."]] = "sample"
+atable$factors[["run"]] = "run_ID"
+
+config <- prolfqua::AnalysisConfiguration$new(atable)
+
+adata <- prolfqua::setup_analysis(merged, config)
+lfqdata <- prolfqua::LFQData$new(adata, config)
+# remove small intensities
+lfqdata$remove_small_intensities()
+
 
 ```
 
