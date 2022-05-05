@@ -203,16 +203,14 @@ t <- lfqd$get_Transformer()
 
 lfqd <-  t$log2()$robscale()$lfq
 
-## plotting panels
-pl <- lfqd$get_Plotter()
-panelA <- pl$intensity_distribution_density() +
-  ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
-
-## infer protein intensities from peptide intens
+## infer protein intensities from peptide intensity
 agr <- lfqd$get_Aggregator()
 lfqp <- agr$medpolish()
 
-## plotting
+## plotting panels A-D
+pl <- lfqd$get_Plotter()
+panelA <- pl$intensity_distribution_density() +
+  ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
 panelB <- agr$plot()$plots[[1]] + ggplot2::labs(tag = "B")
 panelC <- lfqp$get_Stats()$violin() + ggplot2::labs(tag = "C")
 pl <- lfqp$get_Plotter()
