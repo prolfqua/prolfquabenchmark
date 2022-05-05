@@ -18,7 +18,7 @@ abstract: |
     The `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package integrates, using an R6 application programmer interface, essential steps of the mass spectrometry-based differential expression analysis workflow: quality control, data normalization, protein aggregation, statistical modeling, hypothesis testing, and sample size estimation. 
      Furthermore, the package implements benchmark functionality that can help to compare data acquisition, data preprocessing, or data modeling methods using a gold standard dataset. Finally, we show that the implemented methods allow sensitive and specific differential expression analysis. 
      The R package is available through https://github.com/fgcz/prolfqua.
-
+urlcolor: blue
 ---
 
 
