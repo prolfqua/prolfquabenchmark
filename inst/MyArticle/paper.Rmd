@@ -207,7 +207,7 @@ lfqd <-  t$log2()$robscale()$lfq
 agr <- lfqd$get_Aggregator()
 lfqp <- agr$medpolish()
 
-## plotting panels A-D
+## plot panels A-D
 pl <- lfqd$get_Plotter()
 panelA <- pl$intensity_distribution_density() +
   ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
@@ -396,6 +396,10 @@ The probabilistic dropout analysis implemented in the `r BiocStyle::Biocpkg("pro
 
 Using the tidy table to model the data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")`. Furthermore, the consistent implementation of `R6` classes, which encapsulate the configuration and the data, allows writing very concise code (no function arguments needed), and auto-completion support in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality. 
 
+To ease the usage barriers of the R package to users not being so familiar with statistics and R programming, we integrated some workflows into our Local Laboratory Information Management System (LIMS) [b-fabric](https://fgcz-bfabric.uzh.ch/) @bfabric.
+This integration enables our users to select the input and basic settings in a graphical user interface. As an output, the user receives a report including the R markdown file and all necessary input files to reprocess the analysis on their devices.
+In this way, we also support the reproducible science efforts of the community.
+
 # Conclusion
 
 `r BiocStyle::Githubpkg("fgcz/prolfqua")` allows for considerable flexibility to model your experiments. Various types of models are available (see Figure \@ref(fig:ContrastUML) and Table \@ref(tab:prolfquaModels)), and the contrast specification is consistent and intuitive for all models. The modular design of `r BiocStyle::Githubpkg("fgcz/prolfqua")`, allows for adding new features, e.g., generalized linear models (_glm_'s) for missing data modeling or robust linear models (_rlm_'s), in the future.
@@ -439,6 +443,8 @@ UML     &       Unified Modeling Language                  \\
 
 <div id="refs"></div>
 
+
+\newpage
 
 # Supplements
 
