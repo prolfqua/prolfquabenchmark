@@ -1,7 +1,7 @@
 ---
 title: prolfqua - An R-package for Proteomics Differential Expression Analysis.
 author: 
-  - Witold E. Wolski $^{\dagger}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - Swiss Federal Institute of Technology in Zurich \| University of Zurich; Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. $^\dagger$Correspondence \texttt{wew@fgcz.ethz.ch}]
+  - Witold E. Wolski $^{\dagger}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - [Swiss Federal Institute of Technology in Zurich](https://ethz.ch) \| [University of Zurich](https://uzh.ch); Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. $^\dagger$Correspondence \texttt{wew@fgcz.ethz.ch}]
   - Paolo Nanni$^{\ast}$
   - Jonas Grossmann$^{\ast}$
   - Maria d'Errico$^{\ast}$
@@ -205,16 +205,14 @@ t <- lfqd$get_Transformer()
 
 lfqd <-  t$log2()$robscale()$lfq
 
-## plotting panels
-pl <- lfqd$get_Plotter()
-panelA <- pl$intensity_distribution_density() +
-  ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
-
-## infer protein intensities from peptide intens
+## infer protein intensities from peptide intensity
 agr <- lfqd$get_Aggregator()
 lfqp <- agr$medpolish()
 
-## plotting
+## plot panels A-D
+pl <- lfqd$get_Plotter()
+panelA <- pl$intensity_distribution_density() +
+  ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
 panelB <- agr$plot()$plots[[1]] + ggplot2::labs(tag = "B")
 panelC <- lfqp$get_Stats()$violin() + ggplot2::labs(tag = "C")
 pl <- lfqp$get_Plotter()
@@ -248,13 +246,15 @@ conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts) |>
 
 contrasts <- prolfqua::addContrastResults(prefer = contr, add = conI)
 
-## visualize results
-pl <- contrasts$merged$get_Plotter()
-p1 <- pl$histogram()$p.value
-p2 <- pl$volcano()$FDR +
-   ggplot2::theme(legend.position = "bottom")
+## visualize results in panels
+pl <- contrasts$merged$get_Plotter() 
+panelA <- pl$histogram()$p.value + ggplot2::labs(tag = "A")                                                        
+panelB <- pl$volcano()$FDR +
+   ggplot2::theme(legend.position = "bottom") +
+   ggplot2::labs(tag = "B")
 
-gridExtra::grid.arrange(p1, p2, ncol = 2)
+
+gridExtra::grid.arrange(panelA, panelB, ncol = 2)
 ```
 
 ## Benchmarking
@@ -307,7 +307,8 @@ ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
 res <- purrr::map_df(allBenchmarks, function(x){x$pAUC()})
 res <- res |> dplyr::mutate(whatfix = dplyr::case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
 
-norm <- res |> dplyr::group_by(contrast,whatfix) |> dplyr::summarize(meanpAUC_10 = mean(pAUC_10))
+norm <- res |> dplyr::group_by(contrast,whatfix) |>
+    dplyr::summarize(meanpAUC_10 = mean(pAUC_10))
 res <- dplyr::inner_join(res, norm)
 res <- dplyr::mutate(res , pAUC_10n = pAUC_10 - meanpAUC_10)
 
@@ -319,7 +320,9 @@ p1_pAUC <- ggplot2::ggplot(resAllB, ggplot2::aes(x = Name, y = pAUC_10)) +
   ggplot2::coord_cartesian(ylim = c(min(resAllB$pAUC_10),max(resAllB$pAUC_10))) + 
   ggplot2::theme_minimal() + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
-  ggplot2::geom_hline(ggplot2::aes(yintercept = meanpAUC_10), color = "red") + ggplot2::xlab("")
+  ggplot2::geom_hline(ggplot2::aes(yintercept = meanpAUC_10), color = "red") +
+  ggplot2::xlab("") +
+  ggplot2::labs(tag = "A")
 
 p2_compare_variousLevels <- ggplot2::ggplot(res, ggplot2::aes(x = contrast, y = pAUC_10n, group = Name)) +
   ggplot2::geom_line(stat = "identity", ggplot2::aes(linetype = Name, color = Name), size = 1) + 
@@ -356,7 +359,7 @@ nrgg <- dds |> ggplot2::ggplot(ggplot2::aes(x = name, y = nrcontrasts )) +
             vjust = 1, hjust = -0.2, angle = -90) + 
   ggplot2::geom_text(ggplot2::aes(label = paste0("(",round(percent, digits = 1),"%)")),
             vjust = -1, hjust = -0.2, angle = -90) 
-p3 <- nrgg +  ggplot2::labs(tag = "B")
+p3 <- nrgg + ggplot2::labs(tag = "B")
 
 dd <- purrr::map_df(allBenchmarks, function(x){res <- x$get_confusion_FDRvsFDP(); res$name <- x$model_name;res})
 
@@ -369,8 +372,8 @@ p4 <- ddb |> ggplot2::ggplot(ggplot2::aes(y = FDP_,  x  = scorecol )) +
   ggplot2::geom_line(ggplot2::aes(color = model_name, linetype = model_name)) +
   ggplot2::facet_wrap(~contrast) + 
    ggplot2::geom_abline(intercept = 0, slope = 1, color = 2) + 
-   ggplot2::theme(legend.position = "bottom") +  ggplot2::labs(tag = "C")
-   
+   ggplot2::theme(legend.position = "bottom") +
+  ggplot2::labs(tag = "C")
 
 
 hlay = rbind(c(1,1),
@@ -395,6 +398,11 @@ Computing the statistics at the peptide level, e.g., the $t$-statistics or $p$-v
 The probabilistic dropout analysis implemented in the `r BiocStyle::Biocpkg("proDA")` produces inferences comparable to those of other methods (Figure \@ref(fig:FDRfdp) Panel A) for the largest number of proteins (Figure \@ref(fig:FDRfdp) Panel B). Moreover, the estimated fold changes are unbiased (not shown) and show high diagnostic accuracy (\@ref(fig:FDRfdp) Panel A). Furthermore, the scaled $p$-values or the $t$-statistics are on par with those obtained by the linear model with variance moderation. Therefore, we plan to integrate the `r BiocStyle::Biocpkg("proDA")` package as an additional modeling option into `r BiocStyle::Githubpkg("fgcz/prolfqua")` (see Figure \@ref(fig:ContrastUML)).
 
 Using the tidy table to model the data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")`. Furthermore, the use of `R6` classes, which encapsulate the configuration and the data, allows writing very concise code (no function arguments needed), and auto-completion support in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality. To simplify integration of prolfqua with Bioconductor based workflows there is an method to convert the LFQData class into a `r BiocStyle::Biocpkg("SummarizedExperiment")`.
+
+To ease the usage barriers of the R package to users not being so familiar with statistics and R programming, we integrated some workflows into our Local Laboratory Information Management System (LIMS) [b-fabric](https://fgcz-bfabric.uzh.ch/) @bfabric.
+This integration enables our users to select the input and basic settings in a graphical user interface. As an output, the user receives a report including the R markdown file and all necessary input files to reprocess the analysis on their devices.
+In this way, we also support the reproducible science efforts of the community.
+
 
 # Conclusion
 
@@ -441,6 +449,8 @@ UML     &       Unified Modeling Language                  \\
 
 <div id="refs"></div>
 
+
+\newpage
 
 # Supplements
 
