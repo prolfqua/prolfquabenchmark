@@ -203,9 +203,9 @@ t <- lfqd$get_Transformer()
 
 lfqd <-  t$log2()$robscale()$lfq
 
-## plotting
+## plotting panels
 pl <- lfqd$get_Plotter()
-p_a <- pl$intensity_distribution_density() +
+panelA <- pl$intensity_distribution_density() +
   ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
 
 ## infer protein intensities from peptide intens
@@ -213,11 +213,11 @@ agr <- lfqd$get_Aggregator()
 lfqp <- agr$medpolish()
 
 ## plotting
-p_b <- agr$plot()$plots[[1]] + ggplot2::labs(tag = "B")
-p_c <- lfqp$get_Stats()$violin() + ggplot2::labs(tag = "C")
+panelB <- agr$plot()$plots[[1]] + ggplot2::labs(tag = "B")
+panelC <- lfqp$get_Stats()$violin() + ggplot2::labs(tag = "C")
 pl <- lfqp$get_Plotter()
-p_d <- pl$boxplots()$boxplot[[1]] + ggplot2::labs(tag = "D")
-ggpubr::ggarrange(p_a, p_b, p_c, p_d)
+panelD <- pl$boxplots()$boxplot[[1]] + ggplot2::labs(tag = "D")
+ggpubr::ggarrange(panelA, panelB, panelC, panelD)
 ```
 
 (ref:scaling) Panel A - Peptide intensity distributions for 20 samples. For each sample a line with a different colour is shown. Panel B - Peptide intensities for protein _5NTD_ are shown using a line of different colour, and the protein intensity estimate is shown using a fat black line, Panel C - distribution of standard deviations of all proteins in each dilution group (a, b, c, d, e) and overall (all), Panel D - Distribution of protein intensities for protein _5NTD_.
