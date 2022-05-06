@@ -76,11 +76,12 @@ We also implemented functionality to streamline the benchmarking of the implemen
 
 
 
+\newpage
 # Methods
 
 ## Implementation
 
-We store all the data needed for analysis in a single data frame in a tidy table, i.e., every column is a variable, every row is an observation, every cell is a single value[@tidydata2014]. Using an __R6__[@R6cite] configuration object, we specify what variable is in which column, making it easy to integrate new inputs in `r BiocStyle::Githubpkg("fgcz/prolfqua")` if provided as a tidy table. For example, to visualize tidy _Spectronaut_, or _Skyline_ outputs, or data in `r BiocStyle::Biocpkg("MSstats")` format, only a few lines of code are needed to update the `r BiocStyle::Githubpkg("fgcz/prolfqua")` configuration. For popular software like _MaxQuant_ or _MSFragger_, which stores the same variable, e.g., intensity, in multiple columns, one for each sample, we implemented methods that transform the data into tidy tables. Relying on the tidy data table enable us to easily interface with many data manipulation, visualization, and modeling methods implemented in base __R__[@RCoreTeam2021] and the tidyverse[@tidyverse2019]. We use __R6__ classes to structure the functionality of the package (see Figure \@ref(fig:LFQData) and Figure \@ref(fig:ContrastUML)). __R6__ classes are well supported, e.g. by auto-completion features, and easy to use (OOP).
+We store all the data needed for analysis in a single data frame in a tidy table, i.e., every column is a variable, every row is an observation, every cell is a single value[@tidydata2014]. Using an __R6__[@R6cite] configuration object, we specify what variable is in which column, making it easy to integrate new inputs in `r BiocStyle::Githubpkg("fgcz/prolfqua")` if provided as a tidy table. For example, to visualize tidy _Spectronaut_, or _Skyline_ outputs, or data in `r BiocStyle::Biocpkg("MSstats")` format, only a few lines of code are needed to update the `r BiocStyle::Githubpkg("fgcz/prolfqua")` configuration. For popular software like _MaxQuant_ or _MSFragger_, which stores the same variable, e.g., intensity, in multiple columns, one for each sample, we implemented methods that transform the data into tidy tables. Relying on the tidy data table enable us to easily interface with many data manipulation, visualization, and modeling methods implemented in base __R__[@RCoreTeam2021] and the tidyverse[@tidyverse2019]. We use __R6__ classes to structure the functionality of the package (see Figure \@ref(fig:LFQData) and Figure \@ref(fig:ContrastUML)). __R6__ classes are well supported, e.g., by command-line completion features, see Figure \@ref{fig:tabCompletion}, and easy to use (OOP).
 
 (ref:LFQData) Class Diagram of classes representing the proteomics data. The LFQData class encapsulates the data. Other classes are decorating the LFQData class with additional functionality. The LFQData_Plotter class uses the LFQData class to implement methods for data visualization. Similarly, the LFQData_Stats, LFQData_Summary, reference the LFQData class, group methods for variance and sample size estimation, or summarizing peptide and protein counts.
 
@@ -110,7 +111,18 @@ We processed the raw data using MaxQuant [cite] version Version 1.6.10.43, with 
 
 ### Estimating contrasts for linear models
 
-Given a linear model contrasts can be computed by $\hat{\beta_{c}} = \sum l\beta_{m}$ and $\textrm{var} \hat\beta_c = l\sigma^2 (X^T X)^{-1} l^T$, with $X$ being the design matrix, $\beta_m$ the model parameters and $l$ an array of coefficients. The degrees of freedom for the contrast are equal to the residual degrees of freedom of the linear model.
+Given a linear model contrasts can be computed by 
+\begin{eqnarray} 
+\hat{\beta_{c}} &=& \sum l\beta_{m} 
+\end{eqnarray} 
+
+and 
+
+\begin{eqnarray} 
+\textrm{var} \hat\beta_c &=& l\sigma^2 (X^T X)^{-1} l^T
+\end{eqnarray} 
+
+with $X$ being the design matrix, $\beta_m$ the model parameters and $l$ an array of coefficients. The degrees of freedom for the contrast are equal to the residual degrees of freedom of the linear model.
 
 For estimating contrasts from mixed effects models we used the function `contest` implemented in the R package `r BiocStyle::CRANpkg("lmerTest")` [@Kuznetsova2017lmerTest] and used the Satterthwaite method to estimate the denominator degrees of freedom. These methods are implemented in the class `Contrast` (see Figure \@ref(fig:ContrastUML))
 
@@ -548,11 +560,6 @@ ggplot2::ggplot(x,ggplot2::aes( x = diff.imp, y = diff.proda) ) + ggplot2::geom_
 
 ```
 
-(ref:tabCompletion) The screenshot displays the command-line completion (tab completion) of RStudio on the `prolfqua::LFQData` R6 object. In the example, it shows the getter methods of the object.
-
-```{r tabCompletion, echo=FALSE, fig.cap="(ref:tabCompletion)", out.width = '66%'}
-knitr::include_graphics("codeSnippet1TabCompletion.png")
-```
 
 ## Session information
 
@@ -560,7 +567,16 @@ knitr::include_graphics("codeSnippet1TabCompletion.png")
 sessionInfo()
 ```
 
-## Package sticker
+\newpage
+## Miscellaneous
+
+
+(ref:tabCompletion) The screenshot displays the command-line completion (tab completion) of RStudio on the `prolfqua::LFQData` R6 object. In the example, it shows the getter methods of the object.
+
+```{r tabCompletion, echo=FALSE, fig.cap="(ref:tabCompletion)", out.width = '66%'}
+knitr::include_graphics("codeSnippet1TabCompletion.png")
+```
+
 
 ```{r proLFQuaSticker, echo=TRUE, out.height="5cm", eval=TRUE, fig.cap="Sticker maintainer: Witold E. Wolski; License: Creative Commons Attribution CC-BY. Feel free to share and adapt, but don't forget to credit the author."}
 
