@@ -469,7 +469,7 @@ We also need to specify which column contains the protein abundances we want to 
 Finally, we have to specify which columns contain the explanatory variables of the analysis. The AnalysisTableAnnotation has the field factors, a list with as many entries as explanatory variables. Here we have only one explanatory variable, the dilution, specified in the column 'sample.'
 
 
-```{r}
+```{r error=TRUE}
 datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputFragfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
@@ -537,7 +537,6 @@ tmp <- dplyr::inner_join(prodSum$ftable$content,
 ggplot2::ggplot(tmp, ggplot2::aes(x = contrast, y = pAUC_10.proDA - pAUC_10.lmMod)) + ggplot2::geom_bar(stat="identity") + ggplot2::facet_wrap(~what) +  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 
-
 ```{r proDAAllBenchmarks, fig.cap="Comparison of fold change estimates produced by proDA and using the missing data modelling method implemented in prolfqua."}
 proda <- allBenchmarks$benchmark_proDA$data()
 imp <- allBenchmarks$benchmark_imputation$data()
@@ -549,6 +548,11 @@ ggplot2::ggplot(x,ggplot2::aes( x = diff.imp, y = diff.proda) ) + ggplot2::geom_
 
 ```
 
+(ref:tabCompletion) The screenshot displays the command-line completion (tab completion) of RStudio on the `prolfqua::LFQData` R6 object. In the example, it shows the getter methods of the object.
+
+```{r tabCompletion, echo=FALSE, fig.cap="(ref:tabCompletion)", out.width = '66%'}
+knitr::include_graphics("codeSnippet1TabCompletion.png")
+```
 
 ## Session information
 
