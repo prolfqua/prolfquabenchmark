@@ -9,7 +9,9 @@ author:
   - Christian Panse$^{\ast\ddagger}$
 output: 
   bookdown::pdf_document2:
-    toc: true
+      toc: true
+      toc_appendix: false
+      toc_bib: false
 bibliography: bibliography.bib
 editor_options: 
   chunk_output_type: console
@@ -45,7 +47,7 @@ An important aspect of mass spectrometric data are missing peptide and protein q
 
 Several packages exist to model mass spectrometry protein quantification experiments, e.g., `r BiocStyle::Biocpkg("limma")` [@Ritchie2015], `r BiocStyle::Biocpkg("MSstats")` [@Choi2014], `r BiocStyle::Biocpkg("PECA")` [@Suomi2017bEnhanced],  `r BiocStyle::Biocpkg("msqrob2")` [@Goeminne2016] or `r BiocStyle::Biocpkg("proDA")` [@bioxrvproDA2020], to mention some, all implemented in the R. Each of them has some unique features, for example, `r BiocStyle::Biocpkg("MSstats")` infers the model and generates the model formula from the sample annotation, allowing users with limited statistical knowledge to perform differential expression analysis (DEA). At the same time, `r BiocStyle::Biocpkg("limma")` allows to specify a design matrix using a linear model formula and implements the empirical Bayes variance shrinkage method. The R-package `r BiocStyle::Biocpkg("PECA")`, performs a roll-up of peptide level differences and peptide level $p$-value estimates, obtained from `r BiocStyle::Biocpkg("limma")` or `r BiocStyle::Biocpkg("PECA")`, to protein level estimates. Furthermore, `r BiocStyle::Biocpkg("msqrob2")` implements two models: robust linear models fitted to protein intensities and robust ridge regression fitted to peptide intensities and combines them with empirical Bayes variance shrinkage. The `r BiocStyle::Biocpkg("proDA")` package implements a linear probabilistic dropout model to account for missing data without imputation. `r BiocStyle::Biocpkg("MSstats")` handles missing data by feature filtering and using imputation. Other means of modelling missing observations are the Hurdle model discussed by [@goeminne2020msqrob], while the R package `r BiocStyle::Biocpkg("proDA")` models missingness using probabilistic dropout models [@bioxrvproDA2020].
 
-When analyzing parallel-group designs using a single explanatory variable, and contrasting groups, we can use all R packages; however, we can use only some of them if we want to model factorial designs or repeated measurements. Table \@ref(tab:tableOverview) gives an overview of the models and features supported by these packages. We see that packages such as $limma$ and $proDA$ allow us to fit a comprehensive variety of models and test various hypotheses; however, in-depth knowledge of design matrix specification using the R formula interface is required [@law2020guide].
+When analyzing parallel-group designs using a single explanatory variable, and contrasting groups, we can use all R packages; however, we can use only some of them if we want to model factorial designs or repeated measurements. Table \@ref(tab:tableOverview) gives an overview of the models and features supported by these packages. We see that packages such as `r BiocStyle::Biocpkg("limma")` and `r BiocStyle::Biocpkg("proDA")` allow us to fit a comprehensive variety of models and test various hypotheses; however, in-depth knowledge of design matrix specification using the R formula interface is required [@law2020guide].
 
 ```{r tableOverview}
 xx <- list(
@@ -66,7 +68,6 @@ When developing the R package `r BiocStyle::Githubpkg("fgcz/prolfqua")` we were 
 Furthermore, the functionality of `r BiocStyle::Githubpkg("fgcz/prolfqua")` also includes methods specific to proteomics data. For example, we implemented strategies to estimate protein intensities from peptide intensities: top N, Tukey's median polish, robust linear models [@Grossmann2010, @goeminne2020msqrob]. Furthermore, peptide or protein abundances can be scaled and transformed, using robust scaling, transformed using _quantile_ normalization or `r BiocStyle::Biocpkg("vsa")` to remove systematic differences among samples and heteroscedasticity. In this respect, `r BiocStyle::Githubpkg("fgcz/prolfqua")` can be compared with other R packages such `r BiocStyle::Biocpkg("DEP")` [@DEP2018] or `r BiocStyle::Biocpkg("POMA")` [@POMA2021] which support the entire LFQ analysis pipeline. 
 
 We also implemented functionality to streamline the benchmarking of the implemented methods. We use the Ionstar [@shen2018ionstar] dataset to benchmark the modeling methods implemented within `r BiocStyle::Githubpkg("fgcz/prolfqua")` and to compare our results with those of `r BiocStyle::Biocpkg("MSstats")` and `r BiocStyle::Biocpkg("proDA")`. Since group sizes are relatively small, typically with four or five subjects per group, a high power of the tests is a relevant criterion to asses the modelling method. Furthermore, the quantified proteins can be ranked using the estimated fold-change, $t$-statistics, or scaled $p$-value, and then subjected to gene set enrichment (GSEA) or over-representation analysis [@subramanian2005gene] to determine up or down-regulated groups of proteins. However, the model must also provide an unbiased estimate of the false discovery rate (FDR) to manage expectations when selecting protein lists for follow-up experiments.
-
 
 \newpage
 # Methods
@@ -198,7 +199,8 @@ c("contrast_name" = "factorlevel_1 - factorlevel_2")
 Furthermore, contrasts for subgroups also can be specified using the syntax:
 
 ```{r eval=FALSE, echo=TRUE}
-c("contrast_name" = "`factor_1level_a:factor_2level_1` - `factor_1level_a:factor_2level_2`")
+c("contrast_name" =
+    "`factor_1level_a:factor_2level_1` - `factor_1level_a:factor_2level_2`")
 
 ```
 where `factor_x` is the name of the explanatory variable, and `level_x`  are group labels. 
@@ -520,6 +522,8 @@ HPLC   &High-Pressure Liquid Chromatography                \\
 LC-MS  &Liquid Chromatography followed by Mass Spectrometry\\
 LFQ    &Label-Free Quantification                          \\
 LOD    &Limit Of Detection                                 \\
+MAR    & Missing At Random                                 \\ 
+MCAR   & Missing Completely At Random                      \\
 MS     &mass spectrometry                                  \\
 OO     &Object-Oriented                                    \\
 UML     &       Unified Modeling Language                  \\
@@ -535,9 +539,9 @@ UML     &       Unified Modeling Language                  \\
 
 \newpage
 
-# Supplements
+# Appendix  
 
-## Creating a prolfqua configuration
+## Creating a prolfqua configuration 
 
 The following code demonstrates how we use prolfqua to analyze protein intensities reported in the MSFragger `combined_protein.tsv` file.
 First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_MSFragger_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object. 
@@ -627,7 +631,6 @@ x <- dplyr::inner_join(imp, proda, by = c("contrast","protein_Id", "TP", "specie
 ggplot2::ggplot(x,ggplot2::aes( x = diff.lm, y = diff.proda) ) + ggplot2::geom_point() + ggplot2::facet_wrap(~contrast + species) + ggplot2::geom_hline(yintercept = 0, color="lightgray") + ggplot2::geom_vline(xintercept = 0, color="lightgray") + ggplot2::geom_abline(slope = 1) + ggplot2::theme_minimal()
 
 ```
-
 
 ## Session information
 
