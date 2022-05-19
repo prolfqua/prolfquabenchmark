@@ -226,7 +226,7 @@ Missing observations lead to different group sizes, that is, unbalanced designs.
 If there is no observation in a group, we assume that the protein is unobserved because the protein abundance is below the limit of detection (LOD) of the MS instrument. In this case, we will impute the mean using the protein abundance at the detection limit $A_{LOD}$.
 We estimate the abundance at the detection limit using the abundances of the proteins observed only in one sample of a group of samples. Then, we compute the median of the distribution and use it as the group mean if a protein is absent in a treatment group.
 
-When computing differences $\Delta$ among two groups $a$ and $b$, we will use the group mean $\bar{a}$ or $\bar{b}$ estimated from the data, or if no observations are present in a group we use $A_{LOD}$, e.g., If there are no observations in group $b$ then 
+When computing differences $\Delta$ among two groups $a$ and $b$, we will use the group mean $\bar{a}$ or $\bar{b}$ estimated from the data, or if no observations are present in a group we use $A_{LOD}$, e.g., If there are no observations in group $b$ then :
 
 $$
 \Delta = 
