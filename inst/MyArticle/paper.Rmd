@@ -155,36 +155,33 @@ In order to compute the confusion matrices based on the $p$-value we first need 
 
 Valikangas [@valikangas2016systematic] and colleagues discuss and benchmark various methods of peptide or protein intensity normalization such as variance stabilizing normalization [@huber2002variance] or quantile normalization [@bolstad2003comparison]. In this work we will be using a robust version of the z-score, where instead of the mean $\bar{x}$ we use the median and instead of the standard deviation $\tilde{S}$ the median absolute deviation (mad):
 
-$$
-z = \frac{x - \bar{x}}{S} \sim \frac{x - \tilde{x}}{\tilde{S}}
-$$  
+\begin{eqnarray}
+z = \frac{x - \tilde{x}}{\tilde{S}}
+\end{eqnarray}
 
-Because we need to estimate the protein fold-changes on the original scale, we have to multiply the $z$-score by the average variance of all the $N$ samples in the experiment.
+Because we need to estimate the protein fold-changes on the original scale, we have to multiply the $z$-score by the average variance of all the $n$ samples in the experiment.
 
-$$
-z' = z \times 1/N\sum_{i=1}^N S_i
-$$
+\begin{eqnarray} 
+z' = z \cdot \frac{1}{n}\sum_{i=1}^n S_i
+\end{eqnarray}
 
 To apply this transformation, we need to estimate two parameters per sample. It works for experiments with thousands of proteins and experiments where only a few hundred proteins per sample are measured.
 For the Ionstar dataset, we used the intensities of _H. sapiens_ proteins, whose concentrations do not change, to determine $\bar{x}$ and $S$ and then applied it to all the intensities (including _E. coli_) in the sample.
 
-
-
-
 ### Estimating differences between groups
 
-Given a linear model $y = \beta X$, we can compute the difference between two groups $\beta_{c}$ by a linear combination $c$ of linear model parameters $\beta$. $c$ is vector with as many elements as there are coefficients in the linear model. If $c$ has $0$ for one or more of its rows, then the corresponding coefficient in $\beta$ is not involved in determining the contrast [@ph525xseries].
+Given a linear model $y = \beta X$, we can compute the difference between two groups $\beta_{c}$ by a linear combination $c$ of linear model parameters $\beta$. $c$ is a column vector with as many elements as there are coefficients in the linear model. If $c$ has $0$ for one or more of its rows, then the corresponding coefficient in $\beta$ is not involved in determining the contrast [@ph525xseries].
 
-The difference estimate $\beta_c$, is given by:
+The difference estimate $\beta_c$, is given by the dot product:
 
 \begin{eqnarray} 
-\hat{\beta_{c}} &=& \sum l\beta 
+\hat{\beta_{c}} &=& c^T \beta 
 \end{eqnarray} 
 
 and the variance of $\beta_c$ by:
 
 \begin{eqnarray} 
-\textrm{var} \hat\beta_c &=& l\sigma^2 (X^T X)^{-1} l^T
+\textrm{var} \hat\beta_c &=& c\sigma^2 (X^T X)^{-1} c^T
 \end{eqnarray}
 
 with $X$ being the design matrix, $\beta$ the model parameters and $c$ an array of weights, defining the contrast (difference among conditions). The degrees of freedom for the contrast are equal to the residual degrees of freedom of the linear model. For estimating contrasts from mixed effects models we used the function `contest` implemented in the R package `r BiocStyle::CRANpkg("lmerTest")` [@Kuznetsova2017lmerTest] and used the Satterthwaite method to estimate the denominator degrees of freedom. These methods are available in the class `Contrast` (see Figure \@ref(fig:ContrastUML))
@@ -192,15 +189,19 @@ with $X$ being the design matrix, $\beta$ the model parameters and $c$ an array 
 
 ### Determining linear parameter combinations for treatment comparison
 
-The package prolfqua provides function to determine the vector of $parameter$ weights $c$, from a contrast specification:
+The package prolfqua provides function to determine the vector of $parameter$ weights $c$, from a contrast specification string:
 
-- `<contrast name>` = `<factor><level_1> - <factor><level_2>`
+```{r eval=FALSE, echo=TRUE}
+c("contrast_name" = "factorlevel_1 - factorlevel_2")
+```
 
 Furthermore, contrasts for subgroups also can be specified using the syntax:
 
-- `<contrast name>` = `<factor_1><subgroup>:<factor_2><level_1>` - `<factor_1><subgroup>:<factor_2><level_2>`
+```{r eval=FALSE, echo=TRUE}
+c("contrast_name" = "`factor_1level_a:factor_2level_1` - `factor_1level_a:factor_2level_2`")
 
-where `<factor_x>` is the name of the explanatory variable, and `<level_x>` are group labels. 
+```
+where `factor_x` is the name of the explanatory variable, and `level_x`  are group labels. 
 
 The following code shows an example where we specify two contrast: 
 a) where we compare Cells of type CMP/MEP with cells of type HSC, and b) where we contrast therapy NO with therapy NU for the celltype CMP/MEP [@meier2021reduced]. 
@@ -225,10 +226,10 @@ Missing observations lead to different group sizes, that is, unbalanced designs.
 If there is no observation in a group, we assume that the protein is unobserved because the protein abundance is below the limit of detection (LOD) of the MS instrument. In this case, we will impute the mean using the protein abundance at the detection limit $A_{LOD}$.
 We estimate the abundance at the detection limit using the abundances of the proteins observed only in one sample of a group of samples. Then, we compute the median of the distribution and use it as the group mean if a protein is absent in a treatment group.
 
-When computing differences among two groups $a$ and $b$, we will use the group mean $\bar{a}$ or $\bar{b}$ estimated from the data, or if no observations are present we use $A_{LOD}$. If there are no observations in group $b$ then 
+When computing differences $\Delta$ among two groups $a$ and $b$, we will use the group mean $\bar{a}$ or $\bar{b}$ estimated from the data, or if no observations are present in a group we use $A_{LOD}$, e.g., If there are no observations in group $b$ then 
 
 $$
-\Delta_{a,b} = 
+\Delta = 
 \begin{cases}
 \bar{a} - A_{LOD} & \text{if} ~~ \bar{a} > A_{LOD}\\
 0  &\text{if} ~~ \bar{a} < A_{LOD}.
