@@ -538,11 +538,10 @@ UML     &       Unified Modeling Language                  \\
 
 ## Creating a prolfqua configuration
 
-
 The following code demonstrates how we use prolfqua to analyze protein intensities reported in the MSFragger `combined_protein.tsv` file.
 First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_MSFragger_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object. 
-
-Bottom-up proteomics data is hierarchical, i.e., a protein has peptides, peptides might be modified, etc. Therefore, the `AnalysisTableAnnotation` has a `hierarchy` field storing a list with an entry for each hierarchy level. Since combined_portein.tsv only holds protein level data, the hierarchy list has one element, and we use it to specify which column contains the protein identifiers. We also need to specify which column contains the protein abundances we want to use for the data analysis.
+Bottom-up proteomics data is hierarchical, i.e., a protein has peptides, peptides might be modified, etc. Therefore, the `AnalysisTableAnnotation` has a `hierarchy` field storing a list with an entry for each hierarchy level.
+Since `combined_portein.tsv` only holds protein level data, the hierarchy list has one element, and we use it to specify which column contains the protein identifiers. We also need to define which column contains the protein abundances we want to use for the data analysis.
 Finally, we have to specify which columns contain the explanatory variables of the analysis. The `AnalysisTableAnnotation` has the field `factors,` a list with as many entries as explanatory variables. Here we include two explanatory variables, the dilution, specified in the column 'sample', and 'run' stored in the column 'run_ID', representing the order of the measurement.
 
 
@@ -652,7 +651,4 @@ file.path(system.file(package = "prolfqua"),
           "Figures/hexStickerProlfqua.png") |>
   knitr::include_graphics()
 ```
-
-
-
 
