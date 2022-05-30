@@ -517,7 +517,7 @@ The authors thank the technology platform fund (TPF) of the University of Zurich
 
 # Abbreviations
 
-\begin{table}
+\begin{table}[H]
 \centering
 \begin{tabular}{ll}
 \toprule
@@ -541,10 +541,10 @@ UML     &       Unified Modeling Language                  \\
 \end{table}
 
 \newpage
+
 # References {-}
 
 <div id="refs"></div>
-
 
 \newpage
 
