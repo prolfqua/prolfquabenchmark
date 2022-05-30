@@ -548,7 +548,7 @@ UML     &       Unified Modeling Language                  \\
 
 \newpage
 
-# Appendix  
+# Appendix  {.unnumbered}
 
 ## Creating a prolfqua configuration {.unlisted .unnumbered}
 
