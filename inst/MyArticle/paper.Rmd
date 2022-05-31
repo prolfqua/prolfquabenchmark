@@ -36,6 +36,12 @@ knitr::opts_chunk$set(echo = FALSE,
 
 # Introduction
 
+ \begin{quote}
+``Es ist nicht das Wissen, sondern das Lernen, nicht das Besitzen, sondern das Erwerben, nicht das Dasein, sondern das Hinkommen, was den größten Genuß gewährt.''
+
+Carl Friedrich Gauß
+ \end{quote}
+
 Proteins carry out most crucial functions and give structure to living cells. Hence, measuring changes in protein abundance is the subject of active research [@vidova2017review]. Bottom-up mass spectrometric methods, where proteins are specifically and reproducible digested into protein fragments - peptides, are employed to identify and quantify proteins in complex samples containing hundreds to thousand of proteins, [@Bubis2017; @da2020philosopher]. The peptides are first separated by their chemical and physical properties using High-Pressure Liquid Chromatography (HPLC). Afterward, they are ionised, weighted, identified, and quantified using mass spectrometric techniques, e.g., Electro-Spray-Ionization Mass Spectrometry (ESI-MS). Finally, peptide identification is achieved by fragmenting and matching the measured fragment masses to theoretical masses computed from known peptide sequences [@eng2015deeper; @yu2016pipi; @kong2017msfragger]. For quantification, intact peptide ions [@yu2020fast; @Cox2008MaxQuant] or products of peptide ion fragmentation [@rost2014openswath; @demichev2020dia] are counted and aggregated to obtain peptide abundances. Finally, the identified and quantified peptides are assigned to proteins based on protein sequence information.
 
 
