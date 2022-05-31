@@ -16,7 +16,7 @@ bibliography: bibliography.bib
 editor_options: 
   chunk_output_type: console
 abstract: |
-    Protein mass spectrometry is widely used for quantitative proteomics studies, relative protein quantification, and differential expression analysis of proteins. Nevertheless, there is still a need for a flexible and easy-to-use application programming interface in R that transparently supports a variety of well principled statistical procedures. The prolfqua package can model simple experimental designs with a single explanatory variable and complex experiments with multiple factors and hypothesis testing.
+    Protein mass spectrometry is widely used for quantitative proteomics studies, relative protein quantification, and differential expression analysis of proteins. Nevertheless, there is still a need for a flexible and easy-to-use application programming interface in R that transparently supports a variety of well principled statistical procedures. The `r BiocStyle::Githubpkg("fgcz/prolfqua")` package can model simple experimental designs with a single explanatory variable and complex experiments with multiple factors and hypothesis testing.
     It is an package that integrates essential steps of the mass spectrometry-based differential expression analysis workflow: quality control, data normalization, protein aggregation, statistical modeling, hypothesis testing, and sample size estimation. 
      Furthermore, the package implements benchmark functionality that can help to compare data acquisition, data preprocessing, or data modeling methods using a gold standard dataset. Finally, we show that the implemented methods allow sensitive and specific differential expression analysis. 
      The R package is available on github https://github.com/fgcz/prolfqua.
@@ -517,7 +517,7 @@ The authors thank the technology platform fund (TPF) of the University of Zurich
 
 # Abbreviations
 
-\begin{table}
+\begin{table}[H]
 \centering
 \begin{tabular}{ll}
 \toprule
@@ -541,18 +541,18 @@ UML     &       Unified Modeling Language                  \\
 \end{table}
 
 \newpage
+
 # References {-}
 
 <div id="refs"></div>
 
-
 \newpage
 
-# Appendix  
+# Appendix  {.unnumbered}
 
-## Creating a prolfqua configuration 
+## Creating a prolfqua configuration {.unlisted .unnumbered}
 
-The following code demonstrates how we use prolfqua to analyze protein intensities reported in the MSFragger `combined_protein.tsv` file.
+The following code demonstrates how we use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to analyze protein intensities reported in the MSFragger `combined_protein.tsv` file.
 First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_MSFragger_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object. 
 Bottom-up proteomics data is hierarchical, i.e., a protein has peptides, peptides might be modified, etc. Therefore, the `AnalysisTableAnnotation` has a `hierarchy` field storing a list with an entry for each hierarchy level.
 Since `combined_portein.tsv` only holds protein level data, the hierarchy list has one element, and we use it to specify which column contains the protein identifiers. We also need to define which column contains the protein abundances we want to use for the data analysis.
@@ -599,7 +599,10 @@ lfqdata$remove_small_intensities()
 ```
 
 
-## Comparing benchmark results for proDA and prolfqua [REMOVE?]
+## Comparing benchmark results for proDA and prolfqua {.unlisted .unnumbered}
+
+TODO(WEW): remove?
+
 
 Here we compare the benchmark results for the `r BiocStyle::Biocpkg("proDA")` model and the linear model with variance moderation. We see that the difference estimates obtained with the `r BiocStyle::Biocpkg("proDA")` package show better diagnostic accuracy.  However, the $t-statistics$ or $p-values$ show slightly worse diagnostic accuracy (Figure \@ref(fig:proDABenchmarks)). Figure \@ref(fig:proDAAllBenchmarks), compares the difference estimates obtained using both methods.
 
@@ -641,14 +644,14 @@ ggplot2::ggplot(x,ggplot2::aes( x = diff.lm, y = diff.proda) ) + ggplot2::geom_p
 
 ```
 
-## Session information
+## Session information {.unlisted .unnumbered}
 
 ```{r sessioninfo, echo=FALSE}
 sessionInfo()
 ```
 
 \newpage
-## Miscellaneous
+## Miscellaneous {.unlisted .unnumbered}
 
 
 (ref:tabCompletion) The screenshot displays the command-line completion (tab completion) of RStudio on the `prolfqua::LFQData` R6 object. In the example, it shows the getter methods of the object.
