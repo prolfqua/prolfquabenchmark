@@ -18,7 +18,7 @@ editor_options:
 abstract: |
     Protein mass spectrometry is widely used for quantitative proteomics studies, relative protein quantification, and differential expression analysis of proteins. Nevertheless, there is a need for a flexible and easy-to-use application programming interface in R that transparently supports a variety of well principled statistical procedures. The `r BiocStyle::Githubpkg("fgcz/prolfqua")` package can model simple experimental designs with a single explanatory variable and complex experiments with multiple factors and hypothesis testing. It integrates essential steps of the mass spectrometry-based differential expression analysis workflow: quality control, data normalization, protein aggregation, statistical modeling, hypothesis testing, and sample size estimation. The application programmer interface strives to be clear,  predictable, discoverable, and consistent to make proteomics data analysis easy and exciting. 
      Furthermore, the package implements benchmark functionality that can help to compare data acquisition, data preprocessing, or data modeling methods using a gold standard dataset. Finally, we show that the implemented methods allow sensitive and specific differential expression analysis. 
-     The R package is available on github https://github.com/fgcz/prolfqua.
+     The `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package is available on GitHub https://github.com/fgcz/prolfqua, distributed under the MIT licence, and runs on all plattforms supported by the [R free software environment for statistical computing and graphics](https://www.r-project.org/).
 urlcolor: blue
 ---
 
@@ -39,14 +39,14 @@ knitr::opts_chunk$set(echo = FALSE,
 \begin{quote}
 To paraphrase provocatively, `machine learning is statistics minus any checking of models and assumptions'.
 
--- Brian D. Ripley (about the difference between machine learning and statistics) useR! 2004, Vienna (May 2004).
+\begin{flushright}
+-- Brian D. Ripley, useR! 2004, Vienna.
+\end{flushright}
 \end{quote}
 
 Proteins carry out most crucial functions and give structure to living cells. Hence, measuring changes in protein abundance is the subject of active research [@vidova2017review]. Bottom-up mass spectrometric methods, where proteins are specifically and reproducible digested into protein fragments - peptides, are employed to identify and quantify proteins in complex samples containing hundreds to thousand of proteins, [@Bubis2017; @da2020philosopher]. The peptides are first separated by their chemical and physical properties using High-Pressure Liquid Chromatography (HPLC). Afterward, they are ionised, weighted, identified, and quantified using mass spectrometric techniques, e.g., Electro-Spray-Ionization Mass Spectrometry (ESI-MS). Finally, peptide identification is achieved by fragmenting and matching the measured fragment masses to theoretical masses computed from known peptide sequences [@eng2015deeper; @yu2016pipi; @kong2017msfragger]. For quantification, intact peptide ions [@yu2020fast; @Cox2008MaxQuant] or products of peptide ion fragmentation [@rost2014openswath; @demichev2020dia] are counted and aggregated to obtain peptide abundances. Finally, the identified and quantified peptides are assigned to proteins based on protein sequence information.
 
-
 Proteomics quantification experiments enable monitoring relative abundances of thousands of proteins in biological samples. Most studies use parallel-group designs, where one or many treatment groups are compared to the control group [@de2022apoe2; @laubscher2021baf]. More recently, more complex experimental designs with an increasing number of samples are studied, e.g., factorial designs and longitudinal studies (time series), sometimes with repeated measurements on the same subject [@tan2022proteomic; @meier2021reduced]. The data can be modeled using linear fixed-, mixed-, or random-effects models [@Bates2015FittingJSS]. Based on these models, tests can be applied to examine whether specific factors and factor interactions are significant, e.g., it can be tested if differences in protein abundance between groups are statistically significant. 
-
 
 An important aspect of mass spectrometric data are missing peptide and protein quantifications. [@rubin1976inference] classified missing data problems into three categories: missing completely at random (MCAR), missing at random (MAR), and missing not at random (MNAR). For instance, in data-dependent acquisition (DDA) MS, only a limited number of MS1 signals are selected for fragmentation and identified. Peptide quantification algorithms transfer identification information between MS1 features in different samples by aligning the data using retention time and mass information, thus reducing the amount of missing data. Nevertheless, highly abundant proteins can suppress the detection of other proteins in a sample, an MAR mechanism. Furthermore, a weak correlation between the number of missing measurements in a condition and the abundance of the quantified protein can be observed, which is caused by the limit of detection (LOD), an MNAR mechanism [@mcgurk2020use].
 
