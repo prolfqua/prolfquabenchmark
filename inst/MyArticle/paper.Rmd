@@ -13,6 +13,7 @@ output:
       toc_appendix: false
       toc_bib: false
       keep_tex: true
+date: "`r format(Sys.time())`"
 bibliography: bibliography.bib
 editor_options: 
   chunk_output_type: console
