@@ -12,6 +12,7 @@ output:
       toc: true
       toc_appendix: false
       toc_bib: false
+      keep_tex: true
 bibliography: bibliography.bib
 editor_options: 
   chunk_output_type: console
