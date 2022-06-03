@@ -449,8 +449,6 @@ nrgg <- dds |> ggplot2::ggplot(ggplot2::aes(x = name, y = nrcontrasts )) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
   ggplot2::geom_text(ggplot2::aes(label = paste0(round(nrcontrasts, digits = 1), paste0("  (",round(percent, digits = 1),"%)"))),
             vjust = 0, hjust = -0.2, angle = -90) #+ 
-  #ggplot2::geom_text(ggplot2::aes(label = paste0("(",round(percent, digits = 1),"%)")),
-            #vjust = -1, hjust = -0.2, angle = -90) 
 pB <- nrgg + ggplot2::labs(tag = "B")
 
 dd <- purrr::map_df(allBenchmarks, function(x){res <- x$get_confusion_FDRvsFDP(); res$name <- x$model_name;res})
