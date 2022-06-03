@@ -371,7 +371,9 @@ Models in `r BiocStyle::Githubpkg("fgcz/prolfqua")` are specified using R’s li
 Using the tidy table to model the data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")` [@quast2022protti]. Furthermore, the use of `R6` classes, which encapsulate the configuration and the data, allows for writing very concise code (no function arguments needed). Auto-completion support in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality (Figure \@ref(fig:tabCompletion)). To simplify integration of `r BiocStyle::Githubpkg("fgcz/prolfqua")` with Bioconductor based workflows there is an method to convert the LFQData class into a `r BiocStyle::Biocpkg("SummarizedExperiment")`.
 
 To ease the usage barriers of the R package to users not being familiar with statistics and R programming, we integrated some workflows into our data management platform [b-fabric](https://fgcz-bfabric.uzh.ch/) @bfabric.
-This integration enables our users to select the input and basic settings in a graphical user interface. Then, as an output, the user receives a report including input files, the R markdown file, and R scripts necessary to replicate the analysis using their in-house R installation. In this way,  [b-fabric](https://fgcz-bfabric.uzh.ch/) helps scientists meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable and Reusable) [@FAIR] data principles.
+This integration enables our users to select the input and basic settings in a graphical user interface. Then, as an output, the user receives a report including input files, the R markdown file, and R scripts necessary to replicate the analysis using their in-house R installation.
+Under the hood of the b-fabric system runs a computing infrastructure controlled by a local resource management system that also supports cloud-bursting [@VMMAD].
+In this way, [b-fabric](https://fgcz-bfabric.uzh.ch/) helps scientists meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable and Reusable) [@FAIR] data principles.
 
 
 ## Benchmarking modelling approaches
@@ -550,12 +552,12 @@ When comparing statistical modeling methods for the differential expression anal
 In summary, `r BiocStyle::Githubpkg("fgcz/prolfqua")` is an easy-to-use and feature-rich R package to analyze quantitative mass spectrometric data, report results, and benchmark MS software and statistical methods. We provide documentation, in vignette format, at the website https://github.com/fgcz/prolfqua/. This document was created using Rmarkdown. All the code needed to replicate the document or the benchmark results is available at : https://github.com/wolski/prolfquabenchmark.
 
 
-# Acknoledgements
+# Acknoledgements {.unlisted .unnumbered}
 
 The authors thank the technology platform fund (TPF) of the University of Zurich.
 
 
-# Abbreviations
+# Abbreviations {.unlisted .unnumbered}
 
 \begin{table}[H]
 \centering
