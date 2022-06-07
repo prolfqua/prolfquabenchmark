@@ -32,6 +32,8 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
                       fig.width = 7,
                       fig.height = 5)
+
+options(width=70)
 ```
 
 \newpage
@@ -638,7 +640,6 @@ lfqdata$remove_small_intensities()
 sessionInfo()
 ```
 
-\newpage
 ## Miscellaneous {.unlisted .unnumbered}
 
 
