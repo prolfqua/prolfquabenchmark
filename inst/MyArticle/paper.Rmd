@@ -1,7 +1,7 @@
 ---
 title: prolfqua - A Comprehensive R-package for Proteomics Differential Expression Analysis
 author: 
-  - Witold E. Wolski $^{\dagger\ddagger}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - [Swiss Federal Institute of Technology in Zurich](https://ethz.ch) \| [University of Zurich](https://uzh.ch); Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. $^\ddagger$[Swiss Institute of Bioinformatics (SIB)](https://www.sib.swiss/) $^\dagger$Correspondence \texttt{wew@fgcz.ethz.ch}]
+  - Witold E. Wolski $^{\dagger\ddagger}$^[[Functional Genomics Center Zurich (FGCZ)](https://fgcz.ch) - [University of Zurich](https://uzh.ch)/[ETH Zurich](https://ethz.ch), Winterthurerstrasse 190, CH-8057 Zurich, Switzerland. $^\ddagger$[Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland](https://www.sib.swiss/) $^\dagger$Correspondence \texttt{wew@fgcz.ethz.ch}]
   - Paolo Nanni$^{\ast}$
   - Jonas Grossmann$^{\ast\ddagger}$
   - Maria d'Errico$^{\ast\ddagger}$
