@@ -83,15 +83,15 @@ We also implemented functionality and use the Ionstar [@shen2018ionstar] dataset
 
 ## Implementation
 
-We store all the data needed for analysis in a tidy table, i.e., every column is a variable, every row is an observation, and every cell is a single value [@tidydata2014]. Using an R6 [@R6cite] configuration object (Figure \@ref(fig:LFQData)), we specify what variable is in which column, making it easy to integrate new inputs in `r BiocStyle::Githubpkg("fgcz/prolfqua")` if provided as a tidy table. For example, to visualize tidy Spectronaut[@bruderer2015extending], DiaNN[@demichev2020dia], or Skyline[@maclean2010skyline] outputs, or data in `r BiocStyle::Biocpkg("MSstats")`[@Choi2014] format, only a few lines of code are needed to update the `r BiocStyle::Githubpkg("fgcz/prolfqua")` `AnalysisTableConfiguration` configuration. The configuration encapsulates the differences in column names among the various input formats, and enables the use of the methods without additional arguments. We show an example code for creating an MSFragger[@yu2020fast] configuration in the Appendix. For popular software like MaxQuant[@Cox2008MaxQuant], or MSFragger, which stores the same variable, e.g., intensity, in multiple columns, one for each sample, we implemented methods that transform the data into tidy tables. Relying on the tidy data table enables us to interface with many data manipulation, visualization, and modeling methods, implemented in base R [@RCoreTeam2021] and the tidyverse [@tidyverse2019], easily. We use R6 classes to structure the functionality of the package (see Figure \@ref(fig:LFQData) and Figure \@ref(fig:ContrastUML)). R6 classes are well supported by command-line completion features in RStudio [@RStudio2022], and help to implement argument free functions (Appendix Figure \@ref(fig:tabCompletion).
+We store all the data needed for analysis in a tidy table, i.e., every column is a variable, every row is an observation, and every cell is a single value [@tidydata2014]. Using an R6 [@R6cite] configuration object (Figure \@ref(fig:LFQData)), we specify what variable is in which column, making it easy to integrate new inputs in `r BiocStyle::Githubpkg("fgcz/prolfqua")` if provided as a tidy table. For example, to visualize tidy Spectronaut[@bruderer2015extending], DiaNN[@demichev2020dia], or Skyline[@maclean2010skyline] outputs, or data in `r BiocStyle::Biocpkg("MSstats")`[@Choi2014] format, only a few lines of code are needed to update the `r BiocStyle::Githubpkg("fgcz/prolfqua")` `AnalysisTableConfiguration` configuration. The configuration encapsulates the differences in column names among the various input formats, and enables the use of the methods without additional arguments. We show an example code for creating an MSFragger[@yu2020fast] configuration in the Appendix. For popular software like MaxQuant[@Cox2008MaxQuant], or MSFragger, which stores the same variable, e.g., intensity, in multiple columns, one for each sample, we implemented methods that transform the data into tidy tables. Relying on the tidy data table enables us to interface with many data manipulation, visualization, and modeling methods, implemented in base R [@RCoreTeam2021] and the tidyverse [@tidyverse2019], easily. We use R6 classes to structure the functionality of the package (see Figure \@ref(fig:LFQData) and Figure \@ref(fig:ContrastUML)). R6 classes are well supported by command-line completion features in RStudio [@RStudio2022], and help to implement argument free functions (Figure \@ref(fig:tabCompletion).
 
-(ref:LFQData) Class Diagram of classes representing the proteomics data. The LFQData class encapsulates the quantitative proteomics data stored in a tidy table. An instance of the AnalysisTableConfiguration class specifies a mapping of columns in the tidy table. The LFQDataPlotter class and other classes decorate the LFQData class with additional functionality. Similarly, the `LFQDataStats` and `LFQDataSummary`, reference the `LFQData` class and group methods for variance and sample size estimation or summarizing peptide and protein counts.
+(ref:LFQData) Class Diagram of classes representing the proteomics data. The LFQData class encapsulates the quantitative proteomics data stored in a tidy table. An instance of the AnalysisTableConfiguration class specifies a mapping of columns in the tidy table. The LFQDataPlotter class and other classes decorate the LFQData class with additional functionality. Similarly, the `LFQDataStats` and `LFQDataSummary` reference the `LFQData` class and group methods for variance and sample size estimation or summarizing peptide and protein counts.
 
 ```{r LFQData, echo=FALSE, fig.cap="(ref:LFQData)", out.width = '90%'}
 knitr::include_graphics("LFQData_UML_V2.png")
 ```
 
-In addition, we implement features specific to high throughput experiments, such as the experimental Bayes variance and $p$-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We used R6 classes to encapsulate the statistical modelling functionality in `r BiocStyle::Githubpkg("fgcz/prolfqua")` (see Figure \@ref(fig:ContrastUML)). We specify a contrast interface (`ContrastsInterface`). Several implementations allow to perform differential expression analysis given linear or mixed effect models (`Contrasts`), variance shrinkage (`ContrastsModerated`), or impute contrasts in cases when observations are missing for an entire group of samples (`ContrastsSimpleImpute`). Further implementations of the interface encapsulate and integrate differential expression analysis results of external tools such as `r BiocStyle::Biocpkg("proDA")` or of SAINTexpress [@teo2014saintexpress] used to analyze data from protein interaction studies.
+In addition, we implement features specific to high throughput experiments, such as the experimental Bayes variance and $p$-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We used R6 classes to encapsulate the statistical modelling functionality in `r BiocStyle::Githubpkg("fgcz/prolfqua")` (see Figure \@ref(fig:ContrastUML)). We specify a contrast interface (`ContrastsInterface`). Several implementations allow to perform differential expression analysis given linear or mixed effect models (`Contrasts`), variance shrinkage (`ContrastsModerated`), or to impute contrasts in cases when observations are missing for an entire group of samples (`ContrastsSimpleImpute`). Further implementations of the interface encapsulate and integrate differential expression analysis results of external tools such as `r BiocStyle::Biocpkg("proDA")` or of SAINTexpress [@teo2014saintexpress] used to analyze data from protein interaction studies.
 
 (ref:ContrastUML)  The UML (unified modeling language) diagram of modeling and contrast related classes. Different strategies, e.g., _lm_, _lmer_, and _glm_ (Table \@ref(tab:prolfquaModels)), can fit various types of models. The model builder method fits the statistical model given the data and a strategy. The obtained model can then be used for the analysis of variance or to estimate contrasts. All classes estimating contrasts implement the _Contrasts_ interface. Results of external tools, e.g., SAINTexpress, can be adapted by implementing the Contrasts Interface.
 
@@ -110,11 +110,11 @@ To evaluate the performance of differential expression analysis, we use the IonS
 
 ## Data preprocessing for model comparison
 
-The peptide abundances (from the MaxQuant _peptide.txt_ file), were $log_2$ transformed and subsequently scaled, where median and the mean average deviation (mad) were obtained from the human proteins only. We removed _one hit wonders_, i.e., proteins with a single peptide assignment. Protein abundances are inferred from the peptide intensities using Tukey's median polish. Finally, we fitted the fixed effect linear models, the dropout model `r BiocStyle::Biocpkg("proDA")` to protein abundances, the mixed effect linear model, and the `r BiocStyle::Biocpkg("PECA")` model to peptide intensities.
+The peptide abundances (from the MaxQuant _peptide.txt_ file) were $log_2$ transformed and subsequently scaled, where median and the mean average deviation (mad) were obtained from the human proteins only. We removed _one hit wonders_, i.e., proteins with a single peptide assignment. Protein abundances are inferred from the peptide intensities using Tukey's median polish. Finally, we fitted the fixed effect linear models, the dropout model `r BiocStyle::Biocpkg("proDA")` to protein abundances, the mixed effect linear model, and the `r BiocStyle::Biocpkg("PECA")` model to peptide intensities.
 
 ## Benchmark metrics
 
-The IonStar dataset contains _H. sapiens_ proteins with constant concentrations and _E. coli_ proteins with varying concentrations. We know that for _H. sapiens_ proteins, the difference $\beta$ between two dilutions should be $\beta = 0$. While for _E. coli_ proteins, we know that the difference between dilutions should be $\beta \ne 0$.
+The IonStar dataset contains _H. sapiens_ proteins with constant concentrations and _E. coli_ proteins with varying concentrations. We know that for _H. sapiens_ proteins, the difference $\beta$ between two dilutions should be $\beta = 0$, while for _E. coli_ proteins, we know that the difference between dilutions should be $\beta \ne 0$.
 
 We can use various statistics to examine the alternative hypothesis $\beta \ne 0$: the contrast estimate, i.e. the $\log_2$ fold-change $\beta$, the $t$-statistic $\frac{\beta}{\sqrt{var(\beta)}}$, or the $p$-value and moderated $p$-value. For each statistic and each value of the statistics we then compute a confusion matrix (see Table \@ref(tab:knitrConfusionMatrix)). From the confusion matrix we obtain measures such as true positive rate ($TPR$), false positive rate ($FPR$), or false discovery proportion ($FDP$) which are given by:
 
@@ -143,7 +143,7 @@ In order to compute the confusion matrices based on the $p$-value we first need 
 
 ### Robust scaling of the data
 
-@valikangas2016systematic discuss and benchmark various methods of peptide or protein intensity normalization, such as variance stabilizing normalization [@huber2002variance] or quantile normalization [@bolstad2003comparison]. In this work, we use a robust version of the z-score, where instead of the mean $\bar{x}$ we use the median, and instead of the standard deviation $\tilde{S}$ the median absolute deviation (mad):
+@valikangas2016systematic discuss and benchmark various methods of peptide or protein intensity normalization, such as variance stabilizing normalization [@huber2002variance] or quantile normalization [@bolstad2003comparison]. In this work, we use a robust version of the z-score, where instead of the mean $\bar{x}$ we use the median, and instead of the standard deviation $\tilde{S}$ we use the median absolute deviation (mad):
 
 \begin{eqnarray}
 z = \frac{x - \tilde{x}}{\tilde{S}}
@@ -155,13 +155,13 @@ Because we need to estimate the differences among groups on the original scale, 
 z' = z \cdot \frac{1}{n}\sum_{i=1}^n S_i
 \end{eqnarray}
 
-To apply this transformation, we need to estimate two parameters per sample. It works for experiments with thousands of proteins and experiments where only a few hundred proteins per sample are measured.
+To apply this transformation, we need to estimate two parameters per sample, therefore it works for experiments with thousands of proteins and experiments where only a few hundred proteins per sample are measured.
 For the Ionstar dataset, we used the intensities of _H. sapiens_ proteins, whose concentrations do not change, to determine $\bar{x}$ and $S$ and then applied it to all the intensities (including _E. coli_) in the sample.
 
 
 ### Estimating differences between groups
 
-Given a linear model $y = \beta X$, we can compute the difference between two groups $\beta_{c}$ by a linear combination $c$ of linear model parameters $\beta$, where $c$ is a column vector with as many elements as there are coefficients $\beta$ in the linear model. If $c$ has $0$ for one or more of its rows, then the corresponding coefficient in $\beta$ is not involved in determining the contrast [@ph525xseries].
+Given a linear model $y = \beta X$, we can compute the difference $\beta_{c}$ between two groups by a linear combination $c$ of linear model parameters $\beta$, where $c$ is a column vector with as many elements as there are coefficients $\beta$ in the linear model. If $c$ has $0$ for one or more of its rows, then the corresponding coefficient in $\beta$ is not involved in determining the contrast [@ph525xseries].
 
 The difference estimate $\beta_c$, is given by the dot product:
 
@@ -175,11 +175,11 @@ and the variance of $\beta_c$ by:
 \textrm{var} (\hat\beta_c) &=& \sqrt{ c^T \sigma^2 (X^T X)^{-1} c }
 \end{eqnarray}
 
-with $X$ being the design matrix, $\beta$ the model parameters and $c$ an array of weights, defining the contrast (difference among conditions). The degrees of freedom for the contrast are equal to the residual degrees of freedom of the linear model. For estimating contrasts from mixed effects models we used the function `contest` implemented in the R package `r BiocStyle::CRANpkg("lmerTest")`  and used the Satterthwaite [@Kuznetsova2017lmerTest] method to estimate the denominator degrees of freedom. These methods are available in the class `Contrast` (see Figure \@ref(fig:ContrastUML))
+with $X$ being the design matrix. The degrees of freedom for the contrast are equal to the residual degrees of freedom of the linear model. For estimating contrasts from mixed effects models we used the function `contest` implemented in the R package `r BiocStyle::CRANpkg("lmerTest")`  and used the Satterthwaite [@Kuznetsova2017lmerTest] method to estimate the denominator degrees of freedom. These methods are available in the class `Contrast` (see Figure \@ref(fig:ContrastUML))
 
 ### Determining linear parameter combinations for treatment comparison
 
-The package `r BiocStyle::Githubpkg("fgcz/prolfqua")` provides function to determine the vector of $parameter$ weights $c$, from a linear models and a contrast specification string.
+The package `r BiocStyle::Githubpkg("fgcz/prolfqua")` provides a function to determine the vector of $parameter$ weights $c$, from a linear models and a contrast specification string.
 
 The linear model below explain the observed protein abundances using the explanatory variables `factor_1` and `factor_2` and the interaction among them `factor_1:factor_2`, 
 
@@ -203,7 +203,7 @@ c("contrast_name" =
 
 where `factor_x` is the name of the explanatory variable, and `group_x`  are group labels. 
 
-The following code shows an example where we specified two contrast, the first to compare Cells of type CMP/MEP with cells of type HSC, and the second where we contrast therapy NO with therapy NU for the celltype CMP/MEP [@meier2021reduced]. Finally, we compute the array of weights defining the contrast, used to multiply the model coefficient $\beta$.
+The following code shows an example where we specify two contrast: the first to compare Cells of type CMP/MEP with cells of type HSC, and the second to compare therapy NO with therapy NU for the celltype CMP/MEP [@meier2021reduced]. Finally, we compute the array of weights defining the contrast, used to multiply the model coefficient $\beta$.
 
 
 ```{r echo=TRUE}
@@ -221,7 +221,7 @@ prolfqua::linfct_matrix_contrasts(linfct, Contrasts )
 
 ### Contrast estimation in presence of missing data.
 
-Missing observations lead to different group sizes, which results in unbalanced designs. Linear and mixed effect models implemented in R can handle unbalanced designs. Therefore, as long as one observation per group is available, they will produce unbiased estimates, and no imputation is needed.
+Missing observations lead to different group sizes, which results in unbalanced designs. Linear and mixed effect models can handle unbalanced designs, as long as one observation per group is available, they will produce unbiased estimates, and no imputation is needed.
 
 If there is no observation in a group, we assume that the protein is unobserved because the protein abundance is below the limit of detection (LOD) of the MS instrument. In this case, we will impute the mean using the protein abundance at the detection limit $A_{LOD}$.
 We estimate the abundance at the detection limit using the abundances of the proteins observed only in one sample of a group of samples. Then, we compute the median of the distribution and use it as the group mean if a protein is absent in a treatment group.
@@ -243,7 +243,7 @@ To estimate the variance, we assume that the variance of the protein is constant
 s_p^2=\frac{\sum_{i=1}^k (n_i - 1)s_i^2}{\sum_{i=1}^k (n_i - 1)}
 \end{equation} 
 
-with $n_i$ the number of observations, and $s_i$ the standard deviation in each condition.
+with $n_i$ the number of observations, and $s_i$ the standard deviation in each group.
 The standard deviation for the $t$-statistics is then given by:
 
 \begin{equation} 
@@ -267,9 +267,9 @@ We implemented this method in the class `ContrastModerated` (Figure \@ref(fig:Co
 
 ### Summarizing peptide level differences and p-values on protein level
 
-To summarize peptide level models to protein models, we applied the method suggested by @Suomi2017bEnhanced to use the median scaled $p$-value of the peptide models and the cumulative distribution function of the beta distribution function to determine a regulation probability of the protein.
+To summarize peptide level models to protein models, we apply the method suggested by @Suomi2017bEnhanced that use the median scaled $p$-value of the peptide models and the cumulative distribution function of the Beta distribution (CDF) to determine a regulation probability of the protein.
 
-To obtain the median $p$-value of a protein, we first rescaled the peptide $p$-values by taking the sign of the fold-change $\hat \beta$ into account, i.e.:
+To obtain the $\tilde{p}$ of a protein, we first rescaled the peptide $p$-values by taking the sign of the fold-change $\hat \beta$ into account, i.e.:
 
 \begin{equation}
 p_{s} =
@@ -286,7 +286,7 @@ Afterwards, the median scaled $p$-value $\tilde{p}_s$ is determined and using th
 \tilde{p} = 1 - |\tilde{p}_{s}|
 \end{equation}
 
-Because we used the median as the i-th order statistic $i = \frac{n}{2} + 0.5$. Therefore, to parameterize the cumulative distribution function (CDF) of the Beta distribution, $\gamma = i = \frac{n}{2} + 0.5$ and $\delta = n - i + 1 = n - (\frac{n}{2} + 0.5) + 1 = \frac{n}{2} + 0.5 = \gamma$. We implemented this method in the class `ContrastROPECA` (Figure \@ref(fig:ContrastUML)).
+Because we use the median, with the i-th order statistic $i = \frac{n}{2} + 0.5$, we parametrize the CDF of the Beta distribution with $\gamma = i = \frac{n}{2} + 0.5$ and $\delta = n - i + 1 = n - (\frac{n}{2} + 0.5) + 1 = \frac{n}{2} + 0.5 = \gamma$. We implemented this method in the class `ContrastROPECA` (Figure \@ref(fig:ContrastUML)).
 
 
 # Results and Discussion.
@@ -294,7 +294,7 @@ Because we used the median as the i-th order statistic $i = \frac{n}{2} + 0.5$. 
 
 ## Example analysis workflow
 
-The code snippets in this section demonstrate how a differential expression analysis workflow can be implemented using the `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package. To speed up the computation of these examples, we use a subset of the Ionstar dataset containing $163$ proteins and $1258$ peptides. Peptide abundances are $\log_2$ transformed and robust z-score scaled using the method `robscale`. Using the `LFQDataPlotter` class, we show the distribution of the normalized peptide abundances in Figure \@ref(fig:prepro) Panel A. Afterwards, protein intensities are estimated from peptide intensities using Tukey's median polish. Figure \@ref(fig:prepro) Panel B shows the peptide intensities and the estimated protein intensities. Next, we compute the standard deviation of all the proteins in each group and display their distribution using violin plots (Panel C). Finally, we create a boxplot (Panel D) showing the abundance of one protein.
+The code snippets in this section demonstrate how a differential expression analysis workflow can be implemented using the `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package. To speed up the computation of these examples, we use a random subset of the Ionstar dataset containing $163$ proteins and $1258$ peptides. Peptide abundances are $\log_2$ transformed and robust z-score scaled using the method `robscale`. Using the `LFQDataPlotter` class, we show the distribution of the normalized peptide abundances in Figure \@ref(fig:prepro) Panel A. Afterwards, protein intensities are estimated from peptide intensities using Tukey's median polish. Figure \@ref(fig:prepro) Panel B shows the peptide intensities and the estimated protein intensities. Next, we compute the standard deviation of all the proteins in each group and display their distribution using violin plots (Panel C). Finally, we create a boxplot (Panel D) showing the abundance of one protein.
 
 ```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%', fig.width = 8, fig.height = 8}
 ## load peptide level data
@@ -327,7 +327,7 @@ ggpubr::ggarrange(panelA, panelB, panelC, panelD)
 
 (ref:scaling) Panel A - Peptide intensity distributions for $20$ samples. For each sample a line with a different colour is shown. Panel B - Peptide intensities for protein _5NTD_ are shown using a line of different colour, and the protein intensity estimate is shown using a fat black line, Panel C - distribution of standard deviations of all proteins in each dilution group ($a$, $b$, $c$, $d$, $e$) and overall (all), Panel D - Distribution of protein intensities for protein _5NTD_.
 
-The following code example illustrates how we compute contrast by comparing the protein intensities among groups. First, the linear model and the differences are specified. Afterward, the model is fitted to the data using the `build_model` function. Next, we estimate the contrasts either from the linear model using the `Contrasts` class or directly from the data using the `ContrastsSimpleImpute` class. Afterward, we apply $t$-statistic moderation using the `ContrastModerated` class. Finally, the `addContrastResults` function merges both sets of contrast estimates, preferring the one obtained from the linear model if both are available. Then we create the plots shown in Figure \@ref(fig:exampleContrasts). Panel A shows the distribution of the $p$-values, while Panel B shows the volcano plot for each comparison.
+The following code example illustrates how we compute differences among groups. First, the linear model and the differences are specified. Afterward, the model is fitted to the data using the `build_model` function. Next, we estimate the contrasts either from the linear model using the `Contrasts` class or directly from the data using the `ContrastsSimpleImpute` class. Afterward, we apply $t$-statistic moderation using the `ContrastModerated` class. Finally, the `addContrastResults` function merges both sets of contrast estimates, preferring the one obtained from the linear model if both are available. Then we create the plots shown in Figure \@ref(fig:exampleContrasts). Panel A shows the distribution of the $p$-values, while Panel B shows the volcano plot for each comparison.
 
 (ref:exampleContrasts) Panel A - Histogram showing the distribution of p-values for $163$ proteins. Panel B -  Volcano plot showing $-\log_{10}$ transformed FDR as function of the difference between groups for $163$ proteins.
 
@@ -371,7 +371,7 @@ Using the tidy table to model the data ensures interoperability with other prote
 
 To ease the usage barriers of the R package to users not being familiar with statistics and R programming, we integrated some workflows into our data management platform [b-fabric](https://fgcz-bfabric.uzh.ch/) [@bfabric]. This integration enables our users to select the input and basic settings in a graphical user interface. Then, as an output, the user receives a report including input files, the R markdown file, and R scripts necessary to replicate the analysis using their in-house R installation.
 The b-fabric system runs a computing infrastructure controlled by a local resource management system that supports cloud-bursting [@VMMAD].
-In this way, [b-fabric](https://fgcz-bfabric.uzh.ch/) helps scientists meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable and Reusable) [@FAIR] data principles.
+In this way, [b-fabric](https://fgcz-bfabric.uzh.ch/) helps scientists to meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable and Reusable) [@FAIR] data principles.
 
 ## Benchmarking modelling approaches
 
