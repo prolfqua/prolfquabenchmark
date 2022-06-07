@@ -543,7 +543,7 @@ We provide documentation, in vignette format, at the website https://github.com/
 
 # Acknowledgements {.unlisted .unnumbered}
 
-The authors thank the technology platform fund (TPF) of the University of Zurich.
+The authors thank the technology platform fund (TPF) of the University of Zurich and all FGCZ proteomics colleagues for fruitful discussions.
 
 
 # Abbreviations {.unlisted .unnumbered}
