@@ -381,10 +381,19 @@ The Benchmark functionality of `r BiocStyle::Githubpkg("fgcz/prolfqua")` include
 
 
 ```{r readBenchmarkData}
-allBenchmarks <- readRDS("../../inst/Benchresults/allBenchmarks.RDS")
-benchmark_msstats <- readRDS("../../inst/Benchresults/benchmark_msstats.RDS")
-benchmark_prodA <- readRDS("../../inst/Benchresults/benchmark_medpolish_proDA.RDS")
-msFragger <- readRDS(file = "../../inst/Benchresults/MSFragger_medpol_benchmark.RDS")
+
+getpath <- function(filN){
+    f1 <- system.file("Benchresults",filN, package = "prolfquabenchmark")
+    if(f1 == ""){
+        f1 <- paste0("../../inst/Benchresults/",filN)
+    }
+    return(f1)
+}
+allBenchmarks <- readRDS(getpath("allBenchmarks.RDS"))
+benchmark_msstats <- readRDS(getpath("benchmark_msstats.RDS"))
+benchmark_prodA <- readRDS(getpath("benchmark_medpolish_proDA.RDS"))
+msFragger <- readRDS(getpath("MSFragger_medpol_benchmark.RDS"))
+
 
 allBenchmarks$benchmark_mssstats <- benchmark_msstats
 allBenchmarks$benchmark_msFragger <- msFragger
@@ -552,7 +561,7 @@ The authors thank the technology platform fund (TPF) of the University of Zurich
 
 # Abbreviations {.unlisted .unnumbered}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{ll}
 \toprule
