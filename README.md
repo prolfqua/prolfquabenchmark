@@ -10,6 +10,7 @@ The R package prolfquabenchmark contains vignettes which show how we used the Io
 - [Benchmarking MSstats using the Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html)
 - [Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_fromMQlfq.html)
 - [Benchmarking the proDA package using the Ionstar Dataset starting from peptides](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html)
+- [Benchmarking normalization, aggregation and models using the Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html)
 
 
 
