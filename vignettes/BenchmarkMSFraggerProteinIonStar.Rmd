@@ -12,7 +12,6 @@ geometry: margin=.5in
 vignette: >
   %\VignetteIndexEntry{Benchmarking MSFragger output using Ionstar Dataset} 
   %\VignetteEncoding{UTF-8}
-  
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console

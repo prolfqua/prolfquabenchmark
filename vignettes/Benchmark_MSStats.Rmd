@@ -26,7 +26,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 
 ```{r}
-library(magrittr)
 evalAll <- require("MSstats")
 storeBench <- TRUE & evalAll
 ```
@@ -61,24 +60,25 @@ msstas_annotation$raw.file <- NULL
 
 
 ```{r eval = evalAll}
-raw <- MaxQtoMSstatsFormat(evidence = infile, 
-                           annotation = msstas_annotation, 
-                           proteinGroups = proteinGroups,
-                           removeProtein_with1Peptide = TRUE)
+raw <- MSstats::MaxQtoMSstatsFormat(evidence = infile, 
+                                    annotation = msstas_annotation, 
+                                    proteinGroups = proteinGroups,
+                                    removeProtein_with1Peptide = TRUE,
+                                    use_log_file = FALSE,
+                                    verbose = FALSE)
 ```
 
 
 Remove reverse sequence and contaminants.
 
 ```{r eval = evalAll}
-
 raw2 <- raw[ !grepl("REV__",raw$ProteinName),]
 raw3 <- raw2[ !grepl("CON__",raw$ProteinName),]
 ```
 
 
 ```{r dataPreprocess, eval = evalAll}
-QuantData <- dataProcess(raw3, use_log_file = FALSE, verbose = FALSE)
+QuantData <- MSstats::dataProcess(raw3, use_log_file = FALSE, verbose = FALSE)
 # Profile plot
 #dataProcessPlots(data=QuantData, type = "ProfilePlot")
 # Quality control plot 
@@ -102,7 +102,11 @@ comparison4 <- matrix(c(-1,1,0,0,0),nrow = 1)
 comparison <- rbind(comparison1,comparison2, comparison3, comparison4)
 row.names(comparison) <- c("dilution_(9/7.5)_1.2","dilution_(7.5/6)_1.25","dilution_(6/4.5)_1.3(3)","dilution_(4.5/3)_1.5")
 colnames(comparison) <- c("a","b","c","d","e")
-testResultMultiComparisons <- groupComparison(contrast.matrix=comparison, data=QuantData)
+testResultMultiComparisons <- MSstats::groupComparison(
+    contrast.matrix=comparison,
+    data=QuantData,
+    verbose=FALSE,
+    use_log_file=FALSE)
 
 bb <- testResultMultiComparisons$ComparisonResult
 
@@ -116,19 +120,20 @@ library(prolfqua)
 
 ttd <- prolfqua::ionstar_bench_preprocess(bb, idcol = "Protein")
 
-benchmark_msstats <- prolfqua::make_benchmark(ttd$data,
-                                   contrast = "Label",
-                                toscale = c("pvalue"),
-                                fcestimate = "log2FC",
-                                benchmark = list(
-                                  list(score = "log2FC", desc = TRUE),
-                                  list(score = "Tvalue", desc = TRUE),
-                                  list(score = "scaled.pvalue", desc = TRUE)
-                                ),  
-                                model_description = "MSStats",
-                                model_name = "MSStats",
-                                FDRvsFDP = list(list(score = "adj.pvalue", desc = FALSE))
-, hierarchy = c("Protein"), summarizeNA = "Tvalue"
+benchmark_msstats <- prolfqua::make_benchmark(
+    ttd$data,
+    contrast = "Label",
+    toscale = c("pvalue"),
+    fcestimate = "log2FC",
+    benchmark = list(
+        list(score = "log2FC", desc = TRUE),
+        list(score = "Tvalue", desc = TRUE),
+        list(score = "scaled.pvalue", desc = TRUE)
+    ),  
+    model_description = "MSStats",
+    model_name = "MSStats",
+    FDRvsFDP = list(list(score = "adj.pvalue", desc = FALSE))
+    , hierarchy = c("Protein"), summarizeNA = "Tvalue"
 )
 sum(benchmark_msstats$smc$summary$Protein)
 
@@ -140,11 +145,11 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 ```{r include=FALSE, eval=storeBench}
 
 xdd <- ttd$data |> dplyr::rename(protein_Id = Protein ,
-                                  contrast = Label,
-                                  diff = log2FC,
-                                  statistic = Tvalue,
-                                  p.value = pvalue,
-                                  FDR = adj.pvalue  
+                                 contrast = Label,
+                                 diff = log2FC,
+                                 statistic = Tvalue,
+                                 p.value = pvalue,
+                                 FDR = adj.pvalue  
 )
 xdd |> head()
 benchmark2_msstats <- prolfqua::make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")

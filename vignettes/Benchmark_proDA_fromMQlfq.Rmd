@@ -13,6 +13,7 @@ geometry: margin=.5in
 vignette: >
   %\VignetteIndexEntry{Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities} 
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 editor_options:
   chunk_output_type: console
 ---
