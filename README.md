@@ -1,13 +1,21 @@
-# proLFQuaBenchmark - Benchmarking LFQ data analysis using the prolfqua package.
 
-This package contains vignettes only. The vignettes show how we used benchmark datasets to asses the performance of the methods implemented in prolfqua and other packages.
-The results best be studied here by browsing the vignettes online : https://wolski.github.io/prolfquabenchmark/.
+This github project has an accompanying website created with pkgdown.
+https://wolski.github.io/prolfquabenchmark/
+
+# prolfquaBenchmark - Benchmarking LFQ data analysis using the prolfqua package.
+
+The R package prolfquabenchmark contains vignettes which show how we used the IonStar dataset to asses the performance of the methods implemented in the github.com/fgcz/prolfqua R packages and other packages (MSstats, proDA).
+
+- [Benchmarking MSFragger output using Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkMSFraggerProteinIonStar.html)
+- [Benchmarking MSstats using the Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html)
+- [Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_fromMQlfq.html)
+- [Benchmarking the proDA package using the Ionstar Dataset starting from peptides](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html)
+
 
 
 ## How to install and generate the vignettes
 
-Download the latest prolfqua release from from https://github.com/wolski/prolfqua/releases
-
+Download the latest _prolfqua_ release from from https://github.com/fgcz/prolfqua/releases
 And then install it by running on the command:
 
 ```
@@ -15,13 +23,14 @@ R CMD INSTALL prolfqua_X.Y.Z.tar.gz
 ```
 
 Or in the R session:
-```
+
+```r
 install.packages("prolfqua_X.Y.Z.tar.gz",repos = NULL, type="source")
 ```
 
 Afterwards you also will need to install the `prolfquadata` package
 
-```
+```r
 install.packages('remotes')
 remotes::install_gitlab("wolski/prolfquadata", host="gitlab.bfabric.org")
 
@@ -29,12 +38,12 @@ remotes::install_gitlab("wolski/prolfquadata", host="gitlab.bfabric.org")
 
 Finally you can clone the repository and open it in RStudio and build the vignettes with
 
-```{r}
+```r
 devtools::build_vignettes()
 ```
 
 Or build them on the command line by running
 
-```{r}
+```r
 R CMD build prolfquaBenchmark
 ```
