@@ -25,12 +25,12 @@ Imports:
     MSstats,
     prolfqua,
     prolfquadata,
-    proDA
+    proDA,
     purrr,
     readxl,
     R6,
     SummarizedExperiment,
-    tibble,
+    tibble
 RoxygenNote: 7.1.2
 Roxygen: list(r6 = TRUE)
 Depends: 
