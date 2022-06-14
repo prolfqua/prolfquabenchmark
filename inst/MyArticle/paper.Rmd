@@ -34,6 +34,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
                       fig.width = 7,
                       fig.height = 5)
+ggplot2::theme_set(ggplot2::theme_classic())
 
 options(width=70)
 ```
@@ -383,10 +384,11 @@ The Benchmark functionality of `r BiocStyle::Githubpkg("fgcz/prolfqua")` include
 ```{r readBenchmarkData}
 
 getpath <- function(filN){
-    f1 <- system.file("Benchresults",filN, package = "prolfquabenchmark")
+    f1 <- paste0("../../inst/Benchresults/",filN)
     if(f1 == ""){
-        f1 <- paste0("../../inst/Benchresults/",filN)
+        f1 <- system.file("Benchresults",filN, package = "prolfquabenchmark")
     }
+    message(f1)
     return(f1)
 }
 allBenchmarks <- readRDS(getpath("allBenchmarks.RDS"))
@@ -480,6 +482,7 @@ hlay = rbind(c(2,1,1),
             c(2,3,3))
 
 gridExtra::grid.arrange(p1_pAUC, pB, pC, layout_matrix=hlay)
+
 ```
 
 ```{r prolfquaModels}
@@ -660,8 +663,7 @@ knitr::include_graphics("codeSnippet1TabCompletion.png")
 
 ```{r proLFQuaSticker, echo=TRUE, out.height="5cm", eval=TRUE, fig.cap="Sticker maintainer: Witold E. Wolski; License: Creative Commons Attribution CC-BY. Feel free to share and adapt, but don't forget to credit the author."}
 
-file.path(system.file(package = "prolfqua"), 
-          "Figures/hexStickerProlfqua.png") |>
+file.path("hexStickerProlfqua.png") |>
   knitr::include_graphics()
 ```
 

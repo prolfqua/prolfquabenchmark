@@ -21,7 +21,6 @@ author:
   - name: Christian Panse
     affil: 1; 2
     orcid: '0000-0003-1975-3064'
-  
 affiliation:
   - num: 1
     address: Functional Genomics Center Zurich - ETH Zurich/University of Zurich (https://www.fgcz.ch/)
@@ -37,12 +36,13 @@ secondary_colour: "#7d5f60"
 accent_colour: "#248ce0"
 titletext_fontfamily: Arial
 body_textsize: "44px"
-logoleft_name: ../Figures/hexStickerProlfqua.png
+logoleft_name: hexStickerProlfqua.png
 logoright_name: FGCZLogo.png
 output: 
   posterdown::posterdown_html
 bibliography: bibliography.bib
-
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -53,6 +53,9 @@ bibliography: bibliography.bib
 ```{r setup, include=FALSE}
 
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width = 7, fig.height = 5)
+library(ggplot2)
+library(prolfqua)
+library(tidyverse)
 
 ```
 
@@ -66,7 +69,7 @@ We store all the data needed for analysis in a single data frame in a tidy table
 
 
 ```{r LFQData, echo=FALSE, fig.cap="Class Diagram for LFQData and related objects. The LFQData_Plotter class uses the LFQData class to implement methods for plotting.", out.width = '90%'}
-knitr::include_graphics("LFQData.png")
+knitr::include_graphics("LFQData_UML_V2.png")
 ```
 
 __R__ linear model and linear mixed effect models allow modeling parallel designs, repeated measurements, factorial designs, and many more. __R__'s formula interface for linear models is flexible, widely used, and well documented. This makes it easy to reproduce an analysis performed with `prolfqua` in other statistical programming languages. We implemented features specific to high throughput experiments, such as the experimental Bayes variance and p-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We also integrate the results of other packages, e.g. _SaintExpress_ or _proDA_. We use R6 to model the statistical modeling functionality in `prolfqua` (see Figure \@ref(fig:ContrastUML)).
@@ -121,11 +124,11 @@ modelFunction <- strategy_lm( lmmodel, model_name = "lm")
 models <- build_model(lfqp, modelFunction)
 p1 <-  models$anova_histogram()
 # compute contrasts from linear model and with imputation
-contr <- Contrasts$new(models, contrasts) |> 
-  ContrastsModerated$new()
-conI <- ContrastsSimpleImpute$new( lfqp, contrasts) |> 
-  ContrastsModerated$new()
-tmp <- addContrastResults(contr, conI)
+contr <- prolfqua::Contrasts$new(models, contrasts) |> 
+  prolfqua::ContrastsModerated$new()
+conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts) |> 
+  prolfqua::ContrastsModerated$new()
+tmp <- prolfqua::addContrastResults(contr, conI)
 # visualize results
 pl <- tmp$merged$get_Plotter()
 p1 <- pl$histogram()$p.value
