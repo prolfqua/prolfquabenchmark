@@ -505,7 +505,7 @@ knitr::kable(tibble::as_tibble(xM), caption = "Prolfqua functions to fit various
 ```
 
 
-Using a benchmark dataset whose ground truth is known (see Methods), we assessed the performance of different modeling approaches implemented in `r BiocStyle::Githubpkg("fgcz/prolfqua")` (Tables \@ref(tab:prolfquaModels) and \@ref(tab:describeBenchmarkedModels)), `r BiocStyle::Biocpkg("MSstats")` and `r BiocStyle::Biocpkg("proDA")`. Table \@ref(tab:describeBenchmarkedModels) summarizes which methods we have evaluated, which MaxQuant results we used, and if the models are fitted to peptide or protein intensities. We make the R-markdown files to replicate the benchmarking available at `r BiocStyle::Githubpkg("wolski/prolfquabenchamrk")` and at [BenchmarkingIonstarData](https://wolski.github.io/prolfquabenchmark).
+Using a benchmark dataset whose ground truth is known (see Methods), we assessed the performance of different modeling approaches implemented in `r BiocStyle::Githubpkg("fgcz/prolfqua")` (Tables \@ref(tab:prolfquaModels) and \@ref(tab:describeBenchmarkedModels)), `r BiocStyle::Biocpkg("MSstats")` and `r BiocStyle::Biocpkg("proDA")`. Table \@ref(tab:describeBenchmarkedModels) summarizes which methods we have evaluated, which MaxQuant results we used, and if the models are fitted to peptide or protein intensities. We make the R-markdown files to replicate the benchmarking available at `r BiocStyle::Githubpkg("wolski/prolfquabenchmark")`.
 
 
 ```{r describeBenchmarkedModels}
@@ -618,7 +618,7 @@ protein <- tibble::as_tibble(
              header = TRUE, sep = "\t", stringsAsFactors = FALSE))
 
 # read combined_protein.tsv 
-protein <- prolfqua::tidy_MSFragger_combined_protein(protein)
+protein <- prolfqua::tidy_MSFragger_combined_protein_deprec(protein)
 # remove proteins identified by a single peptide
 protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
 
