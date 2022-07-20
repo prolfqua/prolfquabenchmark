@@ -1,0 +1,283 @@
+---
+title: prolfqua&colon; A Comprehensive R-package for Proteomics Differential Expression Analysis
+author: 
+  - name: Witold Wolski
+    affil: 1; 2
+    orcid: '0000-0002-6468-120X'
+  - name: Paolo Nanni
+    affil: 1
+    orcid: '0000-0001-8429-3557'
+  - name: Jonas Grossmann
+    affil: 1; 2
+    orcid: '0000-0002-6899-9020'
+  - name: Maria D'Errico
+    affil: 1; 2
+    orcid: '0000-0001-9467-9058'
+  - name: Ralph Schlapbach
+    affil: 1
+    orcid: '0000-0002-7488-4262'
+  - name: Christian Panse
+    affil: 1; 2
+    orcid: '0000-0003-1975-3064'
+affiliation:
+  - num: 1
+    address: Functional Genomics Center Zurich - ETH Zurich/University of Zurich (https://www.fgcz.ch/)
+  - num: 2
+    address: Swiss Institute of Bioinformatics (https://www.sib.swiss/)
+column_numbers: 4
+poster_height: "1009mm"
+poster_width: "1426mm"
+title_textsize:	"75pt"
+author_textsize: "35pt"
+font_family: Monaco
+primary_colour: "cornflowerblue"
+secondary_colour: "darkblue"
+accent_colour: "slateblue"
+titletext_fontfamily: Arial
+logoleft_name: hexstrickerPRL2.png
+logoright_name: FGCZLogo.png
+output: 
+  posterdown::posterdown_html
+bibliography: bibliography.bib
+---
+
+
+```{r setup, include=FALSE}
+options(width = 999)
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width = 7, fig.height = 5)
+#library(ggplot2)
+#library(prolfqua)
+#library(tidyverse)
+ggplot2::theme_set(ggplot2::theme_classic())
+#ggplot2::theme_set(ggplot2::theme_gray())
+
+```
+
+# Implementation
+
+(ref:LFQData) Class Diagram of classes representing the proteomics data. The LFQData class encapsulates the quantitative proteomics data stored in a tidy table. An instance of the AnalysisTableConfiguration class specifies a mapping of columns in the tidy table. The LFQDataPlotter class and other classes decorate the LFQData class with additional functionality. Similarly, the `LFQDataStats` and `LFQDataSummary` reference the `LFQData` class and group methods for variance and sample size estimation or summarizing peptide and protein counts.
+
+```{r LFQData, echo=FALSE, fig.cap="(ref:LFQData)", out.width = '100%'}
+knitr::include_graphics("LFQData_UML_V2.png")
+```
+
+
+(ref:ContrastUML) The UML (unified modeling language) diagram of modeling and contrast related classes. Different strategies, e.g., _lm_, _lmer_, and _glm_, can fit various types of models. The model builder method fits the statistical model given the data and a strategy. The obtained model can then be used for the analysis of variance or to estimate contrasts. All classes estimating contrasts implement the _Contrasts_ interface. Results of external tools, e.g., SAINTexpress, can be adapted by implementing the Contrasts Interface.
+
+```{r ContrastUML, echo=FALSE, fig.cap="(ref:ContrastUML)", out.width = '100%'}
+knitr::include_graphics("ContrastClassesUML.png")
+```
+
+<br/>
+<br/>
+
+
+# Example Analysis
+
+
+```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%', fig.height=10}
+## load peptide abundances and configuration
+d <- prolfqua::prolfqua_data('data_ionstar')$filtered()
+## create R6 obejct
+lfqd <- prolfqua::LFQData$new(d$data, d$config) 
+##  transform intensities
+t <- lfqd$get_Transformer()
+lfqd <-  t$log2()$robscale()$lfq
+lfqd$rename_response("peptide_abundance")
+## infer protein intensities from peptide intensity
+agr <- lfqd$get_Aggregator()
+lfqp <- agr$medpolish()
+lfqp$rename_response("protein_abundance")
+## plot panels A-D
+pl <- lfqd$get_Plotter()
+panelA <- pl$intensity_distribution_density() + 
+    ggplot2::labs(tag = "A") + 
+    ggplot2::theme(legend.position = "none") 
+
+panelB <- agr$plot()$plots[[1]] + ggplot2::labs(tag = "B")
+panelC <- lfqp$get_Stats()$violin() + 
+    ggplot2::labs(tag = "C")
+pl <- lfqp$get_Plotter()
+panelD <- pl$boxplots()$boxplot[[1]] + 
+    ggplot2::labs(tag = "D")
+
+## specify differences among groups
+contrasts <- c(
+    "dilution_(9/7.5)_1.2" = "dilution.e - dilution.d",
+    "dilution_(7.5/6)_1.25" = "dilution.d - dilution.c" )
+## fit model
+lmmodel <- paste(lfqp$intensity_column()," ~ dilution.")
+modelFunction <- 
+    prolfqua::strategy_lm(lmmodel, model_name = "lm")
+models <- prolfqua::build_model(lfqp, modelFunction)
+## compute differences from linear model
+## and moderate variance
+contr <- prolfqua::Contrasts$new(models, contrasts) |> 
+    prolfqua::ContrastsModerated$new()
+## compute differences using imputation
+conI <- 
+    prolfqua::ContrastsSimpleImpute$new(lfqp, contrasts) |> 
+    prolfqua::ContrastsModerated$new()
+## merge contrasts, to obtain differences for all proteins
+contrasts <- prolfqua::addContrastResults(
+    prefer = contr, add = conI)
+## plot panel E and F
+pl <- contrasts$merged$get_Plotter() 
+panelE <- pl$histogram()$p.value + ggplot2::labs(tag = "E")                                                        
+panelF <- pl$volcano()$FDR +
+    ggplot2::theme(legend.position = "bottom") +
+    ggplot2::labs(tag = "F")
+gridExtra::grid.arrange(panelA, panelB,
+                        panelC, panelD,
+                        panelE, panelF, ncol = 2)
+```
+
+(ref:scaling) Panel A - Peptide intensity distributions for $20$ samples. For each sample a line with a different colour is shown. Panel B - Peptide intensities for protein _5NTD_ are shown using a line of different colour, and the protein intensity estimate is shown using a fat black line, Panel C - distribution of standard deviations of all proteins in each dilution group ($a$, $b$, $c$, $d$, $e$) and overall (all), Panel D - Distribution of protein intensities for protein _5NTD_. Panel E - Histogram showing the distribution of p-values for $163$ proteins. Panel F -  Volcano plot showing $-\log_{10}$ transformed FDR as function of the difference between groups for $163$ proteins.
+
+
+# Benchmarking
+
+```{r describeBenchmarkedModels}
+xMM <- data.frame(
+    msstats = c("MSstats", "preprocess with default parameters",  "", "evidence.txt"),
+    proDA = c("proDA", "probabilistic dropout model",  "protein", "peptide.txt"),
+    imputation = c("prot_imputation", "ContrastsSimpleImpute, ContrastsModerated", "protein",  "peptide.txt"),
+    lmmed = c("prot_med_lm_moderated", "strategy_lm, Contrasts, ContrastsModerated",  "protein", "peptide.txt"),
+    prot_merged = c("prot_merged", "addContrastResults(prefer = prot_med_lm_moderated , add = prot_imputation) *",  "protein", "peptide.txt"),
+    mixed = c("prot_mixed_effect_moderated", "strategy_lmer, Contrasts, ContrastsModerated", "peptide", "peptide.txt" ),
+    ropeca = c("ropeca", "strategy_lm, Contrasts, ContrastsModerated, ContrastsROPECA", "peptide", "peptide.txt" )
+)
+
+xMM <- data.frame(t(xMM))
+rownames(xMM) <- NULL
+colnames(xMM) <-  c("Label","Description","Abundance","Input File")
+kableExtra::kable(xMM,
+                  caption = paste0("All benchmarked models. ",
+                                   "Description - prolfqua function names, ",
+                                   "Abudances - indicates if model is fitted to peptide or protein abundances, ",
+                                   "Input File - name of MaxQuant file used as input."),
+                  booktabs=TRUE) |>
+    kableExtra::kable_styling(font_size=20) |> 
+    kableExtra::add_footnote(label = "Merges results of the 'prot_med_lm_moderated' and 'prot_imputation' modeling pipeline, preferring those of 'prot_med_lm_moderated' if available.")
+
+```
+
+
+```{r readBenchmarkData}
+getpath <- function(filN){
+    f1 <- paste0("../../inst/Benchresults/",filN)
+    if(f1 == ""){
+       f1 <- system.file("Benchresults",filN,
+                         package = "prolfquabenchmark")
+    }
+    return(f1)
+}
+allBenchmarks <- readRDS(getpath("allBenchmarks.RDS"))
+benchmark_msstats <- readRDS(getpath("benchmark_msstats.RDS"))
+benchmark_prodA <- readRDS(getpath("benchmark_medpolish_proDA.RDS"))
+msFragger <- readRDS(getpath("MSFragger_medpol_benchmark.RDS"))
+
+
+allBenchmarks$benchmark_mssstats <- benchmark_msstats
+allBenchmarks$benchmark_msFragger <- msFragger
+allBenchmarks$benchmark_proDA <- benchmark_prodA
+allBenchmarks <- allBenchmarks[c("benchmark_imputation","benchmark_ProtModerated",  "benchmark_mixedModerated", "benchmark_ropeca","benchmark_merged","benchmark_mssstats","benchmark_proDA"   )]
+
+```
+
+
+```{r benchmarkROC}
+ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
+
+res <- purrr::map_df(allBenchmarks, function(x){x$pAUC()})
+
+
+res <- res |> dplyr::mutate(whatfix = dplyr::case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
+
+norm <- res |> dplyr::group_by(contrast,whatfix) |>
+    dplyr::summarize(meanpAUC_10 = mean(pAUC_10))
+res <- dplyr::inner_join(res, norm)
+res <- dplyr::mutate(res , pAUC_10n = pAUC_10 - meanpAUC_10)
+
+resAllB <- res |> dplyr::filter(contrast == "all")
+
+p1_pAUC <- ggplot2::ggplot(resAllB, ggplot2::aes(x = Name, y = pAUC_10)) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::facet_wrap(~whatfix)  + 
+    ggplot2::coord_cartesian(ylim = c(min(resAllB$pAUC_10),max(resAllB$pAUC_10))) + 
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
+    ggplot2::geom_hline(ggplot2::aes(yintercept = meanpAUC_10), color = "red") +
+    ggplot2::xlab("") +
+    ggplot2::labs(tag = "A")
+
+p2_compare_variousLevels <- ggplot2::ggplot(res, ggplot2::aes(x = contrast, y = pAUC_10n, group = Name)) +
+    ggplot2::geom_line(stat = "identity", ggplot2::aes(linetype = Name, color = Name), size = 1) + 
+    ggplot2::facet_wrap(~ whatfix, scales = "free") +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
+    ggplot2::geom_hline(ggplot2::aes(yintercept = 0), color = "red") + 
+    ggplot2::theme(legend.position = "bottom", legend.title = ggplot2::element_blank())
+
+```
+
+(ref:FDRfdp) Panel A - Number of estimated contrasts for each modeling method (higher is better). Panel B - Partial area under the ROC curve at $10\%$ FPR ($pAUC_10$) for all contrasts and three different statistics: the difference among groups, the scaled $p$-value (sign(diff) $\cdot$ p.value) and the $t$-statistics (higher is better). The red line indicates the average area under the curve of all methods.  Panel C - Plots the false discovery proportion (FDP) as a function of the FDR. Ideally, the FDR should be equal to the FDP. Therefore larger distances from the diagonal are worse.
+
+```{r FDRfdp, fig.cap = "(ref:FDRfdp)", out.width = '90%', fig.width=11, fig.height=11}
+dd <- purrr::map_df(allBenchmarks, function(x){res <- x$smc$summary; res$name <- x$model_name;res})
+dd <- dd |> dplyr::mutate(nrcontrasts = protein_Id * (4 - nr_missing))
+dds <- dd |> dplyr::group_by(name) |> dplyr::summarize(nrcontrasts = sum(nrcontrasts))
+dds$percent <- dds$nrcontrasts/max(dds$nrcontrasts) * 100
+
+nrgg <- dds |> ggplot2::ggplot(ggplot2::aes(x = name, y = nrcontrasts )) + 
+    ggplot2::geom_bar(stat = "identity", fill="white", colour = "black") + 
+    ggplot2::coord_cartesian(ylim = c(min(dds$nrcontrasts) - 200, max(dds$nrcontrasts) + 10)) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
+    ggplot2::geom_text(ggplot2::aes(label = paste0(round(nrcontrasts, digits = 1), paste0("  (",round(percent, digits = 1),"%)"))),
+                       vjust = 0, hjust = -0.2, angle = -90) #+ 
+pB <- nrgg + ggplot2::labs(tag = "B")
+
+dd <- purrr::map_df(allBenchmarks, function(x){res <- x$get_confusion_FDRvsFDP(); res$name <- x$model_name;res})
+
+ddb <- dplyr::filter(dd, contrast == "dilution_(4.5/3)_1.5")
+ddb <- dd |> dplyr::filter(contrast == "dilution_(7.5/6)_1.25")
+ddb <- dd |> dplyr::filter(contrast == "all")
+
+
+pC <- ddb |> ggplot2::ggplot(ggplot2::aes(y = FDP_,  x  = scorecol )) + 
+    ggplot2::geom_line(ggplot2::aes(color = model_name, linetype = model_name)) +
+    ggplot2::facet_wrap(~contrast) + 
+    ggplot2::geom_abline(intercept = 0, slope = 1, color = 2) + 
+    ggplot2::theme(legend.position = "bottom") +
+    ggplot2::labs(tag = "C")
+
+hlay = rbind(c(2,1,1),
+             c(2,3,3))
+
+gridExtra::grid.arrange(p1_pAUC, pB, pC, layout_matrix=hlay)
+```
+
+# Availability
+
+https://github.com/fgcz/prolfqua
+
+```{r echo=TRUE, eval=FALSE}
+install.packages('remotes')
+remotes::install_github('fgcz/prolfqua', build_vignettes = TRUE)
+```
+
+doi: 
+https://doi.org/10.1101/2022.06.07.494524
+
+```{r url, out.width="20%", fig.align="center"}
+knitr::include_graphics("prolfqua-qr.png")
+```
+
+The authors thank the technology platform fund of the University of Zurich.
+
+```{r sib, out.width="20%", fig.align="center"}
+knitr::include_graphics("SIB_LogoQ_GBv.svg")
+```
+
+
+
+
