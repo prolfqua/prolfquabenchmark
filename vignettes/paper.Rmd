@@ -615,7 +615,7 @@ protein <- tibble::as_tibble(
              header = TRUE, sep = "\t", stringsAsFactors = FALSE))
 
 # read combined_protein.tsv 
-protein <- prolfqua::tidy_MSFragger_combined_protein(protein)
+protein <- prolfqua::tidy_FragPipe_combined_protein_deprec(protein)
 # remove proteins identified by a single peptide
 protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
 
