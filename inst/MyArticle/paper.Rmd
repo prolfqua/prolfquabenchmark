@@ -13,6 +13,7 @@ output:
       toc_appendix: false
       toc_bib: false
       keep_tex: true
+      citation_package: natbib
 date: "`r format(Sys.time())`"
 bibliography: bibliography.bib
 vignette: >
@@ -600,7 +601,7 @@ UML     &       Unified Modeling Language                  \\
 
 # Appendix  {.unnumbered}
 
-## Benchmark
+## Benchmark Code
 
 All the code needed to replicate the benchmark results and this document is available at:
 
