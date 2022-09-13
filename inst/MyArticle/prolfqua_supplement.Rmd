@@ -1,0 +1,43 @@
+---
+title: "Supporting Information:\n prolfqua - A Comprehensive R-package for Proteomics Differential Expression Analysis"
+author: 
+  - Witold E. Wolski^[Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland] ^[Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland]
+  - Paolo Nanni$^*$
+  - Jonas Grossmann$^*$$^\dag$
+  - Maria d'Errico$^*$$^\dag$
+  - Ralph Schlapbach$^*$
+  - Christian Panse$^*$$^\dag$
+output: 
+  pdf_document:
+    keep_tex: yes
+    latex_engine: pdflatex
+abstract: |
+  This document contains the supplements for the prolfqua manuscript available through \url{https://doi.org/10.1101/2022.06.07.494524 }.
+urlcolor: blue
+toc: true
+header-includes:
+  - \usepackage{pdfpages}
+---
+\renewcommand{\thepage}{S--\arabic{page}}
+\renewcommand{\tablename}{Supp. Table}
+\renewcommand{\figurename}{Supp. Figure}
+
+\newpage
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(error = TRUE)
+
+```
+
+
+# This
+# And that
+# And whatsoever
+
+# R Session Information
+
+```{r sessioninfo, echo=FALSE}
+sessionInfo()
+```
+
