@@ -300,7 +300,7 @@ The code snippets in this section demonstrate how a differential expression anal
 
 ```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%', fig.width = 8, fig.height = 8}
 ## load peptide level data
-d <- prolfqua::prolfqua_data('data_ionstar')$filtered()
+d <- prolfqua::old2new(prolfqua::prolfqua_data('data_ionstar')$filtered())
 
 ## create R6 obejct
 lfqd <- prolfqua::LFQData$new(d$data, d$config) 
@@ -309,6 +309,7 @@ lfqd <- prolfqua::LFQData$new(d$data, d$config)
 t <- lfqd$get_Transformer()
 
 lfqd <-  t$log2()$robscale()$lfq
+
 lfqd$rename_response("peptide_abundance")
 
 ## infer protein intensities from peptide intensity
@@ -340,7 +341,7 @@ contrasts <- c(
   "dilution_(7.5/6)_1.25" =   "dilution.d - dilution.c"
 )
 ## fit model
-lmmodel <- paste(lfqp$intensity_column()," ~ dilution.")
+lmmodel <- paste(lfqp$response()," ~ dilution.")
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "lm")
 models <- prolfqua::build_model(lfqp, modelFunction)
 
@@ -353,7 +354,7 @@ conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts) |>
   prolfqua::ContrastsModerated$new()
 
 # merge contrasts, to obtain differences for all proteins
-contrasts <- prolfqua::addContrastResults(prefer = contr, add = conI)
+contrasts <- prolfqua::merge_contrasts_results(prefer = contr, add = conI)
 
 ## visualize results in panels
 pl <- contrasts$merged$get_Plotter() 
@@ -597,7 +598,7 @@ UML     &       Unified Modeling Language                  \\
 ## Creating a prolfqua configuration {.unlisted .unnumbered}
 
 The following code demonstrates how we use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to analyze protein intensities reported in the MSFragger `combined_protein.tsv` file.
-First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_MSFragger_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object. 
+First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_FragPipe_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object. 
 Bottom-up proteomics data is hierarchical, i.e., a protein has peptides, peptides might be modified, etc. Therefore, the `AnalysisTableAnnotation` has a `hierarchy` field storing a list with an entry for each hierarchy level.
 Since `combined_portein.tsv` only holds protein level data, the hierarchy list has one element, and we use it to specify which column contains the protein identifiers. We also need to define which column contains the protein abundances we want to use for the data analysis.
 Finally, we have to specify which columns contain the explanatory variables of the analysis. The `AnalysisTableAnnotation` has the field `factors,` a list with as many entries as explanatory variables. Here we include two explanatory variables, the dilution, specified in the column 'sample', and 'run' stored in the column 'run_ID', representing the order of the measurement.
@@ -627,7 +628,7 @@ atable$fileName = "raw.file"
 atable$hierarchy[["protein_Id"]] = "protein"
 
 # column with protein abundances
-atable$setWorkIntensity("total.intensity")
+atable$set_work_intensity("total.intensity")
 
 # the factors of the analysis
 atable$factors[["dilution."]] = "sample"
@@ -661,7 +662,7 @@ knitr::include_graphics("codeSnippet1TabCompletion.png")
 ```{r proLFQuaSticker, echo=TRUE, out.height="5cm", eval=TRUE, fig.cap="Sticker maintainer: Witold E. Wolski; License: Creative Commons Attribution CC-BY. Feel free to share and adapt, but don't forget to credit the author."}
 
 file.path(system.file(package = "prolfqua"), 
-          "Figures/hexStickerProlfqua.png") |>
+          "Figures/hexstrickerPRL2.png") |>
   knitr::include_graphics()
 ```
 

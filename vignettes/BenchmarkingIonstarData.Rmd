@@ -183,7 +183,7 @@ We will be using the `LFQDataAggregator` class.
 To estimate protein abundances using Tukey's median polish we need to use log2 transformed peptide abundances
 
 ```{r aggregateMedpolish, fig.width=10, fig.height=10}
-lfqNormSubset$config$table$getWorkIntensity()
+lfqNormSubset$config$table$get_work_intensity()
 
 pl <- lfqNormSubset$get_Plotter()
 pl$intensity_distribution_density()
@@ -232,7 +232,7 @@ sr <- protLFQ$get_Summariser()
 sr$hierarchy_counts()
 
 lmmodel <- "~ dilution."
-lmmodel <- paste0(protLFQ$config$table$getWorkIntensity() , lmmodel)
+lmmodel <- paste0(protLFQ$config$table$get_work_intensity() , lmmodel)
 
 lfqNormSubset$config$table$hierarchyDepth <- 1
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
@@ -248,7 +248,7 @@ modLinearProt$anova_histogram()$plot
 
 
 lmmodel <- "~ dilution. + (1|peptide_Id) + (1|sampleName)"
-lmmodel <- paste0(lfqNormSubset$config$table$getWorkIntensity() , lmmodel)
+lmmodel <- paste0(lfqNormSubset$config$table$get_work_intensity() , lmmodel)
 lfqNormSubset$config$table$hierarchyDepth <- 1
 modelFunction <- prolfqua::strategy_lmer( lmmodel, model_name = "Model")
 modMixedProtLevel <- prolfqua::build_model(lfqNormSubset$data, modelFunction)
@@ -265,12 +265,12 @@ lmmodel <- "~ dilution."
 lfqNormSubset$config$table$hierarchyDepth
 lfqNormSubset$config$table$hierarchyDepth <- 2
 
-lmmodel <- paste0(lfqNormSubset$config$table$getWorkIntensity() , lmmodel)
+lmmodel <- paste0(lfqNormSubset$config$table$get_work_intensity() , lmmodel)
 
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
 modLMPepLevel <- prolfqua::build_model(lfqNormSubset$data,
                                        modelFunction,
-                                       subject_Id = lfqNormSubset$subjectId())
+                                       subject_Id = lfqNormSubset$subject_Id())
 modLMPepLevel$anova_histogram()$plot
 
 ```
@@ -572,7 +572,7 @@ prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits=1)
 Here we merge contrasts estimates from linear models and from the models with imputation.
 
 ```{r mergingContrasts}
-all <- prolfqua::addContrastResults(prefer = contrProtModerated, add = contrImp)
+all <- prolfqua::merge_contrasts_results(prefer = contrProtModerated, add = contrImp)
 
 merged <- all$merged
 ttd <- prolfqua::ionstar_bench_preprocess(merged$get_contrasts())

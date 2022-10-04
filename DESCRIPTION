@@ -31,7 +31,7 @@ Imports:
     R6,
     SummarizedExperiment,
     tibble
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Roxygen: list(r6 = TRUE)
 Depends: 
     R (>= 4.1)
