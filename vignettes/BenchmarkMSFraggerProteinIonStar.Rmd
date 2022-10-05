@@ -48,8 +48,10 @@ annotation <- readxl::read_xlsx(inputAnnotation)
 
 protein <- tibble::as_tibble(read.csv(unz(inputFragfile,"IonstarWithMSFragger/combined_protein.tsv"),
                              header = TRUE, sep = "\t", stringsAsFactors = FALSE))
-#debug( prolfqua::tidy_MSFragger_combined_protein)
-protein <- prolfqua::tidy_MSFragger_combined_protein(protein)
+
+undebug( prolfqua::tidy_FragPipe_combined_protein)
+protein <- prolfqua::tidy_FragPipe_combined_protein_deprec(protein)
+
 protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
 merged <- dplyr::inner_join(annotation, protein)
 
@@ -64,7 +66,7 @@ atable$fileName = "raw.file"
 atable$hierarchy[["protein_Id"]] <- c("protein")
 
 atable$hierarchyDepth <- 1
-atable$setWorkIntensity("total.intensity")
+atable$set_work_intensity("total.intensity")
 atable$factors[["dilution."]] = "sample"
 atable$factors[["run"]] = "run_ID"
 atable$factorDepth <- 1
@@ -106,8 +108,8 @@ lfqdataNormalized$summarize_hierarchy()
 
 summariz <- lfqdataNormalized$get_Summariser()
 summariz$interaction_missing_stats()
-summariz$missingness_per_condition()
-summariz$missingness_per_condition_cumsum()
+summariz$missingness_per_group()
+summariz$missingness_per_group_cumsum()
 summariz$hierarchy_counts_sample()
 
 ```
@@ -124,7 +126,7 @@ Contrasts <- c(
 
 
 lmmodel <- "~ dilution."
-lmmodel <- paste0(lfqdataNormalized$config$table$getWorkIntensity() , lmmodel)
+lmmodel <- paste0(lfqdataNormalized$config$table$get_work_intensity() , lmmodel)
 
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
 
