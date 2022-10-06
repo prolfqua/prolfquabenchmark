@@ -64,17 +64,19 @@ Several data analysis packages exist to model mass spectrometry protein quantifi
 When analyzing parallel-group designs using a single explanatory variable, and contrasting groups, we can use all R packages; but, we can use only some of them if we want to model factorial designs or repeated measurements. Table \@ref(tab:tableOverview) gives an overview of the models and features supported by these packages. We see that packages such as `r BiocStyle::Biocpkg("limma")` and `r BiocStyle::Biocpkg("proDA")` allow us to fit a comprehensive variety of models and test various hypotheses; however, in-depth knowledge of design matrix specification using the R formula interface is required [@law2020guide].
 
 ```{r tableOverview}
+caption = "Rows - R packages, Columns - types of models supported: pd - parallel design, rm - repeated measurements, fd - factorial design, int - interactions among factors, mem - mixed effect models, eb - empirical Bayes, md - missing data modelling. Y - yes, * - repeated measurements are modeled using a fixed effect."
+
 xx <- list(
   MSstats = c("pd" = "Y", "rm" = "Y", "mem" = "Y"),
-  ROPECA = c("pd" = "Y", "rm" = "Y*", fd = "Y", int = "Y", eb = "Y"),
-  limma  = c("pd" = "Y", "rm" = "Y*", fd = "Y", int = "Y",eb = "Y"),
-  MSqRob2_rlm = c("pd" = "Y", "rm" = "Y*", fd = "Y", int = "Y",eb = "Y", md = "?"),
-  proDA = c("pd" = "Y", "rm" = "Y*", fd = "Y", int = "Y", eb = "Y", md = "Y"),
+  ROPECA = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", eb = "Y"),
+  limma  = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y",eb = "Y"),
+  msqrob2 = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", mem = "Y", eb = "Y", md = "Y"),
+  proDA = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", eb = "Y", md = "Y"),
   prolfqua = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", mem = "Y",eb = "Y", md = "Y"))
 
 bb <- data.frame(dplyr::bind_rows(xx))
 rownames(bb) <- names(xx)
-knitr::kable(data.frame(bb), caption = "Rows - R packages, Columns - types of models supported: pd - parallel design, rm - repeated measurements, fd - factorial design, int - interactions among factors, mem - mixed effect models, eb - empirical Bayes, md - missing data modelling. Y - yes, * - repeated measurements are modeled using a fixed effect. ? - the hurdle model was published but is not available in the msqrob2 package.")
+knitr::kable(data.frame(bb), format = "latex", caption = caption)
 ```
 
 When developing the R package `r BiocStyle::Githubpkg("fgcz/prolfqua")` we were inspired by the R package `r BiocStyle::CRANpkg("caret")` [@caret2008], which enables us to call various machine learning (ML) methods, and makes selecting the best ML algorithm for your problem easy. We aimed for a similar R package for the differential expression analysis of proteomics data. However, after examining the R packages for modeling proteomics quantification data, we observed that model specification, input, and output formats differ widely. At the same time, they have in common that: they fit linear models either to peptide or protein intensities, determine differences among groups, and afterward apply empirical Bayes variance shrinkage. Therefore, the revised goal was to provide a modular object-oriented (OO) design, with R linear models as a core, where we can add features such as $p$-value aggregation, e.g., `r BiocStyle::Biocpkg("PECA")`, variance shrinkage, or modeling of missing observations.
@@ -129,7 +131,7 @@ table <- data.frame( c("beta != 0", "beta == 0", "Total"),
                             ncol = 3, byrow = T))
 colnames(table) <- c("Prediction \\ Truth","E.coli", "H.sapiens", "Total")
 
-knitr::kable(table, caption = "Confusion matrix, TP - true positive, FP - false positive, FN - false negative, TN - true negatives, P - all positive cases (all $E.~coli$ proteins), N - all negative cases (all $H.~sapiens$ proteins), m - all proteins.")
+knitr::kable(table, caption = "Confusion matrix, TP - true positive, FP - false positive, FN - false negative, TN - true negatives, P - all positive cases (all $E.~coli$ proteins), N - all negative cases (all $H.~sapiens$ proteins), m - all proteins.", format = "latex" )
 ```
 
 with
@@ -303,8 +305,8 @@ The code snippets in this section demonstrate how a differential expression anal
 
 ```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%', fig.width = 8, fig.height = 8}
 ## load peptide level data
-d <- prolfqua::prolfqua_data('data_ionstar')$filtered()
-
+d <- prolfqua::old2new(prolfqua::prolfqua_data('data_ionstar')$filtered())
+d <- prolfqua::LFQData$new(d$data, d$config)
 ## create R6 obejct
 lfqd <- prolfqua::LFQData$new(d$data, d$config) 
 
@@ -343,7 +345,7 @@ contrasts <- c(
   "dilution_(7.5/6)_1.25" =   "dilution.d - dilution.c"
 )
 ## fit model
-lmmodel <- paste(lfqp$intensity_column()," ~ dilution.")
+lmmodel <- paste(lfqp$response()," ~ dilution.")
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "lm")
 models <- prolfqua::build_model(lfqp, modelFunction)
 
@@ -356,7 +358,7 @@ conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts) |>
   prolfqua::ContrastsModerated$new()
 
 # merge contrasts, to obtain differences for all proteins
-contrasts <- prolfqua::addContrastResults(prefer = contr, add = conI)
+contrasts <- prolfqua::merge_contrasts_results(prefer = contr, add = conI)
 
 ## visualize results in panels
 pl <- contrasts$merged$get_Plotter() 
@@ -387,7 +389,7 @@ The Benchmark functionality of `r BiocStyle::Githubpkg("fgcz/prolfqua")` include
 
 getpath <- function(filN){
     f1 <- paste0("../../inst/Benchresults/",filN)
-    if(f1 == ""){
+    if (f1 == "") {
         f1 <- system.file("Benchresults",filN, package = "prolfquabenchmark")
     }
     message(f1)
@@ -397,25 +399,24 @@ allBenchmarks <- readRDS(getpath("allBenchmarks.RDS"))
 benchmark_msstats <- readRDS(getpath("benchmark_msstats.RDS"))
 benchmark_prodA <- readRDS(getpath("benchmark_medpolish_proDA.RDS"))
 msFragger <- readRDS(getpath("MSFragger_medpol_benchmark.RDS"))
-
+benchmark_msqrob <- readRDS(getpath("benchmark_msqrob.RDS"))
 
 allBenchmarks$benchmark_mssstats <- benchmark_msstats
 allBenchmarks$benchmark_msFragger <- msFragger
 allBenchmarks$benchmark_proDA <- benchmark_prodA
-allBenchmarks <- allBenchmarks[c("benchmark_imputation","benchmark_ProtModerated",  "benchmark_mixedModerated", "benchmark_ropeca","benchmark_merged","benchmark_mssstats","benchmark_proDA"   )]
+allBenchmarks$benchmark_msqrob <- benchmark_msqrob
+
+allBenchmarks <- allBenchmarks[c("benchmark_imputation","benchmark_ProtModerated",  "benchmark_mixedModerated", "benchmark_ropeca","benchmark_merged","benchmark_mssstats","benchmark_proDA", "benchmark_msqrob")]
 
 ```
 
 
 ```{r benchmarkROC}
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
-
 res <- purrr::map_df(allBenchmarks, function(x){x$pAUC()})
-
-
 res <- res |> dplyr::mutate(whatfix = dplyr::case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
 
-norm <- res |> dplyr::group_by(contrast,whatfix) |>
+norm <- res |> dplyr::group_by(contrast, whatfix) |>
     dplyr::summarize(meanpAUC_10 = mean(pAUC_10))
 res <- dplyr::inner_join(res, norm)
 res <- dplyr::mutate(res , pAUC_10n = pAUC_10 - meanpAUC_10)
@@ -459,7 +460,7 @@ dds <- dd |> dplyr::group_by(name) |> dplyr::summarize(nrcontrasts = sum(nrcontr
 dds$percent <- dds$nrcontrasts/max(dds$nrcontrasts) * 100
 
 nrgg <- dds |> ggplot2::ggplot(ggplot2::aes(x = name, y = nrcontrasts )) + 
-  ggplot2::geom_bar(stat = "identity", fill="white", colour = "black") + 
+  ggplot2::geom_bar(stat = "identity", fill = "white", colour = "black") + 
   ggplot2::coord_cartesian(ylim = c(min(dds$nrcontrasts) - 200, max(dds$nrcontrasts) + 10)) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
   ggplot2::geom_text(ggplot2::aes(label = paste0(round(nrcontrasts, digits = 1), paste0("  (",round(percent, digits = 1),"%)"))),
@@ -500,8 +501,8 @@ xM <- data.frame(t(xM))
 
 colnames(xM) <- c("prolfqua functions", "model")
 knitr::kable(tibble::as_tibble(xM), caption = "Prolfqua functions that can be used to fit various models.",
-             format = "latex", booktabs=TRUE) |>
-    kableExtra::kable_styling(latex_options="scale_down") |> 
+             format = "latex", booktabs = TRUE) |>
+    kableExtra::kable_styling(latex_options = "scale_down") |> 
     kableExtra::add_footnote(label = "in development")
 
 ```
@@ -535,6 +536,7 @@ tmp <- kableExtra::kable(xMM,
 
 
 knitr::asis_output(stringr::str_replace(tmp, "HACKIT", "$^{a}$"))
+
 ```
 
 Since only technical replicates are available for each dilution, essential sources of variation present in every experiment, such as the biochemical and biological, are not measured. Therefore, the dataset captures only the variance from the chromatography, electro-spray, and mass spectrometric measurement method. Thus, while we can extrapolate some of the results obtained to more realistic datasets, we need to be careful not to over-interpret the results. Specifically, the observed variances will be higher in more realistic experiments, and the power will be lower for the same sample sizes. Furthermore, the proportion of missing observations in real-life datasets might also be higher.
@@ -643,7 +645,7 @@ atable$fileName = "raw.file"
 atable$hierarchy[["protein_Id"]] = "protein"
 
 # column with protein abundances
-atable$setWorkIntensity("total.intensity")
+atable$set_work_intensity("total.intensity")
 
 # the factors of the analysis
 atable$factors[["dilution."]] = "sample"

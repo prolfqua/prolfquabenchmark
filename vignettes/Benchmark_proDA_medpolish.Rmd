@@ -101,9 +101,9 @@ contr[["dilution_(9/7.5)_1.2"]] <- data.frame(contrast = "dilution_(9/7.5)_1.2",
 contr[["dilution_(7.5/6)_1.25"]] <- data.frame(contrast = "dilution_(7.5/6)_1.25",
                                                test_diff(fit, contrast = "dilution.d - dilution.c"))
 contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(contrast = "dilution_(6/4.5)_1.3(3)", 
-                                                 test_diff(fit, contrast ="dilution.c - dilution.b"))
+                                                 test_diff(fit, contrast = "dilution.c - dilution.b"))
 contr[["dilution_(4.5/3)_1.5"]] <- data.frame(contrast = "dilution_(4.5/3)_1.5", 
-                                              test_diff(fit, contrast ="dilution.b - dilution.a" ))
+                                              test_diff(fit, contrast = "dilution.b - dilution.a" ))
 
 bb <- dplyr::bind_rows(contr)
 # End Not Run
