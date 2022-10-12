@@ -645,7 +645,7 @@ atable$fileName = "raw.file"
 atable$hierarchy[["protein_Id"]] = "protein"
 
 # column with protein abundances
-atable$set_work_intensity("total.intensity")
+atable$set_response("total.intensity")
 
 # the factors of the analysis
 atable$factors[["dilution."]] = "sample"

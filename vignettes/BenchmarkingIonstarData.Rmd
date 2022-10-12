@@ -29,7 +29,7 @@ message = FALSE,
 warning = FALSE,
 fig.width = 5,
 fig.height = 5,
-knitr.table.format="pipe"
+knitr.table.format = "pipe"
 )
 ```
 
@@ -91,7 +91,6 @@ First we remove all contaminant, decoy proteins from the list, than we remove 0 
 ```{r filterForHumans}
 lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
 lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
-lfqdata$filter_proteins_by_peptide_count()
 sr <- lfqdata$get_Summariser()
 lfqdata$remove_small_intensities()
 sr <- lfqdata$get_Summariser()
@@ -139,7 +138,10 @@ if (SUBSET) {
 }
 ```
 
+
+
 ```{r R6Ionstar, echo =  FALSE, include = FALSE}
+
 IonstarData <- R6::R6Class(
   "IonstarData",
   public = list(
@@ -173,7 +175,13 @@ IonstarData <- R6::R6Class(
 ionstar <- IonstarData$new(mqdataSubset$data, mqdataSubset$config, 
                            lfqNormSubset$data, lfqNormSubset$config)
 
-#usethis::use_data(data_ionstar, overwrite = TRUE)
+prolfqua::nr_B_in_A( mqdataSubset$data ,  mqdataSubset$config )
+
+#usethis::use_data(ionstar, overwrite = TRUE)
+ionstar$Pep()
+ionstar$filtered()
+ionstar$normalized()
+ionstar$subset_normalized()
 
 ```
 
@@ -183,7 +191,9 @@ We will be using the `LFQDataAggregator` class.
 To estimate protein abundances using Tukey's median polish we need to use log2 transformed peptide abundances
 
 ```{r aggregateMedpolish, fig.width=10, fig.height=10}
-lfqNormSubset$config$table$get_work_intensity()
+lfqNormSubset$filter_proteins_by_peptide_count()
+
+lfqNormSubset$config$table$get_response()
 
 pl <- lfqNormSubset$get_Plotter()
 pl$intensity_distribution_density()
@@ -232,7 +242,7 @@ sr <- protLFQ$get_Summariser()
 sr$hierarchy_counts()
 
 lmmodel <- "~ dilution."
-lmmodel <- paste0(protLFQ$config$table$get_work_intensity() , lmmodel)
+lmmodel <- paste0(protLFQ$config$table$get_response() , lmmodel)
 
 lfqNormSubset$config$table$hierarchyDepth <- 1
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
@@ -242,19 +252,22 @@ modLinearProt$anova_histogram()$plot
 
 ```
 
+
+
 ## Fitting a mixed effects model to peptide abundances
 
 ```{r buildModelLMer}
 
-
 lmmodel <- "~ dilution. + (1|peptide_Id) + (1|sampleName)"
-lmmodel <- paste0(lfqNormSubset$config$table$get_work_intensity() , lmmodel)
+lmmodel <- paste0(lfqNormSubset$config$table$get_response() , lmmodel)
 lfqNormSubset$config$table$hierarchyDepth <- 1
 modelFunction <- prolfqua::strategy_lmer( lmmodel, model_name = "Model")
 modMixedProtLevel <- prolfqua::build_model(lfqNormSubset$data, modelFunction)
 modMixedProtLevel$anova_histogram()$plot
 
 ```
+
+
 
 ## Fitting peptide level models
 
@@ -265,7 +278,7 @@ lmmodel <- "~ dilution."
 lfqNormSubset$config$table$hierarchyDepth
 lfqNormSubset$config$table$hierarchyDepth <- 2
 
-lmmodel <- paste0(lfqNormSubset$config$table$get_work_intensity() , lmmodel)
+lmmodel <- paste0(lfqNormSubset$config$table$get_response() , lmmodel)
 
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
 modLMPepLevel <- prolfqua::build_model(lfqNormSubset$data,
@@ -304,7 +317,9 @@ tt <- Reduce(rbind, strsplit(names(Contrasts),split = "_"))
 tt <- data.frame(tt)[,2:3]
 colnames(tt) <- c("ratio" , "expected fold-change")
 tt <- tibble::add_column(tt, contrast =  Contrasts, .before = 1)
-prolfqua::table_facade(tt, caption = "All possible Contrasts given 5 E. coli dilutions of the Ionstar Dataset", digits=1)
+prolfqua::table_facade(
+  tt,
+  caption = "All possible Contrasts given 5 E. coli dilutions of the Ionstar Dataset", digits = 1)
 
 ```
 
@@ -318,7 +333,7 @@ tt <- Reduce(rbind, strsplit(relevantContrasts,split = "_"))
 tt <- data.frame(tt)[,2:3]
 colnames(tt) <- c("ratio" , "expected fold-change")
 tt <- tibble::add_column(tt, contrast =  Contrasts[names(Contrasts) %in% relevantContrasts], .before = 1)
-prolfqua::table_facade(tt, caption = "Contrasts used for benchmark.", digits=1)
+prolfqua::table_facade(tt, caption = "Contrasts used for benchmark.", digits = 1)
 relevantContrasts <- Contrasts[names(Contrasts) %in% relevantContrasts]
 
 ```
@@ -345,9 +360,9 @@ contrImp <- prolfqua::ContrastsSimpleImpute$new(
 bb <- contrImp$get_contrasts()
 
 plc <- contrImp$get_Plotter()
-plc$volcano()
+plc$volcano()$FDR
 plc$ma_plot()
-plc$histogram()
+plc$histogram()$p.value
 
 ```
 
@@ -370,7 +385,7 @@ benchmark_imputation$plot_ROC(xlim = 0.1)
 
 benchmark_imputation$plot_FDRvsFDP()
 
-prolfqua::table_facade(benchmark_imputation$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
+prolfqua::table_facade(benchmark_imputation$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits = 1)
 ```
 
 ```{r fig.cap = "Summary of partial area under the ROC curve."}
@@ -381,22 +396,22 @@ bb$barp
 
 
 ```{r}
-prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits=1)
+prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits = 1)
 
 allBenchmarks <- list()
 allBenchmarks$benchmark_imputation <- benchmark_imputation
 
 ```
 
+
 ## Contrasts from linear model
 
 ```{r contrastModel1}
-dim(modLinearProt$modelDF)
 
 contrProt <- prolfqua::Contrasts$new(modLinearProt, relevantContrasts)
 pl <- contrProt$get_Plotter()
-pl$volcano()
-pl$histogram()
+pl$volcano()$FDR
+pl$histogram()$p.value
 
 ```
 
@@ -411,7 +426,7 @@ benchmark_Prot <- prolfqua::make_benchmark(
     model_name = "prolfqua_lm"
 )
 
-prolfqua::table_facade(benchmark_Prot$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
+prolfqua::table_facade(benchmark_Prot$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits = 1)
 
 #benchmark_Prot$plot_score_distribution()
 benchmark_Prot$plot_FDRvsFDP()
@@ -419,32 +434,35 @@ allBenchmarks$benchmark_Prot <- benchmark_Prot
 
 ```
 
+
 ### Adding Moderation
 
-```{r contrastModel1Moderation}
+```{r contrastModel1Moderation, include = FALSE}
 
 contrProtModerated <- prolfqua::ContrastsModerated$new(contrProt)
 contrProtModerated$get_Plotter()$volcano()$FDR
-contrProtModerated$get_contrasts()$protein_Id |> unique() |> length()
 
 ```
 
-```{r benchmarkModel1Moderation}
+```{r benchmarkModel1Moderation, include = FALSE}
 allContrasts$ProtModerated <- contrProtModerated$get_contrasts()
-
 ttd <- prolfqua::ionstar_bench_preprocess(contrProtModerated$get_contrasts())
 benchmark_ProtModerated <- prolfqua::make_benchmark(
     ttd$data,
     model_description = "med. polish and lm moderated",
     model_name = "prolfqua_lm_mod")
 
-prolfqua::table_facade(benchmark_ProtModerated$smc$summary,
-                       caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
+prolfqua::table_facade(
+  benchmark_ProtModerated$smc$summary,
+  caption = "Nr of proteins with Nr of not estimated contrasts.",
+  digits = 1)
 
 benchmark_ProtModerated$plot_FDRvsFDP()
 allBenchmarks$benchmark_ProtModerated <- benchmark_ProtModerated
 
 ```
+
+
 
 ## Contrasts from mixed effect models
 
@@ -454,7 +472,6 @@ contrProtMixed <- prolfqua::Contrasts$new(modMixedProtLevel, relevantContrasts, 
 pl <- contrProtMixed$get_Plotter()
 pl$volcano()$FDR
 pl$histogram()$p.value
-pl$histogram()$FDR
 
 pl <- contrProtMixed$get_contrasts()
 pl$protein_Id |> unique() |> length()
@@ -521,15 +538,14 @@ contrROPECA <- prolfqua::Contrasts$new(modLMPepLevel, relevantContrasts) |>
   prolfqua::ContrastsModerated$new() |>
   prolfqua::ContrastsROPECA$new()
 
-contrROPECA$get_Plotter()$volcano()
-contrROPECA$get_Plotter()$histogram()
+contrROPECA$get_Plotter()$volcano()$FDR
+contrROPECA$get_Plotter()$histogram()$FDR
 
 ```
 
 ```{r benchmarkROPECA}
-allContrasts$contrProtMixedModerated <- contrProtMixedModerated$get_contrasts()
-
-ttd <- prolfqua::ionstar_bench_preprocess(contrROPECA$get_contrasts())
+cr <- contrROPECA$get_contrasts()
+ttd <- prolfqua::ionstar_bench_preprocess(cr)
 benchmark_ropeca <- prolfqua::make_benchmark(
     ttd$data,
     toscale = c("beta.based.significance"),
@@ -543,10 +559,10 @@ benchmark_ropeca <- prolfqua::make_benchmark(
     FDRvsFDP = list(list(score = "FDR.beta.based.significance", desc = FALSE))
 )
 
-
 prolfqua::table_facade(
     benchmark_ropeca$smc$summary,
-    caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
+    caption = "Nr of proteins with Nr of not estimated contrasts.",
+    digits = 1)
 
 benchmark_ropeca$plot_ROC(0.1)
 benchmark_ropeca$plot_FDRvsFDP()
@@ -572,9 +588,9 @@ prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits=1)
 Here we merge contrasts estimates from linear models and from the models with imputation.
 
 ```{r mergingContrasts}
-all <- prolfqua::merge_contrasts_results(prefer = contrProtModerated, add = contrImp)
+all <- prolfqua::merge_contrasts_results(prefer = contrProt, add = contrImp)
 
-merged <- all$merged
+merged <- ContrastsModerated$new(all$merged)
 ttd <- prolfqua::ionstar_bench_preprocess(merged$get_contrasts())
 benchmark_merged <- prolfqua::make_benchmark(
     ttd$data,
@@ -595,7 +611,6 @@ bb <- benchmark_merged$pAUC_summaries()
 bb$barp
 
 tmp <- prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits=1)
-print(tmp)
 knitr::kable((bb$ftable$content))
 
 allBenchmarks$benchmark_merged <- benchmark_merged

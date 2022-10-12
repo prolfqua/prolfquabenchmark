@@ -11,7 +11,7 @@ output:
 papersize: a4
 geometry: margin=.5in
 vignette: >
-  %\VignetteIndexEntry{Benchmarking the proDA package using the Ionstar Dataset starting from peptides} 
+  %\VignetteIndexEntry{Benchmarking the msqrob2 package using the Ionstar Dataset starting from peptides.txt} 
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options:
@@ -80,7 +80,12 @@ lfqAggMedpol$lmrob()
 lfqtrans <- lfqAggMedpol$lfq_agg
 st <- lfqtrans$get_Stats()
 protAbundanceIngroup <- st$stats()
-protAbundanceIngroup <- protAbundanceIngroup |> tidyr::pivot_wider(id_cols = protein_Id, names_from = dilution., names_prefix = "abd.", values_from = mean)
+protAbundanceIngroup <- protAbundanceIngroup |>
+  tidyr::pivot_wider(
+    id_cols = protein_Id,
+    names_from = dilution.,
+    names_prefix = "abd.",
+    values_from = mean)
 
 
 ```
@@ -126,26 +131,19 @@ getModel(rowData(prlm[["protein"]])$msqrobHurdleCount[[2]])
 Since msqrob does not report average abundances, we are computing them for each contrast.
 
 ```{r}
-
-L <- makeContrast(c("dilution.e-dilution.d=0"),
-                  parameterNames = c("dilution.e", "dilution.d"))
+L <- makeContrast(c("dilution.e-dilution.d=0",
+                    "dilution.d-dilution.c=0",
+                    "dilution.c-dilution.b=0",
+                    "dilution.b=0"),
+                  parameterNames = c("dilution.e",
+                                     "dilution.d",
+                                     "dilution.c",
+                                     "dilution.b"))
 prlm <- hypothesisTestHurdle(prlm, i = "protein", L, overwrite = TRUE)
+
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.e.d =  mean( c(abd.e,abd.d), na.rm = TRUE)  )
-
-L <- makeContrast(c("dilution.d-dilution.c=0"),
-                  parameterNames = c("dilution.d", "dilution.c"))
-prlm <- hypothesisTestHurdle(prlm, i = "protein", L, overwrite=TRUE)
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.d.c =  mean( c(abd.d,abd.c), na.rm = TRUE)  )
-
-
-L <- makeContrast(c("dilution.c-dilution.b=0"),
-                  parameterNames = c("dilution.c", "dilution.b"))
-prlm <- hypothesisTestHurdle(prlm, i = "protein", L, overwrite = TRUE)
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.c.b =  mean( c(abd.c,abd.b), na.rm = TRUE)  )
-
-L <- makeContrast(c("dilution.b=0"),
-                  parameterNames = c("dilution.b"))
-prlm <- hypothesisTestHurdle(prlm, i = "protein", L, overwrite = TRUE)
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.b.a =  mean( c(abd.b,abd.a), na.rm = TRUE)  )
 
 xx <- rowData(prlm[["protein"]])
@@ -153,15 +151,11 @@ hurdle <- xx[grepl("hurdle_",names(xx))]
 
 res <- list()
 for (i in names(hurdle)) { 
-  print(i)
   hurdle[[i]]$contrast <- i
   res[[i]] <- prolfqua::matrix_to_tibble(hurdle[[i]], preserve_row_names = "name")
 }
 
 hurdle <- dplyr::bind_rows(res)
-nrow(hurdle)/4
-hurdle$contrast |> unique()
-hurdle |> filter(contrast == "hurdle_dilution.b")
 
 ```
 
@@ -169,44 +163,33 @@ hurdle |> filter(contrast == "hurdle_dilution.b")
 Now we need to merge the results of both models msqrobHurdleIntensity and msqrobHurdleCount. To find out which models were not estimated by `msqrobHurdleIntensity` we check for NA's and use the `anti_join` to select those from the `msqrobHurdleCount` models.
 
 ```{r merge}
+
 logFC <- hurdle |> dplyr::select("name","contrast", starts_with("logFC"))
 logFC <- filter(logFC ,!is.na(logFCt))
 logFC$modelName <- "msqrobHurdleIntensity"
+names(logFC) <- c("name","contrast","logFC","se","df","t","pval","modelName")
 
 logOR <- hurdle |> dplyr::select("name","contrast", starts_with("logOR"))
 logOR$modelName <- "msqrobHurdleCount"
+names(logOR) <- c("name","contrast","logFC","se","df","t","pval","modelName")
+
 
 ddd <- dplyr::anti_join(logOR , logFC, by = c("name", "contrast"))
-names(ddd) <- names(logFC)
 all <- dplyr::bind_rows(ddd , logFC) |> dplyr::arrange(contrast, name)
-names(all) <- c("name","contrast","logFC","se","df","t","pval","modelName")
-
 all <- prolfqua::adjust_p_values(all, column = "pval", group_by_col = "contrast")
 all$contrast |> unique()
 
-all <- all |> dplyr::mutate(
-  contrast = dplyr::case_when(
-    contrast == "hurdle_dilution.b" ~ "dilution_(4.5/3)_1.5",
-    contrast == "hurdle_dilution.c - dilution.b" ~ "dilution_(6/4.5)_1.3(3)",
-    contrast == "hurdle_dilution.d - dilution.c" ~ "dilution_(7.5/6)_1.25",
-    contrast == "hurdle_dilution.e - dilution.d" ~ "dilution_(9/7.5)_1.2",
-    TRUE ~ "something wrong"))
+
 
 protAbundanceIngroup <- protAbundanceIngroup |> 
   dplyr::select(-starts_with("abd")) |> 
   tidyr::pivot_longer(starts_with("avgAbd"), names_to = "contrast" ,values_to = "avgAbd")
 
-protAbundanceIngroup <- protAbundanceIngroup |> 
-  dplyr::mutate(contrast = dplyr::case_when(
-  contrast == "avgAbd.b.a" ~ "dilution_(4.5/3)_1.5",
-  contrast == "avgAbd.c.b" ~ "dilution_(6/4.5)_1.3(3)",
-  contrast == "avgAbd.d.c" ~ "dilution_(7.5/6)_1.25",
-  contrast == "avgAbd.e.d" ~ "dilution_(9/7.5)_1.2",
-  TRUE ~ "something wrong"))
 
 stopifnot(sum(all$contrast == "something wrong") == 0 )
 stopifnot(sum(all$contrast == "something wrong") == 0 )
 
+bb <- dplyr::inner_join(all, protAbundanceIngroup, by = c("name" = "protein_Id", "contrast" = "contrast"))
 
 
 ```
@@ -217,7 +200,7 @@ stopifnot(sum(all$contrast == "something wrong") == 0 )
 Here we use `proflqua` benchmark functions to generate some summaries.
 
 ```{r setUPBenchmark, eval = evalAll}
-bb <- dplyr::inner_join(all, protAbundanceIngroup, by = c("name" = "protein_Id", "contrast" = "contrast"))
+
 ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
 benchmark_msqrob <- prolfqua::make_benchmark(ttd$data,
                                              contrast = "contrast",
@@ -237,6 +220,8 @@ benchmark_msqrob <- prolfqua::make_benchmark(ttd$data,
 sum(benchmark_msqrob$smc$summary$name)
 sumarry <- benchmark_msqrob$smc$summary
 prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
+
+
 
 ```
 

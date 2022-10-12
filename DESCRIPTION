@@ -23,6 +23,8 @@ Imports:
     knitr,
     kableExtra,
     MSstats,
+    msdata,
+    msqrob2,
     prolfqua,
     prolfquadata,
     proDA,

@@ -1,0 +1,278 @@
+---
+title: "Benchmarking robust linear model using the Ionstar Dataset"
+author: "FGCZ - (Draft)"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      toc_collapsed: false
+papersize: a4
+geometry: margin=.5in
+vignette: >
+  %\VignetteIndexEntry{Benchmarking robust linear model using the Ionstar Dataset} 
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+  markdown: 
+    wrap: sentence
+---
+
+Please download and install the `prolfquadata` package from github
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+echo = TRUE,
+message = FALSE,
+warning = FALSE,
+fig.width = 5,
+fig.height = 5,
+knitr.table.format = "pipe"
+)
+```
+
+```{r loadRequiredPackages}
+conflicted::conflict_prefer("filter", "dplyr")
+
+```
+
+Decide if you work with all data or for speedup with subset of data:
+
+```{r}
+SUBSET <- FALSE
+SUBSETNORM <- TRUE
+SAVE <- TRUE
+
+```
+
+We start by loading the IonStar dataset and the annotation from the `prolfquadata` package.
+The method `add_annotation` adds the annotation to the data.
+
+```{r loadMQData}
+
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
+inputMQfile <-  file.path(datadir,
+                          "MAXQuant_IonStar2018_PXD003881.zip")
+inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
+mqdata <- list()
+
+mqdata$data <- prolfqua::tidyMQ_Peptides(inputMQfile)
+length(unique(mqdata$data$proteins))
+
+mqdata$config <- prolfqua::create_config_MQ_peptide()
+
+
+annotation <- readxl::read_xlsx(inputAnnotation)
+res <- prolfqua::add_annotation(
+  mqdata$data,
+  annotation,
+  fileName = "raw.file"
+)
+
+```
+
+The `setup_analysis` asserts that all columns specified in the configruation are present in the data.
+For more details about the `prolfqua` configuration see the vignette "Creating Configurations".
+
+```{r annotateData}
+mqdata$config$table$factors[["dilution."]] = "sample"
+mqdata$config$table$factors[["run_Id"]] = "run_ID"
+mqdata$config$table$factorDepth <- 1
+mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
+
+```
+
+## Data normalization
+
+First we remove all contaminant, decoy proteins from the list, than we remove 0 intensity values, then filter for 2 peptides per protein.
+
+```{r filterForHumans}
+lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
+lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
+sr <- lfqdata$get_Summariser()
+lfqdata$remove_small_intensities()
+sr <- lfqdata$get_Summariser()
+sr$hierarchy_counts()
+
+```
+
+We will normalize the data using the 'LFQTransformer' class.
+Since we know that the Human proteins are the Matrix in the experiment we will normalize the data using HUMAN proteins only.
+To this task we subset the dataset by filtering for HUMAN proteins only and then use the `LFQDataTransformer` to normalize the data.
+
+```{r}
+tr <- lfqdata$get_Transformer()
+subset_h <- lfqdata$get_copy()
+subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h <- subset_h$get_Transformer()$log2()$lfq
+lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h,  preserveMean = FALSE )$lfq
+
+```
+
+The figures below show the intensity distribution before and after normalization.
+
+```{r plotIntensityDistributions}
+
+before <- lfqdata$get_Plotter()
+before$intensity_distribution_density()
+
+after <- lfqdataNormalized$get_Plotter()
+after$intensity_distribution_density()
+
+```
+
+Create a sample of N proteins to speed up computations of models and contrasts.
+
+```{r createDataSubset}
+if (SUBSET) {
+  N <- 200
+  mqdataSubset <- lfqdata$get_sample(size = N, seed = 2020)
+  lfqNormSubset <- lfqdataNormalized$get_sample(size = N, seed = 2020)
+  lfqNormSubset$hierarchy_counts()
+} else {
+  mqdataSubset <- lfqdata$get_copy()  
+  lfqNormSubset <- lfqdataNormalized$clone()
+  lfqNormSubset$hierarchy_counts()
+}
+```
+
+
+## Fitting a robust linear model to peptide abundances
+
+```{r buildModelrlm}
+df.residual.rlm <- function(object, ...) {
+  return( sum(object$w) - object$rank)
+}
+
+
+sigma.rlm <- function(object, ...) {
+  sqrt(sqrt(sum(object$w * object$resid^2) / (sum(object$w) - object$rank)))
+}
+
+
+rlmmodel <- "~ dilution."
+rlmmodel <- paste0(lfqNormSubset$config$table$get_response() , rlmmodel)
+lfqNormSubset$config$table$hierarchyDepth <- 1
+
+modelFunction <- prolfqua::strategy_rlm( rlmmodel, model_name = "Model")
+
+mod_rlm_ProtLevel <- prolfqua::build_model(lfqNormSubset$data, modelFunction)
+mod_rlm_ProtLevel$get_anova()
+
+
+mod_rlm_ProtLevel$anova_histogram()$plot
+```
+
+
+# Computing Contrasts
+
+Once models are fitted contrasts can be computed.
+The R code below defines all possible contrasts among conditions for the ionstar dataset.
+
+```{r defineContrasts}
+DEBUG <- FALSE
+
+Contrasts <- c(
+  "dilution_(9/3)_3" =   "dilution.e - dilution.a",
+  "dilution_(9/4.5)_2" =   "dilution.e - dilution.b",
+  "dilution_(9/6)_1.5" =   "dilution.e - dilution.c",
+  "dilution_(9/7.5)_1.2" =   "dilution.e - dilution.d",
+  
+  "dilution_(7.5/3)_2.5" =   "dilution.d - dilution.a",
+  "dilution_(7.5/4.5)_1.6(6)" =   "dilution.d - dilution.b",
+  "dilution_(7.5/6)_1.25" =   "dilution.d - dilution.c",
+  
+  "dilution_(6/3)_2" =   "dilution.c - dilution.a",
+  "dilution_(6/4.5)_1.3(3)" =   "dilution.c - dilution.b",
+  
+  "dilution_(4.5/3)_1.5" =   "dilution.b - dilution.a"
+)
+
+
+tt <- Reduce(rbind, strsplit(names(Contrasts),split = "_"))
+tt <- data.frame(tt)[,2:3]
+colnames(tt) <- c("ratio" , "expected fold-change")
+tt <- tibble::add_column(tt, contrast =  Contrasts, .before = 1)
+prolfqua::table_facade(
+  tt,
+  caption = "All possible Contrasts given 5 E. coli dilutions of the Ionstar Dataset", digits = 1)
+
+```
+
+```{r usedContrasts}
+relevantContrasts <- c("dilution_(9/7.5)_1.2",
+                       "dilution_(7.5/6)_1.25",
+                       "dilution_(6/4.5)_1.3(3)",
+                       "dilution_(4.5/3)_1.5" )
+
+tt <- Reduce(rbind, strsplit(relevantContrasts,split = "_"))
+tt <- data.frame(tt)[,2:3]
+colnames(tt) <- c("ratio" , "expected fold-change")
+tt <- tibble::add_column(tt, contrast =  Contrasts[names(Contrasts) %in% relevantContrasts], .before = 1)
+prolfqua::table_facade(tt, caption = "Contrasts used for benchmark.", digits = 1)
+relevantContrasts <- Contrasts[names(Contrasts) %in% relevantContrasts]
+
+```
+
+
+## Contrasts from robust linear model
+
+
+```{r contrastModel_RLM, include = FALSE}
+contrProt_RLM <- prolfqua::Contrasts$new(mod_rlm_ProtLevel, relevantContrasts)
+pl <- contrProt_RLM$get_Plotter()
+pl$volcano()
+pl$histogram()
+
+```
+
+
+```{r benchmarkModel_RLM , include = FALSE}
+ttd <- prolfqua::ionstar_bench_preprocess(contrProt_RLM$get_contrasts())
+
+
+benchmark_Prot_RLM <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "med. polish and rlm",
+    model_name = "prolfqua_rlm"
+)
+
+prolfqua::table_facade(benchmark_Prot_RLM$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits = 1)
+
+benchmark_Prot_RLM$plot_FDRvsFDP()
+
+```
+
+
+
+
+
+### Adding Moderation to RLM model
+
+```{r contrastModelRLM1Moderation}
+
+contrProtRLMModerated <- prolfqua::ContrastsModerated$new(contrProt_RLM)
+contrProtRLMModerated$get_Plotter()$volcano()$FDR
+contrProtRLMModerated$get_contrasts()$protein_Id |> unique() |> length()
+
+```
+
+```{r benchmarkModelRLM11Moderation}
+
+ttd <- prolfqua::ionstar_bench_preprocess(contrProtRLMModerated$get_contrasts())
+benchmark_ProtRLMModerated <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "med. polish and rlm moderated",
+    model_name = "prolfqua_rlm_mod")
+
+prolfqua::table_facade(
+  benchmark_ProtRLMModerated$smc$summary,
+  caption = "Nr of proteins with Nr of not estimated contrasts.",
+  digits = 1)
+
+benchmark_ProtRLMModerated$plot_ROC(xlim = 1)
+benchmark_ProtRLMModerated$plot_FDRvsFDP()
+
+```

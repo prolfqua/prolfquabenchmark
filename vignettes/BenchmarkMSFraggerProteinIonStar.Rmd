@@ -66,7 +66,7 @@ atable$fileName = "raw.file"
 atable$hierarchy[["protein_Id"]] <- c("protein")
 
 atable$hierarchyDepth <- 1
-atable$set_work_intensity("total.intensity")
+atable$set_response("total.intensity")
 atable$factors[["dilution."]] = "sample"
 atable$factors[["run"]] = "run_ID"
 atable$factorDepth <- 1
@@ -126,7 +126,7 @@ Contrasts <- c(
 
 
 lmmodel <- "~ dilution."
-lmmodel <- paste0(lfqdataNormalized$config$table$get_work_intensity() , lmmodel)
+lmmodel <- paste0(lfqdataNormalized$config$table$get_response() , lmmodel)
 
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
 

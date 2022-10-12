@@ -6,3 +6,19 @@ tolong <- function(assay, rowData, colData ){
     hl <- inner_join(hierarchy, ll)
     ahl <- inner_join(annot, hl)
 }
+
+
+#' preprocess cptac dataset for benchmarking
+#' @export
+cptac_bench_preprocess <- function(data, idcol = "protein_Id") {
+    tmp <- data |>
+        ungroup() |>
+        mutate(species  = case_when(
+            grepl("YEAST", !!sym(idcol)) ~ "YEAST",
+            grepl("UPS", !!sym(idcol)) ~ "UPS",
+            TRUE ~ "OTHER"
+        ))
+    res <- tmp |> dplyr::filter(!.data$species == "OTHER")
+    res <- res |> mutate(TP = (.data$species == "UPS"))
+    return(list(data = res , table = table(tmp$species)))
+}
