@@ -54,7 +54,6 @@ protein <- prolfqua::tidy_FragPipe_combined_protein_deprec(protein)
 
 protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
 merged <- dplyr::inner_join(annotation, protein)
-
 ```
 
 ## Create prolfqua configuration
@@ -77,6 +76,8 @@ config <- prolfqua::AnalysisConfiguration$new(atable)
 adata <- prolfqua::setup_analysis(merged, config)
 lfqdata <- prolfqua::LFQData$new(adata, config)
 lfqdata$remove_small_intensities()
+
+
 ```
 
 ## Normalize data using human proteins
@@ -84,15 +85,12 @@ lfqdata$remove_small_intensities()
 ```{r createPlotter}
 pl <- lfqdata$get_Plotter()
 pl$intensity_distribution_density()
-
 subset_h <- lfqdata$get_copy()$get_Transformer()$log2()$lfq
 subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
 tr <- lfqdata$get_Transformer()
 lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
-
 pl <- lfqdataNormalized$get_Plotter()
 pl$intensity_distribution_density()
-
 hm <- pl$NA_heatmap()
 ```
 
@@ -100,21 +98,9 @@ hm <- pl$NA_heatmap()
 hm
 ```
 
-## Summarize data
-
-```{r useSummarizer}
-lfqdataNormalized$summarize_hierarchy()
 
 
-summariz <- lfqdataNormalized$get_Summariser()
-summariz$interaction_missing_stats()
-summariz$missingness_per_group()
-summariz$missingness_per_group_cumsum()
-summariz$hierarchy_counts_sample()
-
-```
-
-## Model data and specify contrasts
+# Model data using prolfqua and specify contrasts
 
 ```{r specifyContrasts}
 Contrasts <- c(
@@ -131,26 +117,33 @@ lmmodel <- paste0(lfqdataNormalized$config$table$get_response() , lmmodel)
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
 
 mod <- prolfqua::build_model(lfqdataNormalized$data, modelFunction)
+contr <- prolfqua::Contrasts$new(mod, Contrasts)
+contrimp <- prolfqua::ContrastsSimpleImpute$new(lfqdataNormalized, Contrasts)
 
-contr <- prolfqua::ContrastsModerated$new(prolfqua::Contrasts$new(mod, Contrasts))
-contrdf <- contr$get_contrasts()
-cp <- contr$get_Plotter()
+merged <- prolfqua::merge_contrasts_results(contr, contrimp)
+mergedmod <- prolfqua::ContrastsModerated$new(merged$merged)
+
+cp <- mergedmod$get_Plotter()
 cp$volcano()
 
 ```
 
 
-## Benchmark data
+## Benchmark data 
 
 
 ```{r benchmark}
-ttd <- prolfqua::ionstar_bench_preprocess(contrdf)
+ttd <- prolfqua::ionstar_bench_preprocess(mergedmod$get_contrasts())
 medpol_benchmark <- prolfqua::make_benchmark(ttd$data,
                                    model_description = "MSFragger med. polish and lm. density",
                                    model_name = "MSFragger_prot_med_lm",
                                    FDRvsFDP = list(list(score = "FDR", desc = FALSE))
 )
-saveRDS(medpol_benchmark, "../inst/Benchresults/MSFragger_medpol_benchmark.RDS")
+
+#saveRDS(medpol_benchmark, "../inst/Benchresults/MSFragger_medpol_benchmark.RDS")
+
+knitr::kable(medpol_benchmark$pAUC_summaries()$ftable$content)
+
 
 prolfqua::table_facade(medpol_benchmark$smc$summary, "Nr of estimated contrasts")
 medpol_benchmark$plot_score_distribution()
@@ -158,3 +151,87 @@ medpol_benchmark$plot_ROC(0.05)
 medpol_benchmark$plot_FDRvsFDP()
 
 ```
+
+
+# Model data using proDA and specify contrasts
+
+```{r prodaFit}
+# Not Run
+se <- prolfqua::LFQDataToSummarizedExperiment(lfqdataNormalized)
+fit <- proDA(se, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
+
+contr <- list()
+contr[["dilution_(9/7.5)_1.2"]] <- data.frame(contrast = "dilution_(9/7.5)_1.2",
+                                              test_diff(fit, contrast = "dilution.e - dilution.d"))
+contr[["dilution_(7.5/6)_1.25"]] <- data.frame(contrast = "dilution_(7.5/6)_1.25",
+                                               test_diff(fit, contrast = "dilution.d - dilution.c"))
+contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(contrast = "dilution_(6/4.5)_1.3(3)", 
+                                                 test_diff(fit, contrast = "dilution.c - dilution.b"))
+contr[["dilution_(4.5/3)_1.5"]] <- data.frame(contrast = "dilution_(4.5/3)_1.5", 
+                                              test_diff(fit, contrast = "dilution.b - dilution.a" ))
+
+bb <- dplyr::bind_rows(contr)
+# End Not Run
+
+
+```
+
+
+## Benchmark data 
+
+
+```{r prodabenchmark}
+
+ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
+
+benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
+                                   contrast = "contrast",
+                                toscale = c("pval"),
+                                fcestimate = "diff",
+                                benchmark = list(
+                                  list(score = "diff", desc = TRUE),
+                                  list(score = "t_statistic", desc = TRUE),
+                                  list(score = "scaled.pval", desc = TRUE)
+                                ),  
+                                model_description = "proDA_medpolishInt",
+                                model_name = "proDA_medpolishInt",
+                                FDRvsFDP = list(list(score = "adj_pval", desc = FALSE))
+, hierarchy = c("name"), summarizeNA = "t_statistic"
+)
+
+sumarry <- benchmark_proDA$smc$summary
+prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
+
+knitr::kable(benchmark_proDA$pAUC_summaries()$ftable$content)
+
+prolfqua::table_facade(medpol_benchmark$smc$summary, "Nr of estimated contrasts")
+
+benchmark_proDA$plot_score_distribution()
+benchmark_proDA$plot_ROC(0.05)
+benchmark_proDA$plot_FDRvsFDP()
+
+```
+
+
+# Compare prolfqua and proda
+
+Direct comparison with msqrob2 is not possible since to fit the dropout model also the peptide intensities are required.
+
+```{r}
+
+proda <- benchmark_proDA$pAUC_summaries()$ftable$content
+proda$package <- "proda"
+prolfqua <- medpol_benchmark$pAUC_summaries()$ftable$content
+prolfqua$package <- "prolfqua"
+
+tmp <- bind_rows(proda, prolfqua)
+tmp$what |> unique()
+tmp$what[tmp$what == "statistic"] <- "t_statistic"
+tmp$what[tmp$what == "scaled.pval"] <- "scaled.p.value"
+
+tmp |> ggplot(aes(x = what, y= pAUC_10, group = package, color = NULL, fill = package)) + geom_bar(stat = "identity",  position = position_dodge()) + facet_wrap(~ contrast) +  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+
+
+

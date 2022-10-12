@@ -62,21 +62,37 @@ mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
 
 
 lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
+```
+
+
+Filter the data for small intensities (maxquant reports missing values as 0) and for two peptides per protein.
+
+
+```{r}
 lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
 lfqdata$filter_proteins_by_peptide_count()
-lfqdata$hierarchy_counts()
-
 lfqdata$remove_small_intensities()
 lfqdata$hierarchy_counts()
 
+
+```
+
+
+
+```{r}
 tr <- lfqdata$get_Transformer()
 subset_h <- lfqdata$get_copy()
 subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
 subset_h <- subset_h$get_Transformer()$log2()$lfq
 lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
 
+```
+
+
+
+```{r}
 lfqAggMedpol <- lfqdataNormalized$get_Aggregator()
-lfqAggMedpol$lmrob()
+lfqAggMedpol$medpolish()
 lfqtrans <- lfqAggMedpol$lfq_agg
 st <- lfqtrans$get_Stats()
 protAbundanceIngroup <- st$stats()
@@ -124,8 +140,6 @@ prlm <- msqrobHurdle(pe,
                      overwrite = TRUE)
 
 
-getModel(rowData(prlm[["protein"]])$msqrobHurdleIntensity[[2]])
-getModel(rowData(prlm[["protein"]])$msqrobHurdleCount[[2]])
 ```
 
 Since msqrob does not report average abundances, we are computing them for each contrast.
@@ -140,11 +154,11 @@ L <- makeContrast(c("dilution.e-dilution.d=0",
                                      "dilution.c",
                                      "dilution.b"))
 prlm <- hypothesisTestHurdle(prlm, i = "protein", L, overwrite = TRUE)
-
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.e.d =  mean( c(abd.e,abd.d), na.rm = TRUE)  )
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.d.c =  mean( c(abd.d,abd.c), na.rm = TRUE)  )
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.c.b =  mean( c(abd.c,abd.b), na.rm = TRUE)  )
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.b.a =  mean( c(abd.b,abd.a), na.rm = TRUE)  )
+
 
 xx <- rowData(prlm[["protein"]])
 hurdle <- xx[grepl("hurdle_",names(xx))]
@@ -179,18 +193,28 @@ all <- dplyr::bind_rows(ddd , logFC) |> dplyr::arrange(contrast, name)
 all <- prolfqua::adjust_p_values(all, column = "pval", group_by_col = "contrast")
 all$contrast |> unique()
 
-
-
 protAbundanceIngroup <- protAbundanceIngroup |> 
   dplyr::select(-starts_with("abd")) |> 
   tidyr::pivot_longer(starts_with("avgAbd"), names_to = "contrast" ,values_to = "avgAbd")
 
+protAbundanceIngroup <- protAbundanceIngroup |> 
+  mutate(contrast = 
+           case_when(contrast == "avgAbd.e.d" ~ "dilution_(9/7.5)_1.2",
+                     contrast == "avgAbd.d.c" ~ "dilution_(7.5/6)_1.25",
+                     contrast == "avgAbd.c.b" ~ "dilution_(6/4.5)_1.3(3)",
+                     contrast == "avgAbd.b.a" ~ "dilution_(4.5/3)_1.5",
+                     TRUE ~ "something wrong"))
+all <- all |> mutate(contrast = case_when(
+  contrast == "hurdle_dilution.e - dilution.d" ~ "dilution_(9/7.5)_1.2",
+  contrast == "hurdle_dilution.d - dilution.c" ~ "dilution_(7.5/6)_1.25",
+  contrast == "hurdle_dilution.c - dilution.b" ~ "dilution_(6/4.5)_1.3(3)",
+  contrast == "hurdle_dilution.b" ~ "dilution_(4.5/3)_1.5",
+  TRUE ~ "something wrong"))
+stopifnot(sum(all$contrast == "something wrong") == 0 )
+stopifnot(sum(all$contrast == "something wrong") == 0 )
 
-stopifnot(sum(all$contrast == "something wrong") == 0 )
-stopifnot(sum(all$contrast == "something wrong") == 0 )
 
 bb <- dplyr::inner_join(all, protAbundanceIngroup, by = c("name" = "protein_Id", "contrast" = "contrast"))
-
 
 ```
 
@@ -217,7 +241,6 @@ benchmark_msqrob <- prolfqua::make_benchmark(ttd$data,
                                              , hierarchy = c("name"), summarizeNA = "t"
 )
 
-sum(benchmark_msqrob$smc$summary$name)
 sumarry <- benchmark_msqrob$smc$summary
 prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
 

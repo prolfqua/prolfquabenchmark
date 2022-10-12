@@ -84,17 +84,22 @@ mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
 
 ```
 
-## Data normalization
+## Data filtering and normalization
 
 First we remove all contaminant, decoy proteins from the list, than we remove 0 intensity values, then filter for 2 peptides per protein.
 
 ```{r filterForHumans}
 lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
+```
+
+
+Filter the data for small intensities (maxquant reports missing values as 0) and for two peptides per protein.
+
+```{r}
 lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
-sr <- lfqdata$get_Summariser()
+lfqNormSubset$filter_proteins_by_peptide_count()
 lfqdata$remove_small_intensities()
-sr <- lfqdata$get_Summariser()
-sr$hierarchy_counts()
+lfqdata$hierarchy_counts()
 
 ```
 
@@ -191,7 +196,6 @@ We will be using the `LFQDataAggregator` class.
 To estimate protein abundances using Tukey's median polish we need to use log2 transformed peptide abundances
 
 ```{r aggregateMedpolish, fig.width=10, fig.height=10}
-lfqNormSubset$filter_proteins_by_peptide_count()
 
 lfqNormSubset$config$table$get_response()
 

@@ -43,7 +43,9 @@ config$table$factors["group."] = "group"
 
 peptides <- prolfqua::setup_analysis(peptides, config)
 lfqpeptides <- prolfqua::LFQData$new(peptides, config)
+lfqpeptides$filter_proteins_by_peptide_count()
 lfqpeptides$remove_small_intensities()
+
 lfqpeptides$hierarchy_counts()
 
 lfqpeptides$factors()
@@ -65,7 +67,7 @@ agg$medpolish()
 pl <- agg$plot()
 ```
 
-```{r aggregationResults, fig.cap = "Protein estiamtes, and peptide abundances"}
+```{r aggregationResults, fig.cap = "Peptide abundances and protein abundance estimates."}
 gridExtra::grid.arrange(grobs = pl$plots[33:38])
 lfqProt <- agg$lfq_agg
 

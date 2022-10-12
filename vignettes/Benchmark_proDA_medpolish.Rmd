@@ -53,13 +53,19 @@ mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
 
 
 lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
+```
+
+Filter the data for small intensities (maxquant reports missing values as 0) and for two peptides per protein.
+
+
+```{r}
 lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
 lfqdata$filter_proteins_by_peptide_count()
-lfqdata$hierarchy_counts()
-
 lfqdata$remove_small_intensities()
 lfqdata$hierarchy_counts()
+```
 
+```{r}
 tr <- lfqdata$get_Transformer()
 subset_h <- lfqdata$get_copy()
 subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
@@ -76,13 +82,8 @@ To use `proDA`, we need to create an `SummarizedExperiment`. We use the `to_wide
 
 
 ```{r createSummarizedExperiment, eval=evalAll}
-library(SummarizedExperiment)
-wide <- lfqtrans$to_wide(as.matrix = TRUE)
-library(SummarizedExperiment)
-ann <- data.frame(wide$annotation)
-rownames(ann) <- wide$annotation$sampleName
 
-se <- SummarizedExperiment(SimpleList(LFQ = wide$data), colData = ann)
+se <- prolfqua::LFQDataToSummarizedExperiment(lfqtrans)
 
 ```
 
