@@ -97,7 +97,7 @@ Filter the data for small intensities (maxquant reports missing values as 0) and
 
 ```{r}
 lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
-lfqNormSubset$filter_proteins_by_peptide_count()
+lfqdata$filter_proteins_by_peptide_count()
 lfqdata$remove_small_intensities()
 lfqdata$hierarchy_counts()
 
@@ -145,7 +145,7 @@ if (SUBSET) {
 
 
 
-```{r R6Ionstar, echo =  FALSE, include = FALSE}
+```{r R6Ionstar, echo =  FALSE, include = FALSE, eval=FALSE}
 
 IonstarData <- R6::R6Class(
   "IonstarData",
@@ -538,14 +538,14 @@ To estimate regulation probabilities using the ROPECA approach we can chain the 
 First we compute contrasts on peptide level, than we moderated the variance, t-statistics and p-values and finally we aggregate the fold change estimates and p-values.
 
 ```{r contrastROPECA}
-contrROPECA <- prolfqua::Contrasts$new(modLMPepLevel, relevantContrasts) |>
-  prolfqua::ContrastsModerated$new() |>
-  prolfqua::ContrastsROPECA$new()
-
+contrastPep <- prolfqua::Contrasts$new(modLMPepLevel, relevantContrasts) 
+contrROPECA <- prolfqua::ContrastsModerated$new( contrastPep )  |>  prolfqua::ContrastsROPECA$new()
 contrROPECA$get_Plotter()$volcano()$FDR
 contrROPECA$get_Plotter()$histogram()$FDR
 
 ```
+
+
 
 ```{r benchmarkROPECA}
 cr <- contrROPECA$get_contrasts()
@@ -568,7 +568,7 @@ prolfqua::table_facade(
     caption = "Nr of proteins with Nr of not estimated contrasts.",
     digits = 1)
 
-benchmark_ropeca$plot_ROC(0.1)
+benchmark_ropeca$plot_ROC(1)
 benchmark_ropeca$plot_FDRvsFDP()
 
 allBenchmarks$benchmark_ropeca <- benchmark_ropeca
@@ -583,25 +583,30 @@ bb$barp
 
 
 ```{r}
-prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits=1)
+prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits = 1)
 
 ```
 
-## Merging contrasts
+# Merging contrasts of two models.
 
-Here we merge contrasts estimates from linear models and from the models with imputation.
+Here we merge contrasts estimates from linear models and from the models with imputation using `merge_contrasts_results`.
+We prefer the contrasts estimated with linear models and if missing augment them with the contrasts estimated with imputation.
+
 
 ```{r mergingContrasts}
 all <- prolfqua::merge_contrasts_results(prefer = contrProt, add = contrImp)
 
-merged <- ContrastsModerated$new(all$merged)
+merged <- prolfqua::ContrastsModerated$new(all$merged)
 ttd <- prolfqua::ionstar_bench_preprocess(merged$get_contrasts())
 benchmark_merged <- prolfqua::make_benchmark(
     ttd$data,
     model_description = "merge of prot moderated and imputed",
     model_name = "prolfqua_merged")
 
-prolfqua::table_facade(benchmark_merged$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
+prolfqua::table_facade(
+  benchmark_merged$smc$summary,
+  caption = "Nr of proteins with Nr of not estimated contrasts.",
+  digits = 1)
 #benchmark_mixedModerated$plot_score_distribution()
 
 benchmark_merged$plot_FDRvsFDP()
