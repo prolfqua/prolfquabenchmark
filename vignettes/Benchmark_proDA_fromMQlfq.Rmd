@@ -110,20 +110,22 @@ As usual, two steps are required, first fit the models, then comptue the contras
 
 
 ```{r runProda, eval=evalAll, include=TRUE}
-# Not Run
-fit <- proDA(se, design = ~ dilution. - 1,data_is_log_transformed = TRUE)
+fit <- proDA::proDA(se, design = ~ dilution. - 1,data_is_log_transformed = TRUE)
 contr <- list()
-contr[["dilution_(9/7.5)_1.2"]] <- data.frame(contrast = "dilution_(9/7.5)_1.2",
-                                              test_diff(fit, contrast = "dilution.e - dilution.d"))
-contr[["dilution_(7.5/6)_1.25"]] <- data.frame(contrast = "dilution_(7.5/6)_1.25",
-                                               test_diff(fit, contrast = "dilution.d - dilution.c"))
-contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(contrast = "dilution_(6/4.5)_1.3(3)", 
-                                                 test_diff(fit, contrast ="dilution.c - dilution.b"))
-contr[["dilution_(4.5/3)_1.5"]] <- data.frame(contrast = "dilution_(4.5/3)_1.5", 
-                                              test_diff(fit, contrast ="dilution.b - dilution.a" ))
+contr[["dilution_(9/7.5)_1.2"]] <- data.frame(
+  contrast = "dilution_(9/7.5)_1.2",
+  proDA::test_diff(fit, contrast = "dilution.e - dilution.d"))
+contr[["dilution_(7.5/6)_1.25"]] <- data.frame(
+  contrast = "dilution_(7.5/6)_1.25",
+  proDA::test_diff(fit, contrast = "dilution.d - dilution.c"))
+contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(
+  contrast = "dilution_(6/4.5)_1.3(3)", 
+  proDA::test_diff(fit, contrast = "dilution.c - dilution.b"))
+contr[["dilution_(4.5/3)_1.5"]] <- data.frame(
+  contrast = "dilution_(4.5/3)_1.5", 
+  proDA::test_diff(fit, contrast = "dilution.b - dilution.a" ))
 
 bb <- dplyr::bind_rows(contr)
-# End Not Run
 
 ```
 
@@ -136,19 +138,19 @@ bb <- dplyr::bind_rows(contr)
 bb$name |> unique() |> length()
 ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
 benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
-                                   contrast = "contrast",
-                                avgInt = "avg_abundance",
-                                toscale = c("pval"),
-                                fcestimate = "diff",
-                                benchmark = list(
-                                  list(score = "diff", desc = TRUE),
-                                  list(score = "t_statistic", desc = TRUE),
-                                  list(score = "scaled.pval", desc = TRUE)
-                                ),  
-                                model_description = "proDA_lfqInt",
-                                model_name = "proDA_lfqInt",
-                                FDRvsFDP = list(list(score = "adj_pval", desc = FALSE))
-, hierarchy = c("name"), summarizeNA = "t_statistic"
+                                            contrast = "contrast",
+                                            avgInt = "avg_abundance",
+                                            toscale = c("pval"),
+                                            fcestimate = "diff",
+                                            benchmark = list(
+                                              list(score = "diff", desc = TRUE),
+                                              list(score = "t_statistic", desc = TRUE),
+                                              list(score = "scaled.pval", desc = TRUE)
+                                            ),  
+                                            model_description = "proDA_lfqInt",
+                                            model_name = "proDA_lfqInt",
+                                            FDRvsFDP = list(list(score = "adj_pval", desc = FALSE))
+                                            , hierarchy = c("name"), summarizeNA = "t_statistic"
 )
 
 sum(benchmark_proDA$smc$summary$name)
@@ -160,12 +162,12 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 
 ```{r prepBenchmarkforComparison, include= FALSE, eval = evalAll}
 xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
-                                  contrast = contrast,
-                                  avgInt = avg_abundance,
-                                  diff = diff,
-                                  statistic = t_statistic,
-                                  p.value = pval,
-                                  FDR = adj_pval  
+                                 contrast = contrast,
+                                 avgInt = avg_abundance,
+                                 diff = diff,
+                                 statistic = t_statistic,
+                                 p.value = pval,
+                                 FDR = adj_pval  
 )
 #head(xdd)
 #debug( prolfqua::make_benchmark)

@@ -21,11 +21,11 @@ Please download and install the `prolfquadata` package from github
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-echo = TRUE,
-message = FALSE,
-warning = FALSE,
-fig.width = 10,
-fig.height = 10
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 10,
+  fig.height = 10
 )
 ```
 
@@ -47,7 +47,7 @@ inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 annotation <- readxl::read_xlsx(inputAnnotation)
 
 protein <- tibble::as_tibble(read.csv(unz(inputFragfile,"IonstarWithMSFragger/combined_protein.tsv"),
-                             header = TRUE, sep = "\t", stringsAsFactors = FALSE))
+                                      header = TRUE, sep = "\t", stringsAsFactors = FALSE))
 
 undebug( prolfqua::tidy_FragPipe_combined_protein)
 protein <- prolfqua::tidy_FragPipe_combined_protein_deprec(protein)
@@ -135,9 +135,9 @@ cp$volcano()
 ```{r benchmark}
 ttd <- prolfqua::ionstar_bench_preprocess(mergedmod$get_contrasts())
 medpol_benchmark <- prolfqua::make_benchmark(ttd$data,
-                                   model_description = "MSFragger med. polish and lm. density",
-                                   model_name = "MSFragger_prot_med_lm",
-                                   FDRvsFDP = list(list(score = "FDR", desc = FALSE))
+                                             model_description = "MSFragger med. polish and lm. density",
+                                             model_name = "MSFragger_prot_med_lm",
+                                             FDRvsFDP = list(list(score = "FDR", desc = FALSE))
 )
 
 #saveRDS(medpol_benchmark, "../inst/Benchresults/MSFragger_medpol_benchmark.RDS")
@@ -156,22 +156,24 @@ medpol_benchmark$plot_FDRvsFDP()
 # Model data using proDA and specify contrasts
 
 ```{r prodaFit}
-# Not Run
 se <- prolfqua::LFQDataToSummarizedExperiment(lfqdataNormalized)
 fit <- proDA::proDA(se, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
 
 contr <- list()
-contr[["dilution_(9/7.5)_1.2"]] <- data.frame(contrast = "dilution_(9/7.5)_1.2",
-                                              proDA::test_diff(fit, contrast = "dilution.e - dilution.d"))
-contr[["dilution_(7.5/6)_1.25"]] <- data.frame(contrast = "dilution_(7.5/6)_1.25",
-                                               proDA::test_diff(fit, contrast = "dilution.d - dilution.c"))
-contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(contrast = "dilution_(6/4.5)_1.3(3)", 
-                                                 proDA::test_diff(fit, contrast = "dilution.c - dilution.b"))
-contr[["dilution_(4.5/3)_1.5"]] <- data.frame(contrast = "dilution_(4.5/3)_1.5", 
-                                              proDA::test_diff(fit, contrast = "dilution.b - dilution.a" ))
+contr[["dilution_(9/7.5)_1.2"]] <- data.frame(
+  contrast = "dilution_(9/7.5)_1.2",
+  proDA::test_diff(fit, contrast = "dilution.e - dilution.d"))
+contr[["dilution_(7.5/6)_1.25"]] <- data.frame(
+  contrast = "dilution_(7.5/6)_1.25",
+  proDA::test_diff(fit, contrast = "dilution.d - dilution.c"))
+contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(
+  contrast = "dilution_(6/4.5)_1.3(3)", 
+  proDA::test_diff(fit, contrast = "dilution.c - dilution.b"))
+contr[["dilution_(4.5/3)_1.5"]] <- data.frame(
+  contrast = "dilution_(4.5/3)_1.5", 
+  proDA::test_diff(fit, contrast = "dilution.b - dilution.a" ))
 
 bb <- dplyr::bind_rows(contr)
-# End Not Run
 
 
 ```
@@ -185,18 +187,18 @@ bb <- dplyr::bind_rows(contr)
 ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
 
 benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
-                                   contrast = "contrast",
-                                toscale = c("pval"),
-                                fcestimate = "diff",
-                                benchmark = list(
-                                  list(score = "diff", desc = TRUE),
-                                  list(score = "t_statistic", desc = TRUE),
-                                  list(score = "scaled.pval", desc = TRUE)
-                                ),  
-                                model_description = "proDA_medpolishInt",
-                                model_name = "proDA_medpolishInt",
-                                FDRvsFDP = list(list(score = "adj_pval", desc = FALSE))
-, hierarchy = c("name"), summarizeNA = "t_statistic"
+                                            contrast = "contrast",
+                                            toscale = c("pval"),
+                                            fcestimate = "diff",
+                                            benchmark = list(
+                                              list(score = "diff", desc = TRUE),
+                                              list(score = "t_statistic", desc = TRUE),
+                                              list(score = "scaled.pval", desc = TRUE)
+                                            ),  
+                                            model_description = "proDA_medpolishInt",
+                                            model_name = "proDA_medpolishInt",
+                                            FDRvsFDP = list(list(score = "adj_pval", desc = FALSE))
+                                            , hierarchy = c("name"), summarizeNA = "t_statistic"
 )
 
 sumarry <- benchmark_proDA$smc$summary
