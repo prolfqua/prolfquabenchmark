@@ -158,17 +158,17 @@ medpol_benchmark$plot_FDRvsFDP()
 ```{r prodaFit}
 # Not Run
 se <- prolfqua::LFQDataToSummarizedExperiment(lfqdataNormalized)
-fit <- proDA(se, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
+fit <- proDA::proDA(se, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
 
 contr <- list()
 contr[["dilution_(9/7.5)_1.2"]] <- data.frame(contrast = "dilution_(9/7.5)_1.2",
-                                              test_diff(fit, contrast = "dilution.e - dilution.d"))
+                                              proDA::test_diff(fit, contrast = "dilution.e - dilution.d"))
 contr[["dilution_(7.5/6)_1.25"]] <- data.frame(contrast = "dilution_(7.5/6)_1.25",
-                                               test_diff(fit, contrast = "dilution.d - dilution.c"))
+                                               proDA::test_diff(fit, contrast = "dilution.d - dilution.c"))
 contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(contrast = "dilution_(6/4.5)_1.3(3)", 
-                                                 test_diff(fit, contrast = "dilution.c - dilution.b"))
+                                                 proDA::test_diff(fit, contrast = "dilution.c - dilution.b"))
 contr[["dilution_(4.5/3)_1.5"]] <- data.frame(contrast = "dilution_(4.5/3)_1.5", 
-                                              test_diff(fit, contrast = "dilution.b - dilution.a" ))
+                                              proDA::test_diff(fit, contrast = "dilution.b - dilution.a" ))
 
 bb <- dplyr::bind_rows(contr)
 # End Not Run
@@ -224,12 +224,16 @@ proda$package <- "proda"
 prolfqua <- medpol_benchmark$pAUC_summaries()$ftable$content
 prolfqua$package <- "prolfqua"
 
-tmp <- bind_rows(proda, prolfqua)
+tmp <- dplyr::bind_rows(proda, prolfqua)
 tmp$what |> unique()
 tmp$what[tmp$what == "statistic"] <- "t_statistic"
 tmp$what[tmp$what == "scaled.pval"] <- "scaled.p.value"
 
-tmp |> ggplot(aes(x = what, y= pAUC_10, group = package, color = NULL, fill = package)) + geom_bar(stat = "identity",  position = position_dodge()) + facet_wrap(~ contrast) +  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+tmp |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
+  ggplot2::geom_bar(stat = "identity",  position = ggplot2::position_dodge()) +
+  ggplot2::facet_wrap(~ contrast) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1))
+
 ```
 
 
