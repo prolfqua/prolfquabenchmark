@@ -186,22 +186,24 @@ with $X$ being the design matrix. The degrees of freedom for the contrast are eq
 
 The package `r BiocStyle::Githubpkg("fgcz/prolfqua")` provides functions to determine the vector of $parameter$ weights $c$, from a linear model and a contrast specification string.
 
-The linear model below explain the observed protein abundances using the explanatory variables `condition_` and `batch_` and the interaction among them `condition_:batch_`, 
+The linear model below explain the observed protein abundances using the explanatory variables `condition_` and `batch_` and the interaction term  `condition_:batch_`: 
 
 ```{r, echo = TRUE}
 data_Yeast2Factor <- prolfqua::prolfqua_data("data_Yeast2Factor")
-mlm <- prolfqua::strategy_lm(transformedIntensity ~ condition_ + batch_ + condition_:batch_)
+mlm <- prolfqua::strategy_lm(
+  transformedIntensity ~ condition_ + batch_ + condition_:batch_
+  )
 mm <- prolfqua::build_model(data_Yeast2Factor$data, mlm, subject = "protein_Id")
 ```
 
-then the contrasts among the groups `Ethanol` and `Glucose` defined by the factor `condition`, and similarly for the difference of the groups defined by `batch_`, can be specified as:
+The treatment difference among the groups `Ethanol` and `Glucose` defined by the factor `condition`, and similarly among the groups defined by `batch_`, can be specified.
 
 ```{r contrast1,  echo=TRUE}
 d1 <- c("diff_condition" = "condition_Ethanol - condition_Glucose",
   "diff_batch" = "batch_p2370 - batch_p2691")
 ```
 
-Furthermore, the difference among `Ethanol` and `Glucose` within the batches `p2370` and `p2691` can be specified as follows:
+Furthermore, the treatment differences among `Ethanol` and `Glucose` within the batches `p2370` and `p2691` can be specified.
 
 ```{r contrast2, eval=TRUE, echo=TRUE}
 d2 <- c("difference_within_p2370" =
@@ -210,13 +212,13 @@ d2 <- c("difference_within_p2370" =
    "`condition_Glucose:batch_p2691` - `condition_Ethanol:batch_p2691`")
 ```
 
-Finally, we can examine if the differences among `conditions_` observed in both batches significantly differ by specifying the contrast: 
+Finally, we can examine if the treatment differences in both batches are the same or are different.
 
 ```{r contrast3, eval=TRUE, echo=TRUE}
 d3 <- c("difference_of_difference" = "difference_within_p2370 - difference_within_p2691")
 ```
 
-The code to compute the array of weights $c$ used to multiply the model coefficient $\beta$, to obtain the effect size  estimates, is shown below:
+The code to compute the array of weights $c$ used to multiply the model coefficient $\beta$, to obtain the effect size estimates, and the variance of the estimate, is shown below:
 
 ```{r contrast4, echo=TRUE}
 Contrasts <- c(d1, d2, d3)
@@ -225,16 +227,15 @@ linfct <- prolfqua::linfct_from_model(mm$modelDF$linear_model[[1]],
 mC <- prolfqua::linfct_matrix_contrasts(linfct, Contrasts)
 ```
 
-while Table \@ref(tab:contrcoefficient) shows the weight $c$ of each model parameter in each contrast.
+Table \@ref(tab:contrcoefficient) shows weights $c$ for each of the five contrasts we specified.
 
 ```{r contrcoefficient}
 knitr::kable(mC, caption = "Weights of each model parameter.",format = "latex")
 
 ```
 
-
 This example is taken from the `r BiocStyle::Githubpkg("fgcz/prolfqua")` package vignette file.
-Given the coefficients, $c$ contrasts for models obtained with `r BiocStyle::Biocpkg('proDA')`, or `r BiocStyle::Biocpkg('msqrob2')` can be determined, enabling us to integrate these packages transparently.
+Given the weights $c$ contrasts from model parameter estimates obtained with `r BiocStyle::Biocpkg('proDA')`, or `r BiocStyle::Biocpkg('msqrob2')` can be determined, by this enabling us to call these packages using the same application programming interface (API).
 
 ### Contrast estimation in presence of missing data.
 
@@ -378,13 +379,12 @@ prolfqua::ContrastsModerated$undebug("get_contrasts")
 contrasts <-  contrasts$merged |> prolfqua::ContrastsModerated$new() 
 ## visualize results in panels
 pl <- contrasts$get_Plotter() 
-panelA <- pl$histogram()$p.value + ggplot2::labs(tag = "A")                                                        
-panelB <- pl$volcano()$FDR +
+histpval <- pl$histogram()$p.value + ggplot2::labs(tag = "A")               maplot <- pl$ma_plot(rank = TRUE) + ggplot2::labs(tag = "C")
+volcano <- pl$volcano()$FDR +
    ggplot2::theme(legend.position = "bottom") +
    ggplot2::labs(tag = "B")
 
-
-gridExtra::grid.arrange(panelA, panelB, ncol = 2)
+gridExtra::grid.arrange(histpval, maplot, volcano, layout_matrix = rbind(c(1,3),c(2,3)))
 ```
 
 R linear model and linear mixed effect models allow modeling parallel designs, repeated measurements, factorial designs, and many more. 
