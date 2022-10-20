@@ -1,7 +1,7 @@
 ---
 title: "Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities"
 author: "Witold E Wolski"
-date: "`r Sys.Data()`"
+date: "`r Sys.Date()`"
 output: 
   html_document:
     toc: true
