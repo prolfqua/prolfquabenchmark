@@ -289,7 +289,7 @@ res$barp
 mrob <- benchmark_msqrob$pAUC_summaries()$ftable$content
 mrob$package <- "msqrob2"
 proda <- benchmark_proDA$pAUC_summaries()$ftable$content
-proda$package <- "proda"
+proda$package <- "proDA"
 prolfqua <- benchmark_merged$pAUC_summaries()$ftable$content
 prolfqua$package <- "prolfqua"
 

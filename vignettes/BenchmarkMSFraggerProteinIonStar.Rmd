@@ -1,7 +1,7 @@
 ---
-title: "Benchmarking MSFragger output using Ionstar Dataset"
-author: "FGCZ - (Draft)"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+title: "Benchmarking proDA and prolfqua using Ionstar Dataset and MSFragger IonQuant compbined_protein output"
+author: "Witold E. Wolski"
+date: "`r Sys.Date()`"
 output:
   html_document:
     toc: true
@@ -10,7 +10,7 @@ output:
 papersize: a4
 geometry: margin=.5in
 vignette: >
-  %\VignetteIndexEntry{Benchmarking MSFragger output using Ionstar Dataset} 
+  %\VignetteIndexEntry{Benchmarking proDA and prolfqua using Ionstar Dataset and MSFragger IonQuant compbined_protein output} 
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 

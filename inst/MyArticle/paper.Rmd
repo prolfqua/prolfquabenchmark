@@ -38,7 +38,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.height = 5)
 ggplot2::theme_set(ggplot2::theme_classic())
 library(BiocStyle)
-options(width=70)
+options(width = 70)
 ```
 
 \newpage
@@ -90,7 +90,7 @@ We also implemented functionality and use the Ionstar [@shen2018ionstar] dataset
 
 ## Implementation
 
-We store all the data needed for analysis in a tidy table, i.e., every column is a variable, every row is an observation, and every cell is a single value [@tidydata2014]. Using an R6 [@R6cite] configuration object (Figure \@ref(fig:LFQData)), we specify what variable is in which column, making it easy to integrate new inputs in `r BiocStyle::Githubpkg("fgcz/prolfqua")` if provided as a tidy table. For example, to visualize tidy Spectronaut[@bruderer2015extending], DiaNN[@demichev2020dia], or Skyline[@maclean2010skyline] outputs, or data in `r BiocStyle::Biocpkg("MSstats")`[@Choi2014] format, only a few lines of code are needed to update the `r BiocStyle::Githubpkg("fgcz/prolfqua")` `AnalysisTableConfiguration` configuration. The configuration encapsulates the differences in column names among the various input formats, and enables the use of the methods without additional arguments. We show an example code for creating an MSFragger[@yu2020fast] configuration in the Appendix. For popular software like MaxQuant[@Cox2008MaxQuant], or MSFragger, which stores the same variable, e.g., intensity, in multiple columns, one for each sample, we implemented methods that transform the data into tidy tables. Relying on the tidy data table enables us to interface with many data manipulation, visualization, and modeling methods, implemented in base R [@RCoreTeam2021] and the tidyverse [@tidyverse2019], easily. We use R6 classes to structure the functionality of the package (see Figure \@ref(fig:LFQData) and Figure \@ref(fig:ContrastUML)). R6 classes are well supported by command-line completion features in RStudio [@RStudio2022], and help to implement argument free functions (Figure \@ref(fig:tabCompletion).
+We store all the data needed for analysis in a data frame as tidy data, i.e., every column is a variable, every row is an observation, and every cell is a single value [@tidydata2014]. Using an R6 [@R6cite] configuration object (Figure \@ref(fig:LFQData)), we specify what variable is in which column, making it easy to integrate new inputs in `r BiocStyle::Githubpkg("fgcz/prolfqua")` if provided as a tidy data. For example, to visualize tidy Spectronaut[@bruderer2015extending], DiaNN[@demichev2020dia], or Skyline[@maclean2010skyline] outputs, or data in `r BiocStyle::Biocpkg("MSstats")`[@Choi2014] format, only a few lines of code are needed to update the `r BiocStyle::Githubpkg("fgcz/prolfqua")` `AnalysisTableConfiguration` configuration. The configuration encapsulates the differences in column names among the various input formats, and enables the use of the methods without additional arguments. We show an example code for creating an MSFragger[@yu2020fast] configuration in the Appendix. For popular software like MaxQuant[@Cox2008MaxQuant], or MSFragger, which stores the same variable, e.g., intensity, in multiple columns, one for each sample, we implemented methods that transform the data into tidy data. Relying on the tidy data table enables us to interface with many data manipulation, visualization, and modeling methods, implemented in base R [@RCoreTeam2021] and the tidyverse [@tidyverse2019], easily. We use R6 classes to structure the functionality of the package (see Figure \@ref(fig:LFQData) and Figure \@ref(fig:ContrastUML)). R6 classes are well supported by command-line completion features in RStudio [@RStudio2022], and help to implement argument free functions (Figure \@ref(fig:tabCompletion).
 
 (ref:LFQData) Class Diagram of classes representing the proteomics data. The `LFQData` class encapsulates the quantitative proteomics data stored in a tidy table. An instance of the AnalysisTableConfiguration class specifies a mapping of columns in the tidy table. The `LFQDataPlotter` class and other classes decorate the `LFQData` class with additional functionality. Similarly, the `LFQDataStats` and `LFQDataSummary` reference the `LFQData` class and group methods for variance and sample size estimation or summarizing peptide and protein counts.
 
@@ -184,47 +184,57 @@ and the variance of $\beta_c$ by:
 
 with $X$ being the design matrix. The degrees of freedom for the contrast are equal to the residual degrees of freedom of the linear model. For estimating contrasts from mixed effects models we used the function `contest` implemented in the R package `r BiocStyle::CRANpkg("lmerTest")`  and used the Satterthwaite [@Kuznetsova2017lmerTest] method to estimate the denominator degrees of freedom. These methods are available in the class `Contrast` (see Figure \@ref(fig:ContrastUML))
 
-### Determining linear parameter combinations for treatment comparison
+The package `r BiocStyle::Githubpkg("fgcz/prolfqua")` provides functions to determine the vector of $parameter$ weights $c$, from a linear model and a contrast specification string.
 
-The package `r BiocStyle::Githubpkg("fgcz/prolfqua")` provides a function to determine the vector of $parameter$ weights $c$, from a linear models and a contrast specification string.
+The linear model below explain the observed protein abundances using the explanatory variables `condition_` and `batch_` and the interaction among them `condition_:batch_`, 
 
-The linear model below explain the observed protein abundances using the explanatory variables `factor_1` and `factor_2` and the interaction among them `factor_1:factor_2`, 
-
-```{r}
-Intensity ~ factor_1 + factor_2 + factor_1:factor_2
+```{r, echo = TRUE}
+data_Yeast2Factor <- prolfqua::prolfqua_data("data_Yeast2Factor")
+mlm <- prolfqua::strategy_lm(transformedIntensity ~ condition_ + batch_ + condition_:batch_)
+mm <- prolfqua::build_model(data_Yeast2Factor$data, mlm, subject = "protein_Id")
 ```
 
-then the contrasts among `group_1` and `group_2` defined by `factor_1` can be specified using the string below.
+then the contrasts among the groups `Ethanol` and `Glucose` defined by the factor `condition`, and similarly for the difference of the groups defined by `batch_`, can be specified as:
 
-```{r eval=FALSE, echo=TRUE}
-c("contrast_name" = "factor_1group_1 - factor_1group_2")
+```{r contrast1,  echo=TRUE}
+d1 <- c("diff_condition" = "condition_Ethanol - condition_Glucose",
+  "diff_batch" = "batch_p2370 - batch_p2691")
 ```
 
-Furthermore, contrasts for subgroups can be specified using the code below,
+Furthermore, the difference among `Ethanol` and `Glucose` within the batches `p2370` and `p2691` can be specified as follows:
 
-```{r eval=FALSE, echo=TRUE}
-c("contrast_name" =
-    "`factor_1group_1:factor_2group_a` - `factor_1group_1:factor_2group_b`")
+```{r contrast2, eval=TRUE, echo=TRUE}
+d2 <- c("difference_within_p2370" =
+    "`condition_Glucose:batch_p2370` - `condition_Ethanol:batch_p2691`",
+  "difference_within_p2691" = 
+   "`condition_Glucose:batch_p2691` - `condition_Ethanol:batch_p2691`")
+```
+
+Finally, we can examine if the differences among `conditions_` observed in both batches significantly differ by specifying the contrast: 
+
+```{r contrast3, eval=TRUE, echo=TRUE}
+d3 <- c("difference_of_difference" = "difference_within_p2370 - difference_within_p2691")
+```
+
+The code to compute the array of weights $c$ used to multiply the model coefficient $\beta$, to obtain the effect size  estimates, is shown below:
+
+```{r contrast4, echo=TRUE}
+Contrasts <- c(d1, d2, d3)
+linfct <- prolfqua::linfct_from_model(mm$modelDF$linear_model[[1]],
+                                      as_list = FALSE)
+mC <- prolfqua::linfct_matrix_contrasts(linfct, Contrasts)
+```
+
+while Table \@ref(tab:contrcoefficient) shows the weight $c$ of each model parameter in each contrast.
+
+```{r contrcoefficient}
+knitr::kable(mC, caption = "Weights of each model parameter.",format = "latex")
 
 ```
 
-where `factor_x` is the name of the explanatory variable, and `group_x`  are group labels. 
 
-The following code shows an example where we specify two contrast: the first to compare Cells of type CMP/MEP with cells of type HSC, and the second to compare therapy NO with therapy NU for the celltype CMP/MEP [@meier2021reduced]. Finally, we compute the array of weights defining the contrast, used to multiply the model coefficient $\beta$.
-
-
-```{r echo=TRUE}
-Contrasts <- 
-    c("CMP/MEPvsHSC" = "`CelltypeCMP/MEP` - `CelltypeHSC`",
-   "NOvsHU" = "`class_therapyc.NO:CelltypeCMP/MEP` - `class_therapyp.HU:CelltypeCMP/MEP`")
-
-m <- prolfqua::prolfqua_data('data_basicModel_p1807')
-linfct <- prolfqua::linfct_from_model(m,as_list = FALSE)
-
-prolfqua::linfct_matrix_contrasts(linfct, Contrasts )
-```
-
-
+This example is taken from the `r BiocStyle::Githubpkg("fgcz/prolfqua")` package vignette file.
+Given the coefficients, $c$ contrasts for models obtained with `r BiocStyle::Biocpkg('proDA')`, or `r BiocStyle::Biocpkg('msqrob2')` can be determined, enabling us to integrate these packages transparently.
 
 ### Contrast estimation in presence of missing data.
 
@@ -301,35 +311,43 @@ Because we use the median, with the i-th order statistic $i = \frac{n}{2} + 0.5$
 
 ## Example analysis workflow
 
-The code snippets in this section demonstrate how a differential expression analysis workflow can be implemented using the `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package. To speed up the computation of these examples, we use a random subset of the Ionstar dataset containing $163$ proteins and $1258$ peptides. Peptide abundances are $\log_2$ transformed and robust z-score scaled using the method `robscale`. Using the `LFQDataPlotter` class, we show the distribution of the normalized peptide abundances in Figure \@ref(fig:prepro) Panel A. Afterwards, protein intensities are estimated from peptide intensities using Tukey's median polish. Figure \@ref(fig:prepro) Panel B shows the peptide intensities and the estimated protein intensities. Next, we compute the standard deviation of all the proteins in each group and display their distribution using violin plots (Panel C). Finally, we create a boxplot (Panel D) showing the abundance of one protein.
+The code snippets in this section demonstrate how a differential expression analysis workflow can be implemented using the `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package. To speed up the computation of these examples, we use subset of the Ionstar dataset generated by randomly selecting $400$ proteins. Peptide abundances are $\log_2$ transformed and robust z-score scaled using the method `robscale`. Using the `LFQDataPlotter` class, we show the distribution of the normalized peptide abundances in Figure \@ref(fig:prepro) Panel A. Afterwards, protein intensities are estimated from peptide intensities using Tukey's median polish. Figure \@ref(fig:prepro) Panel B shows the peptide intensities and the estimated protein intensities. Next, we compute the standard deviation of all the proteins in each group and display their distribution using violin plots (Panel C). Finally, we create a boxplot (Panel D) showing the abundance of one protein.
 
 ```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%', fig.width = 8, fig.height = 8}
-## load peptide level data
-d <- prolfqua::prolfqua_data('data_ionstar')$filtered()
-d <- prolfqua::LFQData$new(d$data, prolfqua::old2new(d$config))
-## create R6 obejct
-lfqd <- prolfqua::LFQData$new(d$data, d$config) 
+R.version.string; packageVersion("prolfqua")
 
+# read MQ peptide.txt and annotation table
+startdata <- prolfqua::tidyMQ_Peptides(system.file(
+  "samples/maxquant_txt/tiny2.zip", package = "prolfqua"))
+annot <- readxl::read_xlsx(system.file(
+  "samples/maxquant_txt/annotation_Ionstar2018_PXD003881.xlsx", package = "prolfqua"))
+startdata <- dplyr::inner_join(annot, startdata, by = "raw.file")
+# create proflqua configuration
+config <- prolfqua::create_config_MQ_peptide()
+config$table$factors[['dilution.']] = "sample"
+## create R6 object
+lfqd <- prolfqua::LFQData$new(startdata, config, setup = TRUE) 
+lfqd$hierarchy_counts()
+## remove observation with 0 intensity and filter for 2 peptides per protein
+lfqd$remove_small_intensities()
+lfqd$filter_proteins_by_peptide_count()
+lfqd$hierarchy_counts()
 ##  transform intensities
-t <- lfqd$get_Transformer()
-
-lfqd <-  t$log2()$robscale()$lfq
-lfqd$rename_response("peptide_abundance")
-
-## infer protein intensities from peptide intensity
+lfqd <- lfqd$get_Transformer()$log2()$robscale()$lfq
+lfqd$rename_response("log_peptide_abundance")
 agr <- lfqd$get_Aggregator()
 lfqp <- agr$medpolish()
-lfqp$rename_response("protein_abundance")
-
+lfqp$rename_response("log_protein_abundance")
 ## plot panels A-D
 pl <- lfqd$get_Plotter()
 panelA <- pl$intensity_distribution_density() +
   ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
-panelB <- agr$plot()$plots[[1]] + ggplot2::labs(tag = "B")
+panelB <- agr$plot()$plots[[54]] + ggplot2::labs(tag = "B")
 panelC <- lfqp$get_Stats()$violin() + ggplot2::labs(tag = "C")
 pl <- lfqp$get_Plotter()
-panelD <- pl$boxplots()$boxplot[[1]] + ggplot2::labs(tag = "D")
+panelD <- pl$boxplots()$boxplot[[54]] + ggplot2::labs(tag = "D")
 ggpubr::ggarrange(panelA, panelB, panelC, panelD)
+
 ```
 
 (ref:scaling) Panel A - Density plot of peptide intensity distributions for $20$ samples. For each sample a line with a different colour is shown. Panel B - Peptide intensities for protein _5NTD_ are shown using a line of different colour, and the protein intensity estimate is shown using a fat black line, Panel C - distribution of standard deviations of all proteins in each dilution group ($a$, $b$, $c$, $d$, $e$) and overall (all), Panel D - Distribution of protein intensities of Protein _5NTD_ in each dilution group.
@@ -349,19 +367,17 @@ lmmodel <- paste(lfqp$response()," ~ dilution.")
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "lm")
 models <- prolfqua::build_model(lfqp, modelFunction)
 
-## compute contrasts from linear model, moderate t-statistics and p-values
-contr <- prolfqua::Contrasts$new(models, contrasts) |> 
-  prolfqua::ContrastsModerated$new()
-
-# compute contrasts using imputation imputation and moderate
-conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts) |> 
-  prolfqua::ContrastsModerated$new()
-
+## compute contrasts from linear model
+contr <- prolfqua::Contrasts$new(models, contrasts) 
+# compute contrasts using imputation imputation
+conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts)
 # merge contrasts, to obtain differences for all proteins
 contrasts <- prolfqua::merge_contrasts_results(prefer = contr, add = conI)
-
+# moderate t-statistics and p-values
+prolfqua::ContrastsModerated$undebug("get_contrasts")
+contrasts <-  contrasts$merged |> prolfqua::ContrastsModerated$new() 
 ## visualize results in panels
-pl <- contrasts$merged$get_Plotter() 
+pl <- contrasts$get_Plotter() 
 panelA <- pl$histogram()$p.value + ggplot2::labs(tag = "A")                                                        
 panelB <- pl$volcano()$FDR +
    ggplot2::theme(legend.position = "bottom") +
@@ -413,12 +429,9 @@ allBenchmarks <- allBenchmarks[c("benchmark_imputation","benchmark_ProtModerated
 
 ```{r benchmarkROC}
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
-names(allBenchmarks)
-
-for(i in seq_along(allBenchmarks)) {
+for (i in seq_along(allBenchmarks)) {
   allBenchmarks[[i]]$pAUC()
 }
-
 res <- purrr::map_df(allBenchmarks, function(x){x$pAUC()})
 res <- res |> dplyr::mutate(whatfix = dplyr::case_when(what == "scaled.beta.based.significance" ~ "scaled.p.value", TRUE ~ what))
 
@@ -561,11 +574,9 @@ We focused our benchmark on comparing the statistical modeling methods using thr
 
 # Conclusion
 
-`r BiocStyle::Githubpkg("fgcz/prolfqua")` is an easy-to-use and feature-rich R package to analyze quantitative mass spectrometric data with simple or complex experimental designs. While other R packages for differential expression analysis of proteins typically only implement one modeling approach, `r BiocStyle::Githubpkg("fgcz/prolfqua")` supports various types of models (see Figure 2 and Table 3). The contrast specification is explicit and consistent for all models. The modular design of `r BiocStyle::Githubpkg("fgcz/prolfqua")` allows for adding new features, e.g., generalized linear models to model the presence or absence information of a protein, or robust linear models, in the future. The developed framework is flexible enough to integrate other modeling methods, e.g., the probabilistic dropout model [@bioxrvproDA2020] or accurate variance estimation [@zhu2020deqms]. Hence, `r BiocStyle::Githubpkg("fgcz/prolfqua")` enables you to call various methods and quickly select the best differential expression analysis algorithm for your problem. It also can generate conclusive reports and can be used to benchmark MS software and statistical methods. Furthermore, with minimal adaptations, this R package can analyze different quantitative proteomics data (e.g., labeling-based TMT-, PRM- DIA-data).
+`r BiocStyle::Githubpkg("fgcz/prolfqua")` is an feature-rich, object oriented R package to analyze quantitative mass spectrometric data with simple or complex experimental designs. While other R packages for differential expression analysis of proteins typically only implement one modeling approach, `r BiocStyle::Githubpkg("fgcz/prolfqua")` supports various types of models (see Figure 2 and Table 3). The contrast specification is explicit and consistent for all models. The modular design of `r BiocStyle::Githubpkg("fgcz/prolfqua")` allows for adding new features, e.g., generalized linear models to model the presence or absence information of a protein, or robust linear models, in the future. Furthermore, the developed framework is flexible enough to integrate other modeling methods, e.g., the probabilistic dropout model [@bioxrvproDA2020] or accurate variance estimation [@zhu2020deqms]. Hence, `r BiocStyle::Githubpkg("fgcz/prolfqua")` enables you to call various methods and quickly select the best differential expression analysis algorithm for your problem. It also can generate conclusive reports and can be used to benchmark MS software and statistical methods. Furthermore, with minimal adaptations, this R package can analyze different quantitative proteomics data (e.g., labeling-based TMT-, PRM- DIA-data).
 
 When comparing statistical modeling methods for the differential expression analysis, we assessed performance measures such as the number of estimated contrasts, the $pAUC$, and if the $FDR$ is an unbiased estimate of the $FDP$. It is relevant that an analysis pipeline shows good performance in all these categories. Leveraging these computer experiments, we can provide the following advice: i) estimate protein abundances from peptide abundances using a robust or nonparametric regression method; ii) use linear models because they show good performance in all categories; iii) if the measurements are correlated, as for technical replicates, mixed effect models might work if the sample sizes are large; if not, aggregate the replicates and fit a linear model instead; iv) if you use fixed-effect linear models, apply variance moderation to improve the $t$-statistics and $p$-value estimates; v) If you want to sort your protein lists to perform gene set enrichment analysis, use the $t$-statistic instead of the difference; vi) do not impute missing observation but statistically model missingness to estimate parameters, i.e., group differences. Finally, the differential expression analysis results obtained with prolfqua are comparable to or better than those of other differential expression analysis tools. 
-
-
 
 
 # Acknowledgements {.unlisted .unnumbered}
@@ -688,3 +699,20 @@ file.path("hexStickerProlfqua.png") |>
   knitr::include_graphics()
 ```
 
+
+
+```{r roctest}
+ttmsqrob <- allBenchmarks$benchmark_msqrob$data()
+ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.p.value, partial.auc = c(1, 0.9))
+ttprolfqua <- allBenchmarks$benchmark_merged$data()
+ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
+ttproda <- allBenchmarks$benchmark_proDA$data()
+ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.p.value, partial.auc = c(1, 0.9))
+
+
+msqrob_vs_prolfqua <- pROC::roc.test(ddmsqrob,ddprolfqua)
+msqrob_vs_proda <- pROC::roc.test(ddmsqrob,ddproda)
+prolfqua_vs_proda <- pROC::roc.test(ddprolfqua,ddproda)
+
+
+```
