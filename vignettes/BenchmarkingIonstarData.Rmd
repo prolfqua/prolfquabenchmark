@@ -1,7 +1,7 @@
 ---
 title: "Benchmarking normalization, aggregation and models using the Ionstar Dataset"
-author: "FGCZ - (Draft)"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Witold Wolski"
+date: "`r Sys.Date()`"
 output: 
   html_document:
     toc: true

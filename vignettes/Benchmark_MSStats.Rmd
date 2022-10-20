@@ -1,7 +1,7 @@
 ---
 title: "Benchmarking MSstats using the Ionstar Dataset"
-author: "FGCZ - (Draft)"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Witold E Wolski"
+date: "`r Sys.Date()`"
 output: 
   html_document:
     toc: true
@@ -42,7 +42,7 @@ inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 
 
 proteinGroups <- read.table(unz(inputMQfile,"proteinGroups.txt"), sep = "\t", header = TRUE)
-infile <- read.table(unz(inputMQfile,"evidence.txt"), sep="\t", header = TRUE)
+infile <- read.table(unz(inputMQfile,"evidence.txt"), sep = "\t", header = TRUE)
 
 annotation <- readxl::read_xlsx(inputAnnotation)
 msstas_annotation <- annotation |> dplyr::select(raw.file, Condition = sample, BioReplicate = run_ID)

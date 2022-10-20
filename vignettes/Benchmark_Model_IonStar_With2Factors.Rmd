@@ -17,6 +17,7 @@ TODO(wew,jg): Can you please add a one-liner of the purpose of the vignette?
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+evalAll = TRUE
 ```
 
 ```{r}
@@ -58,8 +59,8 @@ datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
 
-mqdata$data <- prolfqua::tidyMQ_Peptides(inputMQfile)
-length(unique(mqdata$data$proteins))
+data <- prolfqua::tidyMQ_Peptides(inputMQfile)
+length(unique(data$proteins))
 ```
 
 Read the sample annotation. The sample annotation must contain the `raw.file` name and the explanatory variables of your experiment, e.g. treatment, time point, genetic background, or other factors which you would like to check for confounding.
@@ -92,22 +93,22 @@ containing the explanatory variables.
 
 ```{r}
 
-mqdata$config <- prolfqua::create_config_MQ_peptide()
+config <- prolfqua::create_config_MQ_peptide()
 
 res <- prolfqua::add_annotation(
-  mqdata$data,
+  data,
   annotation,
   fileName = "raw.file"
 )
 
-mqdata$config$table$factors[["F1."]] = "F1"
-mqdata$config$table$factors[["F2."]] = "F2"
-mqdata$config$table$factorDepth <- 2
+config$table$factors[["F1."]] = "F1"
+config$table$factors[["F2."]] = "F2"
+config$table$factorDepth <- 2
 
-mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
+data <- prolfqua::setup_analysis(res, config)
 
 
-lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
+lfqdata <- prolfqua::LFQData$new(data, config)
 ```
 
 Filter the data for small intensities (maxquant reports missing values as 0) and for two peptides per protein.
@@ -157,7 +158,7 @@ Contrasts <- c("F1.L1_vs_F1.L2" = "F1.L1 - F1.L2",
 The following line fits the model.
 
 ```{r buildModel}
-mod <- prolfqua::build_model(lfqTrans, formula_Batches)
+mod <- prolfqua::build_model(lfqTrans, formula_2_Factors)
 ```
 
 
