@@ -17,13 +17,19 @@ vignette: >
 editor_options: 
   chunk_output_type: console
   markdown: 
-    wrap: sentence---
+    wrap: sentence
+
+---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
 ```
 
-## R Markdown
+# Introduction
+
+The r-package `r BiocStyle::Biocpkg("msdata")` msdata provides a subset of the data of the 6th study of the Clinical Proteomic Technology Assessment for Cancer (CPTAC).
+In this experiment, the Sigma Universal Protein Standard mixture 1 (UPS1) containing 48 different human proteins was spiked in a protein background of 60 ng/$\muL$ Saccharomyces cerevisiae strain BY4741. Two different spike-in concentrations were used, 6A ($0.25$ fmol UPS1 proteins/$\muL$) and 6B ($0.74$ fmol UPS1 proteins/$\muL$). Three replicates are available for each concentration.
 
 
 ```{r cars}
@@ -103,9 +109,9 @@ Contaminants are removed. This leaves 1460 proteins.
 ```{r}
 ttd <- prolfquabenchmark::cptac_bench_preprocess(cmod$get_contrasts(), idcol = "protein_Id")
 benchmark_merged <- prolfqua::make_benchmark(
-    ttd$data,
-    model_description = "merge of prot moderated and imputed",
-    model_name = "prolfqua_merged")
+  ttd$data,
+  model_description = "merge of prot moderated and imputed",
+  model_name = "prolfqua_merged")
 
 
 sumarry <- benchmark_merged$smc$summary
@@ -151,9 +157,9 @@ benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
                                             toscale = c("pval"),
                                             fcestimate = "diff",
                                             benchmark = list(
-                                                list(score = "diff", desc = TRUE),
-                                                list(score = "t_statistic", desc = TRUE),
-                                                list(score = "scaled.pval", desc = TRUE)
+                                              list(score = "diff", desc = TRUE),
+                                              list(score = "t_statistic", desc = TRUE),
+                                              list(score = "scaled.pval", desc = TRUE)
                                             ),  
                                             model_description = "proDA_medpolishInt",
                                             model_name = "proDA_medpolishInt",
@@ -182,15 +188,15 @@ se <- prolfqua::LFQDataToSummarizedExperiment(lfqtransformed)
 pe <- QFeatures::QFeatures(list(peptide = se), colData = colData(se))
 
 my_medianPolish <- function(x, verbose = FALSE, ...){
-    medpol <- stats::medpolish(x, na.rm = TRUE, trace.iter = verbose, maxiter = 10)
-    return(medpol$overall + medpol$col)
+  medpol <- stats::medpolish(x, na.rm = TRUE, trace.iter = verbose, maxiter = 10)
+  return(medpol$overall + medpol$col)
 }
 
 
 pe <- QFeatures::aggregateFeatures(
-    pe,
-    i = "peptide", fcol = "protein_Id",
-    name = "protein", fun = my_medianPolish, 
+  pe,
+  i = "peptide", fcol = "protein_Id",
+  name = "protein", fun = my_medianPolish, 
 )
 
 ```
@@ -213,8 +219,8 @@ hurdle <- xx[grepl("hurdle_",names(xx))]
 
 res <- list()
 for (i in names(hurdle)) { 
-    hurdle[[i]]$contrast <- i
-    res[[i]] <- prolfqua::matrix_to_tibble(hurdle[[i]], preserve_row_names = "name")
+  hurdle[[i]]$contrast <- i
+  res[[i]] <- prolfqua::matrix_to_tibble(hurdle[[i]], preserve_row_names = "name")
 }
 
 hurdle <- dplyr::bind_rows(res)
@@ -237,13 +243,13 @@ st <- lfqProt$get_Stats()
 protAbundanceIngroup <- st$stats()
 
 protAbundanceIngroup <- protAbundanceIngroup |> 
-    tidyr::pivot_wider(id_cols = protein_Id,
-                       names_from = group., names_prefix = "abd.", 
-                       values_from = mean)
+  tidyr::pivot_wider(id_cols = protein_Id,
+                     names_from = group., names_prefix = "abd.", 
+                     values_from = mean)
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.b.a =  mean( c(abd.b,abd.a), na.rm = TRUE)  )
 protAbundanceIngroup <- protAbundanceIngroup |> 
-    dplyr::select(-starts_with("abd")) |> 
-    tidyr::pivot_longer(starts_with("avgAbd"), names_to = "contrast" ,values_to = "avgAbd")
+  dplyr::select(-starts_with("abd")) |> 
+  tidyr::pivot_longer(starts_with("avgAbd"), names_to = "contrast" ,values_to = "avgAbd")
 
 protAbundanceIngroup$contrast <- "b_vs_a" 
 bb <- dplyr::inner_join(all, protAbundanceIngroup, by = c("name" = "protein_Id", "contrast" = "contrast"))
@@ -259,9 +265,9 @@ benchmark_msqrob <- prolfqua::make_benchmark(ttd$data,
                                              toscale = c("pval"),
                                              fcestimate = "logFC",
                                              benchmark = list(
-                                                 list(score = "logFC", desc = TRUE),
-                                                 list(score = "t", desc = TRUE),
-                                                 list(score = "scaled.pval", desc = TRUE)
+                                               list(score = "logFC", desc = TRUE),
+                                               list(score = "t", desc = TRUE),
+                                               list(score = "scaled.pval", desc = TRUE)
                                              ),  
                                              model_description = "msqrob_QFeature",
                                              model_name = "msqrob_QFeature",
@@ -293,7 +299,7 @@ proda$package <- "proDA"
 prolfqua <- benchmark_merged$pAUC_summaries()$ftable$content
 prolfqua$package <- "prolfqua"
 
-all <- bind_rows(list(mrob, proda, prolfqua))
+all <- dplyr::bind_rows(list(mrob, proda, prolfqua))
 all <- all |> filter(contrast == "b_vs_a")
 all$what[all$what == "statistic"] <- "t_statistic"
 all$what[all$what == "t"] <- "t_statistic"
@@ -304,5 +310,29 @@ all |> ggplot(aes(x = what, y= pAUC_10, group = package, color = NULL, fill = pa
 
 ```
 
-We observe that for this benchmark data, the three packages perform similarly.
 
+
+```{r roctest, include = TRUE}
+
+ttmsqrob <- benchmark_msqrob$data()
+ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.pval, partial.auc = c(1, 0.9))
+
+ttprolfqua <- benchmark_merged$data()
+ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
+
+ttproda <- benchmark_proDA$data()
+ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.pval, partial.auc = c(1, 0.9))
+
+
+tmp <- c(msqrob_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua)$p.value,
+         msqrob_vs_proda = pROC::roc.test(ddmsqrob,ddproda)$p.value,
+         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda)$p.value)
+
+```
+
+We observe that for this benchmark data, the three packages perform similarly
+with the following results of the Bootstrap test for two ROC curves:
+
+```{r}
+knitr::kable(data.frame(pROC_test = names(tmp), p.value = tmp))
+```

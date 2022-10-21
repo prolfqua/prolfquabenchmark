@@ -53,22 +53,25 @@ To paraphrase provocatively, `machine learning is statistics minus any checking 
 \end{flushright}
 \end{quote}
 
-Proteins carry out most crucial functions and give structure to living cells. Hence, measuring changes in protein abundance is the subject of active research [@vidova2017review]. Bottom-up mass spectrometric methods, where proteins are specifically and reproducibly digested into protein fragments - peptides, are employed to identify and quantify proteins in complex samples containing hundreds to thousand of proteins [@Bubis2017; @da2020philosopher]. The peptides are first separated by their chemical and physical properties using liquid chromatography (LC). Afterward, they are ionised, weighed, identified, and quantified using mass spectrometric techniques, e.g., electro-spray-ionization mass spectrometry (ESI-MS). Finally, peptide identification is achieved by fragmenting and matching the measured fragment masses to theoretical masses computed from known peptide sequences [@eng2015deeper; @yu2016pipi; @kong2017msfragger]. For quantification, intact peptide ions [@yu2020fast; @Cox2008MaxQuant] or products of peptide ion fragmentation [@rost2014openswath; @demichev2020dia] are counted and aggregated to obtain peptide abundances. Finally, the identified and quantified peptides are assigned to proteins based on protein sequence information.
+Proteins carry out most crucial functions and give structure to living cells. Hence, measuring changes in protein abundance is the subject of active research [@vidova2017review]. Bottom-up mass spectrometric methods, where proteins are specifically and reproducibly digested into protein fragments - peptides, are employed to identify and quantify proteins in complex samples containing hundreds to thousand of proteins [@Bubis2017; @da2020philosopher]. The peptides are first separated by their chemical and physical properties using liquid chromatography (LC). Afterward, they are ionised, weighed, identified, and quantified using mass spectrometric techniques, e.g., electro-spray-ionization mass spectrometry (ESI-MS). Finally, peptide identification is achieved by fragmenting and matching the measured fragment masses to theoretical masses computed from known peptide sequences [@eng2015deeper; @yu2016pipi; @kong2017msfragger]. For quantification, intact peptide ions [@yu2020fast; @Cox2008MaxQuant] or products of peptide ion fragmentation [@rost2014openswath; @demichev2020dia] are counted and aggregated to obtain peptide abundances. Finally, the identified and quantified peptides are assigned to proteins based on protein sequence information [@nesvizhskii2005interpretation].
 
 Proteomics quantification experiments enable monitoring relative abundances of thousands of proteins in biological samples. Most studies use parallel-group designs, where one or many treatment groups are compared to the control group [@de2022apoe2; @laubscher2021baf]. More recently, more complex experimental designs with an increasing number of samples are studied, e.g., factorial designs and longitudinal studies (time series), sometimes with repeated measurements on the same subject [@tan2022proteomic; @meier2021reduced]. The data can be modeled using linear fixed-, mixed-, or random-effects models [@Bates2015FittingJSS]. Based on these models, tests can be applied to examine whether specific factors and factor interactions are significant, e.g., it can be tested if differences in protein abundance between groups are statistically significant. 
 
 An important aspect of mass spectrometric data are missing peptide and protein quantifications. @rubin1976inference classified missing data problems into three categories: missing completely at random (MCAR), missing at random (MAR), and missing not at random (MNAR). For instance, in data-dependent acquisition (DDA) MS, only a limited number of MS1 signals are selected for fragmentation and identified. Peptide quantification algorithms transfer identification information between MS1 features in different samples by aligning the data using retention time and mass information, thus reducing the amount of missing data. Nevertheless, highly abundant proteins can suppress the detection of other proteins in a sample, a MAR mechanism. Furthermore, a weak correlation between the number of missing measurements in a group and the abundance of the quantified protein can be observed, which is caused by the limit of detection (LOD), a MNAR mechanism [@mcgurk2020use].
 
-Several data analysis packages exist to model mass spectrometry protein quantification experiments, e.g., `r BiocStyle::Biocpkg("limma")` [@Ritchie2015], `r BiocStyle::Biocpkg("MSstats")` [@Choi2014], `r BiocStyle::Biocpkg("PECA")` [@Suomi2017bEnhanced],  `r BiocStyle::Biocpkg("msqrob2")` [@Goeminne2016] or `r BiocStyle::Biocpkg("proDA")` [@bioxrvproDA2020], to mention some, all implemented in R. Each of them has some unique features, for example, `r BiocStyle::Biocpkg("MSstats")` infers the model and generates the model formula from the sample annotation, allowing users with limited statistical knowledge to perform differential expression analysis (DEA). At the same time, `r BiocStyle::Biocpkg("limma")` allows to specify a design matrix using a linear model formula and implements the empirical Bayes variance shrinkage method. The package `r BiocStyle::Biocpkg("PECA")`, performs a roll-up of peptide level differences and peptide level $p$-value estimates, obtained from `r BiocStyle::Biocpkg("limma")` or `r BiocStyle::Biocpkg("PECA")`, to protein level estimates. Furthermore, `r BiocStyle::Biocpkg("msqrob2")` implements two models: robust linear models fitted to protein intensities and robust ridge regression fitted to peptide intensities, and combines them with empirical Bayes variance shrinkage. The `r BiocStyle::Biocpkg("proDA")` package implements a linear probabilistic dropout model to account for missing data without imputation. `r BiocStyle::Biocpkg("MSstats")` handles missing data by feature filtering and using imputation. Other means of modelling missing observations are the Hurdle model discussed by @goeminne2020msqrob, while the R package `r BiocStyle::Biocpkg("proDA")` models missingness using probabilistic dropout models [@bioxrvproDA2020].
+Several data analysis packages exist to model mass spectrometry protein quantification experiments, e.g., `r BiocStyle::Biocpkg("limma")` [@Ritchie2015], `r BiocStyle::Biocpkg("MSstats")` [@Choi2014], `r BiocStyle::Biocpkg("PECA")` [@Suomi2017bEnhanced],  `r BiocStyle::Biocpkg("msqrob2")` [@Goeminne2016] or `r BiocStyle::Biocpkg("proDA")` [@bioxrvproDA2020], to mention some, all implemented in R. Each of them has some unique features, for example, `r BiocStyle::Biocpkg("MSstats")` determines the statistical model from the structure of the sample annotation, allowing users with limited statistical knowledge to perform differential expression analysis (DEA). At the same time, `r BiocStyle::Biocpkg("limma")` allows to specify a design matrix using a linear model formula and implements the empirical Bayes variance shrinkage method. The package `r BiocStyle::Biocpkg("PECA")`, performs a roll-up of peptide level differences and peptide level $p$-value estimates, obtained from `r BiocStyle::Biocpkg("limma")` or `r BiocStyle::Biocpkg("PECA")`, to protein level estimates. Furthermore, `r BiocStyle::Biocpkg("msqrob2")` combines two models: robust linear models fitted to protein abundances and a generalized linear model fitted to presence absence information of peptides, into Hurdle model. The `r BiocStyle::Biocpkg("proDA")` package implements a linear probabilistic dropout model to account for missing data without imputation. 
 
-When analyzing parallel-group designs using a single explanatory variable, and contrasting groups, we can use all R packages; but, we can use only some of them if we want to model factorial designs or repeated measurements. Table \@ref(tab:tableOverview) gives an overview of the models and features supported by these packages. We see that packages such as `r BiocStyle::Biocpkg("limma")` and `r BiocStyle::Biocpkg("proDA")` allow us to fit a comprehensive variety of models and test various hypotheses; however, in-depth knowledge of design matrix specification using the R formula interface is required [@law2020guide].
+Of note are the various approaches to handling missing observations, which are inherent in mass spectrometric bottom-up experiments. For instance, `r BiocStyle::Biocpkg("MSstats")` handles missing data by feature filtering and imputation. Other means of modeling missing observations are the Hurdle model discussed by @goeminne2020msqrob, while the R package `r BiocStyle::Biocpkg("proDA")` models missingness using probabilistic dropout models [@bioxrvproDA2020].
+
+We can use all the R packages discussed when analyzing parallel-group designs using a single explanatory variable and contrasting groups. However, we can use only some of them if we want to model factorial designs or repeated measurements. Table \@ref(tab:tableOverview) gives an overview of the models and features supported by these packages. We see that, for instance, `r BiocStyle::Biocpkg("limma")` and `r BiocStyle::Biocpkg("proDA")` allow us to fit a comprehensive variety of models and test various hypotheses; however, good knowledge of the design matrix specification using the R formula interface is required [@law2020guide].
+
 
 ```{r tableOverview}
 caption = "Rows - R packages, Columns - types of models supported: pd - parallel design, rm - repeated measurements, fd - factorial design, int - interactions among factors, mem - mixed effect models, eb - empirical Bayes, md - missing data modelling. Y - yes, * - repeated measurements are modeled using a fixed effect."
 
 xx <- list(
   MSstats = c("pd" = "Y", "rm" = "Y", "mem" = "Y"),
-  ROPECA = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", eb = "Y"),
+  PECA = c("pd" = "Y", "rm" = "Y", eb = "Y"),
   limma  = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y",eb = "Y"),
   msqrob2 = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", mem = "Y", eb = "Y", md = "Y"),
   proDA = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", eb = "Y", md = "Y"),
@@ -79,11 +82,11 @@ rownames(bb) <- names(xx)
 knitr::kable(data.frame(bb), format = "latex", caption = caption)
 ```
 
-When developing the R package `r BiocStyle::Githubpkg("fgcz/prolfqua")` we were inspired by the R package `r BiocStyle::CRANpkg("caret")` [@caret2008], which enables us to call various machine learning (ML) methods, and makes selecting the best ML algorithm for your problem easy. We aimed for a similar R package for the differential expression analysis of proteomics data. However, after examining the R packages for modeling proteomics quantification data, we observed that model specification, input, and output formats differ widely. At the same time, they have in common that: they fit linear models either to peptide or protein intensities, determine differences among groups, and afterward apply empirical Bayes variance shrinkage. Therefore, the revised goal was to provide a modular object-oriented (OO) design, with R linear models as a core, where we can add features such as $p$-value aggregation, e.g., `r BiocStyle::Biocpkg("PECA")`, variance shrinkage, or modeling of missing observations.
+When developing the R package `r BiocStyle::Githubpkg("fgcz/prolfqua")` we were inspired by the R package `r BiocStyle::CRANpkg("caret")` [@caret2008], which enables us to call various machine learning (ML) methods, and makes selecting the best ML algorithm for your problem easy. We aimed for a similar R package for the differential expression analysis of quantitative proteomics data. However, the existing packages differ widely regarding supported designs, model specifications, and output formats. At the same time, they have in common: they fit linear models to either peptide or protein intensities, determine differences among groups, and afterward apply empirical Bayes variance shrinkage. Therefore, the revised goal was to provide a modular object-oriented (OO) design, with R linear models as a core, and add features such as $p$-value aggregation, variance shrinkage, or modeling of missing observations.
 
-Furthermore, the functionality of `r BiocStyle::Githubpkg("fgcz/prolfqua")` also includes methods specific to proteomics data. For example, we implemented strategies to estimate protein intensities from peptide intensities: top N [@Grossmann2010], Tukey's median polish  [@tukey1977exploratory], robust linear models [@goeminne2020msqrob]. Furthermore, peptide or protein abundances can be scaled and transformed, using robust scaling, _quantile_ normalization or `r BiocStyle::Biocpkg("vsn")` to remove systematic differences among samples and heteroscedasticity. In this respect, `r BiocStyle::Githubpkg("fgcz/prolfqua")` can be compared with other R packages such as `r BiocStyle::Biocpkg("DEP")` [@DEP2018] or `r BiocStyle::Biocpkg("POMA")` [@POMA2021] which support the entire differential expression analysis pipeline. 
+Furthermore, the functionality of `r BiocStyle::Githubpkg("fgcz/prolfqua")` also includes methods specific to proteomics data. For example, we implemented strategies to estimate protein intensities from peptide intensities: top N [@Grossmann2010], Tukey's median polish  [@tukey1977exploratory], robust linear models [@goeminne2020msqrob]. Furthermore, peptide or protein abundances can be scaled and transformed using robust scaling, _quantile_ normalization or `r BiocStyle::Biocpkg("vsn")` to remove systematic differences among samples and heteroscedasticity. In this respect, `r BiocStyle::Githubpkg("fgcz/prolfqua")` can be compared with R packages such as `r BiocStyle::Biocpkg("DEP")` [@DEP2018] or `r BiocStyle::Biocpkg("POMA")` [@POMA2021] which support the entire differential expression analysis pipeline. 
 
-We also implemented functionality and use the Ionstar [@shen2018ionstar] dataset to benchmark the modeling methods implemented within `r BiocStyle::Githubpkg("fgcz/prolfqua")` and to compare our results with those of `r BiocStyle::Biocpkg("MSstats")` and `r BiocStyle::Biocpkg("proDA")`. Since group sizes are relatively small, typically with four or five subjects per group, the high power of the tests is a relevant criterion to assess the modeling method. The quantified proteins can be ranked using the estimated fold-change, $t$-statistics, or scaled $p$-value, and afterward subjected to gene set enrichment (GSEA) or over-representation analysis [@subramanian2005gene] to determine up or down-regulated groups of proteins. Furthermore, the statistical model must provide an unbiased estimate of the false discovery rate (FDR) to manage expectations when selecting protein lists for follow-up experiments. We will use the partial area under the receiver operator curve (ROC) to assess the power of the tests and compare the FDR with the false discovery proportion ($FDP$).
+We also implemented functionality and use the Ionstar [@shen2018ionstar] and CPTAC (available from `r BiocStyle::Biocpkg("msdata")`) dataset to benchmark the modeling methods implemented within `r BiocStyle::Githubpkg("fgcz/prolfqua")` and to compare our results with those of `r BiocStyle::Biocpkg("MSstats")` and `r BiocStyle::Biocpkg("proDA")`. Since group sizes are relatively small, typically with four or five subjects per group, the high power of the tests is a relevant criterion to assess the modeling method. The quantified proteins can be ranked using the estimated fold-change, $t$-statistics, or scaled $p$-value, and afterward subjected to gene set enrichment (GSEA) or over-representation analysis [@subramanian2005gene] to determine up or down-regulated groups of proteins. Furthermore, the statistical model must provide an unbiased estimate of the false discovery rate (FDR) to manage expectations when selecting protein lists for follow-up experiments. We will use the partial area under the receiver operator curve (ROC) to assess the power of the tests and compare the FDR with the false discovery proportion ($FDP$).
 
 \newpage
 # Methods
@@ -92,15 +95,15 @@ We also implemented functionality and use the Ionstar [@shen2018ionstar] dataset
 
 We store all the data needed for analysis in a data frame as tidy data, i.e., every column is a variable, every row is an observation, and every cell is a single value [@tidydata2014]. Using an R6 [@R6cite] configuration object (Figure \@ref(fig:LFQData)), we specify what variable is in which column, making it easy to integrate new inputs in `r BiocStyle::Githubpkg("fgcz/prolfqua")` if provided as a tidy data. For example, to visualize tidy Spectronaut[@bruderer2015extending], DiaNN[@demichev2020dia], or Skyline[@maclean2010skyline] outputs, or data in `r BiocStyle::Biocpkg("MSstats")`[@Choi2014] format, only a few lines of code are needed to update the `r BiocStyle::Githubpkg("fgcz/prolfqua")` `AnalysisTableConfiguration` configuration. The configuration encapsulates the differences in column names among the various input formats, and enables the use of the methods without additional arguments. We show an example code for creating an MSFragger[@yu2020fast] configuration in the Appendix. For popular software like MaxQuant[@Cox2008MaxQuant], or MSFragger, which stores the same variable, e.g., intensity, in multiple columns, one for each sample, we implemented methods that transform the data into tidy data. Relying on the tidy data table enables us to interface with many data manipulation, visualization, and modeling methods, implemented in base R [@RCoreTeam2021] and the tidyverse [@tidyverse2019], easily. We use R6 classes to structure the functionality of the package (see Figure \@ref(fig:LFQData) and Figure \@ref(fig:ContrastUML)). R6 classes are well supported by command-line completion features in RStudio [@RStudio2022], and help to implement argument free functions (Figure \@ref(fig:tabCompletion).
 
-(ref:LFQData) Class Diagram of classes representing the proteomics data. The `LFQData` class encapsulates the quantitative proteomics data stored in a tidy table. An instance of the AnalysisTableConfiguration class specifies a mapping of columns in the tidy table. The `LFQDataPlotter` class and other classes decorate the `LFQData` class with additional functionality. Similarly, the `LFQDataStats` and `LFQDataSummary` reference the `LFQData` class and group methods for variance and sample size estimation or summarizing peptide and protein counts.
+(ref:LFQData) Class Diagram of classes representing the proteomics data. The `LFQData` class encapsulates the quantitative proteomics data stored in a table of tidy data. An instance of the AnalysisTableConfiguration class specifies a mapping of table columns to sample names, peptide or protein identifiers, explanatory variables, and response variables. The `LFQDataPlotter` class and other classes decorate the `LFQData` class with additional functionality. Similarly, the `LFQDataStats` and `LFQDataSummary` reference the `LFQData` class and group methods for variance and sample size estimation or summarizing peptide and protein counts.
 
 ```{r LFQData, echo=FALSE, fig.cap="(ref:LFQData)", out.width = '90%'}
 knitr::include_graphics("LFQData_UML_LARGE.png")
 ```
 
-R's formula interface for linear models is flexible, widely used, and well documented [@faraway2016extending]. We use the formula interface to specify the models, making it easy to reproduce an analysis performed with `r BiocStyle::Githubpkg("fgcz/prolfqua")` in other statistical methods programming languages. In addition, we implement features specific to high throughput experiments, such as the experimental Bayes variance and $p$-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We used R6 classes to encapsulate the statistical modelling functionality in `r BiocStyle::Githubpkg("fgcz/prolfqua")` (see Figure \@ref(fig:ContrastUML)). We specify a contrast interface (`ContrastsInterface`). Several implementations allow to perform differential expression analysis given linear or mixed effect models (`Contrasts`), variance shrinkage (`ContrastsModerated`), or to impute contrasts in cases when observations are missing for an entire group of samples (`ContrastsSimpleImpute`). Further implementations of the interface encapsulate and integrate differential expression analysis results of external tools such as `r BiocStyle::Biocpkg("proDA")` or of SAINTexpress [@teo2014saintexpress] used to analyze data from protein interaction studies. 
+R's formula interface for linear models is flexible, widely used, and well documented [@faraway2016extending]. We use the formula interface to specify the models, making it easy to reproduce an analysis performed with `r BiocStyle::Githubpkg("fgcz/prolfqua")` in other statistical programming languages. In addition, we implement features specific to high throughput experiments, such as the empirical Bayes variance and $p$-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We used R6 classes to encapsulate the statistical modelling functionality in `r BiocStyle::Githubpkg("fgcz/prolfqua")` (see Figure \@ref(fig:ContrastUML)). We specify a contrast interface (`ContrastsInterface`). Several implementations allow to perform differential expression analysis given linear or mixed effect models (`Contrasts`), variance shrinkage (`ContrastsModerated`), or to impute contrasts in cases when observations are missing for an entire group of samples (`ContrastsSimpleImpute`). Further implementations of the interface encapsulate and integrate differential expression analysis results of external tools such as `r BiocStyle::Biocpkg("proDA")` or of SAINTexpress [@teo2014saintexpress] used to analyze data from protein interaction studies. 
 
-(ref:ContrastUML)  The UML (unified modeling language) diagram of modeling and contrast related classes. Different strategies, e.g., _lm_, _lmer_, and _glm_ (Table \@ref(tab:prolfquaModels)), can fit various types of models. The model builder method fits the statistical model given the data and a strategy. The obtained model can then be used for the analysis of variance or to estimate contrasts. All classes estimating contrasts implement the _Contrasts_ interface. Results of external tools, e.g., SAINTexpress, can be adapted by implementing the Contrasts Interface.
+(ref:ContrastUML)  Unified modeling language (UML) diagram of modeling and contrast related classes. Different strategies, e.g., _lm_, _lmer_, and _glm_ (Table \@ref(tab:prolfquaModels)), reference methods to fit models, and compute contrasts. The model builder method fits the statistical model given the data and a strategy. The models are used to analyze variance (ANOVA) or to estimate contrasts. All classes estimating contrasts implement the _ContrastsInterface_. Results of external tools, e.g., SAINTexpress, or proDA are adapted to implement the Contrasts Interface.
 
 
 ```{r ContrastUML, echo=FALSE, fig.cap="(ref:ContrastUML)", out.width = '90%'}
@@ -117,7 +120,7 @@ To evaluate the performance of differential expression analysis, we use the IonS
 
 ## Data preprocessing for model comparison
 
-The peptide abundances (from the MaxQuant _peptide.txt_ file) were $log_2$ transformed and subsequently scaled, where median and the mean average deviation (mad) were obtained from the human proteins only. We removed _one hit wonders_, i.e., proteins with a single peptide assignment. Protein abundances are inferred from the peptide intensities using Tukey's median polish. Finally, we fitted the fixed effect linear models, the dropout model `r BiocStyle::Biocpkg("proDA")` to protein abundances, the mixed effect linear model, and the `r BiocStyle::Biocpkg("PECA")` model to peptide intensities.
+The peptide abundances (from the MaxQuant _peptide.txt_ file) were $log_2$ transformed and subsequently scaled, where median and the mean average deviation (mad) were obtained from the human proteins only. We removed _one hit wonders_, i.e., proteins with a single peptide assignment. Protein abundances are inferred from the peptide intensities using Tukey's median polish. Finally, we fitted the fixed effect linear models, the dropout model `r BiocStyle::Biocpkg("proDA")` to protein abundances, the mixed effect linear model, the `r BiocStyle::Biocpkg("PECA")` model, and hurdle model `r BiocStyle::Biocpkg("msqrob2")` to peptide intensities.
 
 ## Benchmark metrics
 
@@ -186,51 +189,37 @@ with $X$ being the design matrix. The degrees of freedom for the contrast are eq
 
 The package `r BiocStyle::Githubpkg("fgcz/prolfqua")` provides functions to determine the vector of $parameter$ weights $c$, from a linear model and a contrast specification string.
 
-The linear model below explain the observed protein abundances using the explanatory variables `condition_` and `batch_` and the interaction term  `condition_:batch_`: 
 
-```{r, echo = TRUE}
-data_Yeast2Factor <- prolfqua::prolfqua_data("data_Yeast2Factor")
+
+
+The linear model explains the observed protein abundances using the explanatory variables `condition_` and `batch_` and the interaction term  `condition_:batch_`. The treatment difference among the groups `Ethanol` and `Glucose` defined by the factor `condition`, and similarly among the groups defined by `batch_`, can be specified. Furthermore, the treatment differences among `Ethanol` and `Glucose` within the batches `p2370` and `p2691` can be specified. Finally, we can examine if the treatment differences in both batches are the same or are different. The code to compute the array of weights $c$ used to multiply the model coefficient $\beta$, to obtain the effect size estimates, and the variance of the estimate, is shown below:
+
+
+
+```{r contrast2, eval=TRUE, echo=TRUE}
 mlm <- prolfqua::strategy_lm(
   transformedIntensity ~ condition_ + batch_ + condition_:batch_
   )
-mm <- prolfqua::build_model(data_Yeast2Factor$data, mlm, subject = "protein_Id")
-```
+Yeast2Factor <- prolfqua::prolfqua_data("data_Yeast2Factor")
+mm <- prolfqua::build_model(Yeast2Factor$data, mlm, subject_Id = "protein_Id")
 
-The treatment difference among the groups `Ethanol` and `Glucose` defined by the factor `condition`, and similarly among the groups defined by `batch_`, can be specified.
+Contrasts <- c(
+  "diff_condition" = "condition_Ethanol - condition_Glucose",
+  "diff_batch" = "batch_p2370 - batch_p2691",
+  "difference_within_p2370" = "`condition_Glucose:batch_p2370` - `condition_Ethanol:batch_p2691`",
+  "difference_within_p2691" = "`condition_Glucose:batch_p2691` - `condition_Ethanol:batch_p2691`",
+  "difference_of_difference" = "difference_within_p2370 - difference_within_p2691")
 
-```{r contrast1,  echo=TRUE}
-d1 <- c("diff_condition" = "condition_Ethanol - condition_Glucose",
-  "diff_batch" = "batch_p2370 - batch_p2691")
-```
-
-Furthermore, the treatment differences among `Ethanol` and `Glucose` within the batches `p2370` and `p2691` can be specified.
-
-```{r contrast2, eval=TRUE, echo=TRUE}
-d2 <- c("difference_within_p2370" =
-    "`condition_Glucose:batch_p2370` - `condition_Ethanol:batch_p2691`",
-  "difference_within_p2691" = 
-   "`condition_Glucose:batch_p2691` - `condition_Ethanol:batch_p2691`")
-```
-
-Finally, we can examine if the treatment differences in both batches are the same or are different.
-
-```{r contrast3, eval=TRUE, echo=TRUE}
-d3 <- c("difference_of_difference" = "difference_within_p2370 - difference_within_p2691")
-```
-
-The code to compute the array of weights $c$ used to multiply the model coefficient $\beta$, to obtain the effect size estimates, and the variance of the estimate, is shown below:
-
-```{r contrast4, echo=TRUE}
-Contrasts <- c(d1, d2, d3)
 linfct <- prolfqua::linfct_from_model(mm$modelDF$linear_model[[1]],
                                       as_list = FALSE)
 mC <- prolfqua::linfct_matrix_contrasts(linfct, Contrasts)
+
 ```
 
 Table \@ref(tab:contrcoefficient) shows weights $c$ for each of the five contrasts we specified.
 
 ```{r contrcoefficient}
-knitr::kable(mC, caption = "Weights of each model parameter.",format = "latex")
+knitr::kable(mC, caption = "Weights $c$ of each model parameter (columns) to compute contrast (rows).",format = "latex")
 
 ```
 
@@ -239,12 +228,12 @@ Given the weights $c$ contrasts from model parameter estimates obtained with `r 
 
 ### Contrast estimation in presence of missing data.
 
-Missing observations lead to different group sizes, which results in unbalanced designs. Linear and mixed effect models can handle unbalanced designs, as long as one observation per group is available, they will produce unbiased estimates, and no imputation is needed.
+Missing observations lead to different group sizes, which results in unbalanced designs. Linear and mixed effect models can handle unbalanced designs. As long as at least one observation in a group is available, and sufficient observations to estimate the variance are available, they will produce unbiased estimates. Therefore, no imputation is needed.
 
-If there is no observation in a group, we assume that the protein is unobserved because the protein abundance is below the limit of detection (LOD) of the MS instrument. In this case, we will impute the mean using the protein abundance at the detection limit $A_{LOD}$.
-We estimate the abundance at the detection limit using the abundances of the proteins observed only in one sample of a group of samples. Then, we compute the median of the distribution and use it as the group mean if a protein is absent in a treatment group.
+However, if there is no observation in a group, the model fit fails. For example, suppose a protein is unobserved in all the samples of a group. In that case, a plausible explanation is that the protein abundance is below the limit of detection (LOD) of the MS instrument. In such a case, we will substitute the group mean, using the expected protein abundance $A$ at the LOD $A_{LOD}$.
+To estimate $A_{LOD}$ we are using the abundances from those groups where the protein was unobserved except for one sample. Typically there are many such cases, and hence we take the median.
 
-When computing differences $\Delta$ among two groups $a$ and $b$, we will use the group mean $\bar{a}$ or $\bar{b}$ estimated from the data, or if no observations are present in a group, we use $A_{LOD}$, e.g., If there are no observations in group $b$ then :
+When computing differences $\Delta$ among two groups $a$ and $b$, we will use either the group mean $\bar{a}$ or $\bar{b}$ estimated from the data. However, if for instance no observations are present in group $b$, we will use $\bar{b} = A_{LOD}$. Furthermore, if $\bar{a} < A_{LOD}$ we also set $\bar{a} = A_{LOD}$.
 
 $$
 \Delta = 
@@ -255,7 +244,7 @@ $$
 $$
 
 
-To estimate the variance, we assume that the variance of the protein is constant in all the groups and use the pooled variance based on all data: 
+We use the pooled variance in all groups to estimate the protein variance, assuming they are the same. The pooled variance $s_p^2$ is given by:
 
 \begin{equation} 
 s_p^2=\frac{\sum_{i=1}^k (n_i - 1)s_i^2}{\sum_{i=1}^k (n_i - 1)}
@@ -269,9 +258,9 @@ s = \sqrt{\frac{2n_g s_p^2}{n}},
 \end{equation} 
 
 Where, $n_g$ is the number of groups and $n$ is the number of observations.
-If variance can not be estimated for a protein, we will use the median pooled variance of all the proteins.
+If variance can not be estimated for a protein, because there are to few observations in other groups, we use the median pooled variance of all other proteins in the dataset.
 
-This methods are implemented in the class `ContrastSimpleImpute` (see Figure \@ref(fig:ContrastUML)).
+This method is implemented in the class `ContrastSimpleImpute` (see Figure \@ref(fig:ContrastUML)).
 
 ### $p$-value moderation
 
@@ -317,30 +306,28 @@ The code snippets in this section demonstrate how a differential expression anal
 ```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%', fig.width = 8, fig.height = 8}
 R.version.string; packageVersion("prolfqua")
 
-# read MQ peptide.txt and annotation table
+## read MQ peptide.txt and annotation table
 startdata <- prolfqua::tidyMQ_Peptides(system.file(
   "samples/maxquant_txt/tiny2.zip", package = "prolfqua"))
 annot <- readxl::read_xlsx(system.file(
   "samples/maxquant_txt/annotation_Ionstar2018_PXD003881.xlsx", package = "prolfqua"))
 startdata <- dplyr::inner_join(annot, startdata, by = "raw.file")
-# create proflqua configuration
+## create MaxQuant configuration
 config <- prolfqua::create_config_MQ_peptide()
+## specify explanatory variable
 config$table$factors[['dilution.']] = "sample"
 ## create R6 object
-lfqd <- prolfqua::LFQData$new(startdata, config, setup = TRUE) 
-lfqd$hierarchy_counts()
+lfqpep <- prolfqua::LFQData$new(startdata, config, setup = TRUE) 
 ## remove observation with 0 intensity and filter for 2 peptides per protein
-lfqd$remove_small_intensities()
-lfqd$filter_proteins_by_peptide_count()
-lfqd$hierarchy_counts()
+lfqpep$remove_small_intensities()$filter_proteins_by_peptide_count()
 ##  transform intensities
-lfqd <- lfqd$get_Transformer()$log2()$robscale()$lfq
-lfqd$rename_response("log_peptide_abundance")
-agr <- lfqd$get_Aggregator()
-lfqp <- agr$medpolish()
-lfqp$rename_response("log_protein_abundance")
+lfqpep <- lfqpep$get_Transformer()$log2()$robscale()$lfq
+lfqpep$rename_response("log_peptide_abundance")
+agr <- lfqpep$get_Aggregator()
+lfqpro <- agr$medpolish()
+lfqpro$rename_response("log_protein_abundance")
 ## plot panels A-D
-pl <- lfqd$get_Plotter()
+pl <- lfqpep$get_Plotter()
 panelA <- pl$intensity_distribution_density() +
   ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
 panelB <- agr$plot()$plots[[54]] + ggplot2::labs(tag = "B")
@@ -355,7 +342,8 @@ ggpubr::ggarrange(panelA, panelB, panelC, panelD)
 
 The following code example illustrates how we compute differences among groups. First, the linear model and the differences are specified. Afterward, the model is fitted to the data using the `build_model` function. Next, we estimate the contrasts either from the linear model using the `Contrasts` class or directly from the data using the `ContrastsSimpleImpute` class. Afterward, we apply $t$-statistic moderation using the `ContrastModerated` class. Finally, the `addContrastResults` function merges both sets of contrast estimates, preferring the one obtained from the linear model if both are available. Then we create the plots shown in Figure \@ref(fig:exampleContrasts). Panel A shows the distribution of the $p$-values, while Panel B shows the volcano plot for each comparison.
 
-(ref:exampleContrasts) Panel A - Histogram showing the distribution of p-values for $163$ proteins. Panel B -  Volcano plot showing $-\log_{10}$ transformed $FDR$ as function of the difference between groups for $163$ proteins.
+(ref:exampleContrasts) Panel A - Histogram showing the distribution of p-values for $332$ proteins. Panel B -  Volcano plot showing $-\log_{10}$ transformed $FDR$ as function of the difference between groups for $332$ proteins. With black dots we show effect size and FDR estimates obtained from the linear model, while in green we show those obtained using imputation.
+
 
 ```{r exampleContrasts, fig.cap="(ref:exampleContrasts)", echo=TRUE, out.width = '90%', fig.width = 8, fig.height = 5}
 # specify differences among groups
@@ -369,9 +357,9 @@ modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "lm")
 models <- prolfqua::build_model(lfqp, modelFunction)
 
 ## compute contrasts from linear model
-contr <- prolfqua::Contrasts$new(models, contrasts) 
+contr <- prolfqua::Contrasts$new(models, contrasts, modelName = "lm")
 # compute contrasts using imputation imputation
-conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts)
+conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts, modelName = "imp")
 # merge contrasts, to obtain differences for all proteins
 contrasts <- prolfqua::merge_contrasts_results(prefer = contr, add = conI)
 # moderate t-statistics and p-values
@@ -379,7 +367,8 @@ prolfqua::ContrastsModerated$undebug("get_contrasts")
 contrasts <-  contrasts$merged |> prolfqua::ContrastsModerated$new() 
 ## visualize results in panels
 pl <- contrasts$get_Plotter() 
-histpval <- pl$histogram()$p.value + ggplot2::labs(tag = "A")               maplot <- pl$ma_plot(rank = TRUE) + ggplot2::labs(tag = "C")
+histpval <- pl$histogram()$p.value + ggplot2::labs(tag = "A")               
+maplot <- pl$ma_plot(rank = TRUE,legend = FALSE) + ggplot2::labs(tag = "C")
 volcano <- pl$volcano()$FDR +
    ggplot2::theme(legend.position = "bottom") +
    ggplot2::labs(tag = "B")
@@ -390,11 +379,11 @@ gridExtra::grid.arrange(histpval, maplot, volcano, layout_matrix = rbind(c(1,3),
 R linear model and linear mixed effect models allow modeling parallel designs, repeated measurements, factorial designs, and many more. 
 Models in `r BiocStyle::Githubpkg("fgcz/prolfqua")` are specified using R’s linear model and mixed model formula interface. Therefore, knowledge of the R regression model infrastructure [@faraway2016extending; @MASS2002] is advantageous when using our package. Furthermore, this glass box approach should make it easy to reimplement an analysis performed with `r BiocStyle::Githubpkg("fgcz/prolfqua")` using base R or other programming languages by reading the analysis script. However, acknowledging the R formula interface’s complexity to non-statisticians and the popularity of `r BiocStyle::Biocpkg("MSstats")`, we provide the functionality to suggest a model formula from the sample annotation provided in tabular form similarly to `r BiocStyle::Biocpkg("MSstats")`.
 
-Using the tidy table to model the data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")` [@quast2022protti]. The use of R6 classes, which encapsulate the configuration and the data, allows for writing very concise code (no function arguments needed). Auto-completion support in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality (Figure \@ref(fig:tabCompletion)). To simplify integration of `r BiocStyle::Githubpkg("fgcz/prolfqua")` with Bioconductor based workflows there is a method to convert the `LFQData` class into a `r BiocStyle::Biocpkg("SummarizedExperiment")`.
+Using the table of tidy data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")` [@quast2022protti]. To simplify integration of `r BiocStyle::Githubpkg("fgcz/prolfqua")` with Bioconductor based workflows there is a method to convert the `LFQData` class into a `r BiocStyle::Biocpkg("SummarizedExperiment")`. The use of R6 classes, which encapsulate the configuration and the data, allows for writing very concise code, where functions can have only very few arguments. Auto-completion support for R6 classes in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality (see Supplement Figure S[X]). 
 
-To ease the usage barriers of the R package to users not being familiar with statistics and R programming, we integrated some workflows into our data management platform [b-fabric](https://fgcz-bfabric.uzh.ch/) [@bfabric]. This integration enables our users to select the input and basic settings in a graphical user interface. Then, as an output, the user receives a report including input files, the R markdown file, and R scripts necessary to replicate the analysis using their in-house R installation.
-The b-fabric system runs a computing infrastructure controlled by a local resource management system that supports cloud-bursting [@VMMAD].
-In this way, [b-fabric](https://fgcz-bfabric.uzh.ch/) helps scientists to meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable and Reusable) [@FAIR] data principles.
+To ease the usage barriers of the R package to users not being familiar with statistics and R programming, we integrated some workflows into our data management platform [B-Fabric](https://fgcz-bfabric.uzh.ch/) [@bfabric,]. This integration enables our users to select the input and basic settings in a graphical user interface. The user receives a report including input files, the R markdown file, and R scripts necessary to replicate the analysis using their in-house R installation.
+The B-Fabric system runs a computing infrastructure controlled by a local resource management system that supports cloud-bursting [@VMMAD].
+In this way, [B-Fabric](https://fgcz-bfabric.uzh.ch/) helps scientists to meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable and Reusable) [@FAIR] data principles.
 
 ## Benchmarking modelling approaches
 
@@ -503,7 +492,7 @@ pC <- ddb |> ggplot2::ggplot(ggplot2::aes(y = FDP_,  x  = scorecol )) +
 hlay = rbind(c(2,1,1),
             c(2,3,3))
 
-gridExtra::grid.arrange(p1_pAUC, pB, pC, layout_matrix=hlay)
+gridExtra::grid.arrange(p1_pAUC, pB, pC, layout_matrix = hlay)
 
 ```
 
@@ -549,14 +538,31 @@ tmp <- kableExtra::kable(xMM,
              "Description - prolfqua function names, ",
              "Abudances - indicates if model is fitted to peptide or protein abundances, ",
              "Input File - name of MaxQuant file used as input."),
-             format = "latex", booktabs=TRUE) |>
-    kableExtra::kable_styling(latex_options="scale_down") |> 
+             format = "latex", booktabs = TRUE) |>
+    kableExtra::kable_styling(latex_options = "scale_down") |> 
     kableExtra::add_footnote(label = "prolfqua_merged - Merges results of the prot_med_lm_moderated and prot_imputation modeling pipeline, preferring those of prot_med_lm_moderated if available.")
 
 
 knitr::asis_output(stringr::str_replace(tmp, "HACKIT", "$^{a}$"))
 
 ```
+
+
+```{r roctest, include = FALSE}
+ttmsqrob <- allBenchmarks$benchmark_msqrob$data()
+ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.p.value, partial.auc = c(1, 0.9))
+ttprolfqua <- allBenchmarks$benchmark_merged$data()
+ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
+ttproda <- allBenchmarks$benchmark_proDA$data()
+ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.p.value, partial.auc = c(1, 0.9))
+
+
+msqrob_vs_prolfqua <- pROC::roc.test(ddmsqrob,ddprolfqua)
+msqrob_vs_proda <- pROC::roc.test(ddmsqrob,ddproda)
+prolfqua_vs_proda <- pROC::roc.test(ddprolfqua,ddproda)
+
+```
+
 
 Since only technical replicates are available for each dilution, essential sources of variation present in every experiment, such as the biochemical and biological, are not measured. Therefore, the dataset captures only the variance from the chromatography, electro-spray, and mass spectrometric measurement method. Thus, while we can extrapolate some of the results obtained to more realistic datasets, we need to be careful not to over-interpret the results. Specifically, the observed variances will be higher in more realistic experiments, and the power will be lower for the same sample sizes. Furthermore, the proportion of missing observations in real-life datasets might also be higher.
 
@@ -581,8 +587,7 @@ When comparing statistical modeling methods for the differential expression anal
 
 # Acknowledgements {.unlisted .unnumbered}
 
-The authors thank the technology platform fund (TPF) of the University of Zurich and all FGCZ proteomics colleagues for fruitful discussions.
-
+The authors thank the technology platform fund (TPF) of the University of Zurich and all colleagues of the FGCZ proteomics team for fruitful discussions.
 
 # Abbreviations {.unlisted .unnumbered}
 
@@ -619,77 +624,11 @@ UML     &       Unified Modeling Language                  \\
 
 # Appendix  {.unnumbered}
 
-## Benchmark Code
-
-All the code needed to replicate the benchmark results and this document is available at:
-
-https://github.com/wolski/prolfquabenchmark.
-
-- [Benchmarking of methods implemented in prolfqua](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html)
-- [Benchmarking of MSstats](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html)
-- [Benchmarking of proDA](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html)
-
-## Creating a prolfqua configuration {.unlisted .unnumbered}
-
-The following code demonstrates how we use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to analyze protein intensities reported in the MSFragger `combined_protein.tsv` file.
-First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_MSFragger_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object. 
-Bottom-up proteomics data is hierarchical, i.e., a protein has peptides, peptides might be modified, etc. Therefore, the `AnalysisTableAnnotation` has a `hierarchy` field storing a list with an entry for each hierarchy level.
-Since `combined_portein.tsv` only holds protein level data, the hierarchy list has one element, and we use it to specify which column contains the protein identifiers. We also need to define which column contains the protein abundances we want to use for the data analysis.
-Finally, we have to specify which columns contain the explanatory variables of the analysis. The `AnalysisTableAnnotation` has the field `factors,` a list with as many entries as explanatory variables. Here we include two explanatory variables, the dilution, specified in the column 'sample', and 'run' stored in the column 'run_ID', representing the order of the measurement.
-
-
-```{r echo=TRUE}
-datadir <- file.path(find.package("prolfquadata") , "quantdata")
-inputFragfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
-inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
-# read input annotation
-annotation <- readxl::read_xlsx(inputAnnotation)
-
-protein <- tibble::as_tibble(
-    read.csv(unz(inputFragfile,"IonstarWithMSFragger/combined_protein.tsv"),
-             header = TRUE, sep = "\t", stringsAsFactors = FALSE))
-
-# read combined_protein.tsv 
-protein <- prolfqua::tidy_FragPipe_combined_protein_deprec(protein)
-# remove proteins identified by a single peptide
-protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
-
-# annotate the data
-merged <- dplyr::inner_join(annotation, protein)
-atable <- prolfqua::AnalysisTableAnnotation$new()
-atable$fileName = "raw.file"
-# specify column containing protein identifiers
-atable$hierarchy[["protein_Id"]] = "protein"
-
-# column with protein abundances
-atable$set_response("total.intensity")
-
-# the factors of the analysis
-atable$factors[["dilution."]] = "sample"
-atable$factors[["run"]] = "run_ID"
-
-config <- prolfqua::AnalysisConfiguration$new(atable)
-
-adata <- prolfqua::setup_analysis(merged, config)
-lfqdata <- prolfqua::LFQData$new(adata, config)
-# remove small intensities
-lfqdata$remove_small_intensities()
-
-```
 
 ## Session information {.unlisted .unnumbered}
 
 ```{r sessioninfo, echo=FALSE}
 sessionInfo()
-```
-
-## Miscellaneous {.unlisted .unnumbered}
-
-
-(ref:tabCompletion) The screenshot displays the command-line completion (tab completion) of RStudio on the `prolfqua::LFQData` R6 object. In the example, it shows the getter methods of the object.
-
-```{r tabCompletion, echo=FALSE, fig.cap="(ref:tabCompletion)", out.width = '66%'}
-knitr::include_graphics("codeSnippet1TabCompletion.png")
 ```
 
 
@@ -700,19 +639,3 @@ file.path("hexStickerProlfqua.png") |>
 ```
 
 
-
-```{r roctest}
-ttmsqrob <- allBenchmarks$benchmark_msqrob$data()
-ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.p.value, partial.auc = c(1, 0.9))
-ttprolfqua <- allBenchmarks$benchmark_merged$data()
-ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
-ttproda <- allBenchmarks$benchmark_proDA$data()
-ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.p.value, partial.auc = c(1, 0.9))
-
-
-msqrob_vs_prolfqua <- pROC::roc.test(ddmsqrob,ddprolfqua)
-msqrob_vs_proda <- pROC::roc.test(ddmsqrob,ddproda)
-prolfqua_vs_proda <- pROC::roc.test(ddprolfqua,ddproda)
-
-
-```
