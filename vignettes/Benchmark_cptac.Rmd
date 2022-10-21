@@ -29,7 +29,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 # Introduction
 
 The r-package `r BiocStyle::Biocpkg("msdata")` msdata provides a subset of the data of the 6th study of the Clinical Proteomic Technology Assessment for Cancer (CPTAC).
-In this experiment, the Sigma Universal Protein Standard mixture 1 (UPS1) containing 48 different human proteins was spiked in a protein background of 60 ng/$\muL$ Saccharomyces cerevisiae strain BY4741. Two different spike-in concentrations were used, 6A ($0.25$ fmol UPS1 proteins/$\muL$) and 6B ($0.74$ fmol UPS1 proteins/$\muL$). Three replicates are available for each concentration.
+In this experiment, the Sigma Universal Protein Standard mixture 1 (UPS1) containing 48 different human proteins was spiked in a protein background of 60 ng/$\muL$ Saccharomyces cerevisiae strain BY4741. Two different spike-in concentrations were used, 6A ($0.25$ fmol UPS1 proteins/$\mu L$) and 6B ($0.74$ fmol UPS1 proteins/$\mu L$). Three replicates are available for each concentration.
 
 
 ```{r cars}
@@ -306,13 +306,13 @@ all$what[all$what == "t"] <- "t_statistic"
 all$what[all$what == "scaled.pval"] <- "scaled.p.value"
 all$what[all$what == "logFC"] <- "diff"
 
-all |> ggplot(aes(x = what, y= pAUC_10, group = package, color = NULL, fill = package)) + geom_bar(stat = "identity",  position = position_dodge()) 
+all |> ggplot(aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) + geom_bar(stat = "identity",  position = position_dodge()) 
 
 ```
 
 
 
-```{r roctest, include = TRUE}
+```{r roctest, include = TRUE, message=FALSE, error=FALSE}
 
 ttmsqrob <- benchmark_msqrob$data()
 ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.pval, partial.auc = c(1, 0.9))
@@ -324,15 +324,16 @@ ttproda <- benchmark_proDA$data()
 ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.pval, partial.auc = c(1, 0.9))
 
 
-tmp <- c(msqrob_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua)$p.value,
-         msqrob_vs_proda = pROC::roc.test(ddmsqrob,ddproda)$p.value,
-         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda)$p.value)
+tmp <- c(msqrob_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua, progress = "none")$p.value,
+         msqrob_vs_proda = pROC::roc.test(ddmsqrob,ddproda, progress = "none")$p.value,
+         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none")$p.value)
 
 ```
 
 We observe that for this benchmark data, the three packages perform similarly
 with the following results of the Bootstrap test for two ROC curves:
 
-```{r}
-knitr::kable(data.frame(pROC_test = names(tmp), p.value = tmp))
+```{r shwoROCtestREsults}
+knitr::kable(data.frame(pROC_test = names(tmp), p.value = tmp), caption = "p-values for pairwise comparsions of partial AUC")
+
 ```
