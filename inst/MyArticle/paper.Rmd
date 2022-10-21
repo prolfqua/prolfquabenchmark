@@ -213,7 +213,7 @@ Contrasts <- c(
 linfct <- prolfqua::linfct_from_model(mm$modelDF$linear_model[[1]],
                                       as_list = FALSE)
 mC <- prolfqua::linfct_matrix_contrasts(linfct, Contrasts)
-
+## see Table 3 for content of mC
 ```
 
 Table \@ref(tab:contrcoefficient) shows weights $c$ for each of the five contrasts we specified.
@@ -312,20 +312,26 @@ startdata <- prolfqua::tidyMQ_Peptides(system.file(
 annot <- readxl::read_xlsx(system.file(
   "samples/maxquant_txt/annotation_Ionstar2018_PXD003881.xlsx", package = "prolfqua"))
 startdata <- dplyr::inner_join(annot, startdata, by = "raw.file")
+
 ## create MaxQuant configuration
 config <- prolfqua::create_config_MQ_peptide()
+
 ## specify explanatory variable
 config$table$factors[['dilution.']] = "sample"
+
 ## create R6 object
 lfqpep <- prolfqua::LFQData$new(startdata, config, setup = TRUE) 
+
 ## remove observation with 0 intensity and filter for 2 peptides per protein
 lfqpep$remove_small_intensities()$filter_proteins_by_peptide_count()
-##  transform intensities
+
+## transform intensities
 lfqpep <- lfqpep$get_Transformer()$log2()$robscale()$lfq
 lfqpep$rename_response("log_peptide_abundance")
 agr <- lfqpep$get_Aggregator()
 lfqpro <- agr$medpolish()
 lfqpro$rename_response("log_protein_abundance")
+
 ## plot panels A-D
 pl <- lfqpep$get_Plotter()
 panelA <- pl$intensity_distribution_density() +
@@ -335,7 +341,6 @@ panelC <- lfqpro$get_Stats()$violin() + ggplot2::labs(tag = "C")
 pl <- lfqpro$get_Plotter()
 panelD <- pl$boxplots()$boxplot[[54]] + ggplot2::labs(tag = "D")
 ggpubr::ggarrange(panelA, panelB, panelC, panelD)
-
 ```
 
 (ref:scaling) Panel A - Density plot of peptide intensity distributions for $20$ samples. For each sample a line with a different colour is shown. Panel B - Peptide intensities for protein HFQ_ECOLI are shown using a line of different colour, and the protein intensity estimate is shown using a fat black line, Panel C - distribution of standard deviations of all proteins in each dilution group ($a$, $b$, $c$, $d$, $e$) and overall (all), Panel D - Distribution of protein intensities of Protein HFQ_ECOLI in each dilution group.
@@ -347,7 +352,7 @@ The following code example illustrates how we compute differences among groups. 
 
 
 ```{r figure2, fig.cap="(ref:figure2)", echo=TRUE, out.width = '90%', fig.width = 8, fig.height = 5}
-# specify differences among groups
+## specify differences among groups
 contrasts <- c(
   "dilution_(9/7.5)_1.2" =   "dilution.e - dilution.d",
   "dilution_(7.5/6)_1.25" =   "dilution.d - dilution.c"
@@ -359,13 +364,17 @@ models <- prolfqua::build_model(lfqpro, modelFunction)
 
 ## compute contrasts from linear model
 contr <- prolfqua::Contrasts$new(models, contrasts, modelName = "lm")
-# compute contrasts using imputation imputation
+
+## compute contrasts using imputation imputation
 conI <- prolfqua::ContrastsSimpleImpute$new( lfqpro, contrasts, modelName = "imp")
-# merge contrasts, to obtain differences for all proteins
+
+## merge contrasts, to obtain differences for all proteins
 contrasts <- prolfqua::merge_contrasts_results(prefer = contr, add = conI)
-# moderate t-statistics and p-values
+
+## moderate t-statistics and p-values
 prolfqua::ContrastsModerated$undebug("get_contrasts")
 contrasts <-  contrasts$merged |> prolfqua::ContrastsModerated$new() 
+
 ## visualize results in panels
 pl <- contrasts$get_Plotter() 
 histpval <- pl$histogram()$p.value + ggplot2::labs(tag = "A")               
