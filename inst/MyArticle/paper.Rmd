@@ -331,8 +331,8 @@ pl <- lfqpep$get_Plotter()
 panelA <- pl$intensity_distribution_density() +
   ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
 panelB <- agr$plot()$plots[[54]] + ggplot2::labs(tag = "B")
-panelC <- lfqp$get_Stats()$violin() + ggplot2::labs(tag = "C")
-pl <- lfqp$get_Plotter()
+panelC <- lfqpro$get_Stats()$violin() + ggplot2::labs(tag = "C")
+pl <- lfqpro$get_Plotter()
 panelD <- pl$boxplots()$boxplot[[54]] + ggplot2::labs(tag = "D")
 ggpubr::ggarrange(panelA, panelB, panelC, panelD)
 
@@ -352,14 +352,14 @@ contrasts <- c(
   "dilution_(7.5/6)_1.25" =   "dilution.d - dilution.c"
 )
 ## fit model
-lmmodel <- paste(lfqp$response()," ~ dilution.")
+lmmodel <- paste(lfqpro$response()," ~ dilution.")
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "lm")
-models <- prolfqua::build_model(lfqp, modelFunction)
+models <- prolfqua::build_model(lfqpro, modelFunction)
 
 ## compute contrasts from linear model
 contr <- prolfqua::Contrasts$new(models, contrasts, modelName = "lm")
 # compute contrasts using imputation imputation
-conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts, modelName = "imp")
+conI <- prolfqua::ContrastsSimpleImpute$new( lfqpro, contrasts, modelName = "imp")
 # merge contrasts, to obtain differences for all proteins
 contrasts <- prolfqua::merge_contrasts_results(prefer = contr, add = conI)
 # moderate t-statistics and p-values
