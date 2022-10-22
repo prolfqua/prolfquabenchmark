@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -51,13 +51,22 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/BenchmarkMSFraggerProteinIonStar.html">Benchmarking MSFragger output using Ionstar Dataset</a>
+      <a href="articles/BenchmarkMSFraggerProteinIonStar.html">Benchmarking proDA and prolfqua using Ionstar Dataset and FragPipe v15 compbined_protein output</a>
+    </li>
+    <li>
+      <a href="articles/BenchmarkMSqRob2.html">Benchmarking the msqrob2 package using the Ionstar Dataset starting from peptides.txt</a>
     </li>
     <li>
       <a href="articles/Benchmark_MSStats.html">Benchmarking MSstats using the Ionstar Dataset</a>
     </li>
     <li>
+      <a href="articles/Benchmark_Model_IonStar_With2Factors.html">Modelling with Interactions</a>
+    </li>
+    <li>
       <a href="articles/Benchmark_SaintExpress.html">Benchmarking SaintExpress</a>
+    </li>
+    <li>
+      <a href="articles/Benchmark_cptac.html">Comparing msqrob2 proDA and prolfqua using the CPTAC dataset</a>
     </li>
     <li>
       <a href="articles/Benchmark_proDA_fromMQlfq.html">Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities</a>
@@ -66,10 +75,10 @@
       <a href="articles/Benchmark_proDA_medpolish.html">Benchmarking the proDA package using the Ionstar Dataset starting from peptides</a>
     </li>
     <li>
-      <a href="articles/BenchmarkingIonstarData.html">Benchmarking normalization, aggregation and models using the Ionstar Dataset</a>
+      <a href="articles/Benchmark_rlm.html">Benchmarking robust linear model using the Ionstar Dataset</a>
     </li>
     <li>
-      <a href="articles/paper.html">prolfqua&amp;colon; A Comprehensive R-package for Proteomics Differential Expression Analysis</a>
+      <a href="articles/BenchmarkingIonstarData.html">Benchmarking normalization, aggregation and models using the Ionstar Dataset</a>
     </li>
   </ul>
 </li>
@@ -93,27 +102,39 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
+<p>This github project has an accompanying website created with pkgdown. <a href="https://wolski.github.io/prolfquabenchmark/" class="external-link uri">https://wolski.github.io/prolfquabenchmark/</a></p>
 <div class="section level1">
-<div class="page-header"><h1 id="prolfquabenchmark---benchmarking-lfq-data-analysis-using-the-prolfqua-package">proLFQuaBenchmark - Benchmarking LFQ data analysis using the prolfqua package.<a class="anchor" aria-label="anchor" href="#prolfquabenchmark---benchmarking-lfq-data-analysis-using-the-prolfqua-package"></a>
+<div class="page-header"><h1 id="prolfquabenchmark---benchmarking-lfq-data-analysis-using-the-prolfqua-package">prolfquaBenchmark - Benchmarking LFQ data analysis using the prolfqua package.<a class="anchor" aria-label="anchor" href="#prolfquabenchmark---benchmarking-lfq-data-analysis-using-the-prolfqua-package"></a>
 </h1></div>
-<p>This package contains vignettes only. The vignettes show how we used benchmark datasets to asses the performance of the methods implemented in prolfqua and other packages. The results best be studied here by browsing the vignettes online : <a href="https://wolski.github.io/prolfquabenchmark/" class="external-link uri">https://wolski.github.io/prolfquabenchmark/</a>.</p>
+<p>The R package prolfquabenchmark contains vignettes which show how we used the IonStar dataset to asses the performance of the methods implemented in the <a href="https://github.com/fgcz/prolfqua" class="external-link">prolfqua</a> R packages and other packages (MSstats, proDA).</p>
+<ul>
+<li><a href="https://wolski.github.io/prolfquabenchmark/articles/BenchmarkMSFraggerProteinIonStar.html" class="external-link">Benchmarking MSFragger output using Ionstar Dataset</a></li>
+<li><a href="https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html" class="external-link">Benchmarking MSstats using the Ionstar Dataset</a></li>
+<li><a href="https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_fromMQlfq.html" class="external-link">Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities</a></li>
+<li><a href="https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html" class="external-link">Benchmarking the proDA package using the Ionstar Dataset starting from peptides</a></li>
+<li><a href="https://wolski.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html" class="external-link">Benchmarking normalization, aggregation and models using the Ionstar Dataset</a></li>
+</ul>
 <div class="section level2">
 <h2 id="how-to-install-and-generate-the-vignettes">How to install and generate the vignettes<a class="anchor" aria-label="anchor" href="#how-to-install-and-generate-the-vignettes"></a>
 </h2>
-<p>Download the latest prolfqua release from from <a href="https://github.com/wolski/prolfqua/releases" class="external-link uri">https://github.com/wolski/prolfqua/releases</a></p>
-<p>And then install it by running on the command:</p>
+<p>Download the latest <em>prolfqua</em> release from from <a href="https://github.com/fgcz/prolfqua/releases" class="external-link uri">https://github.com/fgcz/prolfqua/releases</a> And then install it by running on the command:</p>
 <pre><code>R CMD INSTALL prolfqua_X.Y.Z.tar.gz</code></pre>
 <p>Or in the R session:</p>
-<pre><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"prolfqua_X.Y.Z.tar.gz"</span>,repos <span class="op">=</span> <span class="cn">NULL</span>, type<span class="op">=</span><span class="st">"source"</span><span class="op">)</span></code></pre>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"prolfqua_X.Y.Z.tar.gz"</span>,repos <span class="op">=</span> <span class="cn">NULL</span>, type<span class="op">=</span><span class="st">"source"</span><span class="op">)</span></span></code></pre></div>
 <p>Afterwards you also will need to install the <code>prolfquadata</code> package</p>
-<pre><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'remotes'</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_gitlab.html" class="external-link">install_gitlab</a></span><span class="op">(</span><span class="st">"wolski/prolfquadata"</span>, host<span class="op">=</span><span class="st">"gitlab.bfabric.org"</span><span class="op">)</span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'remotes'</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_gitlab.html" class="external-link">install_gitlab</a></span><span class="op">(</span><span class="st">"wolski/prolfquadata"</span>, host<span class="op">=</span><span class="st">"gitlab.bfabric.org"</span><span class="op">)</span></span></code></pre></div>
 <p>Finally you can clone the repository and open it in RStudio and build the vignettes with</p>
-<pre class="{r}"><code><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/build_vignettes.html" class="external-link">build_vignettes</a></span><span class="op">(</span><span class="op">)</span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/build_vignettes.html" class="external-link">build_vignettes</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Or build them on the command line by running</p>
-<pre class="{r}"><code>R CMD build prolfquaBenchmark</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>R CMD build prolfquaBenchmark</span></code></pre></div>
 </div>
 </div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -160,7 +181,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

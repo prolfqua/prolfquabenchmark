@@ -7,10 +7,19 @@
     <loc>/articles/BenchmarkMSFraggerProteinIonStar.html</loc>
   </url>
   <url>
+    <loc>/articles/BenchmarkMSqRob2.html</loc>
+  </url>
+  <url>
     <loc>/articles/Benchmark_MSStats.html</loc>
   </url>
   <url>
+    <loc>/articles/Benchmark_Model_IonStar_With2Factors.html</loc>
+  </url>
+  <url>
     <loc>/articles/Benchmark_SaintExpress.html</loc>
+  </url>
+  <url>
+    <loc>/articles/Benchmark_cptac.html</loc>
   </url>
   <url>
     <loc>/articles/Benchmark_proDA_fromMQlfq.html</loc>
@@ -19,19 +28,22 @@
     <loc>/articles/Benchmark_proDA_medpolish.html</loc>
   </url>
   <url>
+    <loc>/articles/Benchmark_rlm.html</loc>
+  </url>
+  <url>
     <loc>/articles/BenchmarkingIonstarData.html</loc>
   </url>
   <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/paper.html</loc>
-  </url>
-  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
     <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/cptac_bench_preprocess.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
