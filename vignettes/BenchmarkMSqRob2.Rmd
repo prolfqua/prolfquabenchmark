@@ -258,7 +258,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
                                  p.value = pval,
                                  FDR = pval.adjusted  
 )
-benchmark2_msqrob <- prolfqua::make_benchmark(xdd, model_description = "msqrob", model_name = "msqrob")
+benchmark2_msqrob <- prolfqua::make_benchmark(xdd, model_description = "msqrob2", model_name = "msqrob2")
 ```
 
 ```{r eval=SAVE, include=FALSE}

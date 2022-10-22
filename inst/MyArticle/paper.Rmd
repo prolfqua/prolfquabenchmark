@@ -146,7 +146,7 @@ FDP &= \frac{FP}{TP + FP} = \frac{FP}{R}
 
 In order to compute the confusion matrices based on the $p$-value we first need to rescale it (see Equation \@ref(eq:scalepvalue)).
 
-By plotting the $TPR$ versus the $FPR$ we obtain the receiver operator characteristic curve (ROC curve) [@pROC2011]. The area under the curve ($AUC$) or partial areas under the curve ($pAUC$), at various values of the $FPR$, are measures of performance derived from the ROC curve. Using these measures, we can compare the performances of the statistics or the various models examined and test if these differences are statistically significant.
+By plotting the $TPR$ versus the $FPR$ we obtain the receiver operator characteristic curve (ROC curve) [@pROC2011]. The area under the curve ($AUC$) or partial areas under the curve ($pAUC$), at various values of the $FPR$, are measures of performance derived from the ROC curve. Using these measures, we can compare the performances of the statistics for a single model or the various models and test if the differences are statistically significant, using a test to compare ROC curves.
 
 
 ## Modelling
@@ -544,6 +544,7 @@ tmp <- kableExtra::kable(xMM,
 
 
 knitr::asis_output(stringr::str_replace(tmp, "HACKIT", "$^{a}$"))
+saveRDS(allBenchmarks, "allBenchmarks.RDS")
 
 ```
 
@@ -631,7 +632,7 @@ UML     &       Unified Modeling Language                  \\
 ## Session information {.unlisted .unnumbered}
 
 ```{r sessioninfo, echo=FALSE}
-sessionInfo()
+pander::pander(sessionInfo())
 ```
 
 

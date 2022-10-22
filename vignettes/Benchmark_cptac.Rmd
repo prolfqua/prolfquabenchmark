@@ -269,8 +269,8 @@ benchmark_msqrob <- prolfqua::make_benchmark(ttd$data,
                                                list(score = "t", desc = TRUE),
                                                list(score = "scaled.pval", desc = TRUE)
                                              ),  
-                                             model_description = "msqrob_QFeature",
-                                             model_name = "msqrob_QFeature",
+                                             model_description = "msqrob2_QFeature",
+                                             model_name = "msqrob2_QFeature",
                                              FDRvsFDP = list(list(score = "pval.adjusted", desc = FALSE))
                                              , hierarchy = c("name"), summarizeNA = "t"
 )
@@ -291,6 +291,10 @@ res$barp
 # Compare benchmark results.
 
 ```{r fig.cap="Comparing msqrob2, proda and prolfqua using the pAUC_{10}"}
+saveRDS(list(benchmark_msqrob = benchmark_msqrob,
+             benchmark_proDA = benchmark_proDA,
+             benchmark_merged = benchmark_merged),
+        file = "../inst/Benchresults/CPTAC_Benchmark.RDS")
 
 mrob <- benchmark_msqrob$pAUC_summaries()$ftable$content
 mrob$package <- "msqrob2"
@@ -306,7 +310,8 @@ all$what[all$what == "t"] <- "t_statistic"
 all$what[all$what == "scaled.pval"] <- "scaled.p.value"
 all$what[all$what == "logFC"] <- "diff"
 
-all |> ggplot(aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) + geom_bar(stat = "identity",  position = position_dodge()) 
+all |> ggplot(aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
+  geom_bar(stat = "identity",  position = position_dodge()) 
 
 ```
 
@@ -324,14 +329,13 @@ ttproda <- benchmark_proDA$data()
 ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.pval, partial.auc = c(1, 0.9))
 
 
-tmp <- c(msqrob_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua, progress = "none")$p.value,
-         msqrob_vs_proda = pROC::roc.test(ddmsqrob,ddproda, progress = "none")$p.value,
+tmp <- c(msqrob2_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua, progress = "none")$p.value,
+         msqrob2_vs_proda = pROC::roc.test(ddmsqrob,ddproda, progress = "none")$p.value,
          prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none")$p.value)
 
 ```
 
-We observe that for this benchmark data, the three packages perform similarly
-with the following results of the Bootstrap test for two ROC curves:
+We observe that for this benchmark data, there are no significant differences among the $AUC_{10}$ for the three packages. The Table \@ref(tab:shwoROCtestREsults) shows the results of the Bootstrap test for two ROC curves.
 
 ```{r shwoROCtestREsults}
 knitr::kable(data.frame(pROC_test = names(tmp), p.value = tmp), caption = "p-values for pairwise comparsions of partial AUC")
