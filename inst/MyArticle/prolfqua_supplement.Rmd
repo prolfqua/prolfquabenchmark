@@ -1,23 +1,42 @@
 ---
 title: "Supporting Information:\n prolfqua - A Comprehensive R-package for Proteomics Differential Expression Analysis"
 author: 
-  - Witold E. Wolski^[Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland] ^[Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland]
-  - Paolo Nanni$^*$
-  - Jonas Grossmann$^*$$^\dag$
-  - Maria d'Errico$^*$$^\dag$
-  - Ralph Schlapbach$^*$
-  - Christian Panse$^*$$^\dag$
-output: 
-  pdf_document:
-    keep_tex: yes
-    latex_engine: pdflatex
+  - name: Witold E. Wolski
+    affiliation:
+      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
+    email: wew@fgcz.ethz.ethz.ch
+  - name: Paolo Nanni
+    affiliation: Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+  - name: Jonas Grossmann
+    affiliation:
+      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
+  - name: Maria d'Errico
+    affiliation:
+      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
+  - name: Ralph Schlapbach
+    affiliation: Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+  - name: Christian Panse
+    affiliation:
+      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
+package: prolfqua
+output:
+  BiocStyle::pdf_document
 abstract: |
-  This document contains the supplements for the prolfqua manuscript available through \url{https://doi.org/10.1101/2022.06.07.494524 }.
-urlcolor: blue
-toc: true
-header-includes:
-  - \usepackage{pdfpages}
+  This document contains the supplements for the prolfqua manuscript available
+  through \url{https://doi.org/10.1101/2022.06.07.494524}.
+vignette: |
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+#bibliography: prolfqua.bib
 ---
+
 \renewcommand{\thepage}{S--\arabic{page}}
 \renewcommand{\tablename}{Supp. Table}
 \renewcommand{\figurename}{Supp. Figure}
@@ -25,19 +44,113 @@ header-includes:
 \newpage
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(error = TRUE)
-
+knitr::opts_chunk$set(echo = FALSE, error = FALSE, warning = FALSE, message = FALSE)
 ```
 
 
-# This
-# And that
-# And whatsoever
+# prolfqua Installation
 
-# R Session Information
+To install the `r BiocStyle::Githubpkg("fgcz/prolfqua")` package ([ACS_JPR](https://github.com/fgcz/prolfqua/releases/tag/v0.4.3) release), including all R package dependencies, execute in the R console:
 
-```{r sessioninfo, echo=FALSE}
+```{r installation, echo=TRUE, eval=FALSE}
+remotes::install_github("https://github.com/fgcz/prolfqua/releases/tag/v0.4.3",
+    dependencies = TRUE)
+```
+
+# Benchmarking msqrob2, proDA and prolfqua using the CPTAC dataset
+
+The Rmarkdown file with R code to execute the benchmarks is  [Benchmarking of msqrob2, prolfqua and proDA using the CPTAC dataset MaxQuant output](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_cptac.html) 
+
+
+
+
+# Benchmark Vignettes
+
+The R-markdown files with all the R code to run the benchmark for `r BiocStyle::Githubpkg("prolfqua")`, `r BiocStyle::Biocpkg("msqrob2")`, `BiocStyle::Biocpkg("MSStats")` and `BiocStyle::Biocpkg("proDA")` are available in the R package `r BiocStyle::Githubpkg('wolski/prolfquabenchmark')`. 
+
+To build the vignettes with the benchmarks execute the following commands in the R console:
+
+```{r installbenchmark, echo=TRUE, eval=FALSE}
+install.packages('remotes')
+remotes::install_gitlab("wolski/prolfquadata", host="gitlab.bfabric.org") # installs the data
+remotes::install_github("wolski/prolfquabenchmark", build_vignettes = TRUE, dependencies = TRUE)
+```
+
+Pre-build version of the vignettes are available:
+
+- [Benchmarking of methods implemented in prolfqua using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html) 
+- [Benchmarking of MSstats using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html) 
+- [Benchmarking of proDA  using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html) 
+- [Benchmarking of msqrob2  using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkMSqRob2.html)  
+- [Benchmarking of proDA and proflqua using IonStar dataset MSFragger IonQuant combined_protein.txt](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkMSFraggerProteinIonStar.html)
+
+
+
+
+# Creating a prolfqua configuration
+
+The following code demonstrates how we use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to analyze protein intensities reported in the MSFragger `combined_protein.tsv` file.
+First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_MSFragger_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object.
+Bottom-up proteomics data is hierarchical, i.e., a protein has peptides, peptides might be modified, etc. Therefore, the `AnalysisTableAnnotation` has a `hierarchy` field storing a list with an entry for each hierarchy level.
+Since `combined_portein.tsv` only holds protein level data, the hierarchy list has one element, and we use it to specify which column contains the protein identifiers. We also need to define which column contains the protein abundances we want to use for the data analysis.
+Finally, we have to specify which columns contain the explanatory variables of the analysis. The `AnalysisTableAnnotation` has the field `factors,` a list with as many entries as explanatory variables. Here we include two explanatory variables, the dilution, specified in the column 'sample', and 'run' stored in the column 'run_ID', representing the order of the measurement.
+
+
+```{r echo=TRUE}
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
+inputFragfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
+inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
+# read input annotation
+annotation <- readxl::read_xlsx(inputAnnotation)
+
+protein <- tibble::as_tibble(
+    read.csv(unz(inputFragfile,"IonstarWithMSFragger/combined_protein.tsv"),
+             header = TRUE, sep = "\t", stringsAsFactors = FALSE))
+
+# read combined_protein.tsv 
+protein <- prolfqua::tidy_FragPipe_combined_protein_deprec(protein)
+# remove proteins identified by a single peptide
+protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
+
+# annotate the data
+merged <- dplyr::inner_join(annotation, protein)
+atable <- prolfqua::AnalysisTableAnnotation$new()
+atable$fileName = "raw.file"
+# specify column containing protein identifiers
+atable$hierarchy[["protein_Id"]] = "protein"
+
+# column with protein abundances
+atable$set_response("total.intensity")
+
+# the factors of the analysis
+atable$factors[["dilution."]] = "sample"
+atable$factors[["run"]] = "run_ID"
+
+config <- prolfqua::AnalysisConfiguration$new(atable)
+
+adata <- prolfqua::setup_analysis(merged, config)
+lfqdata <- prolfqua::LFQData$new(adata, config)
+# show number of proteins in the dataset
+lfqdata$hierarchy_counts()
+
+```
+
+# Miscellaneous
+
+(ref:tabCompletion) The screenshot displays the command-line completion (tab completion) of RStudio on the `prolfqua::LFQData` R6 object. In the example, it shows the getter methods of the object.
+
+```{r tabCompletion, echo=FALSE, fig.cap="(ref:tabCompletion)", out.width = '66%'}
+knitr::include_graphics("graphics/codeSnippet1TabCompletion.png")
+```
+
+```{r proLFQuaSticker, echo=TRUE, out.height="5cm", eval=TRUE, fig.cap="Sticker maintainer: Witold E. Wolski; License: Creative Commons Attribution CC-BY. Feel free to share and adapt, but don't forget to credit the author."}
+file.path("graphics/hexStickerProlfqua.png") |>
+  knitr::include_graphics()
+```
+
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
 sessionInfo()
 ```
-
