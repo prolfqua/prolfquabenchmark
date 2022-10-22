@@ -42,6 +42,7 @@ c(a, b, c, d)
 First, we load the data and do the configuration.
 
 ```{r readAnnotation}
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
 
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 
