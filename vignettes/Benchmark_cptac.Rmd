@@ -28,8 +28,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # Introduction
 
-The r-package `r BiocStyle::Biocpkg("msdata")` msdata provides a subset of the data of the 6th study of the Clinical Proteomic Technology Assessment for Cancer (CPTAC).
-In this experiment, the Sigma Universal Protein Standard mixture 1 (UPS1) containing 48 different human proteins was spiked in a protein background of 60 ng/$\muL$ Saccharomyces cerevisiae strain BY4741. Two different spike-in concentrations were used, 6A ($0.25$ fmol UPS1 proteins/$\mu L$) and 6B ($0.74$ fmol UPS1 proteins/$\mu L$). Three replicates are available for each concentration.
+The r-package `r BiocStyle::Biocpkg("msdata")` msdata provides a subset of the data of the 6th study of the Clinical Proteomic Technology Assessment for Cancer (CPTAC). In this experiment, the Sigma Universal Protein Standard mixture 1 (UPS1) containing $48$ different human proteins was spiked in a protein background of 60 ng/$\mu L$ Saccharomyces cerevisiae strain BY4741. Two different spike-in concentrations were used, 6A ($0.25$ fmol UPS1 proteins/$\mu L$) and 6B ($0.74$ fmol UPS1 proteins/$\mu L$). Three replicates are available for each concentration.
 
 
 ```{r cars}
