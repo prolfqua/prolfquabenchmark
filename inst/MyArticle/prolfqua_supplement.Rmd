@@ -177,7 +177,6 @@ prolfqua$package <- "prolfqua"
 
 
 tmp <- dplyr::bind_rows(proda, prolfqua)
-tmp$what |> unique()
 tmp$what[tmp$what == "statistic"] <- "t_statistic"
 tmp$what[tmp$what == "scaled.pval"] <- "scaled.p.value"
 tmp <- tmp |> filter(contrast == "all")
