@@ -1,5 +1,5 @@
 ---
-title: "Benchmarking proDA and prolfqua using Ionstar Dataset and MSFragger IonQuant compbined_protein output"
+title: "Benchmarking proDA and prolfqua using Ionstar Dataset and FragPipe v15 compbined_protein output"
 author: "Witold E. Wolski"
 date: "`r Sys.Date()`"
 output:
@@ -10,7 +10,7 @@ output:
 papersize: a4
 geometry: margin=.5in
 vignette: >
-  %\VignetteIndexEntry{Benchmarking proDA and prolfqua using Ionstar Dataset and MSFragger IonQuant compbined_protein output} 
+  %\VignetteIndexEntry{Benchmarking proDA and prolfqua using Ionstar Dataset and FragPipe v15 compbined_protein output} 
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -134,21 +134,20 @@ cp$volcano()
 
 ```{r benchmark}
 ttd <- prolfqua::ionstar_bench_preprocess(mergedmod$get_contrasts())
-medpol_benchmark <- prolfqua::make_benchmark(ttd$data,
+benchmark_prolfqua <- prolfqua::make_benchmark(ttd$data,
                                              model_description = "MSFragger med. polish and lm. density",
                                              model_name = "MSFragger_prot_med_lm",
                                              FDRvsFDP = list(list(score = "FDR", desc = FALSE))
 )
 
-#saveRDS(medpol_benchmark, "../inst/Benchresults/MSFragger_medpol_benchmark.RDS")
 
-knitr::kable(medpol_benchmark$pAUC_summaries()$ftable$content)
+knitr::kable(benchmark_prolfqua$pAUC_summaries()$ftable$content)
 
 
-prolfqua::table_facade(medpol_benchmark$smc$summary, "Nr of estimated contrasts")
-medpol_benchmark$plot_score_distribution()
-medpol_benchmark$plot_ROC(0.05)
-medpol_benchmark$plot_FDRvsFDP()
+prolfqua::table_facade(benchmark_prolfqua$smc$summary, "Nr of estimated contrasts")
+benchmark_prolfqua$plot_score_distribution()
+benchmark_prolfqua$plot_ROC(0.05)
+benchmark_prolfqua$plot_FDRvsFDP()
 
 ```
 
@@ -206,7 +205,7 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 
 knitr::kable(benchmark_proDA$pAUC_summaries()$ftable$content)
 
-prolfqua::table_facade(medpol_benchmark$smc$summary, "Nr of estimated contrasts")
+prolfqua::table_facade(benchmark_prolfqua$smc$summary, "Nr of estimated contrasts")
 
 benchmark_proDA$plot_score_distribution()
 benchmark_proDA$plot_ROC(0.05)
@@ -217,13 +216,16 @@ benchmark_proDA$plot_FDRvsFDP()
 
 # Compare prolfqua and proda
 
-Direct comparison with msqrob2 is not possible since to fit the dropout model also the peptide intensities are required.
+Direct comparison with msqrob2 is impossible since, to fit the dropout model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file.
 
 ```{r}
 
+saveRDS(list(benchmark_proDA = benchmark_proDA, benchmark_prolfqua = benchmark_prolfqua)
+  ,"../inst/Benchresults/FragPipev15_comb_prot.RDS")
+
 proda <- benchmark_proDA$pAUC_summaries()$ftable$content
 proda$package <- "proda"
-prolfqua <- medpol_benchmark$pAUC_summaries()$ftable$content
+prolfqua <- benchmark_prolfqua$pAUC_summaries()$ftable$content
 prolfqua$package <- "prolfqua"
 
 tmp <- dplyr::bind_rows(proda, prolfqua)

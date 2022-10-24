@@ -1,23 +1,42 @@
 ---
 title: "Supporting Information:\n prolfqua - A Comprehensive R-package for Proteomics Differential Expression Analysis"
 author: 
-  - Witold E. Wolski^[Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland] ^[Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland]
-  - Paolo Nanni$^*$
-  - Jonas Grossmann$^*$$^\dag$
-  - Maria d'Errico$^*$$^\dag$
-  - Ralph Schlapbach$^*$
-  - Christian Panse$^*$$^\dag$
-output: 
-  pdf_document:
-    keep_tex: yes
-    latex_engine: pdflatex
+  - name: Witold E. Wolski
+    affiliation:
+      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
+    email: wew@fgcz.ethz.ethz.ch
+  - name: Paolo Nanni
+    affiliation: Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+  - name: Jonas Grossmann
+    affiliation:
+      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
+  - name: Maria d'Errico
+    affiliation:
+      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
+  - name: Ralph Schlapbach
+    affiliation: Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+  - name: Christian Panse
+    affiliation:
+      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
+package: prolfqua
+output:
+  BiocStyle::pdf_document
 abstract: |
-  This document contains the supplements for the prolfqua manuscript available through \url{https://doi.org/10.1101/2022.06.07.494524 }.
-urlcolor: blue
-toc: true
-header-includes:
-  - \usepackage{pdfpages}
+  This document contains the supplements for the prolfqua manuscript available
+  through \url{https://doi.org/10.1101/2022.06.07.494524}.
+vignette: |
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+#bibliography: prolfqua.bib
 ---
+
 \renewcommand{\thepage}{S--\arabic{page}}
 \renewcommand{\tablename}{Supp. Table}
 \renewcommand{\figurename}{Supp. Figure}
@@ -25,19 +44,254 @@ header-includes:
 \newpage
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(error = TRUE)
+knitr::opts_chunk$set(echo = FALSE, error = FALSE, warning = FALSE, message = FALSE)
+```
+
+
+# prolfqua Installation
+
+To install the `r BiocStyle::Githubpkg("fgcz/prolfqua")` package ([ACS_JPR](https://github.com/fgcz/prolfqua/releases/tag/v0.4.3) release), including all R package dependencies, execute in the R console:
+
+```{r installation, echo=TRUE, eval=FALSE}
+remotes::install_github("https://github.com/fgcz/prolfqua/releases/tag/v0.4.5",
+    dependencies = TRUE, build_vignettes=TRUE)
+```
+
+The R-markdown files with all the R code to run the benchmark for `r BiocStyle::Githubpkg("prolfqua")`, `r BiocStyle::Biocpkg("msqrob2")`, `BiocStyle::Biocpkg("MSStats")` and `BiocStyle::Biocpkg("proDA")` are available in the R package `r BiocStyle::Githubpkg('wolski/prolfquabenchmark')`. 
+
+```{r installation2, echo=TRUE, eval=FALSE}
+remotes::install_gitlab("wolski/prolfquadata", host="gitlab.bfabric.org")
+remotes::install_github("https://github.com/wolski/prolfquabenchmark",
+    dependencies = TRUE, build_vignettes=TRUE)
+```
+
+# Comparing partial areas under the curve at 0.1 FDR for Ionstar/MaxQuant dataset
+
+Here we test if we should reject the null hypothesis that the area under the ROC curve at 0.1 FDR does not differ for 
+msqrob2, proDA, and prolfqua when computed based on scaled p.values. To this task we use the function roc.test from the R package `r BiocStyle::CRANpkg("pROC")`.
+
+
+```{r roctest, include = FALSE, eval = TRUE}
+allBenchmarks <- readRDS("allBenchmarks.RDS")
+ttmsqrob <- allBenchmarks$benchmark_msqrob$data()
+ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.p.value, partial.auc = c(1, 0.9))
+
+ttprolfqua <- allBenchmarks$benchmark_merged$data()
+ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
+ttproda <- allBenchmarks$benchmark_proDA$data()
+ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.p.value, partial.auc = c(1, 0.9))
+
+tmp <- c(msqrob2_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua, progress = "none")$p.value,
+         msqrob2_vs_proda = pROC::roc.test(ddmsqrob,ddproda, progress = "none")$p.value,
+         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none")$p.value)
+
+```
+
+The Table \@ref(tab:shwoROCtestREsultsIonStarMQ) shows the p-values of the bootstrap test for two ROC curves. We observe that for this benchmark data, there are no significant differences among the $AUC_{10}$ for the three packages. 
+
+```{r shwoROCtestREsultsIonStarMQ}
+cap = "p-values for pairwise comparsions of partial AUC at 0.1 for msqrob2, proDA and prolfqua for IonStar MaxQuant data."
+knitr::kable(tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
+
+```
+
+# Benchmarking msqrob2, proDA and prolfqua using the CPTAC dataset
+
+The Rmarkdown file which created these results, with more details about the CPTAC / MaxQuant dataset, can be found here:
+["Benchmarking of msqrob2, prolfqua and proDA using the CPTAC dataset MaxQuant output"](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_cptac.html) 
+
+```{r}
+getpath <- function(filN){
+    f1 <- paste0("../../inst/Benchresults/",filN)
+    if (f1 == "") {
+        f1 <- system.file("Benchresults",filN, package = "prolfquabenchmark")
+    }
+    message(f1)
+    return(f1)
+}
+CPTACBenchmarks <- readRDS(getpath("CPTAC_Benchmark.RDS"))
+mrob <- CPTACBenchmarks$benchmark_msqrob$pAUC_summaries()$ftable$content
+mrob$package <- "msqrob2"
+proda <- CPTACBenchmarks$benchmark_proDA$pAUC_summaries()$ftable$content
+proda$package <- "proDA"
+prolfqua <- CPTACBenchmarks$benchmark_merged$pAUC_summaries()$ftable$content
+prolfqua$package <- "prolfqua"
+
+all <- dplyr::bind_rows(list(mrob, proda, prolfqua))
+all <- all |> filter(contrast == "b_vs_a")
+all$what[all$what == "statistic"] <- "t_statistic"
+all$what[all$what == "t"] <- "t_statistic"
+all$what[all$what == "scaled.pval"] <- "scaled.p.value"
+all$what[all$what == "logFC"] <- "diff"
+
+```
+
+Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("proDA")` and `r BiocStyle::Githubpkg("fgcz/prolfqua")`.
+
+```{r plotCPTACbarplot, fig.cap= "Barplot showing the partial area under the ROC at 0.1 FDR."}
+all |> ggplot(aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
+  geom_bar(stat = "identity",  position = position_dodge()) 
+
+```
+
+```{r roctestCPTAC, include = TRUE, message=FALSE, error=FALSE}
+
+ttmsqrob <- CPTACBenchmarks$benchmark_msqrob$data()
+ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.pval, partial.auc = c(1, 0.9))
+ttprolfqua <- CPTACBenchmarks$benchmark_merged$data()
+ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
+ttproda <- CPTACBenchmarks$benchmark_proDA$data()
+ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.pval, partial.auc = c(1, 0.9))
+
+
+tmp <- c(msqrob2_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua, progress = "none")$p.value,
+         msqrob2_vs_proda = pROC::roc.test(ddmsqrob,ddproda, progress = "none")$p.value,
+         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none")$p.value)
+
+```
+
+Table \@ref(tab:shwoROCtestREsultsCPTAC) shows the results of the Bootstrap test for two ROC curves. 
+We observe that for this benchmark data, there are no significant differences among the $AUC_{10}$ for the three packages. 
+
+```{r shwoROCtestREsultsCPTAC}
+cap = "p-values for pairwise comparsions of partial AUC for msqrob2, proDA and prolfqua CPTAC/MaxQuant data."
+knitr::kable(tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
+
+```
+
+# Benchmark IonQuant FragPipe v15 combined_protein.tsv
+
+
+The Rmarkdown file which created these results, with more details about the IonQuant FragPipe v15 dataset, can be found here:
+["Benchmarking proDA and prolfqua using Ionstar Dataset and FragPipe v15 compbined_protein output"](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_cptac.html) 
+
+Direct comparison with `msqrob2` is impossible since, to fit the dropout model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file.
+
+
+```{r FragPipe}
+FragPipeBenchmarks <- readRDS(getpath("FragPipev15_comb_prot.RDS"))
+proda <- FragPipeBenchmarks$benchmark_proDA$pAUC_summaries()$ftable$content
+proda$package <- "proDA"
+prolfqua <- FragPipeBenchmarks$benchmark_prolfqua$pAUC_summaries()$ftable$content
+prolfqua$package <- "prolfqua"
+
+
+tmp <- dplyr::bind_rows(proda, prolfqua)
+tmp$what[tmp$what == "statistic"] <- "t_statistic"
+tmp$what[tmp$what == "scaled.pval"] <- "scaled.p.value"
+tmp <- tmp |> filter(contrast == "all")
+```
+
+Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("proDA")` and `r BiocStyle::Githubpkg("fgcz/prolfqua")`.
+
+```{r plotFragPipebarplot, fig.cap= "Barplot showing the partial area under the ROC at 0.1 FDR."}
+tmp |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
+  ggplot2::geom_bar(stat = "identity",  position = ggplot2::position_dodge()) +
+  ggplot2::facet_wrap(~ contrast) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+```
+
+```{r roctestFRAGPIPE, include = TRUE, message=FALSE, error=FALSE}
+
+ttprolfqua <- FragPipeBenchmarks$benchmark_prolfqua$data()
+ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
+ttproda <- FragPipeBenchmarks$benchmark_proDA$data()
+ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.pval, partial.auc = c(1, 0.9))
+
+
+tmp <- c(prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none")$p.value)
+
+```
+
+Table \@ref(tab:shwoROCtestREsultsFRAGPIPE) shows the results of the Bootstrap test for the difference of two ROC curves. We observe that for this benchmark data, there are no significant differences among the $AUC_{10}$ for the two packages. 
+
+```{r shwoROCtestREsultsFRAGPIPE}
+cap = "p-values for pairwise comparsions of partial AUC for msqrob2, proDA and prolfqua CPTAC/MaxQuant data."
+knitr::kable(tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
 
 ```
 
 
-# This
-# And that
-# And whatsoever
+# Benchmark Vignettes
 
-# R Session Information
+Pre-build version of the vignettes are available:
 
-```{r sessioninfo, echo=FALSE}
-sessionInfo()
+- [Benchmarking of methods implemented in prolfqua using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html) 
+- [Benchmarking of MSstats using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html) 
+- [Benchmarking of proDA  using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html) 
+- [Benchmarking of msqrob2  using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkMSqRob2.html)  
+- [Benchmarking of proDA and proflqua using IonStar dataset MSFragger IonQuant combined_protein.txt](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkMSFraggerProteinIonStar.html)
+
+
+
+
+# Creating a prolfqua configuration
+
+The following code demonstrates how we use `r BiocStyle::Githubpkg("fgcz/prolfqua")` to analyze protein intensities reported in the MSFragger `combined_protein.tsv` file.
+First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_MSFragger_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object.
+Bottom-up proteomics data is hierarchical, i.e., a protein has peptides, peptides might be modified, etc. Therefore, the `AnalysisTableAnnotation` has a `hierarchy` field storing a list with an entry for each hierarchy level.
+Since `combined_portein.tsv` only holds protein level data, the hierarchy list has one element, and we use it to specify which column contains the protein identifiers. We also need to define which column contains the protein abundances we want to use for the data analysis.
+Finally, we have to specify which columns contain the explanatory variables of the analysis. The `AnalysisTableAnnotation` has the field `factors,` a list with as many entries as explanatory variables. Here we include two explanatory variables, the dilution, specified in the column 'sample', and 'run' stored in the column 'run_ID', representing the order of the measurement.
+
+
+```{r echo=TRUE}
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
+inputFragfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
+inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
+# read input annotation
+annotation <- readxl::read_xlsx(inputAnnotation)
+
+protein <- tibble::as_tibble(
+    read.csv(unz(inputFragfile,"IonstarWithMSFragger/combined_protein.tsv"),
+             header = TRUE, sep = "\t", stringsAsFactors = FALSE))
+
+# read combined_protein.tsv 
+protein <- prolfqua::tidy_FragPipe_combined_protein_deprec(protein)
+# remove proteins identified by a single peptide
+protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
+
+# annotate the data
+merged <- dplyr::inner_join(annotation, protein)
+atable <- prolfqua::AnalysisTableAnnotation$new()
+atable$fileName = "raw.file"
+# specify column containing protein identifiers
+atable$hierarchy[["protein_Id"]] = "protein"
+
+# column with protein abundances
+atable$set_response("total.intensity")
+
+# the factors of the analysis
+atable$factors[["dilution."]] = "sample"
+atable$factors[["run"]] = "run_ID"
+
+config <- prolfqua::AnalysisConfiguration$new(atable)
+
+adata <- prolfqua::setup_analysis(merged, config)
+lfqdata <- prolfqua::LFQData$new(adata, config)
+# show number of proteins in the dataset
+lfqdata$hierarchy_counts()
+
 ```
 
+
+
+# Miscellaneous
+
+(ref:tabCompletion) The screenshot displays the command-line completion (tab completion) of RStudio on the `prolfqua::LFQData` R6 object. In the example, it shows the getter methods of the object.
+
+```{r tabCompletion, echo=FALSE, fig.cap="(ref:tabCompletion)", out.width = '66%'}
+knitr::include_graphics("graphics/codeSnippet1TabCompletion.png")
+```
+
+```{r proLFQuaSticker, echo=TRUE, out.height="5cm", eval=TRUE, fig.cap="Sticker maintainer: Witold E. Wolski; License: Creative Commons Attribution CC-BY. Feel free to share and adapt, but don't forget to credit the author."}
+file.path("graphics/hexStickerProlfqua.png") |>
+  knitr::include_graphics()
+```
+
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+pander::pander(sessionInfo())
+```
