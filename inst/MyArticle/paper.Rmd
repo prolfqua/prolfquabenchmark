@@ -171,7 +171,7 @@ For the Ionstar dataset, we used the intensities of _H. sapiens_ proteins, whose
 
 ### Estimating differences between groups
 
-Given a linear model $y = \beta X$, we can compute the difference $\beta_{c}$ between two groups by a linear combination $c$ of linear model parameters $\beta$, where $c$ is a column vector with as many elements as there are coefficients $\beta$ in the linear model. If $c$ has $0$ for one or more of its rows, then the corresponding coefficient in $\beta$ is not involved in determining the contrast [@ph525xseries].
+Given a linear model $y = \beta X$, we can compute the difference $\beta_{c}$ between two groups by a linear combination of weights $c$ and model parameters $\beta$, where $c$ is a column vector with as many elements as there are coefficients $\beta$ in the linear model. If $c$ has $0$ for one or more of its rows, then the corresponding coefficient in $\beta$ is not involved in determining the contrast [@ph525xseries].
 
 The difference estimate $\beta_c$, is given by the dot product:
 
@@ -189,18 +189,15 @@ with $X$ being the design matrix. The degrees of freedom for the contrast are eq
 
 The package `r BiocStyle::Githubpkg("fgcz/prolfqua")` provides functions to determine the vector of $parameter$ weights $c$, from a linear model and a contrast specification string.
 
-
-
-
-The linear model explains the observed protein abundances using the explanatory variables `condition_` and `batch_` and the interaction term  `condition_:batch_`. The treatment difference among the groups `Ethanol` and `Glucose` defined by the factor `condition`, and similarly among the groups defined by `batch_`, can be specified. Furthermore, the treatment differences among `Ethanol` and `Glucose` within the batches `p2370` and `p2691` can be specified. Finally, we can examine if the treatment differences in both batches are the same or are different. The code to compute the array of weights $c$ used to multiply the model coefficient $\beta$, to obtain the effect size estimates, and the variance of the estimate, is shown below:
-
-
+The following code illustrates how to specify a model with two factors and an interaction term and define the differences we want to estimate. The example dataset was acquired in two batches (p2370, p2691). In each, we measured Yeast samples grown under two different conditions (Glucose and Ethanol). This example is taken from the `r BiocStyle::Githubpkg("fgcz/prolfqua")` package vignette file. To estimate treatment differences, we first specify the linear model that explains the observed protein abundances (transformedIntensities) using the explanatory variables `condition_` and `batch_` and the interaction term  `condition_:batch_`. Then, after fitting the model, we can estimate the treatment difference among the groups `Ethanol` and `Glucose` defined by the factor `condition` and similarly among the groups defined by `batch_`. Furthermore, we can examine differences between `Ethanol` and `Glucose` within each batch. We also can assess if these differences are the same or are different in both batches, i.e., if there is an interaction between condition and batch. We also show the code to compute the array of weights $c$ used to multiply the model coefficient $\beta$.
 
 ```{r contrast2, eval = TRUE, echo = TRUE}
+
+Yeast2Factor <- prolfqua::prolfqua_data("data_Yeast2Factor")
+Yeast2Factor$data |> dplyr::select(condition_, batch_) |> dplyr::distinct()
 mlm <- prolfqua::strategy_lm(
   transformedIntensity ~ condition_ + batch_ + condition_:batch_
   )
-Yeast2Factor <- prolfqua::prolfqua_data("data_Yeast2Factor")
 mm <- prolfqua::build_model(Yeast2Factor$data, mlm, subject_Id = "protein_Id")
 
 Contrasts <- c(
@@ -213,17 +210,14 @@ Contrasts <- c(
 linfct <- prolfqua::linfct_from_model(mm$modelDF$linear_model[[1]],
                                       as_list = FALSE)
 mC <- prolfqua::linfct_matrix_contrasts(linfct, Contrasts)
-
 ```
 
 Table \@ref(tab:contrcoefficient) shows weights $c$ for each of the five contrasts we specified.
 
 ```{r contrcoefficient}
 knitr::kable(mC, caption = "Weights $c$ for each of the contrasts (rows) which will be applied to the model parameter (columns).",format = "latex")
-
 ```
 
-This example is taken from the `r BiocStyle::Githubpkg("fgcz/prolfqua")` package vignette file.
 Given the weights $c$ contrasts from model parameter estimates obtained with `r BiocStyle::Biocpkg('proDA')`, or `r BiocStyle::Biocpkg('msqrob2')` can be determined, by this enabling us to call these packages using the same application programming interface (API).
 
 ### Contrast estimation in presence of missing data.
@@ -231,9 +225,9 @@ Given the weights $c$ contrasts from model parameter estimates obtained with `r 
 Missing observations lead to different group sizes, which results in unbalanced designs. Linear and mixed effect models can handle unbalanced designs. As long as at least one observation in a group is available, and sufficient observations to estimate the variance are available, they will produce unbiased estimates. Therefore, no imputation is needed.
 
 However, if there is no observation in a group, the model fit fails. For example, suppose a protein is unobserved in all the samples of a group. In that case, a plausible explanation is that the protein abundance is below the limit of detection (LOD) of the MS instrument. In such a case, we will substitute the group mean, using the expected protein abundance $A$ at the LOD $A_{LOD}$.
-To estimate $A_{LOD}$ we are using the abundances from those groups where the protein was unobserved except for one sample. Typically there are many such cases, and hence we take the median.
+To estimate $A_{LOD}$ we are using the protein abundances of those groups where the protein was observed in only a single sample. Typically there are many such cases, and hence we take the median.
 
-When computing differences $\Delta$ among two groups $a$ and $b$, we will use either the group mean $\bar{a}$ or $\bar{b}$ estimated from the data. However, if for instance no observations are present in group $b$, we will use $\bar{b} = A_{LOD}$. Furthermore, if $\bar{a} < A_{LOD}$ we also set $\bar{a} = A_{LOD}$.
+When computing differences $\Delta$ among two groups $a$ and $b$, we will use either the group mean $\bar{a}$ or $\bar{b}$ estimated from the data. However, if for instance no observations are present in group $b$, we will use $\bar{b} = A_{LOD}$. Furthermore, if $\bar{a} < A_{LOD}$ we also set $\bar{a} = A_{LOD}$, or more formally:
 
 $$
 \Delta = 
@@ -242,8 +236,6 @@ $$
 0  &\text{if} ~~ \bar{a} < A_{LOD}.
 \end{cases}
 $$
-
-
 We use the pooled variance in all groups to estimate the protein variance, assuming they are the same. The pooled variance $s_p^2$ is given by:
 
 \begin{equation} 
@@ -377,12 +369,14 @@ volcano <- pl$volcano()$FDR +
 gridExtra::grid.arrange(histpval, maplot, volcano, layout_matrix = rbind(c(1,3),c(2,3)))
 ```
 
-R linear model and linear mixed effect models allow modeling parallel designs, repeated measurements, factorial designs, and many more. 
-Models in `r BiocStyle::Githubpkg("fgcz/prolfqua")` are specified using R’s linear model and mixed model formula interface. Therefore, knowledge of the R regression model infrastructure [@faraway2016extending; @MASS2002] is advantageous when using our package. Furthermore, this glass box approach should make it easy to reimplement an analysis performed with `r BiocStyle::Githubpkg("fgcz/prolfqua")` using base R or other programming languages by reading the analysis script.
+R linear model and linear mixed effect models allow modeling parallel designs, repeated measurements, factorial designs, and many more. Models in `r BiocStyle::Githubpkg("fgcz/prolfqua")` are specified using R's linear model and mixed model formula interface. Therefore, knowledge of the R regression model infrastructure [@faraway2016extending; @MASS2002] is advantageous when using our package. Furthermore, this glass box approach should make it easy to reimplement an analysis performed with `r BiocStyle::Githubpkg("fgcz/prolfqua")` using base R or other programming languages by reading the analysis script.
+However, in the package documentation, we showcase how a user, without this knowledge, can analyze experiments with a parallel group design and a factorial design.
 
 Using the data frame of tidy data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")` [@quast2022protti]. To simplify integration of `r BiocStyle::Githubpkg("fgcz/prolfqua")` with Bioconductor based workflows there is a method to convert the `LFQData` class into a `r BiocStyle::Biocpkg("SummarizedExperiment")`. The use of R6 classes, which encapsulate the configuration and the data, allows for writing very concise code, where functions can have few arguments. Auto-completion support for R6 classes in the Rstudio editor makes it easy for novices to explore `r BiocStyle::Githubpkg("fgcz/prolfqua")`s functionality (see Supplementary Figure S[X]). 
 
-To ease the usage barriers of the R package to users not familiar with statistics and R programming, we developed an application based on the prolfqua package into our data management platform [B-Fabric](https://fgcz-bfabric.uzh.ch/) [@bfabric,@bfabricjib2022]. The B-Fabric system runs a computing infrastructure controlled by a local resource management system that supports cloud-bursting [@VMMAD]. This integration enables users to select the input data and basic settings in a graphical user interface. We determine the model formula and which comparisons to compute from the sample annotation provided in tabular form, similarly to SAINTexpress and `r BiocStyle::Biocpkg("MSstats")`. However, only parallel group designs with and without repeated measurements are analyzed. The user receives a report including input files, the R markdown file, and R scripts necessary to replicate the analysis using their in-house R installation. In this way, [B-Fabric](https://fgcz-bfabric.uzh.ch/) helps scientists to meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable, and Reusable) [@FAIR] data principles. We are working on creating a stand-alone shiny application with the described functionality.
+To further lower the usage barriers of the R package to users not familiar with statistics and R programming, we developed an application based on the prolfqua package into our data management platform [B-Fabric](https://fgcz-bfabric.uzh.ch/) [@bfabric,@bfabricjib2022]. The B-Fabric system runs a computing infrastructure controlled by a local resource management system that supports cloud-bursting [@VMMAD]. This integration enables users to select the input data and basic settings in a graphical user interface (GUI). 
+
+In this GUI application, we determine the model formula and which comparisons to compute from the sample annotation provided in tabular form, similarly to SAINTexpress and `r BiocStyle::Biocpkg("MSstats")`. However, this application can analyze only parallel group designs with and without repeated measurements or factorial designs without interactions. The user receives a report including input files, the R markdown file, and R scripts necessary to replicate the analysis using their in-house R installation. In this way, `r BiocStyle::Githubpkg(`fgcz/prolfqua`)` and [B-Fabric](https://fgcz-bfabric.uzh.ch/) and helps scientists to meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable, and Reusable) [@FAIR] data principles. We are working on creating a shiny stand-alone application with the described functionality and making it available soon.
 
 ## Benchmarking modelling approaches
 
