@@ -66,7 +66,7 @@ remotes::install_github("https://github.com/wolski/prolfquabenchmark",
 
 # Comparing partial areas under the curve at 0.1 FDR for Ionstar/MaxQuant dataset
 
-In the code snippet below, we we test if we should reject the null hypothesis that the area under the ROC curve at 0.1 FDR does not differ for  msqrob2, proDA, and prolfqua when computed based on scaled p.values. To this task we use the function roc.test from the R package `r BiocStyle::CRANpkg("pROC")`.
+In the code snippet below, we test if we should reject the null hypothesis that the area under the ROC curve at 0.1 FDR does not differ for  msqrob2, proDA, and prolfqua when computed based on scaled p.values. To this task we use the function roc.test from the R package `r BiocStyle::CRANpkg("pROC")`.
 
 ```{r roctest, include = TRUE, eval = TRUE, echo=TRUE}
 ## read pre-processed benchmarks from prolfquabenchmark install
