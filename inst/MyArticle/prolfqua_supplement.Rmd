@@ -47,7 +47,6 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE, error = FALSE, warning = FALSE, message = FALSE)
 ```
 
-
 # prolfqua Installation
 
 To install the `r BiocStyle::Githubpkg("fgcz/prolfqua")` package ([ACS_JPR](https://github.com/fgcz/prolfqua/releases/tag/v0.4.3) release), including all R package dependencies, execute in the R console:
@@ -57,7 +56,7 @@ remotes::install_github("https://github.com/fgcz/prolfqua/releases/tag/v0.4.5",
     dependencies = TRUE, build_vignettes=TRUE)
 ```
 
-The R-markdown files with all the R code to run the benchmark for `r BiocStyle::Githubpkg("prolfqua")`, `r BiocStyle::Biocpkg("msqrob2")`, `BiocStyle::Biocpkg("MSStats")` and `BiocStyle::Biocpkg("proDA")` are available in the R package `r BiocStyle::Githubpkg('wolski/prolfquabenchmark')`. 
+The R-markdown files with all the R code to run the benchmark for `r BiocStyle::Githubpkg("prolfqua")`, `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("MSStats")` and `r `BiocStyle::Biocpkg("proDA")` are available through the R package `r BiocStyle::Githubpkg('wolski/prolfquabenchmark')`. 
 
 ```{r installation2, echo=TRUE, eval=FALSE}
 remotes::install_gitlab("wolski/prolfquadata", host="gitlab.bfabric.org")
@@ -67,32 +66,43 @@ remotes::install_github("https://github.com/wolski/prolfquabenchmark",
 
 # Comparing partial areas under the curve at 0.1 FDR for Ionstar/MaxQuant dataset
 
-Here we test if we should reject the null hypothesis that the area under the ROC curve at 0.1 FDR does not differ for 
-msqrob2, proDA, and prolfqua when computed based on scaled p.values. To this task we use the function roc.test from the R package `r BiocStyle::CRANpkg("pROC")`.
+In the code snippet below, we we test if we should reject the null hypothesis that the area under the ROC curve at 0.1 FDR does not differ for  msqrob2, proDA, and prolfqua when computed based on scaled p.values. To this task we use the function roc.test from the R package `r BiocStyle::CRANpkg("pROC")`.
 
+```{r roctest, include = TRUE, eval = TRUE, echo=TRUE}
+## read pre-processed benchmarks from prolfquabenchmark install
+allBenchmarks <- system.file(package = "prolfquabenchmark") |>
+  file.path('MyArticle') |> 
+  file.path('allBenchmarks.RDS') |> 
+  readRDS("allBenchmarks.RDS")
 
-```{r roctest, include = TRUE, eval = TRUE}
-allBenchmarks <- readRDS("allBenchmarks.RDS")
 ttmsqrob <- allBenchmarks$benchmark_msqrob$data()
-ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.p.value, partial.auc = c(1, 0.9))
+ddmsqrob <- pROC::roc(ttmsqrob$TP,
+                      ttmsqrob$scaled.p.value,
+                      partial.auc = c(1, 0.9))
 
 ttprolfqua <- allBenchmarks$benchmark_merged$data()
-ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
+ddprolfqua <- pROC::roc(ttprolfqua$TP,
+                        ttprolfqua$scaled.p.value,
+                        partial.auc = c(1, 0.9))
+
 ttproda <- allBenchmarks$benchmark_proDA$data()
-ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.p.value, partial.auc = c(1, 0.9))
+ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.p.value,
+                     partial.auc = c(1, 0.9))
 
-tmp <- c(msqrob2_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua, progress = "none")$p.value,
-         msqrob2_vs_proda = pROC::roc.test(ddmsqrob,ddproda, progress = "none")$p.value,
-         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none")$p.value)
-
+## compose table1
+table1 <- c(msqrob2_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua,
+                                              progress = "none")$p.value,
+         msqrob2_vs_proda = pROC::roc.test(ddmsqrob,ddproda,
+                                           progress = "none")$p.value,
+         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda,
+                                            progress = "none")$p.value)
 ```
 
 The Table \@ref(tab:shwoROCtestREsultsIonStarMQ) shows the p-values of the bootstrap test for two ROC curves. We observe that for this benchmark data, there are no significant differences among the $AUC_{10}$ for the three packages. 
 
 ```{r shwoROCtestREsultsIonStarMQ}
 cap = "p-values for pairwise comparsions of partial AUC at 0.1 for msqrob2, proDA and prolfqua for IonStar MaxQuant data."
-knitr::kable(tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
-
+knitr::kable(dplyr::tibble(pROC_test = names(table1), p.value = round(table1, digits = 2)), format = "latex", caption = cap)
 ```
 
 # Benchmarking msqrob2, proDA and prolfqua using the CPTAC dataset
@@ -101,13 +111,10 @@ The Rmarkdown file which created these results, with more details about the CPTA
 ["Benchmarking of msqrob2, prolfqua and proDA using the CPTAC dataset MaxQuant output"](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_cptac.html) 
 
 ```{r}
-getpath <- function(filN){
-    f1 <- paste0("../../inst/Benchresults/",filN)
-    if (f1 == "") {
-        f1 <- system.file("Benchresults",filN, package = "prolfquabenchmark")
-    }
-    message(f1)
-    return(f1)
+getpath <- function(f){
+    fp <- system.file("Benchresults", package = "prolfquabenchmark", f)
+    stopifnot(file.exists(fp))
+    fp
 }
 CPTACBenchmarks <- readRDS(getpath("CPTAC_Benchmark.RDS"))
 mrob <- CPTACBenchmarks$benchmark_msqrob$pAUC_summaries()$ftable$content
@@ -123,7 +130,6 @@ all$what[all$what == "statistic"] <- "t_statistic"
 all$what[all$what == "t"] <- "t_statistic"
 all$what[all$what == "scaled.pval"] <- "scaled.p.value"
 all$what[all$what == "logFC"] <- "diff"
-
 ```
 
 Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("proDA")` and `r BiocStyle::Githubpkg("fgcz/prolfqua")`.
@@ -131,36 +137,38 @@ Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r
 ```{r plotCPTACbarplot, fig.cap= "Barplot showing the partial area under the ROC at 0.1 FDR."}
 all |> ggplot(aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
   geom_bar(stat = "identity",  position = position_dodge()) 
-
 ```
 
 ```{r roctestCPTAC, include = TRUE, message=FALSE, error=FALSE}
-
 ttmsqrob <- CPTACBenchmarks$benchmark_msqrob$data()
-ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.pval, partial.auc = c(1, 0.9))
+ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.pval,
+                      partial.auc = c(1, 0.9))
 ttprolfqua <- CPTACBenchmarks$benchmark_merged$data()
-ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
+ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value,
+                        partial.auc = c(1, 0.9))
 ttproda <- CPTACBenchmarks$benchmark_proDA$data()
-ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.pval, partial.auc = c(1, 0.9))
+ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.pval,
+                     partial.auc = c(1, 0.9))
 
 
-tmp <- c(msqrob2_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua, progress = "none")$p.value,
-         msqrob2_vs_proda = pROC::roc.test(ddmsqrob,ddproda, progress = "none")$p.value,
-         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none")$p.value)
+tmp <- c(msqrob2_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua,
+                                              progress = "none")$p.value,
+         msqrob2_vs_proda = pROC::roc.test(ddmsqrob,ddproda,
+                                           progress = "none")$p.value,
+         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda,
+                                            progress = "none")$p.value)
 
 ```
 
-Table \@ref(tab:shwoROCtestREsultsCPTAC) shows the results of the Bootstrap test for two ROC curves. 
-We observe that for this benchmark data, there are no significant differences among the $AUC_{10}$ for the three packages. 
+Table \@ref(tab:shwoROCtestREsultsCPTAC) shows the results of the Bootstrap test for two ROC curves. We observe that for this benchmark data, there are no significant differences among the $AUC_{10}$ for the three packages. 
 
 ```{r shwoROCtestREsultsCPTAC}
 cap = "p-values for pairwise comparsions of partial AUC for msqrob2, proDA and prolfqua CPTAC/MaxQuant data."
-knitr::kable(tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
+knitr::kable(dplyr::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
 
 ```
 
 # Benchmark IonQuant FragPipe v15 combined_protein.tsv
-
 
 The Rmarkdown file which created these results, with more details about the IonQuant FragPipe v15 dataset, can be found here:
 ["Benchmarking proDA and prolfqua using Ionstar Dataset and FragPipe v15 compbined_protein output"](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_cptac.html) 
@@ -208,7 +216,7 @@ Table \@ref(tab:shwoROCtestREsultsFRAGPIPE) shows the results of the Bootstrap t
 
 ```{r shwoROCtestREsultsFRAGPIPE}
 cap = "p-values for pairwise comparsions of partial AUC for msqrob2, proDA and prolfqua CPTAC/MaxQuant data."
-knitr::kable(tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
+knitr::kable(dplyr::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
 
 ```
 
