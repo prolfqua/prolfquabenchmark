@@ -377,6 +377,7 @@ volcano <- pl$volcano()$FDR +
    ggplot2::labs(tag = "B")
 
 gridExtra::grid.arrange(histpval, maplot, volcano, layout_matrix = rbind(c(1,3),c(2,3)))
+
 ```
 
 R linear model and linear mixed effect models allow modeling parallel designs, repeated measurements, factorial designs, and many more. Models in `r BiocStyle::Githubpkg("fgcz/prolfqua")` are specified using R's linear model and mixed model formula interface. Therefore, knowledge of the R regression model infrastructure [@faraway2016extending; @MASS2002] is advantageous when using our package. Furthermore, this glass box approach should make it easy to reimplement an analysis performed with `r BiocStyle::Githubpkg("fgcz/prolfqua")` using base R or other programming languages by reading the analysis script.
@@ -386,7 +387,7 @@ Using the data frame of tidy data ensures interoperability with other proteomics
 
 To ease the usage barriers of the R package to users not familiar with statistics and R programming, we developed an application based on the prolfqua package into our data management platform [B-Fabric](https://fgcz-bfabric.uzh.ch/) [@bfabric,@bfabricjib2022]. The B-Fabric system runs a computing infrastructure controlled by a local resource management system that supports cloud-bursting [@VMMAD]. This integration enables users to select the input data and basic settings in a graphical user interface (GUI). 
 
-In this GUI application, we determine the model formula and which comparisons to compute from the sample annotation provided in tabular form, similarly to SAINTexpress and `r BiocStyle::Biocpkg("MSstats")`. However, this application can analyze only parallel group designs with and without repeated measurements or factorial designs without interactions. The user receives a report including input files, the R markdown file, and R scripts necessary to replicate the analysis using their in-house R installation. In this way, `r BiocStyle::Githubpkg(`fgcz/prolfqua`)` and [B-Fabric](https://fgcz-bfabric.uzh.ch/) and helps scientists to meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable, and Reusable) [@FAIR] data principles. We are working on creating a shiny stand-alone application with the described functionality and making it available soon.
+In this GUI application, we determine the model formula and which comparisons to compute from the sample annotation provided in tabular form, similarly to SAINTexpress and `r BiocStyle::Biocpkg("MSstats")`. However, this application can analyze only parallel group designs with and without repeated measurements or factorial designs without interactions. The user receives a report including input files, the R markdown file, and R scripts necessary to replicate the analysis using their in-house R installation. In this way, `r BiocStyle::Githubpkg("fgcz/prolfqua")` and [B-Fabric](https://fgcz-bfabric.uzh.ch/) and helps scientists to meet requirements from funding agencies, journals, and academic institutions to publish data according to the FAIR (Findable, Accessible, Interoperable, and Reusable) [@FAIR] data principles. We are working on creating a shiny stand-alone application with the described functionality and making it available soon.
 
 ## Benchmarking modelling approaches
 
