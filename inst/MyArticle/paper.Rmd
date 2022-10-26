@@ -119,7 +119,7 @@ To evaluate the performance of differential expression analysis, we use the IonS
 
 ## Data preprocessing for model comparison
 
-The peptide abundances (from the MaxQuant _peptide.txt_ file) were $log_2$ transformed and subsequently scaled, where median and the mean average deviation (mad) were obtained from the human proteins only. We removed _one hit wonders_, i.e., proteins with a single peptide assignment. Protein abundances are inferred from the peptide intensities using Tukey's median polish. Finally, we fitted the fixed effect linear models, the dropout model `r BiocStyle::Biocpkg("proDA")` to protein abundances, the mixed effect linear model, the `r BiocStyle::Biocpkg("PECA")` model, and hurdle model `r BiocStyle::Biocpkg("msqrob2")` to peptide intensities.
+The peptide abundances (from the MaxQuant _peptide.txt_ file) were $log_2$ transformed and subsequently scaled, where median and the mean absolute deviation were obtained from the human proteins only. We removed _one hit wonders_, i.e., proteins with a single peptide assignment. Protein abundances are inferred from the peptide intensities using Tukey's median polish. Finally, we fitted the fixed effect linear models, the dropout model `r BiocStyle::Biocpkg("proDA")` to protein abundances, the mixed effect linear model, the `r BiocStyle::Biocpkg("PECA")` model, and hurdle model `r BiocStyle::Biocpkg("msqrob2")` to peptide intensities.
 
 ## Benchmark metrics
 
@@ -153,25 +153,25 @@ By plotting the $TPR$ versus the $FPR$ we obtain the receiver operator character
 
 ### Robust scaling of the data
 
-@valikangas2016systematic discuss and benchmark various methods of peptide or protein intensity normalization, such as variance stabilizing normalization [@huber2002variance] or quantile normalization [@bolstad2003comparison]. In this work, we use a robust version of the z-score, where instead of the mean $\bar{x}$ we use the median, and instead of the standard deviation $\tilde{S}$ we use the median absolute deviation (mad):
+@valikangas2016systematic discuss and benchmark various methods of peptide or protein intensity normalization, such as variance stabilizing normalization [@huber2002variance] or quantile normalization [@bolstad2003comparison]. In this work, we use a robust version of the z-score, where instead of the mean we use the median $\tilde{x}$ , and instead of the standard deviation we use the median absolute deviation $\tilde{S}$:
 
 \begin{eqnarray}
 z = \frac{x - \tilde{x}}{\tilde{S}}
 \end{eqnarray}
 
-Because we need to estimate the differences among groups on the original scale, we must multiply the $z$-score by the average variance of all the $n$ samples in the experiment.
+Because we need to estimate the differences among groups on the original scale, we must multiply the $z$-score by the average standard deviation of all the $n$ samples in the experiment.
 
 \begin{eqnarray} 
-z' = z \cdot \frac{1}{n}\sum_{i=1}^n S_i
+z' = z \cdot \frac{1}{n}\sum_{i=1}^n \tilde{S}_i
 \end{eqnarray}
 
 To apply this transformation, we need to estimate two parameters per sample, therefore it works for experiments with thousands of proteins and experiments where only a few hundred proteins per sample are measured.
-For the Ionstar dataset, we used the intensities of _H. sapiens_ proteins, whose concentrations do not change, to determine $\bar{x}$ and $S$ and then applied it to all the intensities (including _E. coli_) in the sample.
+For the Ionstar dataset, we used the intensities of _H. sapiens_ proteins, whose concentrations do not change, to determine $\tilde{x}$ and $\tilde{S}$ and then applied it to all the intensities (including _E. coli_) in the sample.
 
 
 ### Estimating differences between groups
 
-Given a linear model $y = \beta X$, we can compute the difference $\beta_{c}$ between two groups by a linear combination of weights $c$ and model parameters $\beta$, where $c$ is a column vector with as many elements as there are coefficients $\beta$ in the linear model. If $c$ has $0$ for one or more of its rows, then the corresponding coefficient in $\beta$ is not involved in determining the contrast [@ph525xseries].
+Given a linear model $y = \beta X$, we can compute the difference $\beta_{c}$ between two groups by the dot product of weights $c$ and model parameters $\beta$, where $c$ is a column vector with as many elements as there are coefficients $\beta$ in the linear model. If $c$ has $0$ for one or more of its rows, then the corresponding coefficient in $\beta$ is not involved in determining the contrast [@ph525xseries].
 
 The difference estimate $\beta_c$, is given by the dot product:
 
@@ -219,14 +219,14 @@ Table \@ref(tab:contrcoefficient) shows weights $c$ for each of the five contras
 knitr::kable(mC, caption = "Weights $c$ for each of the contrasts (rows) which will be applied to the model parameter (columns).",format = "latex")
 ```
 
-Given the weights $c$ contrasts from model parameter estimates obtained with `r BiocStyle::Biocpkg('proDA')`, or `r BiocStyle::Biocpkg('msqrob2')` can be determined, by this enabling us to call these packages using the same application programming interface (API).
+Given the weights $c$ contrasts from model parameters obtained with `r BiocStyle::Biocpkg('proDA')`, or `r BiocStyle::Biocpkg('msqrob2')` can be determined, which will enable us to implement adapters to `proDA` or `msqrob2`.
 
 ### Contrast estimation in presence of missing data.
 
 Missing observations lead to different group sizes, which results in unbalanced designs. Linear and mixed effect models can handle unbalanced designs. As long as at least one observation in a group is available, and sufficient observations to estimate the variance are available, they will produce unbiased estimates. Therefore, no imputation is needed.
 
 However, if there is no observation in a group, the model fit fails. For example, suppose a protein is unobserved in all the samples of a group. In that case, a plausible explanation is that the protein abundance is below the limit of detection (LOD) of the MS instrument. In such a case, we will substitute the group mean, using the expected protein abundance $A$ at the LOD $A_{LOD}$.
-To estimate $A_{LOD}$ we are using the protein abundances of those groups where the protein was observed in only a single sample. Typically there are many such cases, and hence we take the median.
+To estimate $A_{LOD}$ we are using the protein abundances of those groups where the protein was observed in only a single sample (see Supplement section Estimating $A_{LOD}$). Typically there are many such cases, and hence we take the median.
 
 When computing differences $\Delta$ among two groups $a$ and $b$, we will use either the group mean $\bar{a}$ or $\bar{b}$ estimated from the data. However, if for instance no observations are present in group $b$, we will use $\bar{b} = A_{LOD}$. Furthermore, if $\bar{a} < A_{LOD}$ we also set $\bar{a} = A_{LOD}$, or more formally:
 
