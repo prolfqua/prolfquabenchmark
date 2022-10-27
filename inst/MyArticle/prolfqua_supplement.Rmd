@@ -38,12 +38,17 @@ editor_options:
 ---
 
 \renewcommand{\thepage}{S--\arabic{page}}
-\renewcommand{\tablename}{Supp. Table}
-\renewcommand{\figurename}{Supp. Figure}
+\renewcommand{\tablename}{Supplementary Table}
+\renewcommand{\figurename}{Supplementary Figure}
 
 \newpage
 
 ```{r setup, include=FALSE}
+Biocpkg <- function(pkg, label = NULL){
+  url <- file.path("https://bioconductor.org/packages", pkg)
+  BiocStyle:::labelled_link(pkg , label , url)
+}
+
 knitr::opts_chunk$set(echo = FALSE, error = FALSE, warning = FALSE, message = FALSE)
 ```
 
@@ -66,7 +71,7 @@ remotes::install_github("https://github.com/wolski/prolfquabenchmark",
     dependencies = TRUE, build_vignettes=TRUE)
 ```
 
-# Comparing partial areas under the curve at 0.1 FDR for Ionstar/MaxQuant dataset
+# Comparing pAUC at 0.1 FDR for Ionstar/MaxQuant dataset
 
 We test if we should reject the null hypothesis that the area under the ROC curve at 0.1 FDR, computed based on scaled p.values, does not differ for msqrob2, proDA, and prolfqua (Figure 5 in the article). To this task we use the function `roc.test` from the R package `r BiocStyle::CRANpkg("pROC")`.
 
@@ -128,7 +133,7 @@ all$what[all$what == "logFC"] <- "diff"
 
 ```
 
-Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("proDA")` and `r BiocStyle::Githubpkg("fgcz/prolfqua")`, when using the difference among the groups, the scaled p-values or the t-statistics to compute the ROC curves.
+Supplementary Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("proDA")` and `r BiocStyle::Githubpkg("fgcz/prolfqua")`, when using the difference among the groups, the scaled p-values or the t-statistics to compute the ROC curves.
 
 ```{r plotCPTACbarplot, fig.cap= "Barplot showing the partial area under the ROC at 0.1 FDR."}
 all |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
@@ -185,7 +190,7 @@ tmp <- tmp |>
   dplyr::filter(contrast == "all")
 ```
 
-Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("proDA")` and `r BiocStyle::Githubpkg("fgcz/prolfqua")`, computed using the effect size estimate among groups (diff), the scaled p-value (scaled.p.value) and the t-statistics (t_statistics),
+Supplementary Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("proDA")` and `r BiocStyle::Githubpkg("fgcz/prolfqua")`, computed using the effect size estimate among groups (diff), the scaled p-value (scaled.p.value) and the t-statistics (t_statistics),
 
 ```{r plotFragPipebarplot, fig.cap= "Barplot showing the partial area under the ROC at 0.1 FDR."}
 tmp |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
@@ -230,7 +235,7 @@ Pre-build version of the vignettes are available:
 # Estimating $A_{LOD}$
 
 The main text describes how we estimate the abundance at the detection limit $A_{LOD}$. 
-Figure \@ref(fig:missignessHistogram) shows the distribution of the average abundance within a group for all proteins. The red density shows the distribution for those proteins without a missing value, and the olive, turquoise, and lilac density show for proteins with 1,2 and 3 missing values, respectively. We see that the proteins with three missing values have, on average lower abundances than those with no missing values. We are using the median of the Lila density (one observation in the group), as the $A_{LOD}$ estimate.
+Supplementary Figure \@ref(fig:missignessHistogram) shows the distribution of the average abundance within a group for all proteins. The red density shows the distribution for those proteins without a missing value, and the olive, turquoise, and lilac density show for proteins with 1,2 and 3 missing values, respectively. We see that the proteins with three missing values have, on average lower abundances than those with no missing values. We are using the median of the Lila density (one observation in the group), as the $A_{LOD}$ estimate.
 
 ```{r missignessHistogram, fig.cap= "Distribution of the average abundance within group a and c for all proteins. Each density are color coded depending the number of missing observations per protein in a group.", echo=FALSE}
 
@@ -265,15 +270,13 @@ bb$missigness_histogram()
 In the main text discuss that the properties of the Beta distribution-based probabilities, computed from peptide level p-values, using the ROPECA method are not well understood. 
 We are running here a simulation experiment, which shows that if we start with a dataset where the null hypothesis is valid for all the peptides, i.e., the p-values are uniformly distributed, the produced Beta distribution-based probabilities are not uniformely distributed.
 
-For all the peptides (`nrPep = 10000`) $H0$ is true. We know that if $H0$ is true, the distribution of the $p-values$ will be uniform. (Figure \@ref(fig:figROPECA) left Panel). Therefore, we can omit the step of generating the data from $H0$ and computing the p-values but simulate the p-values directly by sampling from the uniform distribution (`runif(nrPep)`). 
+For all the peptides (`nrPep = 10000`) $H0$ is true. We know that if $H0$ is true, the distribution of the $p-values$ will be uniform. (Supplementary Figure \@ref(fig:figROPECA) left Panel). Therefore, we can omit the step of generating the data from $H0$ and computing the p-values but simulate the p-values directly by sampling from the uniform distribution (`runif(nrPep)`). 
 
 By sampling 800 protein id's 10000 times (with replacement), we assign the peptides to proteins ('sample(1:800, size = nrPep,
-   replace = TRUE, ...)'). To make the data more realistic, that is that some proteins have a lot of peptides, and many have just a few peptides; the density of sampling the protein Id is exponential (`dexp(seq(0,5,length = 800)`). Figure \@ref(fig:figROPECA) center panel shows the number of proteins as a function of the number of peptides per protein. Afterward, we apply the ROPECA methods as discussed in the methods section of the manuscript. Figure \@ref(fig:figROPECA) shows the distribution of the Beta distribution-based probabilities, which is not uniform. Hence, they do not have the same interpretation as p-values, i.e., the probability of falsely rejecting the $H0$ if $H0$ is true.
+   replace = TRUE, ...)'). To make the data more realistic, that is that some proteins have a lot of peptides, and many have just a few peptides; the density of sampling the protein Id is exponential (`dexp(seq(0,5,length = 800)`). Supplementary Figure \@ref(fig:figROPECA) center panel shows the number of proteins as a function of the number of peptides per protein. Afterward, we apply the ROPECA methods as discussed in the methods section of the manuscript. Supplementary Figure \@ref(fig:figROPECA) shows the distribution of the Beta distribution-based probabilities, which is not uniform. Hence, they do not have the same interpretation as p-values, i.e., the probability of falsely rejecting the $H0$ if $H0$ is true.
    
 
-
-
-```{r figROPECA , fig.cap = "Left panel - distibution of peptide level p.values. Center panel - number of proteins as a function of the number of peptides per protein. Right panel - distribution of protein level p-values(?) obtained with the ropeca method."}
+```{r figROPECA, fig.cap = "Left panel - distibution of peptide level p.values. Center panel - number of proteins as a function of the number of peptides per protein. Right panel - distribution of protein level p-values(?) obtained with the ropeca method."}
 set.seed(10)
 nrPep <- 10000
 nrProtein <- 800
@@ -302,6 +305,45 @@ plot(table(table(protein_Id)), xlab = "nr of peptides/protein", ylab = "# nr of 
 hist(xx30$beta.based.significance, breaks = 20, xlab = "p-value(?) obtained with Ropeca.", main = "")
 
 ```
+
+# Specifying Contrasts for Models with two Factors and Interaction Term
+
+The following code illustrates how to specify a model with two factors and an interaction term and define the differences we want to estimate. The example dataset was acquired in two batches (p2370, p2691). In each, we measured Yeast samples grown under two different conditions (Glucose and Ethanol). This example is taken from the `r BiocStyle::Githubpkg("fgcz/prolfqua")` package vignette file. To estimate treatment differences, we first specify the linear model that explains the observed protein abundances (transformedIntensities) using the explanatory variables `condition_` and `batch_` and the interaction term  `condition_:batch_`. Then, after fitting the model, we can estimate the treatment difference among the groups `Ethanol` and `Glucose` defined by the factor `condition` and similarly among the groups defined by `batch_`. Furthermore, we can examine differences between `Ethanol` and `Glucose` within each batch. We also can assess if these differences are the same or are different in both batches, i.e., if there is an interaction between condition and batch. We also show the code to compute the array of weights $c$ used to multiply the model coefficient $\beta$.
+
+```{r contrast2, eval = TRUE, echo = TRUE}
+
+Yeast2Factor <- prolfqua::prolfqua_data("data_Yeast2Factor")
+Yeast2Factor$data |> dplyr::select(condition_, batch_) |> dplyr::distinct()
+mlm <- prolfqua::strategy_lm(
+  transformedIntensity ~ condition_ + batch_ + condition_:batch_
+  )
+mm <- prolfqua::build_model(Yeast2Factor$data, mlm, subject_Id = "protein_Id")
+
+Contrasts <- c(
+"diff_condition" = "condition_Ethanol - condition_Glucose",
+"diff_batch" = "batch_p2370 - batch_p2691",
+"diff_within_p2370" = 
+  "`condition_Glucose:batch_p2370` - `condition_Ethanol:batch_p2691`",
+"diff_within_p2691" = 
+  "`condition_Glucose:batch_p2691` - `condition_Ethanol:batch_p2691`",
+"diff_of_difference" = "diff_within_p2370 - diff_within_p2691")
+
+linfct <- prolfqua::linfct_from_model(mm$modelDF$linear_model[[1]],
+                                      as_list = FALSE)
+mC <- prolfqua::linfct_matrix_contrasts(linfct, Contrasts)
+## see Table 3 for content of mC
+```
+
+Table \@ref(tab:contrcoefficient) shows weights $c$ for each of the five contrasts we specified.
+
+```{r contrcoefficient}
+knitr::kable(mC, caption = "Weights $c$ for each of the contrasts (rows) which will be applied to the model parameter (columns).",format = "latex")
+```
+
+Given the weights $c$ contrasts from model parameters obtained with `r Biocpkg('proDA')`, or `r Biocpkg('msqrob2')` can be determined, which will enables us to implement adapters to `proDA` or `msqrob2`.
+
+For more details see `r BiocStyle::Githubpkg("fgcz/prolfqua")` vignette: ["Modelling dataset with two Factors"](https://fgcz.github.io/prolfqua/articles/Modelling2Factors.html).
+
 
 # Creating a prolfqua configuration
 
