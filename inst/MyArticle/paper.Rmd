@@ -87,7 +87,7 @@ rownames(bb) <- names(xx)
 knitr::kable(data.frame(bb), format = "latex", caption = caption)
 ```
 
-When developing the R package `r BiocStyle::Githubpkg("fgcz/prolfqua")` we were inspired by the R package `r BiocStyle::CRANpkg("caret")` [@caret2008] which enables us to call various machine learning (ML) methods, and makes selecting the best ML algorithm for your problem easy. We aimed for a similar R package for the differential expression analysis of quantitative proteomics data. However, the existing packages differ widely regarding supported designs, model specifications, and output formats. At the same time, they have the following features in common: fitting linear models to either peptide or protein intensities, determining differences among groups, and afterward applying empirical Bayes variance shrinkage. Therefore, the revised goal was to provide a modular object-oriented (OO) design, with R linear models as a core, and add features such as $p$-value aggregation, variance shrinkage, or modeling of missing observations.
+When developing the R package `r BiocStyle::Githubpkg("fgcz/prolfqua")` we were inspired by the R package `r BiocStyle::CRANpkg("caret")` [@caret2008] which enables us to call various machine learning (ML) methods, and makes selecting the best ML algorithm for your problem easy. We aimed for a similar R package for the differential expression analysis of quantitative proteomics data. However, the existing packages differ widely regarding supported designs, model specifications, and output formats. At the same time, they have the following features in common: fitting linear models to either peptide or protein intensities, determining differences among groups, and afterward applying empirical Bayes variance shrinkage. Therefore, the revised goal was to provide a modular object-oriented design, with R linear models as a core, and add features such as $p$-value aggregation, variance shrinkage, or modeling of missing observations.
 
 Furthermore, `r BiocStyle::Githubpkg("fgcz/prolfqua")` also includes methods specific to proteomics data. For example, we implemented strategies to estimate protein intensities from peptide intensities: top N [@Grossmann2010], Tukey's median polish  [@tukey1977exploratory], robust linear models [@goeminne2020msqrob]. Peptide or protein abundances can then be scaled and transformed using robust scaling, _quantile_ normalization or `r Biocpkg("vsn")` to remove systematic differences among samples and heteroscedasticity. In this respect, `r BiocStyle::Githubpkg("fgcz/prolfqua")` can be compared with R packages such as `r Biocpkg("DEP")` [@DEP2018] or `r Biocpkg("POMA")` [@POMA2021] which support the entire differential expression analysis pipeline.
 
@@ -118,10 +118,34 @@ R's formula interface for linear models is flexible, widely used, and well docum
 knitr::include_graphics("ContrastClassesUML_LARGE.png")
 ```     
 
+```{r prolfquaModels}
+xM <- data.frame( 
+    lm = c("strategy_lm, Contrasts", "linear modelling of peptide or protein abundances and group difference estimation"),
+    lmer = c("strategy_lmer, Contrasts", "mixed effect modelling of peptide or protein abundances and group differences estimation" ),
+    gmi = c("ContrastsSimpleImpute" , "group difference estimation when no observations in one of the groups" ),
+    ROPECA = c("ContrastsROPECA", "estimating group differences for proteins by summarizing peptide differences"),
+    limma = c( "ContrastsModerated", "empirical Bayes variance shrinkage for group difference estimates (limma)"),
+    pic = c("runSaint, ContrastsSaintExpress", "protein interaction scoring (SAINTExpress)"),
+    prodA = c( "strategy_proDA*, ContrastsProDA", "adapter to the probabilistic dropout model implemented in proDA"), check.names =  FALSE)
+xM <- data.frame(t(xM))
 
-## Dataset for benchmarking
+colnames(xM) <- c("prolfqua functions", "model")
+knitr::kable(tibble::as_tibble(xM), caption = "prolfqua functions that can be used to fit various models.",
+             format = "latex", booktabs = TRUE) |>
+    kableExtra::kable_styling(latex_options = "scale_down") |> 
+    kableExtra::add_footnote(label = "in development")
+
+```
+
+## Datasets for benchmarking
+
+### IonStar/MaxQuant
 
 To evaluate the performance of differential expression analysis, we use the IonStar benchmark dataset[@shen2018ionstar], available from the Proteomics Identifications Database (PRIDE) identifier PXD003881. $DH5\alpha$ _E. coli_ lysate was spiked in human pancreatic cancer cells (Panc-1) lysate at five different levels: $3\%$, $4.5\%$, $6\%$, $7.5\%$ and $9\%$ _E. coli_. We annotated these dilutions from smallest to largest with the letters _a_, _b_, _c_, _d_ and _e_. By comparing the various dilutions, we obtain different effect sizes, e.g., when comparing dilution _e_ (9%) against dilution _d_ (7.5%), the expected difference is $1.2$ for E. coli proteins and $1$ for human proteins. There are four technical replicates for each dilution, hence 20 raw files in total. We processed the raw data using MaxQuant [@Cox2008MaxQuant] version Version 1.6.10.43, with MaxQuant default settings. The text files generated by MaxQuant are available in the _prolfquadata_ R package [@prolfquadata]. To compare the performance of the various methods implemented in `r BiocStyle::Githubpkg("fgcz/prolfqua")` we use only the contrasts resulting in minor differences $\Delta = (1.20, 1.25, 1.30, 1.50)$, because for bigger differences all models perform similarly.
+
+### IonStar/FragPipe
+
+### CPTAC/MaxQuant
 
 ## Data preprocessing for model comparison
 
@@ -193,7 +217,7 @@ and the variance of $\beta_c$ by:
 
 with $X$ being the design matrix. The degrees of freedom for the contrast are equal to the residual degrees of freedom of the linear model. For estimating contrasts from mixed effects models we used the function `contest` implemented in the R package `r BiocStyle::CRANpkg("lmerTest")`  and used the Satterthwaite [@Kuznetsova2017lmerTest] method to estimate the denominator degrees of freedom. These methods are available in the class `Contrast` (see Figure \@ref(fig:ContrastUML))
 
-The package `r BiocStyle::Githubpkg("fgcz/prolfqua")` provides functions to determine the vector of $parameter$ weights $c$, from a linear model and a contrast specification string. In the Supplement we provided an example, how to specify contrasts for a dataset with two explanatory variable with an interaction term (Section "Specifying Contrasts for Models with two Factors and Interaction Term").
+The package `r BiocStyle::Githubpkg("fgcz/prolfqua")` provides functions to determine the vector of $parameter$ weights $c$, from a linear model and a contrast specification string. In the Supplement we provided an example, how to specify contrasts for a dataset with two explanatory variable with an interaction term (Supplementary Section "Specifying Contrasts for Models with two Factors and Interaction Term").
 
 ### Contrast estimation in presence of missing data.
 
@@ -297,7 +321,7 @@ agr <- lfqpep$get_Aggregator()
 lfqpro <- agr$medpolish()
 lfqpro$rename_response("log_protein_abundance")
 
-## plot panels A-D
+## plot Figure 3 panels A-D
 pl <- lfqpep$get_Plotter()
 panelA <- pl$intensity_distribution_density() +
   ggplot2::labs(tag = "A") + ggplot2::theme(legend.position = "none")
@@ -340,7 +364,7 @@ contrasts <- prolfqua::merge_contrasts_results(prefer = contr, add = conI)
 prolfqua::ContrastsModerated$undebug("get_contrasts")
 contrasts <-  contrasts$merged |> prolfqua::ContrastsModerated$new() 
 
-## visualize results in panels
+## plot Figure 4 panels A - C
 pl <- contrasts$get_Plotter() 
 histpval <- pl$histogram()$p.value + ggplot2::labs(tag = "A")               
 maplot <- pl$ma_plot(rank = TRUE,legend = FALSE) + ggplot2::labs(tag = "C")
@@ -426,15 +450,15 @@ p2_compare_variousLevels <- ggplot2::ggplot(res, ggplot2::aes(x = contrast, y = 
 
 ```
 
-When comparing differential expression analysis performance, a relevant parameter is the number of proteins for which a method estimates differences (see Figure \@ref(fig:figure3) Panel A), which indicates how robust the procedure works in the presence of missing observations. For each protein, we tried to determine four differences ($\Delta = (1.20, 1.25, 1.30, 1.50)$). Given 4046 proteins with at least two peptides, there are in total $16184$ possible differences. However, some methods can not estimate all of them. The set of proteins with effect size estimates might differ for each method, biasing direct comparison of scores such as the $pAUC$. For instance, we observe that `r Biocpkg("MSstats")` estimates $16058$ group differences while the mixed effect models estimates the fewest with $15940$. Hence, to conclude that one method shows a better performance, it does not suffice if the $pAUC$ is greater, but the number of proteins with differential expression results needs to be equal or larger.
+When comparing differential expression analysis performance, a relevant parameter is the number of proteins for which a method estimates differences (see Figure \@ref(fig:figure3) Panel A), which indicates how robust the procedure works in the presence of missing observations. For each protein, we tried to determine four differences ($\Delta = (1.20, 1.25, 1.30, 1.50)$). Given 4178 proteins with at least two peptides, there are in total $16712$ possible differences. However, some methods can not estimate all of them. The set of proteins with effect size estimates might differ for each method, biasing direct comparison of scores such as the $pAUC$. For instance, we observe that `r Biocpkg("MSstats")` estimates $16038$ group differences while the mixed effect models estimates the fewest with $15756$. Hence, to conclude that one method shows a better performance, it does not suffice if the $pAUC$ is greater, but the number of proteins with differential expression results needs to be equal or larger.
 
-Figure \@ref(fig:figure3) Panel B shows how various estimates obtained from the models, i.e., the difference between groups, $t$-statistics and scaled $p$-values, allow identifying true positives (TP) given a false positive rate (FPR) of $10%$ by displaying the partial area under the ROC. Ordering proteins by the $t$-statistic or $p$-value leads to a higher $pAUC_{10}$ than when ordering by the estimated difference among groups. Suppose an accurate estimate of the difference among groups is essential. In that case, the linear models fitted to protein intensities, calculated using Tukey's median polish, perform better than those when directly modeling peptide intensities, e.g., `ropeca` or `prot_mixed_effect_moderated` (see Table \@ref(tab:describeBenchmarkedModels) Abundance column). We speculate that outliers at the peptide level do not affect the protein estimates when using Tukey's median polish method.
+Figure \@ref(fig:figure3) Panel B shows how various estimates obtained from the models, i.e., the difference between groups, $t$-statistics and scaled $p$-values, allow identifying true positives (TP) given a false positive rate (FPR) of $10%$ by displaying the partial area under the ROC ($pAUC_{10}$). Ordering proteins by the $t$-statistic or $p$-value leads to a higher $pAUC_{10}$ than when ordering by the estimated difference among groups. Suppose an accurate estimate of the difference among groups is essential. In that case, the linear models fitted to protein intensities, calculated using Tukey's median polish, perform better than those when directly modeling peptide intensities, i.e., `ropeca` (see Table \@ref(tab:describeBenchmarkedModels) Abundance column). We speculate that outliers at the peptide level do not affect the protein estimates when using Tukey's median polish method.
 
 We also benchmark if the $FDR$ obtained from a model is an unbiased estimate of the false discovery proportion $FDP$. Figure \@ref(fig:figure3) Panel C shows the $FDP$, obtained from the confusion matrix, as a function of the $FDR$ determined from the model. Most lines are below the diagonal, which indicates that the $FDR$ estimates are modestly conservative for this particular benchmark dataset. In the case of `r Biocpkg("MSstats")`, we observe a high proportion of false discoveries for small $FDR$ values. In the case of the ROPECA method, the $FDR$ estimates, obtained by applying the Benjamini-Hochberg correction to the Beta distribution-based regulation probabilities, strongly overestimate the $FDP$.
 
-(ref:figure3) Panel A - Number of estimated contrasts for each modeling method (higher is better). Panel B - Partial area under the ROC curve at $10\%$ FPR ($pAUC_{10}$) for all contrasts and three different statistics: the difference among groups (diff - Panel B left), the scaled $p$-value (sign(diff) $\cdot$ p.value) (scaled.p.value - Panel B center) and the $t$-statistics (statistic - Panel B right), where a higher pAUC is better. The red line indicates the average area under the curve of all methods.  Panel C - Plots the false discovery proportion ($FDP$) as a function of the $FDR$. Ideally, the $FDR$ should be equal to the $FDP$. Therefore larger distances from the diagonal are worse.
+(ref:figure3) Panel A - Number of estimated contrasts for each modeling method (higher is better). Panel B - Partial area under the ROC curve at $10\%$ FPR ($pAUC_{10}$) for all contrasts and three different statistics: the difference among groups (diff - Panel B left), the scaled $p$-value (sign(diff) $\cdot$ p.value) (scaled.p.value - Panel B center) and the $t$-statistics (statistic - Panel B right), where a higher $pAUC_{10}$ is better. The red line indicates the average area under the curve of all methods.  Panel C - Plots the false discovery proportion ($FDP$) as a function of the $FDR$. Ideally, the $FDR$ should be equal to the $FDP$. Therefore larger distances from the diagonal are worse.
 
-```{r figure3, fig.cap = "(ref:figure3)", out.width = '90%', fig.width=12, fig.height=10}
+```{r figure3, fig.cap = "(ref:figure3)", out.width = '90%', fig.width=10, fig.height=8}
 dd <- purrr::map_df(allBenchmarks, function(x){res <- x$smc$summary; res$name <- x$model_name;res})
 dd <- dd |> dplyr::mutate(nrcontrasts = protein_Id * (4 - nr_missing))
 dds <- dd |> dplyr::group_by(name) |> dplyr::summarize(nrcontrasts = sum(nrcontrasts))
@@ -469,27 +493,9 @@ gridExtra::grid.arrange(pB_pAUC, pA_barplot, pC_FDR, layout_matrix = hlay)
 
 ```
 
-```{r prolfquaModels}
-xM <- data.frame( 
-    lm = c("strategy_lm, Contrasts", "linear modelling of peptide or protein abundances and group difference estimation"),
-    lmer = c("strategy_lmer, Contrasts", "mixed effect modelling of peptide or protein abundances and group differences estimation" ),
-    gmi = c("ContrastsSimpleImpute" , "group difference estimation when no observations in one of the groups" ),
-    ROPECA = c("ContrastsROPECA", "estimating group differences for proteins by summarizing peptide differences"),
-    limma = c( "ContrastsModerated", "empirical Bayes variance shrinkage for group difference estimates (limma)"),
-    pic = c("runSaint, ContrastsSaintExpress", "protein interaction scoring (SAINTExpress)"),
-    prodA = c( "strategy_proDA*, ContrastsProDA", "adapter to the probabilistic dropout model implemented in proDA"), check.names =  FALSE)
-xM <- data.frame(t(xM))
-
-colnames(xM) <- c("prolfqua functions", "model")
-knitr::kable(tibble::as_tibble(xM), caption = "prolfqua functions that can be used to fit various models.",
-             format = "latex", booktabs = TRUE) |>
-    kableExtra::kable_styling(latex_options = "scale_down") |> 
-    kableExtra::add_footnote(label = "in development")
-
-```
 
 
-Using a benchmark dataset whose ground truth is known (see Methods), we assessed the performance of different modeling approaches implemented in `r BiocStyle::Githubpkg("fgcz/prolfqua")` (Tables \@ref(tab:prolfquaModels) and \@ref(tab:describeBenchmarkedModels)), `r Biocpkg("MSstats")`, `r Biocpkg("proDA")` and `r Biocpkg("msqrob2")`. Table \@ref(tab:describeBenchmarkedModels) summarizes which methods we have evaluated, which MaxQuant files we used as input, and if the models are fitted to peptide or protein intensities. We make the R-markdown files to replicate the benchmarking available at `r BiocStyle::Githubpkg("wolski/prolfquabenchmark")`.
+Using a benchmark dataset whose ground truth is known (see Methods), we assessed the performance of different modeling approaches implemented in `r BiocStyle::Githubpkg("fgcz/prolfqua")`, `r Biocpkg("MSstats")`, `r Biocpkg("proDA")` and `r Biocpkg("msqrob2")`. Table \@ref(tab:describeBenchmarkedModels) summarizes which methods we have evaluated, which MaxQuant files we used as input, and if the models are fitted to peptide or protein intensities. We make the R-markdown files to replicate the benchmarking available at `r BiocStyle::Githubpkg("wolski/prolfquabenchmark")`.
 
 
 ```{r describeBenchmarkedModels, results='asis' }
@@ -523,21 +529,6 @@ saveRDS(allBenchmarks, "allBenchmarks.RDS")
 ```
 
 
-```{r roctest, include = FALSE, eval = FALSE}
-ttmsqrob <- allBenchmarks$benchmark_msqrob$data()
-ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.p.value, partial.auc = c(1, 0.9))
-ttprolfqua <- allBenchmarks$benchmark_merged$data()
-ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
-ttproda <- allBenchmarks$benchmark_proDA$data()
-ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.p.value, partial.auc = c(1, 0.9))
-
-
-msqrob_vs_prolfqua <- pROC::roc.test(ddmsqrob,ddprolfqua)
-msqrob_vs_proda <- pROC::roc.test(ddmsqrob,ddproda)
-prolfqua_vs_proda <- pROC::roc.test(ddprolfqua,ddproda)
-
-```
-
  
 The IonStar/MaxQuant dataset (see Methods) captures only the variance from the chromatography, electro-spray, and mass spectrometric measurements since only technical replicates are available for each dilution. Therefore essential sources of variation typically present in other experiments, such as the biochemical and biological ones, are not measured. Furthermore, this dataset with a parallel group design does not allow for benchmarking models with interactions. However, other benchmark datasets have similar constraints [@edwards2015cptac, @o2018proteome]. Furthermore, we could not analyze the benchmark dataset [@wessels2012comprehensive] with a complete factorial design with an up-to-date version of MaxQuant. Thus, while we can extrapolate some of the results obtained to more realistic datasets, we need to be careful not to over-interpret our findings. Specifically, the observed variances will be higher in datasets with biological replicates, and the power will be lower for the same number of samples. Furthermore, the proportion of missing observations in real-life datasets might be higher or distributed differently in groups.
 
@@ -554,7 +545,7 @@ We focused our benchmark on comparing the statistical modeling methods while we 
 
 # Conclusion
 
-`r BiocStyle::Githubpkg("fgcz/prolfqua")` is a feature-rich, object-oriented R package to analyze quantitative mass spectrometric data with simple or complex experimental designs. While other R packages for differential expression analysis of proteins typically only implement one modeling approach, `r BiocStyle::Githubpkg("fgcz/prolfqua")` supports various types of models (see Figure \@ref(fig:ContrastUML) and Table \@ref(tab:prolfquaModels)). Furthermore, the contrast specification is explicit and consistent for all models and allows for testing interactions. The modular design of `r BiocStyle::Githubpkg("fgcz/prolfqua")` enables adding new features, e.g., generalized linear models to model the presence or absence information of a protein, or robust linear models, in the future. Furthermore, the developed framework can integrate other modeling methods, e.g., the probabilistic dropout model [@bioxrvproDA2020] or accurate variance estimation [@zhu2020deqms]. Hence, `r BiocStyle::Githubpkg("fgcz/prolfqua")` enables the implementation of applications where the user can select an alternative normalization method, protein abundance estimation methods, or differential expression analysis algorithms. Furthermore, this R package can analyze other types of quantitative proteomics data,e.g., labeling-based TMT-, PRM- DIA-data.
+`r BiocStyle::Githubpkg("fgcz/prolfqua")` is a feature-rich, object-oriented R package to analyze quantitative mass spectrometric data with simple or complex experimental designs. While other R packages for differential expression analysis of proteins typically only implement one modeling approach, `r BiocStyle::Githubpkg("fgcz/prolfqua")` supports various types of models (see Figure \@ref(fig:ContrastUML) and Table \@ref(tab:prolfquaModels)). Furthermore, the contrast specification is explicit and consistent for all models and allows for testing interactions. The modular design of `r BiocStyle::Githubpkg("fgcz/prolfqua")` enables adding new features, e.g., generalized linear models to model the presence or absence information of a protein, or robust linear models, in the future. Furthermore, the developed framework can integrate other modeling methods, e.g., the probabilistic dropout model [@bioxrvproDA2020] or accurate variance estimation [@zhu2020deqms]. Hence, `r BiocStyle::Githubpkg("fgcz/prolfqua")` enables the implementation of applications where the user can select an alternative normalization method, protein abundance estimation methods, or differential expression analysis algorithms. Furthermore, this R package can analyze other types of quantitative proteomics data,e.g., label-free DIA or labeling-based TMT data.
 
 When comparing statistical modeling methods for the differential expression analysis, we assessed performance measures such as the number of estimated contrasts, the $pAUC$, and if the $FDR$ is an unbiased estimate of the $FDP$. It is relevant that an analysis pipeline shows good performance in all these categories. Leveraging these computational experiments, we can provide the following advice: i) estimate protein abundances from peptide abundances using a robust or nonparametric regression method; ii) use linear models because they show good performance in all categories; iii) if the measurements are correlated, as for technical replicates, mixed effect models might work if the sample sizes are large; if not, aggregate the replicates and fit a linear model instead; iv) if you use fixed-effect linear models, apply variance moderation to improve the $t$-statistics and $p$-value estimates; v) If you want to sort your protein lists to perform gene set enrichment analysis, use the $t$-statistic instead of the difference; and last but not least vi) do not impute missing observation but statistically model missingness to estimate parameters, i.e., group differences. Finally, the differential expression analysis results obtained with prolfqua are comparable to those of other differential expression analysis tools. 
 
@@ -571,23 +562,24 @@ The authors thank the technology platform fund (TPF) of the University of Zurich
 \toprule
 Abbreviations & Explanation\\
 \midrule
-API    &application programming interface          \\
-AUC    &Area Under the Curve                               \\
-CDF    &Cumulative Distribution Function                   \\
-ESI-MS &Electro-Spray-Ionization Mass Spectrometry         \\
-FAIR   &Findable, Accessible, Interoperable, and Reusable  \\
-$FDP$  &False Discovery Proportion                         \\
-$FDR$  &False Discovery Rate                               \\
-LC     &Liquid Chromatography                              \\
-LC-MS  &Liquid Chromatography followed by Mass Spectrometry\\
-LOD    &Limit Of Detection                                 \\
-MAR    &Missing At Random                                 \\ 
-MCAR   &Missing Completely At Random                      \\
+API    & application programming interface          \\
+AUC    & Area Under the Curve                               \\
+CDF    & Cumulative Distribution Function                   \\
+DIA    & data independent acquisition                        \\
+ESI-MS & Electro-Spray-Ionization Mass Spectrometry         \\
+FAIR   & Findable, Accessible, Interoperable, and Reusable  \\
+$FDP$  & False Discovery Proportion                         \\
+$FDR$  & False Discovery Rate                               \\
+LC     & Liquid Chromatography                              \\
+LC-MS  & Liquid Chromatography followed by Mass Spectrometry\\
+LOD    & Limit Of Detection                                 \\
+MAR    & Missing At Random                                 \\ 
+MCAR   & Missing Completely At Random                      \\
 ML     & machine learning                                 \\
-MS     &mass spectrometry                                  \\
-OO     &Object-Oriented                                    \\
+MS     & mass spectrometry                                  \\
 pAUC   & partial Are Under the Curve                       \\
 ROC    & Receiver operator curve                           \\
+TMT    & Tandem Mass Tag                                   \\
 UML    & Unified Modeling Language                        \\
 \bottomrule
 \end{tabular}
