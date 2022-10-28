@@ -1,0 +1,617 @@
+---
+title: "Benchmarking proDA prolfqua and msqrob2 using Ionstar Dataset and FragPipe v15 MSStats.csv output"
+author: "Witold E. Wolski"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+papersize: a4
+geometry: margin=.5in
+vignette: >
+  %\VignetteIndexEntry{Benchmarking proDA prolfqua and msqrob2 using Ionstar Dataset and FragPipe v15 MSStats.csv output} 
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+Please download and install the `prolfquadata` package from github
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 10,
+  fig.height = 10
+)
+```
+
+```{r conflicted}
+conflicted::conflict_prefer("filter", "dplyr")
+
+```
+
+## Load data
+
+We start by loading the IonStar dataset and the annotation from the `prolfquadata` package. The method `add_annotation` adds the annotation to the data.
+
+
+
+```{r loaddata}
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
+inputFragfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
+inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
+annotation <- readxl::read_xlsx(inputAnnotation)
+
+unzip(inputFragfile, list = TRUE)
+msstats <- read.csv(
+    unz(inputFragfile,"IonstarWithMSFragger/MSstats.csv"),
+    header = TRUE,
+    sep = ",",
+    stringsAsFactors = FALSE)
+
+
+
+msstats <- tibble::tibble(msstats)
+msstats$Run <- tolower(msstats$Run)
+
+merged <- dplyr::inner_join(annotation, msstats, by = c("raw.file" = "Run"))
+
+summedPep <- merged |> dplyr::group_by(raw.file, run_ID, sample, ProteinName, PeptideSequence) |> dplyr::summarize(nprecursor = dplyr::n(),pepIntensity = sum(Intensity, na.rm = TRUE), .groups = "drop")
+
+
+```
+
+## Create prolfqua configuration
+
+```{r setupConfigs}
+atable <- prolfqua::AnalysisTableAnnotation$new()
+atable$fileName = "raw.file"
+atable$hierarchy[["protein_Id"]] <- c("ProteinName")
+atable$hierarchy[["peptide_Id"]] <- c("PeptideSequence")
+
+atable$hierarchyDepth <- 1
+atable$set_response("pepIntensity")
+atable$factors[["dilution."]] = "sample"
+atable$factors[["run"]] = "run_ID"
+atable$factorDepth <- 1
+
+config <- prolfqua::AnalysisConfiguration$new(atable)
+
+adata <- prolfqua::setup_analysis(summedPep, config)
+lfqdata <- prolfqua::LFQData$new(adata, config)
+lfqdata$hierarchy_counts()
+lfqdata$filter_proteins_by_peptide_count()
+lfqdata$hierarchy_counts()
+lfqdata$remove_small_intensities()
+lfqdata$hierarchy_counts()
+
+knitr::kable(lfqdata$hierarchy_counts(), caption = "number of proteins and peptides.")
+
+```
+
+## Normalize data using human proteins
+
+```{r createPlotter}
+pl <- lfqdata$get_Plotter()
+pl$intensity_distribution_density()
+subset_h <- lfqdata$get_copy()$get_Transformer()$log2()$lfq
+subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
+tr <- lfqdata$get_Transformer()
+lfqdataPeptideNorm <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
+pl <- lfqdataPeptideNorm$get_Plotter()
+pl$intensity_distribution_density()
+hm <- pl$NA_heatmap()
+```
+
+```{r showHeatmap}
+hm
+```
+
+
+## Aggregate proteins
+
+```{r}
+agg <- lfqdataPeptideNorm$get_Aggregator()
+agg$medpolish()
+lfqdataNormalized <- agg$lfq_agg
+lfqdataNormalized$hierarchy_counts()
+```
+
+
+# Model data using prolfqua and specify contrasts
+
+```{r specifyContrasts}
+Contrasts <- c(
+  "dilution_(9/7.5)_1.2" =   "dilution.e - dilution.d",
+  "dilution_(7.5/6)_1.25" =   "dilution.d - dilution.c",
+  "dilution_(6/4.5)_1.3(3)" =   "dilution.c - dilution.b",
+  "dilution_(4.5/3)_1.5" =   "dilution.b - dilution.a"
+)
+
+
+lmmodel <- "~ dilution."
+lmmodel <- paste0(lfqdataNormalized$config$table$get_response() , lmmodel)
+
+modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
+
+
+mod <- prolfqua::build_model(lfqdataNormalized$data, modelFunction)
+contr <- prolfqua::Contrasts$new(mod, Contrasts)
+contrimp <- prolfqua::ContrastsSimpleImpute$new(lfqdataNormalized, Contrasts)
+
+merged <- prolfqua::merge_contrasts_results(contr, contrimp)
+mergedmod <- prolfqua::ContrastsModerated$new(merged$merged)
+
+cp <- mergedmod$get_Plotter()
+cp$volcano()$FDR
+
+```
+
+
+## Benchmarking 
+
+
+```{r benchmark}
+ttd <- prolfqua::ionstar_bench_preprocess(mergedmod$get_contrasts())
+benchmark_prolfqua <- prolfqua::make_benchmark(ttd$data,
+                                             model_description = "prolfqua_merged",
+                                             model_name = "prolfqua_merged",
+                                             FDRvsFDP = list(list(score = "FDR", desc = FALSE))
+)
+
+
+knitr::kable(benchmark_prolfqua$pAUC_summaries()$ftable$content)
+
+
+prolfqua::table_facade(benchmark_prolfqua$smc$summary, "Nr of estimated contrasts")
+benchmark_prolfqua$plot_score_distribution()
+benchmark_prolfqua$plot_ROC(0.05)
+benchmark_prolfqua$plot_FDRvsFDP()
+
+```
+
+
+# Model data using proDA and specify contrasts
+
+```{r prodaFit}
+se <- prolfqua::LFQDataToSummarizedExperiment(lfqdataNormalized)
+fit <- proDA::proDA(se, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
+
+contr <- list()
+contr[["dilution_(9/7.5)_1.2"]] <- data.frame(
+  contrast = "dilution_(9/7.5)_1.2",
+  proDA::test_diff(fit, contrast = "dilution.e - dilution.d"))
+contr[["dilution_(7.5/6)_1.25"]] <- data.frame(
+  contrast = "dilution_(7.5/6)_1.25",
+  proDA::test_diff(fit, contrast = "dilution.d - dilution.c"))
+contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(
+  contrast = "dilution_(6/4.5)_1.3(3)", 
+  proDA::test_diff(fit, contrast = "dilution.c - dilution.b"))
+contr[["dilution_(4.5/3)_1.5"]] <- data.frame(
+  contrast = "dilution_(4.5/3)_1.5", 
+  proDA::test_diff(fit, contrast = "dilution.b - dilution.a" ))
+
+bb <- dplyr::bind_rows(contr)
+
+
+```
+
+
+## Benchmarking 
+
+
+```{r prodabenchmark}
+
+ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
+
+benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
+                                            contrast = "contrast",
+                                            toscale = c("pval"),
+                                            fcestimate = "diff",
+                                            benchmark = list(
+                                              list(score = "diff", desc = TRUE),
+                                              list(score = "t_statistic", desc = TRUE),
+                                              list(score = "scaled.pval", desc = TRUE)
+                                            ),  
+                                            model_description = "proDA_medpolishInt",
+                                            model_name = "proDA",
+                                            FDRvsFDP = list(list(score = "adj_pval", desc = FALSE))
+                                            , hierarchy = c("name"), summarizeNA = "t_statistic"
+)
+
+sumarry <- benchmark_proDA$smc$summary
+prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
+
+knitr::kable(benchmark_proDA$pAUC_summaries()$ftable$content)
+
+prolfqua::table_facade(benchmark_proDA$smc$summary, "Nr of estimated contrasts")
+
+benchmark_proDA$plot_score_distribution()
+benchmark_proDA$plot_ROC(0.05)
+benchmark_proDA$plot_FDRvsFDP()
+
+```
+
+
+
+# Adding benchmark for msqrob2
+
+```{r aggregateMedianPolish, eval=TRUE, include = FALSE}
+library(QFeatures)
+library(msqrob2)
+
+se <- prolfqua::LFQDataToSummarizedExperiment(lfqdata = lfqdataPeptideNorm)
+pe <- QFeatures::QFeatures(list(peptide = se), colData = colData(se))
+
+my_medianPolish <- function(x, verbose = FALSE, ...){
+  medpol <- stats::medpolish(x, na.rm = TRUE, trace.iter = verbose, maxiter = 10)
+  return(medpol$overall + medpol$col)
+}
+
+pe <- QFeatures::aggregateFeatures(
+  pe,
+  i = "peptide", fcol = "protein_Id",
+  name = "protein", fun = my_medianPolish, 
+)
+```
+
+To use `proDA`, we need to create an `SummarizedExperiment`. We use the `to_wide` function of `prolfqua` to get the data in in the `SummarizedExperiment` compatible format.
+
+
+## Defining Contrasts and computing group comparisons
+
+As usual, two steps are required, first fit the models, then compute the contrasts.
+
+```{r runMSRob,  include=TRUE}
+prlm <- msqrobHurdle(pe,
+                     i = "protein",
+                     formula = ~dilution.,
+                     overwrite = TRUE)
+
+
+```
+
+Since msqrob does not report average abundances, we are computing them for each contrast.
+
+```{r}
+st <- lfqdataNormalized$get_Stats()
+protAbundanceIngroup <- st$stats()
+protAbundanceIngroup <- protAbundanceIngroup |>
+  tidyr::pivot_wider(
+    id_cols = protein_Id,
+    names_from = dilution.,
+    names_prefix = "abd.",
+    values_from = mean)
+
+
+```
+
+
+```{r}
+L <- makeContrast(c("dilution.e-dilution.d=0",
+                    "dilution.d-dilution.c=0",
+                    "dilution.c-dilution.b=0",
+                    "dilution.b=0"),
+                  parameterNames = c("dilution.e",
+                                     "dilution.d",
+                                     "dilution.c",
+                                     "dilution.b"))
+prlm <- hypothesisTestHurdle(prlm, i = "protein", L, overwrite = TRUE)
+protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.e.d =  mean( c(abd.e,abd.d), na.rm = TRUE)  )
+protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.d.c =  mean( c(abd.d,abd.c), na.rm = TRUE)  )
+protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.c.b =  mean( c(abd.c,abd.b), na.rm = TRUE)  )
+protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.b.a =  mean( c(abd.b,abd.a), na.rm = TRUE)  )
+
+
+xx <- rowData(prlm[["protein"]])
+hurdle <- xx[grepl("hurdle_",names(xx))]
+
+res <- list()
+for (i in names(hurdle)) { 
+  hurdle[[i]]$contrast <- i
+  res[[i]] <- prolfqua::matrix_to_tibble(hurdle[[i]], preserve_row_names = "name")
+}
+
+hurdle <- dplyr::bind_rows(res)
+
+```
+
+
+Now we need to merge the results of both models msqrobHurdleIntensity and msqrobHurdleCount. To find out which models were not estimated by `msqrobHurdleIntensity` we check for NA's and use the `anti_join` to select those from the `msqrobHurdleCount` models.
+
+```{r merge}
+logFC <- hurdle |> dplyr::select("name","contrast", starts_with("logFC"))
+logFC <- dplyr::filter(logFC ,!is.na(logFCt))
+
+logFC$modelName <- "msqrobHurdleIntensity"
+names(logFC) <- c("name","contrast","logFC","se","df","t","pval","modelName")
+
+logOR <- hurdle |> dplyr::select("name","contrast", starts_with("logOR"))
+logOR$modelName <- "msqrobHurdleCount"
+names(logOR) <- c("name","contrast","logFC","se","df","t","pval","modelName")
+
+
+ddd <- dplyr::anti_join(logOR , logFC, by = c("name", "contrast"))
+all <- dplyr::bind_rows(ddd , logFC) |> dplyr::arrange(contrast, name)
+all <- prolfqua::adjust_p_values(all, column = "pval", group_by_col = "contrast")
+all$contrast |> unique()
+
+protAbundanceIngroup <- protAbundanceIngroup |> 
+  dplyr::select(-starts_with("abd")) |> 
+  tidyr::pivot_longer(starts_with("avgAbd"), names_to = "contrast" ,values_to = "avgAbd")
+
+protAbundanceIngroup <- protAbundanceIngroup |> 
+  dplyr::mutate(contrast = 
+           dplyr::case_when(contrast == "avgAbd.e.d" ~ "dilution_(9/7.5)_1.2",
+                     contrast == "avgAbd.d.c" ~ "dilution_(7.5/6)_1.25",
+                     contrast == "avgAbd.c.b" ~ "dilution_(6/4.5)_1.3(3)",
+                     contrast == "avgAbd.b.a" ~ "dilution_(4.5/3)_1.5",
+                     TRUE ~ "something wrong"))
+all <- all |> dplyr::mutate(contrast = dplyr::case_when(
+  contrast == "hurdle_dilution.e - dilution.d" ~ "dilution_(9/7.5)_1.2",
+  contrast == "hurdle_dilution.d - dilution.c" ~ "dilution_(7.5/6)_1.25",
+  contrast == "hurdle_dilution.c - dilution.b" ~ "dilution_(6/4.5)_1.3(3)",
+  contrast == "hurdle_dilution.b" ~ "dilution_(4.5/3)_1.5",
+  TRUE ~ "something wrong"))
+stopifnot(sum(all$contrast == "something wrong") == 0 )
+stopifnot(sum(all$contrast == "something wrong") == 0 )
+
+
+bb <- dplyr::inner_join(all, protAbundanceIngroup, by = c("name" = "protein_Id", "contrast" = "contrast"))
+
+```
+
+
+## Benchmarking
+
+Here we use `proflqua` benchmark functions to generate some summaries.
+
+```{r setUPBenchmark}
+
+ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
+benchmark_msqrob <- prolfqua::make_benchmark(ttd$data,
+                                             contrast = "contrast",
+                                             toscale = c("pval"),
+                                             fcestimate = "logFC",
+                                             benchmark = list(
+                                               list(score = "logFC", desc = TRUE),
+                                               list(score = "t", desc = TRUE),
+                                               list(score = "scaled.pval", desc = TRUE)
+                                             ),  
+                                             model_description = "msqrob_QFeature",
+                                             model_name = "msqrob2",
+                                             FDRvsFDP = list(list(score = "pval.adjusted", desc = FALSE))
+                                             , hierarchy = c("name"), summarizeNA = "t"
+)
+
+sumarry <- benchmark_msqrob$smc$summary
+prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
+
+```
+
+
+```{r prepBenchmarkforComparison, include= FALSE}
+xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
+                                 contrast = contrast,
+                                 avgInt = avgAbd,
+                                 diff = logFC,
+                                 statistic = t,
+                                 p.value = pval,
+                                 FDR = pval.adjusted  
+)
+benchmark2_msqrob <- prolfqua::make_benchmark(xdd, model_description = "msqrob2", model_name = "msqrob2")
+
+```
+
+
+
+
+```{r rocCurve, fig.cap="ROC curves"}
+res <- benchmark_msqrob$pAUC_summaries()
+knitr::kable(res$ftable$content,caption = res$ftable$caption)
+res$barp
+```
+
+```{r pAUC02, fig.cap="plot ROC curves"}
+#res$ftable
+benchmark_msqrob$plot_ROC(xlim = 0.2)
+```
+
+```{r fdrfdp, fig.cap = "plot FDR vs FDP"}
+benchmark_msqrob$plot_FDRvsFDP()
+```
+
+```{r fdptpr}
+benchmark_msqrob$plot_FDPvsTPR()
+```
+
+# MSstats
+
+
+```{r}
+
+annotation <- readxl::read_xlsx(inputAnnotation)
+
+msstats2 <- read.csv(
+    unz(inputFragfile,"IonstarWithMSFragger/MSstats.csv"),
+    header = TRUE,
+    sep = ",",
+    stringsAsFactors = FALSE)
+
+msstats2$BioReplicate <- NULL
+msstats2$Run <- tolower(msstats2$Run)
+msstats2$Condition <- NULL
+
+
+#msstats$BioReplicate <- NULL
+annotation2 <- annotation
+annotation2$BioReplicate <- annotation2$run_ID
+annotation2$run_ID <- NULL
+annotation2$date <- NULL
+annotation2$Condition <- annotation2$sample
+annotation2$sample <- NULL
+
+
+msstats2 <- dplyr::inner_join(msstats2 , annotation2, by = c(Run = "raw.file"))
+pin <- unique(lfqdataNormalized$data$protein_Id)
+
+# keep only the same proteins which are analysed also with msqrob2, proDA and prolfqua
+msstats2 <- dplyr::filter(msstats2, ProteinName %in% pin)
+msstats2$ProteinName |> unique() |> length()
+msstatscolumns <- c("ProteinName", "PeptideSequence",  "PrecursorCharge" , "FragmentIon" ,     "ProductCharge"   , "IsotopeLabelType", "Condition","BioReplicate","Run",    
+"Fraction" ,"Intensity" )
+QuantData <- MSstats::dataProcess(msstats2, use_log_file = FALSE, verbose = FALSE)
+QuantData$FeatureLevelData$PROTEIN |> unique() |> length()
+QuantData$ProteinLevelData$Protein |> unique() |> length()
+
+```
+
+
+
+# Defining Contrasts and computing group comparisons
+
+```{r computeContrasts}
+
+# based on multiple comparisons  (T1 vs T3; T1 vs T7; T1 vs T9)
+comparison1 <- matrix(c(0,0,0,-1,1),nrow = 1)
+comparison2 <- matrix(c(0,0,-1,1,0),nrow = 1)
+comparison3 <- matrix(c(0,-1,1,0,0),nrow = 1)
+comparison4 <- matrix(c(-1,1,0,0,0),nrow = 1)
+comparison <- rbind(comparison1,comparison2, comparison3, comparison4)
+row.names(comparison) <- c("dilution_(9/7.5)_1.2","dilution_(7.5/6)_1.25","dilution_(6/4.5)_1.3(3)","dilution_(4.5/3)_1.5")
+colnames(comparison) <- c("a","b","c","d","e")
+testResultMultiComparisons <- MSstats::groupComparison(
+    contrast.matrix = comparison,
+    data = QuantData,
+    verbose = FALSE,
+    use_log_file = FALSE)
+bb <- testResultMultiComparisons$ComparisonResult
+
+```
+
+# Benchmarking
+
+```{r setUPBenchmarkMSstats}
+library(prolfqua)
+ttd <- prolfqua::ionstar_bench_preprocess(bb, idcol = "Protein")
+benchmark_msstats <- prolfqua::make_benchmark(
+    ttd$data,
+    contrast = "Label",
+    toscale = c("pvalue"),
+    fcestimate = "log2FC",
+    benchmark = list(
+        list(score = "log2FC", desc = TRUE),
+        list(score = "Tvalue", desc = TRUE),
+        list(score = "scaled.pvalue", desc = TRUE)
+    ),  
+    model_description = "MSStats",
+    model_name = "MSStats",
+    FDRvsFDP = list(list(score = "adj.pvalue", desc = FALSE))
+    , hierarchy = c("Protein"), summarizeNA = "Tvalue"
+)
+sum(benchmark_msstats$smc$summary$Protein)
+
+sumarry <- benchmark_msstats$smc$summary
+prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
+
+```
+
+
+
+# Compare prolfqua, proda, msqrob2
+
+Direct comparison with msqrob2 is impossible since, to fit the dropout model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file.
+
+```{r}
+allB <- list(benchmark_proDA = benchmark_proDA,
+             benchmark_prolfqua = benchmark_prolfqua,
+             benchmark_msqrob = benchmark_msqrob,
+             benchmark_msstats = benchmark_msstats)
+saveRDS(allB
+  ,"../inst/Benchresults/FragPipev15_comb_MSStats.RDS")
+
+proda <- allB$benchmark_proDA$pAUC_summaries()$ftable$content
+proda$package <- "proda"
+prolfqua <- allB$benchmark_prolfqua$pAUC_summaries()$ftable$content
+prolfqua$package <- "prolfqua"
+msqrob2 <- allB$benchmark_msqrob$pAUC_summaries()$ftable$content
+msqrob2$package <- "msqrob2"
+tmp <- dplyr::bind_rows(proda, prolfqua, msqrob2)
+bmsstats <- allB$benchmark_msstats$pAUC_summaries()$ftable$content
+bmsstats$package <- "MSstats"
+bmsstats$contrast <- bmsstats$Label
+bmsstats$Label <- NULL
+tmp <- dplyr::bind_rows(list(proda, prolfqua, msqrob2, bmsstats))
+
+
+tmp$what[tmp$what == "statistic"] <- "t_statistic"
+tmp$what[tmp$what == "scaled.pval"] <- "scaled.p.value"
+tmp$what[tmp$what == "scaled.pvalue"] <- "scaled.p.value"
+
+tmp$what[tmp$what == "logFC"] <- "diff"
+tmp$what[tmp$what == "log2FC"] <- "diff"
+tmp$what[tmp$what == "t"] <- "t_statistic"
+tmp$what[tmp$what == "Tvalue"] <- "t_statistic"
+tmp$what |> unique()
+
+tmp |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
+  ggplot2::geom_bar(stat = "identity",  position = ggplot2::position_dodge()) +
+  ggplot2::facet_wrap(~ contrast) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+tmp |> dplyr::filter(contrast == "all") |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
+  ggplot2::geom_bar(stat = "identity",  position = ggplot2::position_dodge()) +
+  ggplot2::facet_wrap(~ contrast) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggplot2::theme_minimal() 
+
+knitr::kable(tmp |> dplyr::filter(contrast == "all"), caption = "Table")
+all <- tmp |> dplyr::filter(contrast == "all")
+
+ggplot2::ggplot(all, ggplot2::aes(x = package, y = pAUC_10)) +
+  ggplot2::geom_bar(stat = "identity") +
+  ggplot2::facet_wrap(~what)  + 
+  ggplot2::theme_minimal() + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
+  ggplot2::xlab("") +
+
+```
+
+
+```{r fig.cap= "Number of comparisons for each method"}
+
+a1 <- allB$benchmark_proDA$smc$summary
+names(a1)[2] <- "protein_Id"
+a1$name <- allB$benchmark_proDA$model_name
+
+a2 <- allB$benchmark_prolfqua$smc$summary
+names(a2)[2] <- "protein_Id"
+a2$name <- allB$benchmark_prolfqua$model_name
+
+a3 <- allB$benchmark_msqrob$smc$summary
+names(a3)[2] <- "protein_Id"
+a3$name <- allB$benchmark_msqrob$model_name
+
+a4 <- allB$benchmark_msstats$smc$summary
+names(a4)[2] <- "protein_Id"
+a4$name <- allB$benchmark_msstats$model_name
+dd <- dplyr::bind_rows(list(a1,a2,a3,a4))
+dd <- dd |> dplyr::mutate(nrcontrasts = protein_Id * (4 - nr_missing))
+dds <- dd |> dplyr::group_by(name) |> dplyr::summarize(nrcontrasts = sum(nrcontrasts))
+dds$percent <- dds$nrcontrasts/max(dds$nrcontrasts) * 100
+
+nrgg <- dds |> ggplot2::ggplot(ggplot2::aes(x = name, y = nrcontrasts )) + 
+  ggplot2::geom_bar(stat = "identity", fill = "white", colour = "black") + 
+  ggplot2::coord_cartesian(ylim = c(min(dds$nrcontrasts) - 200, max(dds$nrcontrasts) + 10)) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
+  ggplot2::geom_text(ggplot2::aes(label = paste0(round(nrcontrasts, digits = 1), paste0("  (",round(percent, digits = 1),"%)"))),
+            vjust = 0, hjust = -0.2, angle = -90) #+ 
+nrgg
+
+```
+
+

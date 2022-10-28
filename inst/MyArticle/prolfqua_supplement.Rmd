@@ -133,7 +133,9 @@ all$what[all$what == "logFC"] <- "diff"
 
 ```
 
-Supplementary Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("proDA")` and `r BiocStyle::Githubpkg("fgcz/prolfqua")`, when using the difference among the groups, the scaled p-values or the t-statistics to compute the ROC curves.
+Supplementary Figure \@ref(fig:plotCPTACbarplot) shows the partial area under the curve for `r BiocStyle::Biocpkg("msqrob2")`, `r BiocStyle::Biocpkg("proDA")` and `r BiocStyle::Githubpkg("fgcz/prolfqua")`, when using the difference among the groups, the scaled p-values or the t-statistics to compute the ROC curves. For this dataset, the differences among groups show a higher performance than the t-statistic and scaled p-value. The *proDA* package performs slightly better then *prolfqua*  or *msqrob* although the differences are between the $pAUC_{10}$ for the scaled p-value score are not statistically significant. Table \@ref(tab:shwoROCtestREsultsCPTAC) shows the results of the Bootstrap test for two ROC curves. We observe that for this benchmark data, we can not reject the null hypothesis that there are no significant differences among the $pAUC_{10}$ (ROC based on scaled p-value) for the three packages. 
+
+(ref:plotCPTACbarplot) Barplot showing the partial area under the ROC at 0.1 FDR. diff - differences among groups (logFC), scaled.p.value - $sign(diff) \cdot \textrm{p-value}$. 
 
 ```{r plotCPTACbarplot, fig.cap= "Barplot showing the partial area under the ROC at 0.1 FDR."}
 all |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
@@ -172,7 +174,7 @@ knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits 
 The Rmarkdown file which created these results, with more details about the IonStar FragPipe v15 dataset, can be found here:
 ["Benchmarking proDA and prolfqua using Ionstar Dataset and FragPipe v15 compbined_protein output"](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_cptac.html) 
 
-Direct comparison with `msqrob2` is impossible since to fit the hurdle model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file. Starting from protein level intensities has the advantage that the effect size estimates obtained from the model agree with the input data, a feature frequently requested by the biologist.
+Direct comparison with `msqrob2` is impossible since to fit the hurdle model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file containing protein intensities. Starting from protein level intensities has the advantage that the effect size estimates obtained from the model agree with the input data, a feature frequently requested by the biologist.
 
 
 ```{r FragPipe}
@@ -235,7 +237,7 @@ Pre-build version of the vignettes are available:
 # Estimating $A_{LOD}$
 
 The main text describes how we estimate the abundance at the detection limit $A_{LOD}$. 
-Supplementary Figure \@ref(fig:missignessHistogram) shows the distribution of the average abundance within a group for all proteins. The red density shows the distribution for those proteins without a missing value, and the olive, turquoise, and lilac density show for proteins with 1,2 and 3 missing values, respectively. We see that the proteins with three missing values have, on average lower abundances than those with no missing values. We are using the median of the Lila density (one observation in the group), as the $A_{LOD}$ estimate.
+Supplementary Figure \@ref(fig:missignessHistogram) shows the distribution of the average abundance within a group for all proteins. The red density shows the distribution for those proteins without a missing value, and the olive, turquoise, and lilac density show for proteins with 1,2 and 3 missing values, respectively. We see that the proteins with three missing values have, on average lower abundances than those with no missing values. We are using the median of the proteins with a single observation per group; the lila density, as the $A_{LOD}$ estimate.
 
 ```{r missignessHistogram, fig.cap= "Distribution of the average abundance within group a and c for all proteins. Each density are color coded depending the number of missing observations per protein in a group.", echo=FALSE}
 

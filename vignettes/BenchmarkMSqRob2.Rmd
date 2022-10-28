@@ -108,8 +108,6 @@ protAbundanceIngroup <- protAbundanceIngroup |>
 
 
 ```{r aggregateMedianPolish, eval=TRUE, include = FALSE}
-
-
 se <- prolfqua::LFQDataToSummarizedExperiment(lfqdata = lfqdataNormalized)
 pe <- QFeatures::QFeatures(list(peptide = se), colData = colData(se))
 
@@ -117,7 +115,6 @@ my_medianPolish <- function(x, verbose = FALSE, ...){
   medpol <- stats::medpolish(x, na.rm = TRUE, trace.iter = verbose, maxiter = 10)
   return(medpol$overall + medpol$col)
 }
-
 
 pe <- QFeatures::aggregateFeatures(
   pe,

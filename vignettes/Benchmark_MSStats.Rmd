@@ -55,6 +55,8 @@ rf <- unique(infile$Raw.file)
 rf <- data.frame(Raw.file = rf, raw.file = tolower(rf))
 msstas_annotation <- dplyr::inner_join(rf, msstas_annotation)
 msstas_annotation$raw.file <- NULL
+
+
 ```
 
 
@@ -103,10 +105,10 @@ comparison <- rbind(comparison1,comparison2, comparison3, comparison4)
 row.names(comparison) <- c("dilution_(9/7.5)_1.2","dilution_(7.5/6)_1.25","dilution_(6/4.5)_1.3(3)","dilution_(4.5/3)_1.5")
 colnames(comparison) <- c("a","b","c","d","e")
 testResultMultiComparisons <- MSstats::groupComparison(
-    contrast.matrix=comparison,
-    data=QuantData,
-    verbose=FALSE,
-    use_log_file=FALSE)
+    contrast.matrix = comparison,
+    data = QuantData,
+    verbose = FALSE,
+    use_log_file = FALSE)
 
 bb <- testResultMultiComparisons$ComparisonResult
 
