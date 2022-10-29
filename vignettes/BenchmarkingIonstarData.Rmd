@@ -438,7 +438,6 @@ allBenchmarks$benchmark_Prot <- benchmark_Prot
 
 ```
 
-
 ### Adding Moderation
 
 ```{r contrastModel1Moderation, include = FALSE}
@@ -466,8 +465,6 @@ allBenchmarks$benchmark_ProtModerated <- benchmark_ProtModerated
 
 ```
 
-
-
 ## Contrasts from mixed effect models
 
 ```{r contrastModel2}
@@ -491,7 +488,7 @@ benchmark_mixed <- prolfqua::make_benchmark(
 )
 benchmark_mixed$complete(FALSE)
 prolfqua::table_facade(benchmark_mixed$smc$summary,
-                       caption = "Nr of proteins with Nr of not estimated contrasts.", digits=1)
+                       caption = "Nr of proteins with Nr of not estimated contrasts.", digits = 1)
 
 #benchmark_mixed$plot_score_distribution()
 benchmark_mixed$plot_FDRvsFDP()
@@ -717,7 +714,7 @@ dd <- dd |> dplyr::mutate(nrcontrasts = protein_Id * (4 - as.integer(nr_missing)
 dds <- dd |> dplyr::group_by(name) |> dplyr::summarize(nrcontrasts = sum(nrcontrasts))
 
 dds |> ggplot2::ggplot(ggplot2::aes(x = name, y = (nrcontrasts - min(nrcontrasts)))) + 
-  ggplot2::geom_bar(stat="identity") + 
+  ggplot2::geom_bar(stat = "identity") + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
   ggplot2::geom_text(ggplot2::aes(label= nrcontrasts), position = ggplot2::position_dodge(width=0.9), vjust=-0.25)
 

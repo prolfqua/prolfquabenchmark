@@ -1,5 +1,5 @@
 ---
-title: "Comparing msqrob2 proDA and prolfqua using the CPTAC dataset"
+title: "DEA benchmark CPTAC/MaxQuant/peptide.txt"
 author: "Witold E. Wolski"
 date: "`r Sys.Date()`"
 output: 
@@ -11,7 +11,7 @@ output:
 papersize: a4
 geometry: margin=.5in
 vignette: >
-  %\VignetteIndexEntry{Comparing msqrob2 proDA and prolfqua using the CPTAC dataset} 
+  %\VignetteIndexEntry{DEA benchmark CPTAC/MaxQuant/peptide.txt} 
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
