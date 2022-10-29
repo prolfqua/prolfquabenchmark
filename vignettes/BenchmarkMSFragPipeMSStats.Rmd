@@ -34,10 +34,12 @@ conflicted::conflict_prefer("filter", "dplyr")
 
 ```
 
+
+# Data preprocessing
+
+
+
 ## Load data
-
-We start by loading the IonStar dataset and the annotation from the `prolfquadata` package. The method `add_annotation` adds the annotation to the data.
-
 
 
 ```{r loaddata}
@@ -111,7 +113,6 @@ hm <- pl$NA_heatmap()
 hm
 ```
 
-
 ## Aggregate proteins
 
 ```{r}
@@ -122,7 +123,7 @@ lfqdataNormalized$hierarchy_counts()
 ```
 
 
-# Model data using prolfqua and specify contrasts
+# DEA using prolfqua
 
 ```{r specifyContrasts}
 Contrasts <- c(
@@ -175,7 +176,7 @@ benchmark_prolfqua$plot_FDRvsFDP()
 ```
 
 
-# Model data using proDA and specify contrasts
+# DEA using proDA
 
 ```{r prodaFit}
 se <- prolfqua::LFQDataToSummarizedExperiment(lfqdataNormalized)
@@ -236,9 +237,7 @@ benchmark_proDA$plot_FDRvsFDP()
 
 ```
 
-
-
-# Adding benchmark for msqrob2
+# DEA using msqrob2
 
 ```{r aggregateMedianPolish, eval=TRUE, include = FALSE}
 library(QFeatures)
@@ -429,7 +428,7 @@ benchmark_msqrob$plot_FDRvsFDP()
 benchmark_msqrob$plot_FDPvsTPR()
 ```
 
-# MSstats
+# DEA using MSstats
 
 
 ```{r}
@@ -464,15 +463,12 @@ msstats2 <- dplyr::filter(msstats2, ProteinName %in% pin)
 msstats2$ProteinName |> unique() |> length()
 msstatscolumns <- c("ProteinName", "PeptideSequence",  "PrecursorCharge" , "FragmentIon" ,     "ProductCharge"   , "IsotopeLabelType", "Condition","BioReplicate","Run",    
 "Fraction" ,"Intensity" )
-QuantData <- MSstats::dataProcess(msstats2, use_log_file = FALSE, verbose = FALSE)
-QuantData$FeatureLevelData$PROTEIN |> unique() |> length()
-QuantData$ProteinLevelData$Protein |> unique() |> length()
+invisible(utils::capture.output(
+    QuantData <- MSstats::dataProcess(msstats2, use_log_file = FALSE, verbose = FALSE)
+    ))
 
 ```
 
-
-
-# Defining Contrasts and computing group comparisons
 
 ```{r computeContrasts}
 
@@ -484,16 +480,18 @@ comparison4 <- matrix(c(-1,1,0,0,0),nrow = 1)
 comparison <- rbind(comparison1,comparison2, comparison3, comparison4)
 row.names(comparison) <- c("dilution_(9/7.5)_1.2","dilution_(7.5/6)_1.25","dilution_(6/4.5)_1.3(3)","dilution_(4.5/3)_1.5")
 colnames(comparison) <- c("a","b","c","d","e")
-testResultMultiComparisons <- MSstats::groupComparison(
+invisible(utils::capture.output(
+    testResultMultiComparisons <- MSstats::groupComparison(
     contrast.matrix = comparison,
     data = QuantData,
     verbose = FALSE,
     use_log_file = FALSE)
+    ))
 bb <- testResultMultiComparisons$ComparisonResult
 
 ```
 
-# Benchmarking
+## Benchmarking
 
 ```{r setUPBenchmarkMSstats}
 library(prolfqua)
@@ -522,7 +520,7 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 
 
 
-# Compare prolfqua, proda, msqrob2
+# Comparing DEA results from prolfqua, proda, msqrob2, and MSstats
 
 Direct comparison with msqrob2 is impossible since, to fit the dropout model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file.
 
@@ -532,7 +530,7 @@ allB <- list(benchmark_proDA = benchmark_proDA,
              benchmark_msqrob = benchmark_msqrob,
              benchmark_msstats = benchmark_msstats)
 saveRDS(allB
-  ,"../inst/Benchresults/FragPipev15_comb_MSStats.RDS")
+  ,"../inst/Benchresults/FragPipev14_comb_MSStats.RDS")
 
 proda <- allB$benchmark_proDA$pAUC_summaries()$ftable$content
 proda$package <- "proda"
@@ -563,21 +561,16 @@ tmp |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, colo
   ggplot2::facet_wrap(~ contrast) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-tmp |> dplyr::filter(contrast == "all") |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
-  ggplot2::geom_bar(stat = "identity",  position = ggplot2::position_dodge()) +
-  ggplot2::facet_wrap(~ contrast) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggplot2::theme_minimal() 
+all <- tmp |> dplyr::filter(contrast == "all")
 
 knitr::kable(tmp |> dplyr::filter(contrast == "all"), caption = "Table")
-all <- tmp |> dplyr::filter(contrast == "all")
 
 ggplot2::ggplot(all, ggplot2::aes(x = package, y = pAUC_10)) +
   ggplot2::geom_bar(stat = "identity") +
   ggplot2::facet_wrap(~what)  + 
   ggplot2::theme_minimal() + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
-  ggplot2::xlab("") +
+  ggplot2::xlab("")
 
 ```
 
