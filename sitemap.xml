@@ -4,7 +4,10 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/BenchmarkMSFraggerProteinIonStar.html</loc>
+    <loc>/articles/BenchmarkFragPipeMSStats.html</loc>
+  </url>
+  <url>
+    <loc>/articles/BenchmarkFragPipeProteinIonStar.html</loc>
   </url>
   <url>
     <loc>/articles/BenchmarkMSqRob2.html</loc>

@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comparing msqrob2 proDA and prolfqua using the CPTAC dataset • prolfquabenchmark</title>
+<title>DEA benchmark CPTAC/MaxQuant/peptide.txt • prolfquabenchmark</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Comparing msqrob2 proDA and prolfqua using the CPTAC dataset">
+<script src="../pkgdown.js"></script><meta property="og:title" content="DEA benchmark CPTAC/MaxQuant/peptide.txt">
 <meta property="og:description" content="prolfquabenchmark">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -50,13 +50,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/BenchmarkMSFraggerProteinIonStar.html">Benchmarking proDA and prolfqua using Ionstar Dataset and FragPipe v15 compbined_protein output</a>
+      <a href="../articles/BenchmarkFragPipeMSStats.html">DEA benchmark IonStar/FragPipeV14/MSstats.tsv</a>
+    </li>
+    <li>
+      <a href="../articles/BenchmarkFragPipeProteinIonStar.html">DEA benchmark IonStar/FragPipeV14/combined_protein.tsv</a>
     </li>
     <li>
       <a href="../articles/BenchmarkMSqRob2.html">Benchmarking the msqrob2 package using the Ionstar Dataset starting from peptides.txt</a>
     </li>
     <li>
-      <a href="../articles/Benchmark_MSStats.html">Benchmarking MSstats using the Ionstar Dataset</a>
+      <a href="../articles/Benchmark_MSStats.html">Benchmarking MSstats DEA using the Ionstar Dataset/MaxQuant</a>
     </li>
     <li>
       <a href="../articles/Benchmark_Model_IonStar_With2Factors.html">Modelling with Interactions</a>
@@ -65,7 +68,7 @@
       <a href="../articles/Benchmark_SaintExpress.html">Benchmarking SaintExpress</a>
     </li>
     <li>
-      <a href="../articles/Benchmark_cptac.html">Comparing msqrob2 proDA and prolfqua using the CPTAC dataset</a>
+      <a href="../articles/Benchmark_cptac.html">DEA benchmark CPTAC/MaxQuant/peptide.txt</a>
     </li>
     <li>
       <a href="../articles/Benchmark_proDA_fromMQlfq.html">Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities</a>
@@ -102,12 +105,11 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Comparing msqrob2 proDA and prolfqua using the
-CPTAC dataset</h1>
+      <h1 data-toc-skip>DEA benchmark CPTAC/MaxQuant/peptide.txt</h1>
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2022-10-22</h4>
+            <h4 data-toc-skip class="date">2022-10-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/../vignettes/Benchmark_cptac.Rmd" class="external-link"><code>../vignettes/Benchmark_cptac.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_cptac.Rmd</code></div>
@@ -643,17 +645,17 @@ results of the Bootstrap test for two ROC curves.</p>
 <tr class="odd">
 <td align="left">msqrob2_vs_prolfqua</td>
 <td align="left">msqrob2_vs_prolfqua</td>
-<td align="right">0.9792599</td>
+<td align="right">0.9794498</td>
 </tr>
 <tr class="even">
 <td align="left">msqrob2_vs_proda</td>
 <td align="left">msqrob2_vs_proda</td>
-<td align="right">0.9198034</td>
+<td align="right">0.9203194</td>
 </tr>
 <tr class="odd">
 <td align="left">prolfqua_vs_proda</td>
 <td align="left">prolfqua_vs_proda</td>
-<td align="right">0.8994262</td>
+<td align="right">0.9026306</td>
 </tr>
 </tbody>
 </table>

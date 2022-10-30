@@ -50,13 +50,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/BenchmarkMSFraggerProteinIonStar.html">Benchmarking proDA and prolfqua using Ionstar Dataset and FragPipe v15 compbined_protein output</a>
+      <a href="../articles/BenchmarkFragPipeMSStats.html">DEA benchmark IonStar/FragPipeV14/MSstats.tsv</a>
+    </li>
+    <li>
+      <a href="../articles/BenchmarkFragPipeProteinIonStar.html">DEA benchmark IonStar/FragPipeV14/combined_protein.tsv</a>
     </li>
     <li>
       <a href="../articles/BenchmarkMSqRob2.html">Benchmarking the msqrob2 package using the Ionstar Dataset starting from peptides.txt</a>
     </li>
     <li>
-      <a href="../articles/Benchmark_MSStats.html">Benchmarking MSstats using the Ionstar Dataset</a>
+      <a href="../articles/Benchmark_MSStats.html">Benchmarking MSstats DEA using the Ionstar Dataset/MaxQuant</a>
     </li>
     <li>
       <a href="../articles/Benchmark_Model_IonStar_With2Factors.html">Modelling with Interactions</a>
@@ -65,7 +68,7 @@
       <a href="../articles/Benchmark_SaintExpress.html">Benchmarking SaintExpress</a>
     </li>
     <li>
-      <a href="../articles/Benchmark_cptac.html">Comparing msqrob2 proDA and prolfqua using the CPTAC dataset</a>
+      <a href="../articles/Benchmark_cptac.html">DEA benchmark CPTAC/MaxQuant/peptide.txt</a>
     </li>
     <li>
       <a href="../articles/Benchmark_proDA_fromMQlfq.html">Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities</a>
@@ -107,7 +110,7 @@ Dataset starting from peptides</h1>
                         <h4 data-toc-skip class="author">Witold E
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2022-10-22</h4>
+            <h4 data-toc-skip class="date">2022-10-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/../vignettes/Benchmark_proDA_medpolish.Rmd" class="external-link"><code>../vignettes/Benchmark_proDA_medpolish.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_proDA_medpolish.Rmd</code></div>
@@ -259,107 +262,107 @@ proDA_medpolishInt</caption>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">92.86866</td>
-<td align="right">66.41661</td>
-<td align="right">78.70482</td>
+<td align="right">92.87107</td>
+<td align="right">66.41744</td>
+<td align="right">78.70545</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.pval</td>
-<td align="right">92.98395</td>
-<td align="right">72.55839</td>
-<td align="right">79.12572</td>
+<td align="right">92.98497</td>
+<td align="right">72.56096</td>
+<td align="right">79.12685</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">92.98395</td>
-<td align="right">72.55839</td>
-<td align="right">79.12572</td>
+<td align="right">92.98497</td>
+<td align="right">72.56096</td>
+<td align="right">79.12685</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">94.60396</td>
-<td align="right">81.30585</td>
-<td align="right">86.53428</td>
+<td align="right">94.61221</td>
+<td align="right">81.30629</td>
+<td align="right">86.53539</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.pval</td>
-<td align="right">94.18975</td>
-<td align="right">81.52109</td>
-<td align="right">85.08736</td>
+<td align="right">94.19341</td>
+<td align="right">81.52903</td>
+<td align="right">85.09507</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">t_statistic</td>
-<td align="right">94.18975</td>
-<td align="right">81.52109</td>
-<td align="right">85.08736</td>
+<td align="right">94.19341</td>
+<td align="right">81.52903</td>
+<td align="right">85.09507</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">92.06018</td>
-<td align="right">66.71615</td>
-<td align="right">78.39942</td>
+<td align="right">92.05885</td>
+<td align="right">66.72233</td>
+<td align="right">78.40295</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.pval</td>
-<td align="right">92.10574</td>
-<td align="right">72.99698</td>
-<td align="right">78.92407</td>
+<td align="right">92.10499</td>
+<td align="right">72.99786</td>
+<td align="right">78.92341</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">t_statistic</td>
-<td align="right">92.10574</td>
-<td align="right">72.99698</td>
-<td align="right">78.92407</td>
+<td align="right">92.10499</td>
+<td align="right">72.99786</td>
+<td align="right">78.92341</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">91.74053</td>
-<td align="right">58.59695</td>
-<td align="right">74.26594</td>
+<td align="right">91.74318</td>
+<td align="right">58.60004</td>
+<td align="right">74.26726</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.pval</td>
-<td align="right">92.07094</td>
-<td align="right">67.18766</td>
-<td align="right">75.00980</td>
+<td align="right">92.07209</td>
+<td align="right">67.19119</td>
+<td align="right">75.01113</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">t_statistic</td>
-<td align="right">92.07094</td>
-<td align="right">67.18766</td>
-<td align="right">75.00980</td>
+<td align="right">92.07209</td>
+<td align="right">67.19119</td>
+<td align="right">75.01113</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">92.93989</td>
-<td align="right">57.98871</td>
-<td align="right">75.34722</td>
+<td align="right">92.94016</td>
+<td align="right">57.98783</td>
+<td align="right">75.34832</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.pval</td>
-<td align="right">93.50834</td>
-<td align="right">68.18447</td>
-<td align="right">77.57506</td>
+<td align="right">93.50830</td>
+<td align="right">68.18359</td>
+<td align="right">77.57440</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">t_statistic</td>
-<td align="right">93.50834</td>
-<td align="right">68.18447</td>
-<td align="right">77.57506</td>
+<td align="right">93.50830</td>
+<td align="right">68.18359</td>
+<td align="right">77.57440</td>
 </tr>
 </tbody>
 </table>
