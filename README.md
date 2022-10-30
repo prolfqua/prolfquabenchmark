@@ -6,7 +6,7 @@ https://wolski.github.io/prolfquabenchmark/
 
 The R package prolfquabenchmark contains vignettes which show how we used the IonStar dataset to asses the performance of the methods implemented in the [prolfqua](https://github.com/fgcz/prolfqua) R packages and other packages (MSstats, proDA).
 
-- [Benchmarking MSFragger output using Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkMSFraggerProteinIonStar.html)
+- [Benchmarking FragPipe output using Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkFragPipeProteinIonStar.html)
 - [Benchmarking MSstats using the Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html)
 - [Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_fromMQlfq.html)
 - [Benchmarking the proDA package using the Ionstar Dataset starting from peptides](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html)
