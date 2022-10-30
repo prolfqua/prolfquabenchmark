@@ -23,7 +23,7 @@ vignette: >
 editor_options: 
   chunk_output_type: console
 abstract: |
-    Mass spectrometry is widely used for quantitative proteomics studies, relative protein quantification, and differential expression analysis of proteins. There is a large variety of signal processing software and analysis tools. Nevertheless, there is a need for a modular, easy-to-use application programming interface in R that transparently supports a variety of well principled statistical procedures to make applying them to proteomics data, comparing and understanding their differences easily. The `r BiocStyle::Githubpkg("fgcz/prolfqua")` package integrates essential steps of the mass spectrometry-based differential expression analysis workflow: quality control, data normalization, protein aggregation, statistical modeling, hypothesis testing, and sample size estimation. The package makes integrating new data formats easy. It can be used to model simple experimental designs with a single explanatory variable and complex experiments with multiple factors and hypothesis testing. The implemented methods allow sensitive and specific differential expression analysis. Furthermore, the package implements benchmark functionality that can help to compare data acquisition, data preprocessing, or data modeling methods using a gold standard dataset. The application programmer interface of `r BiocStyle::Githubpkg("fgcz/prolfqua")`  strives to be clear,  predictable, discoverable, and consistent to make proteomics data analysis application development easy and exciting. Finally, the `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package is available on GitHub https://github.com/fgcz/prolfqua, distributed under the MIT license. It runs on all platforms supported by the [R free software environment for statistical computing and graphics](https://www.r-project.org/).
+    Mass spectrometry is widely used for quantitative proteomics studies, relative protein quantification, and differential expression analysis of proteins. There is a large variety of quantification software and analysis tools. Nevertheless, there is a need for a modular, easy-to-use application programming interface in R that transparently supports a variety of well principled statistical procedures to make applying them to proteomics data, comparing and understanding their differences easily. The `r BiocStyle::Githubpkg("fgcz/prolfqua")` package integrates essential steps of the mass spectrometry-based differential expression analysis workflow: quality control, data normalization, protein aggregation, statistical modeling, hypothesis testing, and sample size estimation. The package makes integrating new data formats easy. It can be used to model simple experimental designs with a single explanatory variable and complex experiments with multiple factors and hypothesis testing. The implemented methods allow sensitive and specific differential expression analysis. Furthermore, the package implements benchmark functionality that can help to compare data acquisition, data preprocessing, or data modeling methods using a gold standard dataset. The application programmer interface of `r BiocStyle::Githubpkg("fgcz/prolfqua")`  strives to be clear,  predictable, discoverable, and consistent to make proteomics data analysis application development easy and exciting. Finally, the `r BiocStyle::Githubpkg("fgcz/prolfqua")` R package is available on GitHub https://github.com/fgcz/prolfqua, distributed under the MIT license. It runs on all platforms supported by the [R free software environment for statistical computing and graphics](https://www.r-project.org/).
 
 urlcolor: blue
 ---
@@ -232,7 +232,7 @@ and the variance of $\beta_c$ by:
 
 with $X$ being the design matrix. The degrees of freedom for the contrast are equal to the residual degrees of freedom of the linear model. For estimating contrasts from mixed effects models we used the function `contest` implemented in the R package `r BiocStyle::CRANpkg("lmerTest")`  and used the Satterthwaite [@Kuznetsova2017lmerTest] method to estimate the denominator degrees of freedom. These methods are available in the class `Contrast` (see Figure \@ref(fig:ContrastUML))
 
-The package *prolfqua* provides functions to determine the vector of $parameter$ weights $c$, from a linear model and a contrast specification string. In the Supplement we provided an example, how to specify contrasts for a dataset with two explanatory variable with an interaction term (Supplementary Section "Specifying Contrasts for Models with two Factors and Interaction Term").
+The package *prolfqua* provides functions to determine the vector of $parameter$ weights $c$, from a linear model and a contrast specification string. In the Supplement we provided an example, how to specify contrasts for a dataset with two explanatory variables and an interaction term (Supplementary Section "Specifying Contrasts for Models with two Factors and Interaction Term").
 
 ### Contrast estimation in presence of missing data.
 
@@ -558,11 +558,11 @@ We obtained difference and FDR estimates for all proteins, as shown in Figure \@
 
 Furthermore, all three models perform similarly when examined using a different benchmark dataset CPTAC/MaxQuant (see Methods). For this dataset, *proDA* performed slightly but not significantly better than *prolfqua* and *msqrob* (and Supplementary Section "DEA benchmark : CPTAC/MaxQuant/peptide.txt").
 
-In addition, we examined the DEA performance when using protein intensities reported by quantification software *FragPipe* for the *IonStar* dataset as input. Using protein abundances as input significantly simplifies the analysis and interpretation and might benefit from optimization implemented in the signal processing software. However, we can only easily fit the *proDA* and `prolfqua_merged` models to protein intensities. In this DEA benchmark, *prolfqua* performed slightly, but not significantly better than *proDA*  (Supplementary Section "DEA benchmark : IonStar/FragPipeV14/combined_protein.tsv").
+In addition, we examined the DEA performance when using protein intensities reported by quantification software *FragPipe* for the *IonStar* dataset as input. Using protein abundances as input significantly simplifies the analysis and interpretation and might benefit from optimization implemented in the quantification software. However, we can only easily fit the *proDA* and `prolfqua_merged` models to protein intensities. In this DEA benchmark, *prolfqua* performed slightly, but not significantly better than *proDA*  (Supplementary Section "DEA benchmark : IonStar/FragPipeV14/combined_protein.tsv").
 
 Finally, we also compared the DEA performances when starting the analysis from the precursor abundances reported in the 'MSstats.tsv' file, generated by *FragPipe* v14, from the *IonStar* dataset. Since *MSstats*, *msqrob2*, *proDA*, and *prolfqua* all read `MStstats.tsv` files, we could eliminate a confounding factor, i.e., different input abundances (Supplementary Section "DEA benchmark: IonStar/FragPipeV14/MSstats.tsv"). In this DEA benchmark, *msqrob2* and *prolfqua* perform best but not significantly better than *proDA* or *MSstats*. Furthermore, by processing the *IonStar* dataset with both *MaxQuant* and *FragPipe*, we can compare their performances (Supplementary Section "Comparing DEA results for *MaxQuant* and *FragPipe*").
 
-We focused our benchmark on comparing the statistical modeling methods while we fixed the pre-processing steps. However, some of these steps are of utmost significance when performing differential expression analysis [@frohlich2022benchmarking]. One of them is the normalization of the intensities within the samples to remove systematic differences [@pursiheimo2015optimization]. The method used to infer proteins from peptide identifications [@nesvizhskii2005interpretation] and protein abundances from peptide abundances is an additional important factor [@Grossmann2010]. For instance, the original `r Biocpkg("proDA")` publication uses MaxLFQ [@cox2014accurate] protein estimates. However, when using MaxLFQ intensities reported by *MaxQuant*, the $pAUC_{10}$ is lower ($pAUC_{10}(\textrm{t-statistics}) = 66%$) compared with results obtained when protein abundances are estimated from peptides abundances using Tukey's median polish ($pAUC_{10}(\textrm{t-statistics}) = 72%$). Last but not least, the software [@Cox2008MaxQuant; @yu2020fast] used to identify and quantify proteins significantly contributes to the entire pipeline's performance altering the number of identified proteins and the sensitivity and specificity of the differential expression analysis. In the Supplementary Section "Comparing DEA results for *MaxQuant* and *FragPipe* we compare DEA benchmarking results for *MaxQuant* and *FragPipe*. While the number of proteins identified with two peptides is practically the same, the DEA benchmark performance differs significantly by $\approx 10%$ for the $pAUC_{10}$ score.
+We focused our benchmark on comparing the statistical modeling methods while we fixed the pre-processing steps. However, some of these steps are of utmost significance when performing differential expression analysis [@frohlich2022benchmarking]. One of them is the normalization of the intensities within the samples to remove systematic differences [@pursiheimo2015optimization]. The method used to infer proteins from peptide identifications [@nesvizhskii2005interpretation] and protein abundances from peptide abundances is an additional important factor [@Grossmann2010]. For instance, the original `r Biocpkg("proDA")` publication uses MaxLFQ [@cox2014accurate] protein estimates. However, when using MaxLFQ intensities reported by *MaxQuant*, the $pAUC_{10}$ is lower ($pAUC_{10}(\textrm{t-statistics}) = 66%$) compared with results obtained when protein abundances are estimated from peptides abundances using Tukey's median polish ($pAUC_{10}(\textrm{t-statistics}) = 72%$). Last but not least, the software [@Cox2008MaxQuant; @yu2020fast] used to identify and quantify proteins significantly contributes to the entire pipeline's performance altering the number of identified proteins and the sensitivity and specificity of the differential expression analysis. In the Supplementary Section "Comparing DEA results for *MaxQuant* and *FragPipe* we compare DEA benchmarking results for *MaxQuant* and *FragPipe*. While the number of proteins identified with two peptides is practically the same, the DEA benchmark performance differs significantly by $\approx 10%$ for the $pAUC_{10}$ score. This difference is more significant than the differences due to the choice of the modeling method.
 
 
 # Conclusion
@@ -574,7 +574,7 @@ When comparing statistical modeling methods for the DEA, we assessed performance
 
 # Acknowledgements {.unlisted .unnumbered}
 
-The authors thank the technology platform fund (TPF) of the University of Zurich and all colleagues of the FGCZ proteomics team for fruitful discussions.
+The authors thank the technology platform fund of the University of Zurich and all colleagues of the FGCZ proteomics team for fruitful discussions.
 
 # Abbreviations {.unlisted .unnumbered}
 
@@ -587,11 +587,14 @@ Abbreviations & Explanation\\
 API    & application programming interface          \\
 AUC    & Area Under the Curve                               \\
 CDF    & Cumulative Distribution Function                   \\
+DEA & Differential Expression Analysis \\
 DIA    & data independent acquisition                        \\
 ESI-MS & Electro-Spray-Ionization Mass Spectrometry         \\
 FAIR   & Findable, Accessible, Interoperable, and Reusable  \\
 $FDP$  & False Discovery Proportion                         \\
 $FDR$  & False Discovery Rate                               \\
+$FP$ & False Postive \\
+$FPR$ & False Positive Rage    \\
 LC     & Liquid Chromatography                              \\
 LC-MS  & Liquid Chromatography followed by Mass Spectrometry\\
 LOD    & Limit Of Detection                                 \\
@@ -599,8 +602,10 @@ MAR    & Missing At Random                                 \\
 MCAR   & Missing Completely At Random                      \\
 ML     & machine learning                                 \\
 MS     & mass spectrometry                                  \\
-pAUC   & partial Are Under the Curve                       \\
+pAUC   & partial Area Under the Curve                       \\
+$pAUC_{10}$ & partial Area Unter the Curve for an FPR of 0 to 10% \\
 ROC    & Receiver operator curve                           \\
+TP & True Positive \\
 TMT    & Tandem Mass Tag                                   \\
 UML    & Unified Modeling Language                        \\
 \bottomrule

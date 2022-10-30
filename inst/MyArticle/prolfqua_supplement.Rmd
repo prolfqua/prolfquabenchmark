@@ -120,7 +120,7 @@ ISMpeptide |>
 
 
 ```{r shwoROCtestREsultsIonStarMQ}
-cap = "p-values for pairwise comparsions of partial AUC at 0.1 for msqrob2, proDA and prolfqua for IonStar MaxQuant data."
+cap = "p-values for pairwise comparsions of $pAUC_{10}$ for msqrob2, proDA and prolfqua for IonStar MaxQuant data."
 knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
              format = "latex", caption = cap)
 
@@ -211,7 +211,7 @@ Table \@ref(tab:shwoROCtestREsultsCPTAC) shows the results of the Bootstrap test
 We observe that for this benchmark data, we can not reject the null hypothesis that there are no significant differences among the $pAUC_{10}$ (ROC based on scaled p-value) for the three packages. 
 
 ```{r shwoROCtestREsultsCPTAC}
-cap = "p-values for pairwise comparsions of partial AUC for msqrob2, proDA and prolfqua CPTAC/MaxQuant data."
+cap = "p-values for pairwise comparsions of $pAUC_{10}$ for *msqrob2*, *proDA* and *prolfqua* CPTAC/MaxQuant/peptide.txt data."
 knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
              format = "latex",
              caption = cap)
@@ -277,7 +277,7 @@ tmp <- c(prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none
 Table \@ref(tab:shwoROCtestREsultsFRAGPIPE) shows the results of the Bootstrap test for the difference of two ROC curves. We observe that for this benchmark data, there are no significant differences among the $pAUC_{10}$ (for scaled p-value) for the two packages. 
 
 ```{r shwoROCtestREsultsFRAGPIPE}
-cap = "p-values for pairwise comparsions of partial AUC for proDA and prolfqua CPTAC/MaxQuant data."
+cap = "p-values for pairwise comparsions of $pAUC_{10}$ for proDA and prolfqua CPTAC/MaxQuant data."
 knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
              format = "latex",
              caption = cap)
@@ -374,14 +374,14 @@ ggplot2::ggplot(ISFPmsstats, ggplot2::aes(x = package, y = pAUC_10)) +
 
 ```
 
-
 # Comparing DEA results for *MaxQuant* and *FragPipe*
 
-In the Article, we discussed other factors influencing the performance of the DEA analysis. One of these factors is the quantification software. Here we compare the benchmarking results obtained with MaxQuant and FragPipe. We see (Supplementary Figure \@ref(fig:compareMaxQuantFP)) that the choice of the signal processing software changes the partial area under the curve ($pAUC_{10}$) much stronger (by up to $8%$) than the DEA analysis method (by about 4%).
-Furthermore, we observe that the DEA benchmark results differ depending on if _MSstats.tsv_ or _combined_protein.tsv_ is used as input. 
+In the Article, we discussed other factors influencing the performance of the DEA analysis. One of these factors is the quantification software. Here we compare the benchmarking results obtained with MaxQuant and FragPipe. We see (Supplementary Figure \@ref(fig:compareMaxQuantFP)) that the choice of the quantification software changes the partial area under the curve ($pAUC_{10}$) much stronger (by up to $8%$) than the DEA analysis method (by about 4%).
+Furthermore, we observe that the DEA benchmark results differ depending on if _MSstats.tsv_ or _combined_protein.tsv_ is used as input (see Figure \@ref(fig:compareMaxQuantFP) Left Panel, methods *proDA* and *prolfqua*). 
+Supplementary Table \@ref(tab:shwoROCtestMQandFP) shows the p-values when we test if the $pAUC_{10}$, summarizing the DEA benchmark results, significantly differ between the *MaxQuant* and *FragPipe*. At significance level of $1%$ we will reject the null hypothesis that there is no difference between *FragPipe* and *MaxQuant*.
 
-(ref:compareMaxQuantFP) Barplot, showing the DEA results ($pAUC_{10}$ - y axis) for four DEA methods and two signal processing methods (FragPipeV14/MSstats.tsv in black, FragPipeV14/combined_protein.txt dark gray and MaxQuant/peptide.txt in gray).
 
+(ref:compareMaxQuantFP) Barplot, showing the DEA results ($pAUC_{10}$ - y axis) for four DEA methods and two quantification methods (FragPipeV14/MSstats.tsv in black, FragPipeV14/combined_protein.txt dark gray and MaxQuant/peptide.txt in gray).
 
 ```{r compareMaxQuantFP, fig.cap="(ref:compareMaxQuantFP)"}
 ISFPmsstats$software <- "FragPipe_precursor"
@@ -400,6 +400,34 @@ ggplot2::ggplot(tmp, ggplot2::aes(x=package, y = pAUC_10, fill = software))+
 
 ```
 
+
+```{r roctestFPMaxQuant, include = TRUE, eval = TRUE}
+allBenchmarks <- readRDS("allBenchmarks.RDS")
+allB <- readRDS(getpath("FragPipev14_comb_MSStats.RDS"))
+
+ttprolfquaMQ <- allBenchmarks$benchmark_merged$data()
+ddprolfquaMQp.val <- pROC::roc(ttprolfquaMQ$TP, ttprolfquaMQ$scaled.p.value, partial.auc = c(1, 0.9))
+ddprolfquaMQdiff <- pROC::roc(ttprolfquaMQ$TP, ttprolfquaMQ$diff, partial.auc = c(1, 0.9))
+
+
+ttprolfquaFP <- allB$benchmark_prolfqua$data()
+ddprolfquaFPp.val <- pROC::roc(ttprolfquaFP$TP, ttprolfquaFP$scaled.p.value, partial.auc = c(1, 0.9))
+ddprolfquaFPdiff <- pROC::roc(ttprolfquaFP$TP, ttprolfquaFP$diff, partial.auc = c(1, 0.9))
+
+
+
+tmp <- c(MQ_vs_FP_scaled.p.value = pROC::roc.test(ddprolfquaMQp.val,ddprolfquaFPp.val, progress = "none")$p.value,
+         MQ_vs_FP_diff = pROC::roc.test(ddprolfquaMQdiff, ddprolfquaFPdiff, progress = "none")$p.value)
+tmp
+```
+
+
+```{r shwoROCtestMQandFP}
+cap = "p-values for pairwise comparsions of $pAUC_{10}$ for MaxQuant and FragPipe based DEA analysis with prolfqua. We compared the pAUC for the difference estimates (diff) and for the scaled.p.values."
+knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
+             format = "latex", caption = cap)
+
+```
 
 
 # Estimating $A_{LOD}$
