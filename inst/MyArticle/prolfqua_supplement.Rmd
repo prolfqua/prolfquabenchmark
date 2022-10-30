@@ -110,15 +110,19 @@ msstats$package <- "MSstats"
 ISMpeptide <- dplyr::bind_rows(mrob,proda,prolfqua, msstats) |> dplyr::filter(contrast == "all")
 ISMpeptide$contrast <- NULL
 ISMpeptide <-dplyr::relocate(ISMpeptide , package, .before="AUC") |> dplyr::arrange(what)
-ISMpeptide$what[ISMpeptide$what=="statistic"] <- "t_statistic"
+ISMpeptide$what[ISMpeptide$what == "statistic"] <- "t_statistic"
 ISMpeptide |> 
-  knitr::kable(digits = 1, caption = "Results of the DEA beanchmark for IonStar/MaxQuant/peptide.txt")
+  knitr::kable(
+    digits = 1, 
+    caption = "Results of the DEA beanchmark for IonStar/MaxQuant/peptide.txt",
+    format = "latex")
 ```
 
 
 ```{r shwoROCtestREsultsIonStarMQ}
 cap = "p-values for pairwise comparsions of partial AUC at 0.1 for msqrob2, proDA and prolfqua for IonStar MaxQuant data."
-knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
+knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
+             format = "latex", caption = cap)
 
 ```
 
@@ -166,7 +170,9 @@ all$what[all$what == "logFC"] <- "diff"
 
 all$contrast <- NULL
 all |> dplyr::relocate(package, .before = "AUC") |> dplyr::arrange(what) |> 
-  knitr::kable(digits = 1, caption = "Results of the DEA beanchmark for CPTAC/MaxQuant/peptide.txt")
+  knitr::kable(digits = 1,
+               caption = "Results of the DEA beanchmark for CPTAC/MaxQuant/peptide.txt", 
+               format = "latex")
 
 ```
 
@@ -206,7 +212,9 @@ We observe that for this benchmark data, we can not reject the null hypothesis t
 
 ```{r shwoROCtestREsultsCPTAC}
 cap = "p-values for pairwise comparsions of partial AUC for msqrob2, proDA and prolfqua CPTAC/MaxQuant data."
-knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
+knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
+             format = "latex",
+             caption = cap)
 
 ```
 
@@ -234,13 +242,15 @@ ISFPprot <- ISFPprot |>
   dplyr::filter(contrast == "all")
 ISFPprot$contrast <- NULL
 ISFPprot |> dplyr::relocate(package, .before = "AUC") |> dplyr::arrange(what) |>
-  knitr::kable(digits = 1, caption = "Results of the DEA beanchmark for IonStar/FragPipeV14/MSstats.tsv")
+  knitr::kable(digits = 1,
+               caption = "Results of the DEA beanchmark for IonStar/FragPipeV14/MSstats.tsv",
+               format = "latex")
 
 ```
 
 Supplementary Figure \@ref(fig:plotFragPipebarplot) shows the partial area under the curve for  *proDA* and *prolfqua*, computed by ranking the proteins using the difference among groups (diff), the scaled p-value (scaled.p.value) and the t-statistics (t_statistics),
 
-(ref:plotFragPipebarplot) Barplot showing the partial area under the ROC at 0.1 FDR, for diff - difference among groups, scaled.p.value and t_statistic. These results where obtained when using FragPipeV14 combined_protein.txt as input.
+(ref:plotFragPipebarplot) Barplot showing the partial area under the ROC at $0.1$ FDR ($pAUC_{10}$), for diff - difference among groups, scaled.p.value and t_statistic. These results where obtained when using IonStar/FragPipeV14/combined_protein.txt as input.
 
 ```{r plotFragPipebarplot, fig.cap= "(ref:plotFragPipebarplot)"}
 
@@ -268,7 +278,9 @@ Table \@ref(tab:shwoROCtestREsultsFRAGPIPE) shows the results of the Bootstrap t
 
 ```{r shwoROCtestREsultsFRAGPIPE}
 cap = "p-values for pairwise comparsions of partial AUC for proDA and prolfqua CPTAC/MaxQuant data."
-knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)), format = "latex", caption = cap)
+knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
+             format = "latex",
+             caption = cap)
 
 ```
 
@@ -317,7 +329,7 @@ nrgg
 ```
 
 
-(ref:isFPbarplot) 
+(ref:isFPbarplot) Barplot showing the partial area under the ROC at 0.1 FDR ($pAUC_{10}$), for diff - difference among groups, scaled.p.value and t_statistic. These results where obtained when using IonStar/FragPipeV14/MSstats.tsv as input.
 
 ```{r isFPbarplot, fig.cap="(ref:isFPbarplot)"}
 proda <- allB$benchmark_proDA$pAUC_summaries()$ftable$content
@@ -342,14 +354,16 @@ ISFPmsstats$what[ISFPmsstats$what == "logFC"] <- "diff"
 ISFPmsstats$what[ISFPmsstats$what == "log2FC"] <- "diff"
 ISFPmsstats$what[ISFPmsstats$what == "t"] <- "t_statistic"
 ISFPmsstats$what[ISFPmsstats$what == "Tvalue"] <- "t_statistic"
-ISFPmsstats$what |> unique()
 
 ISFPmsstats <- ISFPmsstats |> dplyr::filter(contrast == "all")
 ISFPmsstats$contrast <- NULL
 ISFPmsstats <- dplyr::relocate(ISFPmsstats, package, .before="AUC") |> dplyr::arrange(ISFPmsstats) 
 
 ISFPmsstats |> 
-  knitr::kable(digits = 1, caption = "Results of the DEA beanchmark for IonStar/FragPipeV14/MSstats.tsv")
+  knitr::kable(
+    digits = 1,
+    caption = "Results of the DEA beanchmark for IonStar/FragPipeV14/MSstats.tsv",
+    format = "latex")
 
 ggplot2::ggplot(ISFPmsstats, ggplot2::aes(x = package, y = pAUC_10)) +
   ggplot2::geom_bar(stat = "identity") +
@@ -361,7 +375,7 @@ ggplot2::ggplot(ISFPmsstats, ggplot2::aes(x = package, y = pAUC_10)) +
 ```
 
 
-# Comparing DEA results for MaxQuant and FragPipe
+# Comparing DEA results for *MaxQuant* and *FragPipe*
 
 In the Article, we discussed other factors influencing the performance of the DEA analysis. One of these factors is the quantification software. Here we compare the benchmarking results obtained with MaxQuant and FragPipe. We see (Supplementary Figure \@ref(fig:compareMaxQuantFP)) that the choice of the signal processing software changes the partial area under the curve ($pAUC_{10}$) much stronger (by up to $8%$) than the DEA analysis method (by about 4%).
 Furthermore, we observe that the DEA benchmark results differ depending on if _MSstats.tsv_ or _combined_protein.tsv_ is used as input. 
@@ -376,9 +390,9 @@ ISFPprot$software <- "FragPipe_protein"
 
 tmp <- dplyr::bind_rows(list(ISFPmsstats, ISMpeptide,ISFPprot))
 
-ggplot2::ggplot(tmp, aes(x=package, y = pAUC_10, fill = software))+
+ggplot2::ggplot(tmp, ggplot2::aes(x=package, y = pAUC_10, fill = software))+
   ggplot2::geom_bar(stat = "identity",position = "dodge") +
-  scale_fill_grey() +
+  ggplot2::scale_fill_grey() +
   ggplot2::facet_wrap(~what)  + 
   ggplot2::theme_minimal() + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = -90, vjust = 0.5)) +
@@ -493,7 +507,8 @@ mC <- prolfqua::linfct_matrix_contrasts(linfct, Contrasts)
 Table \@ref(tab:contrcoefficient) shows weights $c$ for each of the five contrasts we specified.
 
 ```{r contrcoefficient}
-knitr::kable(mC, caption = "Weights $c$ for each of the contrasts (rows) which will be applied to the model parameter (columns).",format = "latex")
+cap = "Weights $c$ for each of the contrasts (rows) which will be applied to the model parameter (columns)."
+knitr::kable(mC, caption = cap,format = "latex")
 ```
 
 Given the weights $c$ contrasts from model parameters obtained with *proDA*, or *msqrob2* can be estimated, which will enables us to implement adapters to *proDA* or *msqrob2*.
