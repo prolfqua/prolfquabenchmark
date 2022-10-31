@@ -52,22 +52,23 @@ Biocpkg <- function(pkg, label = NULL){
 knitr::opts_chunk$set(echo = FALSE, error = FALSE, warning = FALSE, message = FALSE)
 ```
 
-The sourcode used to produce this Document can be found in the  [prolfqua_supplement.Rmd](https://github.com/wolski/prolfquabenchmark/blob/main/inst/MyArticle/prolfqua_supplement.Rmd) file.
+The *R* markdown file, with all the *R* code used to produce this pdf-document can be found here :   [prolfqua_supplement.Rmd](https://github.com/wolski/prolfquabenchmark/blob/main/inst/MyArticle/prolfqua_supplement.Rmd).
+To replicated the analysis you need to install the *prolfquabenchmark* *R* package.
 
 # How to install *prolfqua* and *prolfquabenchmark*
 
-To install the *prolfqua* package ([ACS_JPR](https://github.com/fgcz/prolfqua/releases/tag/v0.4.3) release), including all R package dependencies, execute in the R console:
+To install the *prolfqua* package ([ACS_JPR](https://github.com/fgcz/prolfqua/releases/tag/v0.4.3) release), including all *R* package dependencies, execute in the *R* console:
 
 ```{r installation, echo=TRUE, eval=FALSE}
-remotes::install_github("https://github.com/fgcz/prolfqua/releases/tag/v0.4.5",
+remotes::install_github("https://github.com/fgcz/prolfqua/releases/tag/v1.0.0",
     dependencies = TRUE, build_vignettes=TRUE)
 ```
 
-The R-markdown files with all the R code to run the benchmark for *prolfqua*, *msqrob2*, *MSStats* and *proDA* are available in the R package `r BiocStyle::Githubpkg('wolski/prolfquabenchmark')`. 
+The R-markdown files with all the *R* code to run the benchmark for *prolfqua*, *msqrob2*, *MSStats* and *proDA* are available in the R package `r BiocStyle::Githubpkg('wolski/prolfquabenchmark')`. 
 
 ```{r installation2, echo=TRUE, eval=FALSE}
 remotes::install_gitlab("wolski/prolfquadata", host="gitlab.bfabric.org")
-remotes::install_github("https://github.com/wolski/prolfquabenchmark",
+remotes::install_github("https://github.com/wolski/prolfquabenchmark/releases/tag/v0.2.0",
     dependencies = TRUE, build_vignettes=TRUE)
 ```
 
@@ -75,7 +76,7 @@ remotes::install_github("https://github.com/wolski/prolfquabenchmark",
 
 Table \@ref(tab:ISMQpeptideSum) summarizes $pAUC$ of the DEA benchmark when using the IonStar/MaxQuant/peptide.txt data. Figure 5 in the Article, shows a barplot showing the $pAUC_{10}$.
 
-We test if we should reject the null hypothesis that the area under the ROC curve at $0.1$ FDR ($pAUC_{10}$), computed using the scaled p-values (see scaled.p.value's in Table \@ref(tab:ISMQpeptideSum) ), do not differ for *msqrob2*, *proDA*, and `prolfqua_merged`. To this task we use the function `roc.test`, that performs a bootstrap method test for a difference in the pAUC of the ROC curves, from the R package `r BiocStyle::CRANpkg("pROC")`. The Table \@ref(tab:shwoROCtestREsultsIonStarMQ) shows the p-values of the pairwise bootstrap test for partial areas under the ROC curves.
+We test if we should reject the null hypothesis that the area under the ROC curve at $0.1$ FDR ($pAUC_{10}$), computed using the scaled p-values (see scaled.p.value's in Table \@ref(tab:ISMQpeptideSum) ), do not differ for *msqrob2*, *proDA*, and `prolfqua_merged`. To this task we use the function `roc.test`, that performs a bootstrap method test for a difference in the pAUC of the ROC curves, from the *R* package `r BiocStyle::CRANpkg("pROC")`. The Table \@ref(tab:shwoROCtestREsultsIonStarMQ) shows the p-values of the pairwise bootstrap test for partial areas under the ROC curves.
 
 
 ```{r roctest, include = TRUE, eval = TRUE}
@@ -120,7 +121,7 @@ ISMpeptide |>
 
 
 ```{r shwoROCtestREsultsIonStarMQ}
-cap = "p-values for pairwise comparsions of $pAUC_{10}$ for msqrob2, proDA and prolfqua for IonStar MaxQuant data."
+cap = "p-values for pairwise comparsions of $pAUC_{10}$, for *msqrob2*, *proDA* and *prolfqua* for IonStar MaxQuant data."
 knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
              format = "latex", caption = cap)
 
@@ -138,7 +139,7 @@ Pre-build version of the vignettes, we created to run the DEA benchmark, are ava
 
 # DEA benchmark : CPTAC/MaxQuant/peptide.txt
 
-We applied DEA using *msqrob2*, *proDA* and *prolfqua*  to the CPTAC/MaxQuant dataset and benchmarked the results. We are using the `peptide.txt` file containing the peptide intensities.
+We applied DEA using *msqrob2*, *proDA* and *prolfqua* ('prolfqua_merged')  to the CPTAC/MaxQuant dataset and benchmarked the results. We are using the 'peptide.txt' file containing the peptide intensities.
 
 The Rmarkdown file which generated these results, can be found here:
 ["DEA benchmark IonStar/FragPipeV14/combined_protein.tsv"](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_cptac.html) 
@@ -211,7 +212,7 @@ Table \@ref(tab:shwoROCtestREsultsCPTAC) shows the results of the Bootstrap test
 We observe that for this benchmark data, we can not reject the null hypothesis that there are no significant differences among the $pAUC_{10}$ (ROC based on scaled p-value) for the three packages. 
 
 ```{r shwoROCtestREsultsCPTAC}
-cap = "p-values for pairwise comparsions of $pAUC_{10}$ for *msqrob2*, *proDA* and *prolfqua* CPTAC/MaxQuant/peptide.txt data."
+cap = "p-values for pairwise comparsions of $pAUC_{10}$, for *msqrob2*, *proDA* and *prolfqua* CPTAC/MaxQuant/peptide.txt data."
 knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
              format = "latex",
              caption = cap)
@@ -224,7 +225,7 @@ The Rmarkdown file which created these results, with more details about the IonS
 ["DEA benchmark IonStar/FragPipeV14/combined_protein.tsv"](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkFragPipeProteinIonStar.html) 
 
 After filtering for two peptides per protein the dataset comprises of $3836$ proteins.
-Since we are using the combined_protein.tsv as input, comparison with neither *msqrob2* nor *MSstats* is possible. To fit the hurdle (*msqrob*) model, peptide intensities are required, while *MSstats* requires the `MSstats.tsv` file, containing precursor level abundances. However, starting from protein level intensities has the advantage that the effect size estimates obtained from the model agree with protein abundances, a feature frequently requested by the biologist.
+Since we are using the 'combined_protein.tsv' as input, comparison with neither *msqrob2* nor *MSstats* is possible. To fit the hurdle (*msqrob*) model, peptide intensities are required, while *MSstats* requires the 'MSstats.tsv' file, containing precursor level abundances. However, starting from protein level intensities has the advantage that the effect size estimates obtained from the model agree with protein abundances, a feature frequently requested by the biologist.
 
 
 ```{r FragPipe}
@@ -274,10 +275,10 @@ tmp <- c(prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none
 
 ```
 
-Table \@ref(tab:shwoROCtestREsultsFRAGPIPE) shows the results of the Bootstrap test for the difference of two ROC curves. We observe that for this benchmark data, there are no significant differences among the $pAUC_{10}$ (for scaled p-value) for the two packages. 
+Table \@ref(tab:shwoROCtestREsultsFRAGPIPE) shows the results of the Bootstrap test for the difference of two ROC curves. We observe that for this benchmark, there is no significant differences (at significance level of $0.1$) among the $pAUC_{10}$, where the scaled p-value was use to rank the proteins, for the two packages. 
 
 ```{r shwoROCtestREsultsFRAGPIPE}
-cap = "p-values for pairwise comparsions of $pAUC_{10}$ for proDA and prolfqua CPTAC/MaxQuant data."
+cap = "p-values for pairwise comparsions of $pAUC_{10}$, for *proDA* and *prolfqua* CPTAC/MaxQuant data."
 knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits = 2)),
              format = "latex",
              caption = cap)
@@ -287,9 +288,9 @@ knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits 
 # DEA benchmark : IonStar/FragPipeV14/MSstats.tsv
 
 The Rmarkdown file which created these results, with more details about the analysis, can be found here:
-["DEA benchmark IonStar/FragPipeV14/MSstats.tsv"](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkFragPipeMSStats.Rmd) 
+["DEA benchmark IonStar/FragPipeV14/MSstats.tsv"](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkFragPipeMSStats.html) 
 
-Since we are using the MSstats.tsv file containing precursor level abundances as input, we can benchmark the DEA performed of *msqrob2*, *MSstats*, *proflqua*, and *proda*. The dataset has 3899 proteins after filtering for two peptides per protein. Since we make four comparisons between groups, 15596 is the maximum possible number of effect size estimates. Supplementary Figure \@ref(fig:nrcomp) shows the number of comparisons obtained.
+Since we are using the 'MSstats.tsv' file containing precursor level abundances as input, we can benchmark the DEA performed of *msqrob2*, *MSstats*, *proflqua*, and *proDA*. The dataset has 3899 proteins after filtering for two peptides per protein. Since we make four comparisons between groups, 15596 is the maximum possible number of effect size estimates. Supplementary Figure \@ref(fig:nrcomp) shows the number of comparisons obtained.
 Supplementary Figure \@ref(fig:plotFragPipebarplot) shows the partial area under the curve for  *proDA* and *prolfqua*, computed by ranking the proteins using the difference among groups (diff), the scaled p-value (scaled.p.value) and the t-statistics (t_statistics),
 
 
@@ -376,9 +377,9 @@ ggplot2::ggplot(ISFPmsstats, ggplot2::aes(x = package, y = pAUC_10)) +
 
 # Comparing DEA results for *MaxQuant* and *FragPipe*
 
-In the Article, we discussed other factors influencing the performance of the DEA analysis. One of these factors is the quantification software. Here we compare the benchmarking results obtained with MaxQuant and FragPipe. We see (Supplementary Figure \@ref(fig:compareMaxQuantFP)) that the choice of the quantification software changes the partial area under the curve ($pAUC_{10}$) much stronger (by up to $8%$) than the DEA analysis method (by about 4%).
-Furthermore, we observe that the DEA benchmark results differ depending on if _MSstats.tsv_ or _combined_protein.tsv_ is used as input (see Figure \@ref(fig:compareMaxQuantFP) Left Panel, methods *proDA* and *prolfqua*). 
-Supplementary Table \@ref(tab:shwoROCtestMQandFP) shows the p-values when we test if the $pAUC_{10}$, summarizing the DEA benchmark results, significantly differ between the *MaxQuant* and *FragPipe*. At significance level of $1%$ we will reject the null hypothesis that there is no difference between *FragPipe* and *MaxQuant*.
+In the Article, we discussed other factors influencing the performance of the DEA analysis. One of these factors is the quantification software. Here we compare the benchmarking results obtained with MaxQuant and FragPipe. We see (Supplementary Figure \@ref(fig:compareMaxQuantFP)) that the choice of the quantification software changes the partial area under the curve ($pAUC_{10}$) much stronger (by up to $8\%$) than the DEA analysis method (by about $4\%$).
+Furthermore, we observe that the DEA benchmark results differ depending on if 'MSstats.tsv' or 'combined_protein.tsv' is used as input (see Figure \@ref(fig:compareMaxQuantFP) Left Panel, methods *proDA* and *prolfqua*). 
+Supplementary Table \@ref(tab:shwoROCtestMQandFP) shows the p-values when we test if the $pAUC_{10}$, summarizing the DEA benchmark results, significantly differ between the *MaxQuant* and *FragPipe*. At significance level of $0.01$ we will reject the null hypothesis that there is no difference between *FragPipe* and *MaxQuant*.
 
 
 (ref:compareMaxQuantFP) Barplot, showing the DEA results ($pAUC_{10}$ - y axis) for four DEA methods and two quantification methods (FragPipeV14/MSstats.tsv in black, FragPipeV14/combined_protein.txt dark gray and MaxQuant/peptide.txt in gray).
@@ -418,7 +419,6 @@ ddprolfquaFPdiff <- pROC::roc(ttprolfquaFP$TP, ttprolfquaFP$diff, partial.auc = 
 
 tmp <- c(MQ_vs_FP_scaled.p.value = pROC::roc.test(ddprolfquaMQp.val,ddprolfquaFPp.val, progress = "none")$p.value,
          MQ_vs_FP_diff = pROC::roc.test(ddprolfquaMQdiff, ddprolfquaFPdiff, progress = "none")$p.value)
-tmp
 ```
 
 
@@ -506,7 +506,9 @@ hist(xx30$beta.based.significance, breaks = 20, xlab = "p-value(?) obtained with
 
 # Specifying Contrasts for Models with two Factors and Interaction Term
 
-The following code illustrates how to specify a model with two factors and an interaction term and define the differences we want to estimate. The example dataset was acquired in two batches (p2370, p2691). In each, we measured Yeast samples grown under two different conditions (Glucose and Ethanol). This example is taken from the *prolfqua* package vignette file. To estimate treatment differences, we first specify the linear model that explains the observed protein abundances (transformedIntensities) using the explanatory variables `condition_` and `batch_` and the interaction term  `condition_:batch_`. Then, after fitting the model, we can estimate the treatment difference among the groups `Ethanol` and `Glucose` defined by the factor `condition` and similarly among the groups defined by `batch_`. Furthermore, we can examine differences between `Ethanol` and `Glucose` within each batch. We also can assess if these differences are the same or are different in both batches, i.e., if there is an interaction between condition and batch. We also show the code to compute the array of weights $c$ used to multiply the model coefficient $\beta$.
+The following code illustrates how to specify a model with two factors and an interaction term and define the differences we want to estimate. The example dataset was acquired in two batches (p2370, p2691). In each, we measured Yeast samples grown under two different conditions (Glucose and Ethanol).
+
+To estimate treatment differences, we first specify the linear model that explains the observed protein abundances (transformedIntensities) using the explanatory variables `condition_` and `batch_` and the interaction term  `condition_:batch_`. Then, after fitting the model, we can estimate the treatment difference among the groups `Ethanol` and `Glucose` defined by the factor `condition` and similarly among the groups defined by `batch_`. Furthermore, we can examine differences between `Ethanol` and `Glucose` within each batch. We also can assess if these differences are the same or are different in both batches, i.e., if there is an interaction between condition and batch. We also show the code to compute the array of weights $c$ used to multiply the model coefficient $\beta$.
 
 ```{r contrast2, eval = TRUE, echo = TRUE}
 
@@ -546,8 +548,8 @@ For more details see *prolfqua* vignette: ["Modelling dataset with two Factors"]
 
 # Creating a prolfqua configuration
 
-The following code demonstrates how we use *prolfqua* to analyze protein intensities reported in the MSFragger `combined_protein.tsv` file.
-First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_MSFragger_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object.
+The following code demonstrates how we use *prolfqua* to analyze protein intensities reported in the *FragPipe* 'combined_protein.tsv' file.
+First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_FragPipe_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object.
 Bottom-up proteomics data is hierarchical, i.e., a protein has peptides, peptides might be modified, etc. Therefore, the `AnalysisTableAnnotation` has a `hierarchy` field storing a list with an entry for each hierarchy level.
 Since `combined_portein.tsv` only holds protein level data, the hierarchy list has one element, and we use it to specify which column contains the protein identifiers. We also need to define which column contains the protein abundances we want to use for the data analysis.
 Finally, we have to specify which columns contain the explanatory variables of the analysis. The `AnalysisTableAnnotation` has the field `factors,` a list with as many entries as explanatory variables. Here we include two explanatory variables, the dilution, specified in the column 'sample', and 'run' stored in the column 'run_ID', representing the order of the measurement.
