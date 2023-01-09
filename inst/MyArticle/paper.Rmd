@@ -387,9 +387,9 @@ However, in the package documentation, we showcase how a user, without this know
 
 Using the data frame of tidy data ensures interoperability with other proteomics-related packages that manage their data with tidy-tables, e.g., `r BiocStyle::CRANpkg("protti")` [@quast2022protti]. To simplify the integration of *prolfqua* with Bioconductor based workflows there is a method that converts the `LFQData` class into a `r Biocpkg("SummarizedExperiment")`. The use of R6 classes, which encapsulate the configuration and the data, allows for writing very concise code where functions can have few arguments. Auto-completion support for R6 classes in the *RStudio* editor makes it easy for novices to explore *prolfqua*'s functionality (see Supplementary Figure 8).
 
-To ease the usage barriers of the *R* package to users not familiar with statistics and *R* programming, we developed an application based on the *prolfqua* package into our data management platform [B-Fabric](https://fgcz-bfabric.uzh.ch/) [@bfabric;@bfabricjib2022]. The B-Fabric system runs a computing infrastructure controlled by a local resource management system that supports cloud-bursting [@VMMAD]. This integration enables users to select the input data and basic settings in a graphical user interface (GUI). 
 
-In this GUI application, we determine the model formula, and which comparisons to compute from the sample annotation provided in tabular form, similarly to *SAINTexpress* or *MSstats*. However, this application can analyze only parallel group designs with and without repeated measurements or factorial designs without interactions. The user receives a report including input files, the *R* markdown file, and *R* scripts necessary to replicate the analysis using their in-house *R* installation. In this way, *prolfqua* and [B-Fabric](https://fgcz-bfabric.uzh.ch/) help scientists to meet requirements from funding agencies, journals, and academic institutions while publishing their data according to the FAIR  [@FAIR] data principles. We are working on creating a shiny stand-alone application with the described functionality and making it available soon.
+To ease the usage barriers of the *R* package to users not familiar with statistics and *R* programming, we developed an application based on the *prolfqua* package into our data management platform [B-Fabric](https://fgcz-bfabric.uzh.ch/) [@bfabric;@bfabricjib2022]. The B-Fabric system runs a computing infrastructure controlled by a local resource management system that supports cloud-bursting [@VMMAD]. This integration enables users to select the input data and basic settings in a graphical user interface (GUI). In this way, *prolfqua* and [B-Fabric](https://fgcz-bfabric.uzh.ch/) help scientists to meet requirements from funding agencies, journals, and academic institutions while publishing their data according to the FAIR  [@FAIR] data principles. We are working on creating a shiny stand-alone application with the described functionality and making it available soon.
+
 
 ## Benchmarking modelling approaches
 
@@ -510,9 +510,9 @@ xMM <- data.frame(
     msstats = c("MSstats", "preprocess with default parameters",  "", "evidence.txt"),
     msqrob = c("msqrob2", "hurdle msqrob model", "protein and peptide", "peptide.txt"),
     proDA = c("proDA", "probabilistic dropout model",  "protein", "peptide.txt"),
-    imputation = c("prolfqua_impute", "ContrastsSimpleImpute, ContrastsModerated", "protein",  "peptide.txt"),
+    imputation = c("prolfqua_estimate", "ContrastsSimpleImpute, ContrastsModerated", "protein",  "peptide.txt"),
     lmmed = c("prolfqua_lm_mod", "strategy_lm, Contrasts, ContrastsModerated",  "protein", "peptide.txt"),
-    prot_merged = c("prolfqua_merged", "addContrastResults( prefer = prot_med_lm_moderated , add = prot_imputation)HACKIT ",  "protein", "peptide.txt"),
+    prot_merged = c("prolfqua_merged", "addContrastResults( prefer = proflqua_lm_mod , add = prolfqua_estimate)HACKIT ",  "protein", "peptide.txt"),
     mixed = c("prolfqua_mix_eff_mod", "strategy_lmer, Contrasts, ContrastsModerated", "peptide", "peptide.txt" ),
     ropeca = c("prolfqua_ropeca", "strategy_lm, Contrasts, ContrastsModerated, ContrastsROPECA", "peptide", "peptide.txt" )
 )
