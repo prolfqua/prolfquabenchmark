@@ -357,7 +357,7 @@ For the proteins with no observation in a condition, we infer their abundances b
 The standard deviation of the protein is estimated using the pooled variances of the condition where the variance could be estimated.
 
 ```{r contrastImputed}
-contrImp <- prolfqua::ContrastsSimpleImpute$new(
+contrImp <- prolfqua::ContrastsMissing$new(
   protLFQ,
   relevantContrasts)
 
@@ -377,24 +377,24 @@ allContrasts <- list()
 allContrasts$imputation <- contrImp$get_contrasts()
 ttd <- prolfqua::ionstar_bench_preprocess(contrImp$get_contrasts())
 
-benchmark_imputation <- prolfqua::make_benchmark(
+benchmark_missing <- prolfqua::make_benchmark(
     ttd$data,
-    model_description = "med. polish and lm. imputation",
-    model_name = "prolfqua_impute",
+    model_description = "med. polish and missingness modelling",
+    model_name = "prolfqua_missing",
     FDRvsFDP = list(list(score = "FDR", desc = FALSE))
 )
 
-benchmark_imputation$plot_ROC(xlim = 0.1)
+benchmark_missing$plot_ROC(xlim = 0.1)
 
 
-benchmark_imputation$plot_FDRvsFDP()
+benchmark_missing$plot_FDRvsFDP()
 
-prolfqua::table_facade(benchmark_imputation$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits = 1)
+prolfqua::table_facade(benchmark_missing$smc$summary, caption = "Nr of proteins with Nr of not estimated contrasts.", digits = 1)
 ```
 
 ```{r fig.cap = "Summary of partial area under the ROC curve."}
 
-bb <- benchmark_imputation$pAUC_summaries()
+bb <- benchmark_missing$pAUC_summaries()
 bb$barp
 ```
 
@@ -403,7 +403,7 @@ bb$barp
 prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits = 1)
 
 allBenchmarks <- list()
-allBenchmarks$benchmark_imputation <- benchmark_imputation
+allBenchmarks$benchmark_missing <- benchmark_missing
 
 ```
 

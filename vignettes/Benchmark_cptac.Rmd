@@ -91,7 +91,7 @@ contrast <- c("b_vs_a" = "group.b - group.a")
 clm <- prolfqua::Contrasts$new(lmmodl, contrast)
 tt <- clm$get_contrasts()
 
-csimp <- prolfqua::ContrastsSimpleImpute$new(lfqProt, contrast)
+csimp <- prolfqua::ContrastsMissing$new(lfqProt, contrast)
 tt <- csimp$get_contrasts()
 
 merge <- prolfqua::merge_contrasts_results(clm, csimp)

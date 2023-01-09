@@ -142,7 +142,7 @@ modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
 
 mod <- prolfqua::build_model(lfqdataNormalized$data, modelFunction)
 contr <- prolfqua::Contrasts$new(mod, Contrasts)
-contrimp <- prolfqua::ContrastsSimpleImpute$new(lfqdataNormalized, Contrasts)
+contrimp <- prolfqua::ContrastsMissing$new(lfqdataNormalized, Contrasts)
 
 merged <- prolfqua::merge_contrasts_results(contr, contrimp)
 mergedmod <- prolfqua::ContrastsModerated$new(merged$merged)

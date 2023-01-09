@@ -117,7 +117,7 @@ contr <- prolfqua::Contrasts$new(models, contrasts) |>
     prolfqua::ContrastsModerated$new()
 ## compute differences using imputation
 conI <- 
-    prolfqua::ContrastsSimpleImpute$new(lfqp, contrasts) |> 
+    prolfqua::ContrastsMissing$new(lfqp, contrasts) |> 
     prolfqua::ContrastsModerated$new()
 ## merge contrasts, to obtain differences for all proteins
 contrasts <- prolfqua::addContrastResults(
@@ -142,7 +142,7 @@ gridExtra::grid.arrange(panelA, panelB,
 xMM <- data.frame(
     msstats = c("MSstats", "preprocess with default parameters",  "", "evidence.txt"),
     proDA = c("proDA", "probabilistic dropout model",  "protein", "peptide.txt"),
-    imputation = c("prot_imputation", "ContrastsSimpleImpute, ContrastsModerated", "protein",  "peptide.txt"),
+    imputation = c("prot_imputation", "ContrastsMissing, ContrastsModerated", "protein",  "peptide.txt"),
     lmmed = c("prot_med_lm_moderated", "strategy_lm, Contrasts, ContrastsModerated",  "protein", "peptide.txt"),
     prot_merged = c("prot_merged", "addContrastResults(prefer = prot_med_lm_moderated , add = prot_imputation) *",  "protein", "peptide.txt"),
     mixed = c("prot_mixed_effect_moderated", "strategy_lmer, Contrasts, ContrastsModerated", "peptide", "peptide.txt" ),

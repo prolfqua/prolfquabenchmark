@@ -100,7 +100,7 @@ We store all the data needed for analysis in a data frame as tidy data, i.e., ev
 knitr::include_graphics("LFQData_UML_LARGE.png")
 ```
 
-*R*'s formula interface for linear models is flexible, widely used, and well documented [@faraway2016extending; @law2020guide]. We use the formula interface to specify the models, making it easy to reproduce an analysis performed with *prolfqua* in other statistical programming languages. In addition, we implement features specific to high throughput experiments, such as the empirical Bayes variance and $p$-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We used R6 classes to encapsulate the statistical modelling functionality in *prolfqua* (see Figure \@ref(fig:ContrastUML)). We specify a contrast interface (`ContrastsInterface`). Several implementations allow to perform DEA given linear or mixed effect models (`Contrasts`), variance shrinkage (`ContrastsModerated`), or to impute contrasts in cases when observations are missing for an entire group of samples (`ContrastsSimpleImpute`). Further implementations of the interface encapsulate and integrate DEA results of external tools such as *proDA* or of *SAINTexpress* [@teo2014saintexpress] used to analyze data from protein interaction studies.
+*R*'s formula interface for linear models is flexible, widely used, and well documented [@faraway2016extending; @law2020guide]. We use the formula interface to specify the models, making it easy to reproduce an analysis performed with *prolfqua* in other statistical programming languages. In addition, we implement features specific to high throughput experiments, such as the empirical Bayes variance and $p$-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We used R6 classes to encapsulate the statistical modelling functionality in *prolfqua* (see Figure \@ref(fig:ContrastUML)). We specify a contrast interface (`ContrastsInterface`). Several implementations allow to perform DEA given linear or mixed effect models (`Contrasts`), variance shrinkage (`ContrastsModerated`), or to impute contrasts in cases when observations are missing for an entire group of samples (`ContrastsMissing`). Further implementations of the interface encapsulate and integrate DEA results of external tools such as *proDA* or of *SAINTexpress* [@teo2014saintexpress] used to analyze data from protein interaction studies.
 
 (ref:ContrastUML)  Unified modeling language (UML) diagram of modeling and contrast related classes. Different strategies, e.g., _lm_, _lmer_, and _glm_ (Table \@ref(tab:prolfquaModels)), reference methods to fit models, and compute contrasts. The model builder method fits the statistical model given the data and a strategy. The models are used to analyze variance (ANOVA) or to estimate contrasts. All classes estimating contrasts implement the _ContrastsInterface_. Results of external tools, e.g., *SAINTexpress*, or *proDA* are adapted to implement the Contrasts Interface.
 
@@ -116,7 +116,7 @@ knitr::include_graphics("ContrastClassesUML_LARGE.png")
 xM <- data.frame( 
     lm = c("strategy_lm, Contrasts", "linear modelling of peptide or protein abundances and group difference estimation"),
     lmer = c("strategy_lmer, Contrasts", "mixed effect modelling of peptide or protein abundances and group differences estimation" ),
-    gmi = c("ContrastsSimpleImpute" , "group difference estimation when no observations in one of the groups" ),
+    gmi = c("ContrastsMissing" , "group difference estimation when no observations in one of the groups" ),
     ROPECA = c("ContrastsROPECA", "estimating group differences for proteins by summarizing peptide differences"),
     limma = c( "ContrastsModerated", "empirical Bayes variance shrinkage for group difference estimates (limma)"),
     pic = c("runSaint, ContrastsSaintExpress", "protein interaction scoring (SAINTExpress)"),
@@ -340,7 +340,7 @@ ggpubr::ggarrange(panelA, panelB, panelC, panelD)
 
 (ref:scaling) Panel A - Density plot of peptide intensity distributions for $20$ samples. For each sample a line with a different colour is shown. Panel B - Peptide intensities for protein HFQ_ECOLI are shown using a line of different colour, and the protein intensity estimate is shown using a fat black line, Panel C - distribution of standard deviations of all proteins in each dilution group ($a$, $b$, $c$, $d$, $e$) and overall (all), Panel D - Distribution of protein intensities of Protein HFQ_ECOLI in each dilution group.
 
-The following code example illustrates how we compute differences among groups. First, the linear model and the differences are specified. Afterward, the model is fitted to the data using the `build_model` function. Next, we estimate the contrasts either from the linear model using the `Contrasts` class or directly from the data using the `ContrastsSimpleImpute` class. Afterward, we apply $t$-statistic moderation using the `ContrastModerated` class. Finally, the `merge_contrasts_results` function merges both sets of contrast estimates, preferring the one obtained from the linear model if both are available. Then we create the plots shown in Figure \@ref(fig:figure2). Panel A shows the distribution of the $p$-values, Panel B shows the volcano plot for each comparison, and Panel C shows a Bland-Altman plot reporting the difference between groups as a function of the rank of the protein abundance.
+The following code example illustrates how we compute differences among groups. First, the linear model and the differences are specified. Afterward, the model is fitted to the data using the `build_model` function. Next, we estimate the contrasts either from the linear model using the `Contrasts` class or directly from the data using the `ContrastsMissing` class. Afterward, we apply $t$-statistic moderation using the `ContrastModerated` class. Finally, the `merge_contrasts_results` function merges both sets of contrast estimates, preferring the one obtained from the linear model if both are available. Then we create the plots shown in Figure \@ref(fig:figure2). Panel A shows the distribution of the $p$-values, Panel B shows the volcano plot for each comparison, and Panel C shows a Bland-Altman plot reporting the difference between groups as a function of the rank of the protein abundance.
 
 (ref:figure2) Panel A - Histogram showing the distribution of p-values for $332$ proteins for contrasts "e_vs_d" and "d_vs_c". Panel B -  Volcano plot showing $-\log_{10}$ transformed $FDR$ as a function of the difference between groups for $332$ proteins. With black dots, we show effect size and FDR estimates obtained from the linear model, while in green, we plot those obtained using imputation. Finally, panel C shows the difference between groups, as a function of the rank of the abundance of the proteins.
 
@@ -360,8 +360,8 @@ models <- prolfqua::build_model(lfqpro, modelFunction)
 ## compute contrasts from linear model
 contr <- prolfqua::Contrasts$new(models, contrasts, modelName = "lm")
 
-## compute contrasts using imputation imputation
-conI <- prolfqua::ContrastsSimpleImpute$new( lfqpro, contrasts, modelName = "imp")
+## estimate contrasts when observations missing
+conI <- prolfqua::ContrastsMissing$new( lfqpro, contrasts, modelName = "mis")
 
 ## merge contrasts, to obtain differences for all proteins
 contrasts <- prolfqua::merge_contrasts_results(prefer = contr, add = conI)
@@ -417,7 +417,7 @@ allBenchmarks$benchmark_msFragger <- msFragger
 allBenchmarks$benchmark_proDA <- benchmark_prodA
 allBenchmarks$benchmark_msqrob <- benchmark_msqrob
 
-allBenchmarks <- allBenchmarks[c("benchmark_imputation","benchmark_ProtModerated",  "benchmark_mixedModerated", "benchmark_ropeca","benchmark_merged","benchmark_mssstats","benchmark_proDA", "benchmark_msqrob")]
+allBenchmarks <- allBenchmarks[c("benchmark_missing","benchmark_ProtModerated",  "benchmark_mixedModerated", "benchmark_ropeca","benchmark_merged","benchmark_mssstats","benchmark_proDA", "benchmark_msqrob")]
 
 ```
 
@@ -510,9 +510,9 @@ xMM <- data.frame(
     msstats = c("MSstats", "preprocess with default parameters",  "", "evidence.txt"),
     msqrob = c("msqrob2", "hurdle msqrob model", "protein and peptide", "peptide.txt"),
     proDA = c("proDA", "probabilistic dropout model",  "protein", "peptide.txt"),
-    imputation = c("prolfqua_estimate", "ContrastsSimpleImpute, ContrastsModerated", "protein",  "peptide.txt"),
+    imputation = c("prolfqua_missing", "ContrastsMissing, ContrastsModerated", "protein",  "peptide.txt"),
     lmmed = c("prolfqua_lm_mod", "strategy_lm, Contrasts, ContrastsModerated",  "protein", "peptide.txt"),
-    prot_merged = c("prolfqua_merged", "addContrastResults( prefer = proflqua_lm_mod , add = prolfqua_estimate)HACKIT ",  "protein", "peptide.txt"),
+    prot_merged = c("prolfqua_merged", "addContrastResults( prefer = proflqua_lm_mod , add = prolfqua_missing)HACKIT ",  "protein", "peptide.txt"),
     mixed = c("prolfqua_mix_eff_mod", "strategy_lmer, Contrasts, ContrastsModerated", "peptide", "peptide.txt" ),
     ropeca = c("prolfqua_ropeca", "strategy_lm, Contrasts, ContrastsModerated, ContrastsROPECA", "peptide", "peptide.txt" )
 )
