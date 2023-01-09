@@ -65,14 +65,14 @@ We can use all the *R* packages discussed when analyzing parallel-group designs 
 
 
 ```{r tableOverview}
-caption = "Rows - R packages, Columns - types of models supported: pd - parallel design, rm - repeated measurements, fd - factorial design, int - interactions among factors, mem - mixed effect models, eb - empirical Bayes, md - missing data modelling. Y - yes, * - repeated measurements are modeled using a fixed effect."
+caption = "Rows - R packages, Columns - types of models supported: pd - parallel design, rm - repeated measurements, fd - factorial design, int - interactions among factors, mem - mixed effect models, eb - empirical Bayes, md - missing data modelling with no imputation needed. Y - yes"
 
 xx <- list(
-  MSstats = c("pd" = "Y", "rm" = "Y", "mem" = "Y"),
   PECA = c("pd" = "Y", "rm" = "Y", eb = "Y"),
   limma  = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y",eb = "Y"),
-  msqrob2 = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", mem = "Y", eb = "Y", md = "Y"),
+  MSstats = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", mem = "Y"),
   proDA = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", eb = "Y", md = "Y"),
+  msqrob2 = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", mem = "Y", eb = "Y", md = "Y"),
   prolfqua = c("pd" = "Y", "rm" = "Y", fd = "Y", int = "Y", mem = "Y",eb = "Y", md = "Y"))
 
 bb <- data.frame(dplyr::bind_rows(xx))
