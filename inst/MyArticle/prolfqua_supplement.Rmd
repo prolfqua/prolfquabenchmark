@@ -1,30 +1,32 @@
 ---
-title: "Supporting Information:\n prolfqua - A Comprehensive R-package for Proteomics Differential Expression Analysis"
-author: 
-  - name: Witold E. Wolski
-    affiliation:
-      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
-      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
-    email: wew@fgcz.ethz.ethz.ch
-  - name: Paolo Nanni
-    affiliation: Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
-  - name: Jonas Grossmann
-    affiliation:
-      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
-      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
-  - name: Maria d'Errico
-    affiliation:
-      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
-      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
-  - name: Ralph Schlapbach
-    affiliation: Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
-  - name: Christian Panse
-    affiliation:
-      - Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
-      - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
+title: | 
+    | Supporting Information
+    | prolfqua : A Comprehensive R-package for Proteomics Differential Expression Analysis
+author:
+  - Witold E. Wolski:
+      email: wew@fgcz.ethz.ethz.ch
+      institute: [fgcz, sib]
+      correspondence: true
+  - Paolo Nanni:
+      institute: [fgcz]
+  - Jonas Grossmann:
+      institute: [fgcz, sib]
+  - Maria dErrico:
+      institute: [fgcz, sib]
+  - Ralph Schlapbach:
+      institute: [fgcz]
+  - Christian Panse:
+      institute: [fgcz, sib]
+institute:
+  - fgcz: Functional Genomics Center Zurich (FGCZ), ETH Zurich / University of Zurich, Winterthurerstrasse 190, 8057 Zurich, Switzerland
+  - sib: Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, 1015 Lausanne, Switzerland
 package: prolfqua
 output:
-  BiocStyle::pdf_document
+  bookdown::pdf_document2:
+    toc: yes
+    pandoc_args:
+      - '--lua-filter=scholarly-metadata.lua'
+      - '--lua-filter=author-info-blocks.lua'
 abstract: |
   This document contains the supplements for the prolfqua manuscript available
   through \url{https://doi.org/10.1101/2022.06.07.494524}.
@@ -32,9 +34,9 @@ vignette: |
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+editor_options:
   chunk_output_type: console
-#bibliography: prolfqua.bib
+  bibliography: prolfqua.bib 
 ---
 
 \renewcommand{\thepage}{S--\arabic{page}}
