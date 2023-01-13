@@ -126,7 +126,7 @@ p1 <-  models$anova_histogram()
 # compute contrasts from linear model and with imputation
 contr <- prolfqua::Contrasts$new(models, contrasts) |> 
   prolfqua::ContrastsModerated$new()
-conI <- prolfqua::ContrastsSimpleImpute$new( lfqp, contrasts) |> 
+conI <- prolfqua::ContrastsMissing$new( lfqp, contrasts) |> 
   prolfqua::ContrastsModerated$new()
 tmp <- prolfqua::addContrastResults(contr, conI)
 # visualize results
