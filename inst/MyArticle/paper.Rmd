@@ -65,7 +65,7 @@ We can use all the *R* packages discussed when analyzing parallel-group designs 
 
 
 ```{r tableOverview}
-caption = "Rows - R packages, Columns - types of models supported: pd - parallel design, rm - repeated measurements, fd - factorial design, int - interactions among factors, mem - mixed effect models, eb - empirical Bayes, md - missing data modelling with no imputation needed. Y - yes"
+caption = "Rows - R packages, Columns - types of models supported: pd - parallel design, rm - repeated measurements, fd - factorial design, int - interactions among factors, mem - mixed effect models, eb - empirical Bayes, md - missing data modelling (no imputation needed). Y - yes"
 
 xx <- list(
   PECA = c("pd" = "Y", "rm" = "Y", eb = "Y"),
