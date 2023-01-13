@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -110,9 +110,9 @@ models using the Ionstar Dataset</h1>
                         <h4 data-toc-skip class="author">Witold
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2022-10-30</h4>
+            <h4 data-toc-skip class="date">2023-01-13</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/../vignettes/BenchmarkingIonstarData.Rmd" class="external-link"><code>../vignettes/BenchmarkingIonstarData.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/BenchmarkingIonstarData.Rmd" class="external-link"><code>vignettes/BenchmarkingIonstarData.Rmd</code></a></small>
       <div class="hidden name"><code>BenchmarkingIonstarData.Rmd</code></div>
 
     </div>
@@ -496,7 +496,7 @@ sample per group. The standard deviation of the protein is estimated
 using the pooled variances of the condition where the variance could be
 estimated.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">contrImp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsSimpleImpute.html" class="external-link">ContrastsSimpleImpute</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">contrImp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsMissing.html" class="external-link">ContrastsMissing</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
 <span>  <span class="va">protLFQ</span>,</span>
 <span>  <span class="va">relevantContrasts</span><span class="op">)</span></span>
 <span></span>
@@ -516,20 +516,20 @@ estimated.</p>
 <span><span class="va">allContrasts</span><span class="op">$</span><span class="va">imputation</span> <span class="op">&lt;-</span> <span class="va">contrImp</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ttd</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/ionstar_bench_preprocess.html" class="external-link">ionstar_bench_preprocess</a></span><span class="op">(</span><span class="va">contrImp</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">benchmark_imputation</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/make_benchmark.html" class="external-link">make_benchmark</a></span><span class="op">(</span></span>
+<span><span class="va">benchmark_missing</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/make_benchmark.html" class="external-link">make_benchmark</a></span><span class="op">(</span></span>
 <span>    <span class="va">ttd</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>    model_description <span class="op">=</span> <span class="st">"med. polish and lm. imputation"</span>,</span>
-<span>    model_name <span class="op">=</span> <span class="st">"prolfqua_impute"</span>,</span>
+<span>    model_description <span class="op">=</span> <span class="st">"med. polish and missingness modelling"</span>,</span>
+<span>    model_name <span class="op">=</span> <span class="st">"prolfqua_missing"</span>,</span>
 <span>    FDRvsFDP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"FDR"</span>, desc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">benchmark_imputation</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">benchmark_missing</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BenchmarkingIonstarData_files/figure-html/benchmarkImputed-1.png" width="480"></p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">benchmark_imputation</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">benchmark_missing</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BenchmarkingIonstarData_files/figure-html/benchmarkImputed-2.png" width="480"></p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">benchmark_imputation</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span>, caption <span class="op">=</span> <span class="st">"Nr of proteins with Nr of not estimated contrasts."</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">benchmark_missing</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span>, caption <span class="op">=</span> <span class="st">"Nr of proteins with Nr of not estimated contrasts."</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Nr of proteins with Nr of not estimated contrasts.</caption>
 <thead><tr class="header">
@@ -542,7 +542,7 @@ estimated.</p>
 </tr></tbody>
 </table>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bb</span> <span class="op">&lt;-</span> <span class="va">benchmark_imputation</span><span class="op">$</span><span class="fu">pAUC_summaries</span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">bb</span> <span class="op">&lt;-</span> <span class="va">benchmark_missing</span><span class="op">$</span><span class="fu">pAUC_summaries</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">bb</span><span class="op">$</span><span class="va">barp</span></span></code></pre></div>
 <div class="figure">
 <img src="BenchmarkingIonstarData_files/figure-html/unnamed-chunk-5-1.png" alt="Summary of partial area under the ROC curve." width="480"><p class="caption">
@@ -552,8 +552,8 @@ Summary of partial area under the ROC curve.
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">bb</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">content</span>, caption <span class="op">=</span> <span class="va">bb</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">caption</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>AUC, and pAUC at 0.1 and 0.2 FPR for (NC) med. polish and lm.
-imputation</caption>
+<caption>AUC, and pAUC at 0.1 and 0.2 FPR for (NC) med. polish and
+missingness modelling</caption>
 <thead><tr class="header">
 <th align="left">contrast</th>
 <th align="left">what</th>
@@ -671,7 +671,7 @@ imputation</caption>
 </table>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">allBenchmarks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">allBenchmarks</span><span class="op">$</span><span class="va">benchmark_imputation</span> <span class="op">&lt;-</span> <span class="va">benchmark_imputation</span></span></code></pre></div>
+<span><span class="va">allBenchmarks</span><span class="op">$</span><span class="va">benchmark_missing</span> <span class="op">&lt;-</span> <span class="va">benchmark_missing</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="contrasts-from-linear-model">Contrasts from linear model<a class="anchor" aria-label="anchor" href="#contrasts-from-linear-model"></a>

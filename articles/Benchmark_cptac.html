@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -109,9 +109,9 @@
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2022-10-30</h4>
+            <h4 data-toc-skip class="date">2023-01-13</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/../vignettes/Benchmark_cptac.Rmd" class="external-link"><code>../vignettes/Benchmark_cptac.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_cptac.Rmd" class="external-link"><code>vignettes/Benchmark_cptac.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_cptac.Rmd</code></div>
 
     </div>
@@ -207,7 +207,7 @@ Peptide abundances and protein abundance estimates.
 <span><span class="va">clm</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/Contrasts.html" class="external-link">Contrasts</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">lmmodl</span>, <span class="va">contrast</span><span class="op">)</span></span>
 <span><span class="va">tt</span> <span class="op">&lt;-</span> <span class="va">clm</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">csimp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsSimpleImpute.html" class="external-link">ContrastsSimpleImpute</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">lfqProt</span>, <span class="va">contrast</span><span class="op">)</span></span>
+<span><span class="va">csimp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsMissing.html" class="external-link">ContrastsMissing</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">lfqProt</span>, <span class="va">contrast</span><span class="op">)</span></span>
 <span><span class="va">tt</span> <span class="op">&lt;-</span> <span class="va">csimp</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">merge</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/merge_contrasts_results.html" class="external-link">merge_contrasts_results</a></span><span class="op">(</span><span class="va">clm</span>, <span class="va">csimp</span><span class="op">)</span></span>
@@ -645,17 +645,17 @@ results of the Bootstrap test for two ROC curves.</p>
 <tr class="odd">
 <td align="left">msqrob2_vs_prolfqua</td>
 <td align="left">msqrob2_vs_prolfqua</td>
-<td align="right">0.9794498</td>
+<td align="right">0.9788412</td>
 </tr>
 <tr class="even">
 <td align="left">msqrob2_vs_proda</td>
 <td align="left">msqrob2_vs_proda</td>
-<td align="right">0.9203194</td>
+<td align="right">0.9211331</td>
 </tr>
 <tr class="odd">
 <td align="left">prolfqua_vs_proda</td>
 <td align="left">prolfqua_vs_proda</td>
-<td align="right">0.9026306</td>
+<td align="right">0.9032733</td>
 </tr>
 </tbody>
 </table>

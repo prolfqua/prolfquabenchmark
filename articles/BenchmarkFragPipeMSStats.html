@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -110,9 +110,9 @@ IonStar/FragPipeV14/MSstats.tsv</h1>
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2022-10-30</h4>
+            <h4 data-toc-skip class="date">2023-01-13</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/../vignettes/BenchmarkFragPipeMSStats.Rmd" class="external-link"><code>../vignettes/BenchmarkFragPipeMSStats.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/BenchmarkFragPipeMSStats.Rmd" class="external-link"><code>vignettes/BenchmarkFragPipeMSStats.Rmd</code></a></small>
       <div class="hidden name"><code>BenchmarkFragPipeMSStats.Rmd</code></div>
 
     </div>
@@ -281,7 +281,7 @@ from github</p>
 <span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/build_model.html" class="external-link">build_model</a></span><span class="op">(</span><span class="va">lfqdataNormalized</span><span class="op">$</span><span class="va">data</span>, <span class="va">modelFunction</span><span class="op">)</span></span>
 <span><span class="va">contr</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/Contrasts.html" class="external-link">Contrasts</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">mod</span>, <span class="va">Contrasts</span><span class="op">)</span></span>
-<span><span class="va">contrimp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsSimpleImpute.html" class="external-link">ContrastsSimpleImpute</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">lfqdataNormalized</span>, <span class="va">Contrasts</span><span class="op">)</span></span>
+<span><span class="va">contrimp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsMissing.html" class="external-link">ContrastsMissing</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">lfqdataNormalized</span>, <span class="va">Contrasts</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">merged</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/merge_contrasts_results.html" class="external-link">merge_contrasts_results</a></span><span class="op">(</span><span class="va">contr</span>, <span class="va">contrimp</span><span class="op">)</span></span>
 <span><span class="va">mergedmod</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsModerated.html" class="external-link">ContrastsModerated</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">merged</span><span class="op">$</span><span class="va">merged</span><span class="op">)</span></span>
@@ -512,107 +512,107 @@ from github</p>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">94.93809</td>
-<td align="right">75.93069</td>
-<td align="right">85.40359</td>
+<td align="right">94.94099</td>
+<td align="right">75.94713</td>
+<td align="right">85.39316</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.pval</td>
-<td align="right">95.09488</td>
-<td align="right">80.01237</td>
-<td align="right">84.66134</td>
+<td align="right">95.09947</td>
+<td align="right">80.02337</td>
+<td align="right">84.67141</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">95.09488</td>
-<td align="right">80.01237</td>
-<td align="right">84.66134</td>
+<td align="right">95.09947</td>
+<td align="right">80.02337</td>
+<td align="right">84.67141</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">94.67083</td>
-<td align="right">83.31141</td>
-<td align="right">87.93412</td>
+<td align="right">94.66000</td>
+<td align="right">83.34907</td>
+<td align="right">87.95449</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.pval</td>
-<td align="right">92.92068</td>
-<td align="right">81.25590</td>
-<td align="right">83.67145</td>
+<td align="right">92.92966</td>
+<td align="right">81.28272</td>
+<td align="right">83.69285</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">t_statistic</td>
-<td align="right">92.92068</td>
-<td align="right">81.25590</td>
-<td align="right">83.67145</td>
+<td align="right">92.92966</td>
+<td align="right">81.28272</td>
+<td align="right">83.69285</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">94.98331</td>
-<td align="right">85.12088</td>
-<td align="right">89.62882</td>
+<td align="right">94.99672</td>
+<td align="right">85.12810</td>
+<td align="right">89.63346</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.pval</td>
-<td align="right">96.47050</td>
-<td align="right">85.71716</td>
-<td align="right">88.54742</td>
+<td align="right">96.47520</td>
+<td align="right">85.73160</td>
+<td align="right">88.55619</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">t_statistic</td>
-<td align="right">96.47050</td>
-<td align="right">85.71716</td>
-<td align="right">88.54742</td>
+<td align="right">96.47520</td>
+<td align="right">85.73160</td>
+<td align="right">88.55619</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">93.61007</td>
-<td align="right">61.75717</td>
-<td align="right">77.62484</td>
+<td align="right">93.61424</td>
+<td align="right">61.77212</td>
+<td align="right">77.64135</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.pval</td>
-<td align="right">93.27824</td>
-<td align="right">74.51114</td>
-<td align="right">80.27225</td>
+<td align="right">93.28397</td>
+<td align="right">74.51320</td>
+<td align="right">80.27792</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">t_statistic</td>
-<td align="right">93.27824</td>
-<td align="right">74.51114</td>
-<td align="right">80.27225</td>
+<td align="right">93.28397</td>
+<td align="right">74.51320</td>
+<td align="right">80.27792</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">96.27852</td>
-<td align="right">73.68842</td>
-<td align="right">85.71174</td>
+<td align="right">96.27878</td>
+<td align="right">73.69564</td>
+<td align="right">85.71303</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.pval</td>
-<td align="right">97.49124</td>
-<td align="right">84.89495</td>
-<td align="right">89.57724</td>
+<td align="right">97.49145</td>
+<td align="right">84.89805</td>
+<td align="right">89.57776</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">t_statistic</td>
-<td align="right">97.49124</td>
-<td align="right">84.89495</td>
-<td align="right">89.57724</td>
+<td align="right">97.49145</td>
+<td align="right">84.89805</td>
+<td align="right">89.57776</td>
 </tr>
 </tbody>
 </table>
@@ -1101,25 +1101,25 @@ file.</p>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">94.93809</td>
-<td align="right">75.93069</td>
-<td align="right">85.40359</td>
+<td align="right">94.94099</td>
+<td align="right">75.94713</td>
+<td align="right">85.39316</td>
 <td align="left">proda</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.p.value</td>
-<td align="right">95.09488</td>
-<td align="right">80.01237</td>
-<td align="right">84.66134</td>
+<td align="right">95.09947</td>
+<td align="right">80.02337</td>
+<td align="right">84.67141</td>
 <td align="left">proda</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">95.09488</td>
-<td align="right">80.01237</td>
-<td align="right">84.66134</td>
+<td align="right">95.09947</td>
+<td align="right">80.02337</td>
+<td align="right">84.67141</td>
 <td align="left">proda</td>
 </tr>
 <tr class="even">
