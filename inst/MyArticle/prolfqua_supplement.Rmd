@@ -24,6 +24,7 @@ package: prolfqua
 output:
   bookdown::pdf_document2:
     toc: yes
+    number_sections: false
     pandoc_args:
       - '--lua-filter=scholarly-metadata.lua'
       - '--lua-filter=author-info-blocks.lua'
@@ -57,7 +58,7 @@ knitr::opts_chunk$set(echo = FALSE, error = FALSE, warning = FALSE, message = FA
 The *R* markdown file, with all the *R* code used to produce this pdf-document can be found here :   [prolfqua_supplement.Rmd](https://github.com/wolski/prolfquabenchmark/blob/main/inst/MyArticle/prolfqua_supplement.Rmd).
 To replicated the analysis you need to install the *prolfquabenchmark* *R* package.
 
-# How to install *prolfqua* and *prolfquabenchmark*
+# Material S1: How to install *prolfqua* and *prolfquabenchmark*
 
 To install the *prolfqua* package ([ACS_JPR](https://github.com/fgcz/prolfqua/releases/tag/v0.4.3) release), including all *R* package dependencies, execute in the *R* console:
 
@@ -74,7 +75,18 @@ remotes::install_github("https://github.com/wolski/prolfquabenchmark/releases/ta
     dependencies = TRUE, build_vignettes=TRUE)
 ```
 
-# DEA benchmark : IonStar/MaxQuant/peptide.txt - Significance test
+# Material S2: Benchmark Vignettes (IonStar/MaxQuant)
+
+Pre-build version of the vignettes, created to run the DEA benchmark, are available:
+
+- [Benchmarking of methods implemented in prolfqua using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html) 
+- [Benchmarking of MSstats using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html) 
+- [Benchmarking of proDA  using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html) 
+- [Benchmarking of msqrob2  using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkMSqRob2.html)  
+
+
+
+# Material S3: DEA benchmark IonStar/MaxQuant/peptide.txt - Significance test
 
 Table \@ref(tab:ISMQpeptideSum) summarizes $pAUC$ of the DEA benchmark when using the IonStar/MaxQuant/peptide.txt data. Figure 5 in the Article, shows a barplot showing the $pAUC_{10}$.
 
@@ -129,17 +141,9 @@ knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits 
 
 ```
 
-## Benchmark Vignettes
 
-Pre-build version of the vignettes, we created to run the DEA benchmark, are available:
+# Material S4: DEA benchmark : CPTAC/MaxQuant/peptide.txt
 
-- [Benchmarking of methods implemented in prolfqua using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html) 
-- [Benchmarking of MSstats using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html) 
-- [Benchmarking of proDA  using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html) 
-- [Benchmarking of msqrob2  using the IonStar dataset MaxQuant](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkMSqRob2.html)  
-
-
-# DEA benchmark : CPTAC/MaxQuant/peptide.txt
 
 We applied DEA using *msqrob2*, *proDA* and *prolfqua* ('prolfqua_merged')  to the CPTAC/MaxQuant dataset and benchmarked the results. We are using the 'peptide.txt' file containing the peptide intensities.
 
@@ -221,7 +225,7 @@ knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits 
 
 ```
 
-# DEA benchmark : IonStar/FragPipeV14/combined_protein.tsv
+# Material S5: DEA benchmark : IonStar/FragPipeV14/combined_protein.tsv
 
 The Rmarkdown file which created these results, with more details about the IonStar FragPipe v14 dataset, and the data processing, can be found here:
 ["DEA benchmark IonStar/FragPipeV14/combined_protein.tsv"](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkFragPipeProteinIonStar.html) 
@@ -287,7 +291,7 @@ knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits 
 
 ```
 
-# DEA benchmark : IonStar/FragPipeV14/MSstats.tsv
+# Material S6: DEA benchmark : IonStar/FragPipeV14/MSstats.tsv
 
 The Rmarkdown file which created these results, with more details about the analysis, can be found here:
 ["DEA benchmark IonStar/FragPipeV14/MSstats.tsv"](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkFragPipeMSStats.html) 
@@ -377,7 +381,7 @@ ggplot2::ggplot(ISFPmsstats, ggplot2::aes(x = package, y = pAUC_10)) +
 
 ```
 
-# Comparing DEA results for *MaxQuant* and *FragPipe*
+# Material S7: Comparing DEA results for *MaxQuant* and *FragPipe*
 
 In the Article, we discussed other factors influencing the performance of the DEA analysis. One of these factors is the quantification software. Here we compare the benchmarking results obtained with MaxQuant and FragPipe. We see (Supplementary Figure \@ref(fig:compareMaxQuantFP)) that the choice of the quantification software changes the partial area under the curve ($pAUC_{10}$) much stronger (by up to $8\%$) than the DEA analysis method (by about $4\%$).
 Furthermore, we observe that the DEA benchmark results differ depending on if 'MSstats.tsv' or 'combined_protein.tsv' is used as input (see Figure \@ref(fig:compareMaxQuantFP) Left Panel, methods *proDA* and *prolfqua*). 
@@ -432,7 +436,7 @@ knitr::kable(tibble::tibble(pROC_test = names(tmp), p.value = round(tmp, digits 
 ```
 
 
-# Estimating $A_{LOD}$
+# Material S8: Estimating $A_{LOD}$
 
 The main text describes how we estimate the abundance at the detection limit $A_{LOD}$. 
 Supplementary Figure \@ref(fig:missignessHistogram) shows the distribution of the average abundance within a group for all proteins. The red density shows the distribution for those proteins without a missing value, and the olive, turquoise, and lilac density show for proteins with 1,2 and 3 missing values, respectively. We see that the proteins with three missing values have, on average lower abundances than those with no missing values. We are using the median of the proteins with a single observation per group; the lila density, as the $A_{LOD}$ estimate.
@@ -465,7 +469,7 @@ bb <- lfqdata$get_Plotter()
 bb$missigness_histogram()
 ```
 
-# The probabilities produced by ROPECA are not p-values
+# Material S9: The probabilities produced by ROPECA are not p-values
 
 In the main text discuss that the properties of the Beta distribution-based probabilities, computed from peptide level p-values, using the ROPECA method are not well understood. 
 We are running here a simulation experiment, which shows that if we start with a dataset where the null hypothesis is valid for all the peptides, i.e., the p-values are uniformly distributed, the produced Beta distribution-based probabilities are not uniformely distributed.
@@ -506,7 +510,7 @@ hist(xx30$beta.based.significance, breaks = 20, xlab = "p-value(?) obtained with
 
 ```
 
-# Specifying Contrasts for Models with two Factors and Interaction Term
+# Material S10: Specifying Contrasts for Models with two Factors and Interaction Term
 
 The following code illustrates how to specify a model with two factors and an interaction term and define the differences we want to estimate. The example dataset was acquired in two batches (p2370, p2691). In each, we measured Yeast samples grown under two different conditions (Glucose and Ethanol).
 
@@ -548,7 +552,7 @@ Given the weights $c$ contrasts from model parameters obtained with *proDA*, or 
 For more details see *prolfqua* vignette: ["Modelling dataset with two Factors"](https://fgcz.github.io/prolfqua/articles/Modelling2Factors.html).
 
 
-# Creating a prolfqua configuration
+# Material S11: Creating a prolfqua configuration
 
 The following code demonstrates how we use *prolfqua* to analyze protein intensities reported in the *FragPipe* 'combined_protein.tsv' file.
 First, we create a tidy table containing the protein abundances by reading the `combined_protein.tsv` file using  `tidy_FragPipe_combined_protein.` Then, we read the sample annotation from the file `annotation.xlsx` file. Next, we create an `AnalysisTableAnnotation` R6 object.
@@ -597,7 +601,6 @@ lfqdata$hierarchy_counts()
 
 ```
 
-
 # Miscellaneous
 
 (ref:tabCompletion) The screenshot displays the command-line completion (tab completion) of RStudio on the `prolfqua::LFQData` R6 object. In the example, it shows the getter methods of the object.
@@ -607,7 +610,7 @@ knitr::include_graphics("graphics/codeSnippet1TabCompletion.png")
 ```
 
 ```{r proLFQuaSticker, echo=TRUE, out.height="5cm", eval=TRUE, fig.cap="Sticker maintainer: Witold E. Wolski; License: Creative Commons Attribution CC-BY. Feel free to share and adapt, but don't forget to credit the author."}
-file.path("graphics/hexStickerProlfqua.png") |>
+file.path("graphics/hexstrickerPRL2.png") |>
   knitr::include_graphics()
 ```
 
