@@ -29,5 +29,8 @@ writeLines(results, "../../../prolfqua-achems/results.tex")
 conclusion <- tex[ grep("hypertarget\\{conclusion\\}", tex):(grep("hypertarget\\{acknowledgements\\}", tex) - 1)]
 writeLines(conclusion, "../../../prolfqua-achems/conclusion.tex")
 
-abbreviations <- tex[ grep("hypertarget\\{abbreviations\\}", tex):(grep("hypertarget\\{references\\}", tex) - 1)]
+abbreviations <- tex[ grep("hypertarget\\{abbreviations\\}", tex):(grep("hypertarget\\{supporting-information\\}", tex) - 1)]
 writeLines(abbreviations, "../../../prolfqua-achems/abbreviations.tex")
+
+abbreviations <- tex[ grep("hypertarget\\{supporting-information\\}", tex):(grep("hypertarget\\{references\\}", tex) - 1)]
+writeLines(abbreviations, "../../../prolfqua-achems/supporting.tex")

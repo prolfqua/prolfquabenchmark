@@ -255,7 +255,7 @@ s = \sqrt{\frac{2n_g s_p^2}{n}},
 \end{equation} 
 
 Where $n_g$ is the number of groups and $n$ is the number of observations.
-If variance can not be estimated for a protein, because there are too few observations in other groups, we use the median pooled variance of all other proteins in the dataset. This method is implemented in the class `ContrastSimpleImpute` (see Figure \@ref(fig:ContrastUML)).
+If variance can not be estimated for a protein, because there are too few observations in other groups, we use the median pooled variance of all other proteins in the dataset. This method is implemented in the class `ContrastsMissing` (see Figure \@ref(fig:ContrastUML)).
 
 ### $p$-value moderation
 
@@ -517,7 +517,7 @@ gridExtra::grid.arrange(pB_pAUC, pA_barplot, pC_FDR, layout_matrix = hlay)
 ```{r describeBenchmarkedModels, results='asis' }
 xMM <- data.frame(
     msstats = c("MSstats", "preprocess with default parameters",  "", "evidence.txt"),
-    msqrob = c("msqrob2::msqrobHurdle", "merge of msqrobHurdleIntensity and msqrobHurdleCount results", "protein and peptide", "peptide.txt"),
+    msqrob = c("msqrob2", "merge of msqrobHurdleIntensity and msqrobHurdleCount (msqrobHurdle)", "protein and peptide", "peptide.txt"),
     proDA = c("proDA", "probabilistic dropout model",  "protein", "peptide.txt"),
     imputation = c("prolfqua_missing", "ContrastsMissing, ContrastsModerated", "protein",  "peptide.txt"),
     lmmed = c("prolfqua_lm_mod", "strategy_lm, Contrasts, ContrastsModerated",  "protein", "peptide.txt"),
@@ -531,7 +531,8 @@ rownames(xMM) <- NULL
 colnames(xMM) <-  c("Label","Description","Abundance","Input File")
 tmp <- kableExtra::kable(xMM,
              caption = paste0("All benchmarked models. ",
-             "Description - prolfqua function names, ",
+             "Label - name of the method, ", 
+             "Description - functions used in the respective packages, ",
              "Abudances - indicates if model is fitted to peptide or protein abundances, ",
              "Input File - name of MaxQuant file used as input."),
              format = "latex", booktabs = TRUE) |>
@@ -608,12 +609,6 @@ UML    & Unified Modeling Language                        \\
 
 \newpage
 
-# References {-}
-
-<div id="refs"></div>
-
-\newpage
-
 # Supporting Information
 
 - Supporting Material S1: How to install *prolfqua* and *prolfquabenchmark*
@@ -628,8 +623,13 @@ UML    & Unified Modeling Language                        \\
 - Supporting Material S10: Specifying Contrasts for Models with two Factors and Interaction Term
 - Supporting Material S11: Creating a prolfqua configuration
 
+\newpage
 
-# Appendix  {.unnumbered}
+
+# References {-}
+
+<div id="refs"></div>
+
 
 
 ## Session information {.unlisted .unnumbered}

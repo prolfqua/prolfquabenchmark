@@ -614,6 +614,28 @@ file.path("graphics/hexstrickerPRL2.png") |>
   knitr::include_graphics()
 ```
 
+(ref:toc) The figure illustrates some possible data analysis procedures that can
+be achieved with only very few functions from prolfqua. As input
+different levels from a variety of quantitation tools are accepted and
+along with an annotation table configured for prolfqua using either
+pre-built import functions or made ready with a little reshaping. In
+prolfqua (depending on the input), one can choose roll-up
+procedures and perform basic steps of mass spectrometry-based data
+processing steps such as quality control, data normalization, protein
+aggregation, as well as statistical modeling, hypothesis testing, and
+sample size estimation. At all levels, one can always use
+functions to show diagnostic plots or even inspect individual proteins.
+Furthermore, prolfqua supports multiple models for differential
+expression analysis such as linear (mixed effect) models and allows to
+specify multiple contrasts.
+
+
+```{r toc, echo=FALSE, fig.cap="(ref:toc)"}
+knitr::include_graphics("graphics/TOCv2.pdf")
+
+```
+
+\newpage
 
 # Session info {.unnumbered}
 
