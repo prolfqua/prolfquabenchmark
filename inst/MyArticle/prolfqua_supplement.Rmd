@@ -1,7 +1,7 @@
 ---
 title: | 
     | Supporting Information
-    | prolfqua : A Comprehensive R-package for Proteomics Differential Expression Analysis
+    | prolfqua: A Comprehensive R-package for Proteomics Differential Expression Analysis
 author:
   - Witold E. Wolski:
       email: wew@fgcz.ethz.ethz.ch
@@ -11,7 +11,7 @@ author:
       institute: [fgcz]
   - Jonas Grossmann:
       institute: [fgcz, sib]
-  - Maria dErrico:
+  - Maria d'Errico:
       institute: [fgcz, sib]
   - Ralph Schlapbach:
       institute: [fgcz]
