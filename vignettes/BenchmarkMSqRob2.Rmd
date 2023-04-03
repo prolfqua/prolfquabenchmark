@@ -279,5 +279,5 @@ benchmark_msqrob$plot_FDRvsFDP()
 ```
 
 ```{r fdptpr,eval = evalAll}
-benchmark_msqrob$plot_FDPvsTPR()
+benchmark_msqrob$plot_precision_recall()
 ```

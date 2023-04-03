@@ -180,6 +180,6 @@ benchmark_msstats$plot_ROC(xlim = 0.2)
 benchmark_msstats$plot_FDRvsFDP()
 ```
 
-```{r,eval = evalAll}
-benchmark_msstats$plot_FDPvsTPR()
+```{r plotPrecisionRecall, fig.cap="Precision recall curve.", eval = evalAll}
+benchmark_msstats$plot_precision_recall()
 ```

@@ -178,5 +178,5 @@ benchmark_proDA$plot_FDRvsFDP()
 ```
 
 ```{r fdptpr,eval = evalAll}
-benchmark_proDA$plot_FDPvsTPR()
+benchmark_proDA$plot_precision_recall()
 ```

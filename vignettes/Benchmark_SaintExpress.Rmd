@@ -208,7 +208,7 @@ benchmark_SaintExpres$plot_FDRvsFDP()
 ```
 
 ```{r fdptpr,eval = evalAll}
-benchmark_SaintExpres$plot_FDPvsTPR()
+benchmark_SaintExpres$plot_precision_recall()
 ```
 
 # Conclusions
