@@ -4,7 +4,7 @@ title: |
     | prolfqua: A Comprehensive R-package for Proteomics Differential Expression Analysis
 author:
   - Witold E. Wolski:
-      email: wew@fgcz.ethz.ethz.ch
+      email: wew@fgcz.ethz.ch
       institute: [fgcz, sib]
       correspondence: true
   - Paolo Nanni:
@@ -58,7 +58,7 @@ knitr::opts_chunk$set(echo = FALSE, error = FALSE, warning = FALSE, message = FA
 The *R* markdown file, with all the *R* code used to produce this pdf-document can be found here :   [prolfqua_supplement.Rmd](https://github.com/wolski/prolfquabenchmark/blob/main/inst/MyArticle/prolfqua_supplement.Rmd).
 To replicated the analysis you need to install the *prolfquabenchmark* *R* package.
 
-# Material S1: How to install *prolfqua* and *prolfquabenchmark*
+# Material S1: How to Install *prolfqua* and *prolfquabenchmark*
 
 To install the *prolfqua* package ([ACS_JPR](https://github.com/fgcz/prolfqua/releases/tag/v0.4.3) release), including all *R* package dependencies, execute in the *R* console:
 
