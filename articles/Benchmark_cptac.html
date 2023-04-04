@@ -109,7 +109,7 @@
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2023-01-13</h4>
+            <h4 data-toc-skip class="date">2023-04-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_cptac.Rmd" class="external-link"><code>vignettes/Benchmark_cptac.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_cptac.Rmd</code></div>
@@ -459,7 +459,7 @@ proDA_medpolishInt</caption>
 <span>  <span class="va">res</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/matrix_to_tibble.html" class="external-link">matrix_to_tibble</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, preserve_row_names <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">hurdle</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="va">hurdle</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">logFC</span> <span class="op">&lt;-</span> <span class="va">hurdle</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="st">"name"</span>,<span class="st">"contrast"</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"logFC"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">logFC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">logFC</span> ,<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">logFCt</span><span class="op">)</span><span class="op">)</span></span>
@@ -470,7 +470,7 @@ proDA_medpolishInt</caption>
 <span><span class="va">logOR</span><span class="op">$</span><span class="va">modelName</span> <span class="op">&lt;-</span> <span class="st">"msqrobHurdleCount"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">logOR</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>,<span class="st">"contrast"</span>,<span class="st">"logFC"</span>,<span class="st">"se"</span>,<span class="st">"df"</span>,<span class="st">"t"</span>,<span class="st">"pval"</span>,<span class="st">"modelName"</span><span class="op">)</span></span>
 <span><span class="va">ddd</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">logOR</span> , <span class="va">logFC</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"contrast"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ddd</span> , <span class="va">logFC</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="va">name</span><span class="op">)</span></span>
+<span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ddd</span> , <span class="va">logFC</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="va">name</span><span class="op">)</span></span>
 <span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/adjust_p_values.html" class="external-link">adjust_p_values</a></span><span class="op">(</span><span class="va">all</span>, column <span class="op">=</span> <span class="st">"pval"</span>, group_by_col <span class="op">=</span> <span class="st">"contrast"</span><span class="op">)</span></span>
 <span><span class="va">all</span><span class="op">$</span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="st">"b_vs_a"</span></span>
 <span></span>
@@ -600,7 +600,7 @@ msqrob2_QFeature</caption>
 <span><span class="va">prolfqua</span> <span class="op">&lt;-</span> <span class="va">benchmark_merged</span><span class="op">$</span><span class="fu">pAUC_summaries</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">content</span></span>
 <span><span class="va">prolfqua</span><span class="op">$</span><span class="va">package</span> <span class="op">&lt;-</span> <span class="st">"prolfqua"</span></span>
 <span></span>
-<span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mrob</span>, <span class="va">proda</span>, <span class="va">prolfqua</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mrob</span>, <span class="va">proda</span>, <span class="va">prolfqua</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">all</span> <span class="op">&lt;-</span> <span class="va">all</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">contrast</span> <span class="op">==</span> <span class="st">"b_vs_a"</span><span class="op">)</span></span>
 <span><span class="va">all</span><span class="op">$</span><span class="va">what</span><span class="op">[</span><span class="va">all</span><span class="op">$</span><span class="va">what</span> <span class="op">==</span> <span class="st">"statistic"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"t_statistic"</span></span>
 <span><span class="va">all</span><span class="op">$</span><span class="va">what</span><span class="op">[</span><span class="va">all</span><span class="op">$</span><span class="va">what</span> <span class="op">==</span> <span class="st">"t"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"t_statistic"</span></span>
@@ -645,17 +645,17 @@ results of the Bootstrap test for two ROC curves.</p>
 <tr class="odd">
 <td align="left">msqrob2_vs_prolfqua</td>
 <td align="left">msqrob2_vs_prolfqua</td>
-<td align="right">0.9795024</td>
+<td align="right">0.9793141</td>
 </tr>
 <tr class="even">
 <td align="left">msqrob2_vs_proda</td>
 <td align="left">msqrob2_vs_proda</td>
-<td align="right">0.9193278</td>
+<td align="right">0.9208602</td>
 </tr>
 <tr class="odd">
 <td align="left">prolfqua_vs_proda</td>
 <td align="left">prolfqua_vs_proda</td>
-<td align="right">0.9009794</td>
+<td align="right">0.9034451</td>
 </tr>
 </tbody>
 </table>

@@ -110,7 +110,7 @@ Dataset starting from peptides</h1>
                         <h4 data-toc-skip class="author">Witold E
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2023-01-13</h4>
+            <h4 data-toc-skip class="date">2023-04-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_proDA_medpolish.Rmd" class="external-link"><code>vignettes/Benchmark_proDA_medpolish.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_proDA_medpolish.Rmd</code></div>
@@ -203,7 +203,7 @@ the contrasts.</p>
 <span>  contrast <span class="op">=</span> <span class="st">"dilution_(4.5/3)_1.5"</span>, </span>
 <span>  <span class="fu">proDA</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/proDA/man/test_diff.html" class="external-link">test_diff</a></span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span> <span class="st">"dilution.b - dilution.a"</span> <span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">contr</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">contr</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="benchmarking">Benchmarking<a class="anchor" aria-label="anchor" href="#benchmarking"></a>
@@ -262,107 +262,107 @@ proDA_medpolishInt</caption>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">92.87071</td>
-<td align="right">66.41813</td>
-<td align="right">78.70583</td>
+<td align="right">92.87038</td>
+<td align="right">66.41744</td>
+<td align="right">78.70544</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.pval</td>
-<td align="right">92.98482</td>
-<td align="right">72.56074</td>
-<td align="right">79.12663</td>
+<td align="right">92.98474</td>
+<td align="right">72.56054</td>
+<td align="right">79.12657</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">92.98482</td>
-<td align="right">72.56074</td>
-<td align="right">79.12663</td>
+<td align="right">92.98474</td>
+<td align="right">72.56054</td>
+<td align="right">79.12657</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">94.61101</td>
-<td align="right">81.30717</td>
-<td align="right">86.53583</td>
+<td align="right">94.60996</td>
+<td align="right">81.30629</td>
+<td align="right">86.53539</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.pval</td>
-<td align="right">94.19288</td>
-<td align="right">81.52638</td>
+<td align="right">94.19270</td>
+<td align="right">81.52682</td>
 <td align="right">85.09397</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">t_statistic</td>
-<td align="right">94.19288</td>
-<td align="right">81.52638</td>
+<td align="right">94.19270</td>
+<td align="right">81.52682</td>
 <td align="right">85.09397</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">92.05837</td>
-<td align="right">66.72321</td>
-<td align="right">78.40339</td>
+<td align="right">92.05780</td>
+<td align="right">66.72233</td>
+<td align="right">78.40295</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.pval</td>
-<td align="right">92.10481</td>
-<td align="right">72.99698</td>
-<td align="right">78.92297</td>
+<td align="right">92.10428</td>
+<td align="right">72.99654</td>
+<td align="right">78.92275</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">t_statistic</td>
-<td align="right">92.10481</td>
-<td align="right">72.99698</td>
-<td align="right">78.92297</td>
+<td align="right">92.10428</td>
+<td align="right">72.99654</td>
+<td align="right">78.92275</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">91.74327</td>
-<td align="right">58.60092</td>
-<td align="right">74.26792</td>
+<td align="right">91.74389</td>
+<td align="right">58.59960</td>
+<td align="right">74.26726</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.pval</td>
-<td align="right">92.07222</td>
-<td align="right">67.19119</td>
-<td align="right">75.01068</td>
+<td align="right">92.07213</td>
+<td align="right">67.19030</td>
+<td align="right">75.01046</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">t_statistic</td>
-<td align="right">92.07222</td>
-<td align="right">67.19119</td>
-<td align="right">75.01068</td>
+<td align="right">92.07213</td>
+<td align="right">67.19030</td>
+<td align="right">75.01046</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">92.94011</td>
-<td align="right">57.98871</td>
-<td align="right">75.34854</td>
+<td align="right">92.93989</td>
+<td align="right">57.98607</td>
+<td align="right">75.34722</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.pval</td>
-<td align="right">93.50843</td>
-<td align="right">68.18403</td>
-<td align="right">77.57506</td>
+<td align="right">93.50838</td>
+<td align="right">68.18359</td>
+<td align="right">77.57462</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">t_statistic</td>
-<td align="right">93.50843</td>
-<td align="right">68.18403</td>
-<td align="right">77.57506</td>
+<td align="right">93.50838</td>
+<td align="right">68.18359</td>
+<td align="right">77.57462</td>
 </tr>
 </tbody>
 </table>
@@ -389,7 +389,7 @@ plot FDR vs FDP
 </p>
 </div>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">benchmark_proDA</span><span class="op">$</span><span class="fu">plot_FDPvsTPR</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">benchmark_proDA</span><span class="op">$</span><span class="fu">plot_precision_recall</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Benchmark_proDA_medpolish_files/figure-html/fdptpr-1.png" width="700"></p>
 </div>
 </div>

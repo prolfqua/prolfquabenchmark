@@ -110,7 +110,7 @@ IonStar/FragPipeV14/MSstats.tsv</h1>
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2023-01-13</h4>
+            <h4 data-toc-skip class="date">2023-04-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/BenchmarkFragPipeMSStats.Rmd" class="external-link"><code>vignettes/BenchmarkFragPipeMSStats.Rmd</code></a></small>
       <div class="hidden name"><code>BenchmarkFragPipeMSStats.Rmd</code></div>
@@ -463,7 +463,7 @@ from github</p>
 <span>  contrast <span class="op">=</span> <span class="st">"dilution_(4.5/3)_1.5"</span>, </span>
 <span>  <span class="fu">proDA</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/proDA/man/test_diff.html" class="external-link">test_diff</a></span><span class="op">(</span><span class="va">fit</span>, contrast <span class="op">=</span> <span class="st">"dilution.b - dilution.a"</span> <span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">contr</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">contr</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="benchmarking-1">Benchmarking<a class="anchor" aria-label="anchor" href="#benchmarking-1"></a>
 </h3>
@@ -512,107 +512,107 @@ from github</p>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">94.92899</td>
-<td align="right">75.91376</td>
-<td align="right">85.38224</td>
+<td align="right">94.93979</td>
+<td align="right">75.94639</td>
+<td align="right">85.38685</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.pval</td>
-<td align="right">95.08693</td>
-<td align="right">80.00090</td>
-<td align="right">84.64828</td>
+<td align="right">95.09856</td>
+<td align="right">80.02204</td>
+<td align="right">84.66996</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">95.08693</td>
-<td align="right">80.00090</td>
-<td align="right">84.64828</td>
+<td align="right">95.09856</td>
+<td align="right">80.02204</td>
+<td align="right">84.66996</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">94.63509</td>
-<td align="right">83.26035</td>
-<td align="right">87.89853</td>
+<td align="right">94.64912</td>
+<td align="right">83.34339</td>
+<td align="right">87.95088</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.pval</td>
-<td align="right">92.88592</td>
-<td align="right">81.21928</td>
-<td align="right">83.63792</td>
+<td align="right">92.92486</td>
+<td align="right">81.27395</td>
+<td align="right">83.68460</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">t_statistic</td>
-<td align="right">92.88592</td>
-<td align="right">81.21928</td>
-<td align="right">83.63792</td>
+<td align="right">92.92486</td>
+<td align="right">81.27395</td>
+<td align="right">83.68460</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">94.97841</td>
-<td align="right">85.11624</td>
-<td align="right">89.62624</td>
+<td align="right">94.99905</td>
+<td align="right">85.12501</td>
+<td align="right">89.63192</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.pval</td>
-<td align="right">96.46916</td>
-<td align="right">85.70994</td>
-<td align="right">88.54278</td>
+<td align="right">96.47540</td>
+<td align="right">85.73057</td>
+<td align="right">88.55542</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">t_statistic</td>
-<td align="right">96.46916</td>
-<td align="right">85.70994</td>
-<td align="right">88.54278</td>
+<td align="right">96.47540</td>
+<td align="right">85.73057</td>
+<td align="right">88.55542</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">93.60976</td>
-<td align="right">61.74118</td>
-<td align="right">77.61607</td>
+<td align="right">93.61430</td>
+<td align="right">61.77264</td>
+<td align="right">77.64135</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.pval</td>
-<td align="right">93.27572</td>
-<td align="right">74.51217</td>
-<td align="right">80.26941</td>
+<td align="right">93.28366</td>
+<td align="right">74.51423</td>
+<td align="right">80.27792</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">t_statistic</td>
-<td align="right">93.27572</td>
-<td align="right">74.51217</td>
-<td align="right">80.26941</td>
+<td align="right">93.28366</td>
+<td align="right">74.51423</td>
+<td align="right">80.27792</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">96.27769</td>
-<td align="right">73.68223</td>
-<td align="right">85.70762</td>
+<td align="right">96.27898</td>
+<td align="right">73.69770</td>
+<td align="right">85.71406</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.pval</td>
-<td align="right">97.49140</td>
-<td align="right">84.89289</td>
-<td align="right">89.57801</td>
+<td align="right">97.49155</td>
+<td align="right">84.89908</td>
+<td align="right">89.57827</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">t_statistic</td>
-<td align="right">97.49140</td>
-<td align="right">84.89289</td>
-<td align="right">89.57801</td>
+<td align="right">97.49155</td>
+<td align="right">84.89908</td>
+<td align="right">89.57827</td>
 </tr>
 </tbody>
 </table>
@@ -693,7 +693,7 @@ them for each contrast.</p>
 <span>  <span class="va">res</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/matrix_to_tibble.html" class="external-link">matrix_to_tibble</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, preserve_row_names <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">hurdle</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">hurdle</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p>Now we need to merge the results of both models msqrobHurdleIntensity
 and msqrobHurdleCount. To find out which models were not estimated by
 <code>msqrobHurdleIntensity</code> we check for NA’s and use the
@@ -712,7 +712,7 @@ and msqrobHurdleCount. To find out which models were not estimated by
 <span></span>
 <span></span>
 <span><span class="va">ddd</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">logOR</span> , <span class="va">logFC</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"contrast"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ddd</span> , <span class="va">logFC</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="va">name</span><span class="op">)</span></span>
+<span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ddd</span> , <span class="va">logFC</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="va">name</span><span class="op">)</span></span>
 <span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/adjust_p_values.html" class="external-link">adjust_p_values</a></span><span class="op">(</span><span class="va">all</span>, column <span class="op">=</span> <span class="st">"pval"</span>, group_by_col <span class="op">=</span> <span class="st">"contrast"</span><span class="op">)</span></span>
 <span><span class="va">all</span><span class="op">$</span><span class="va">contrast</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "hurdle_dilution.b"              "hurdle_dilution.c - dilution.b"</span></span>
@@ -920,7 +920,7 @@ plot FDR vs FDP
 </p>
 </div>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">benchmark_msqrob</span><span class="op">$</span><span class="fu">plot_FDPvsTPR</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">benchmark_msqrob</span><span class="op">$</span><span class="fu">plot_precision_recall</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BenchmarkFragPipeMSStats_files/figure-html/fdptpr-1.png" width="960"></p>
 </div>
 </div>
@@ -1059,12 +1059,12 @@ file.</p>
 <span><span class="va">prolfqua</span><span class="op">$</span><span class="va">package</span> <span class="op">&lt;-</span> <span class="st">"prolfqua"</span></span>
 <span><span class="va">msqrob2</span> <span class="op">&lt;-</span> <span class="va">allB</span><span class="op">$</span><span class="va">benchmark_msqrob</span><span class="op">$</span><span class="fu">pAUC_summaries</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">content</span></span>
 <span><span class="va">msqrob2</span><span class="op">$</span><span class="va">package</span> <span class="op">&lt;-</span> <span class="st">"msqrob2"</span></span>
-<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">proda</span>, <span class="va">prolfqua</span>, <span class="va">msqrob2</span><span class="op">)</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">proda</span>, <span class="va">prolfqua</span>, <span class="va">msqrob2</span><span class="op">)</span></span>
 <span><span class="va">bmsstats</span> <span class="op">&lt;-</span> <span class="va">allB</span><span class="op">$</span><span class="va">benchmark_msstats</span><span class="op">$</span><span class="fu">pAUC_summaries</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">content</span></span>
 <span><span class="va">bmsstats</span><span class="op">$</span><span class="va">package</span> <span class="op">&lt;-</span> <span class="st">"MSstats"</span></span>
 <span><span class="va">bmsstats</span><span class="op">$</span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="va">bmsstats</span><span class="op">$</span><span class="va">Label</span></span>
 <span><span class="va">bmsstats</span><span class="op">$</span><span class="va">Label</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">proda</span>, <span class="va">prolfqua</span>, <span class="va">msqrob2</span>, <span class="va">bmsstats</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">proda</span>, <span class="va">prolfqua</span>, <span class="va">msqrob2</span>, <span class="va">bmsstats</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="va">tmp</span><span class="op">$</span><span class="va">what</span><span class="op">[</span><span class="va">tmp</span><span class="op">$</span><span class="va">what</span> <span class="op">==</span> <span class="st">"statistic"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"t_statistic"</span></span>
@@ -1101,25 +1101,25 @@ file.</p>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">94.92899</td>
-<td align="right">75.91376</td>
-<td align="right">85.38224</td>
+<td align="right">94.93979</td>
+<td align="right">75.94639</td>
+<td align="right">85.38685</td>
 <td align="left">proda</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.p.value</td>
-<td align="right">95.08693</td>
-<td align="right">80.00090</td>
-<td align="right">84.64828</td>
+<td align="right">95.09856</td>
+<td align="right">80.02204</td>
+<td align="right">84.66996</td>
 <td align="left">proda</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">95.08693</td>
-<td align="right">80.00090</td>
-<td align="right">84.64828</td>
+<td align="right">95.09856</td>
+<td align="right">80.02204</td>
+<td align="right">84.66996</td>
 <td align="left">proda</td>
 </tr>
 <tr class="even">
@@ -1172,26 +1172,26 @@ file.</p>
 </tr>
 <tr class="even">
 <td align="left">all</td>
+<td align="left">t_statistic</td>
+<td align="right">96.57117</td>
+<td align="right">81.46868</td>
+<td align="right">87.43133</td>
+<td align="left">MSstats</td>
+</tr>
+<tr class="odd">
+<td align="left">all</td>
 <td align="left">diff</td>
 <td align="right">95.41740</td>
 <td align="right">72.92761</td>
 <td align="right">84.40113</td>
 <td align="left">MSstats</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.p.value</td>
 <td align="right">96.57661</td>
 <td align="right">81.52112</td>
 <td align="right">87.43759</td>
-<td align="left">MSstats</td>
-</tr>
-<tr class="even">
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="right">96.57117</td>
-<td align="right">81.46868</td>
-<td align="right">87.43133</td>
 <td align="left">MSstats</td>
 </tr>
 </tbody>
@@ -1220,7 +1220,7 @@ file.</p>
 <span><span class="va">a4</span> <span class="op">&lt;-</span> <span class="va">allB</span><span class="op">$</span><span class="va">benchmark_msstats</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">a4</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"protein_Id"</span></span>
 <span><span class="va">a4</span><span class="op">$</span><span class="va">name</span> <span class="op">&lt;-</span> <span class="va">allB</span><span class="op">$</span><span class="va">benchmark_msstats</span><span class="op">$</span><span class="va">model_name</span></span>
-<span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a1</span>,<span class="va">a2</span>,<span class="va">a3</span>,<span class="va">a4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a1</span>,<span class="va">a2</span>,<span class="va">a3</span>,<span class="va">a4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="va">dd</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>nrcontrasts <span class="op">=</span> <span class="va">protein_Id</span> <span class="op">*</span> <span class="op">(</span><span class="fl">4</span> <span class="op">-</span> <span class="va">nr_missing</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">dds</span> <span class="op">&lt;-</span> <span class="va">dd</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>nrcontrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">nrcontrasts</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">dds</span><span class="op">$</span><span class="va">percent</span> <span class="op">&lt;-</span> <span class="va">dds</span><span class="op">$</span><span class="va">nrcontrasts</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dds</span><span class="op">$</span><span class="va">nrcontrasts</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span></span>
