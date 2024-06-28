@@ -1,16 +1,16 @@
 
 This github project has an accompanying website created with pkgdown.
-https://wolski.github.io/prolfquabenchmark/
+https://prolfqua.github.io/prolfquabenchmark/
 
 # prolfquaBenchmark - Benchmarking LFQ data analysis using the prolfqua package.
 
 The R package prolfquabenchmark contains vignettes which show how we used the IonStar dataset to asses the performance of the methods implemented in the [prolfqua](https://github.com/fgcz/prolfqua) R packages and other packages (MSstats, proDA).
 
-- [Benchmarking FragPipe output using Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkFragPipeProteinIonStar.html)
-- [Benchmarking MSstats using the Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html)
-- [Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_fromMQlfq.html)
-- [Benchmarking the proDA package using the Ionstar Dataset starting from peptides](https://wolski.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html)
-- [Benchmarking normalization, aggregation and models using the Ionstar Dataset](https://wolski.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html)
+- [Benchmarking FragPipe output using Ionstar Dataset](https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkFragPipeProteinIonStar.html)
+- [Benchmarking MSstats using the Ionstar Dataset](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html)
+- [Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_proDA_fromMQlfq.html)
+- [Benchmarking the proDA package using the Ionstar Dataset starting from peptides](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html)
+- [Benchmarking normalization, aggregation and models using the Ionstar Dataset](https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html)
 
 
 
