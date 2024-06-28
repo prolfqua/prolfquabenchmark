@@ -1,11 +1,10 @@
 Package: prolfquabenchmark
 Type: Package
 Title: Benchmarking Vignettes for prolfqua Packge
-Version: 0.3.1
+Version: 0.3.2
 Author: Witold Wolski
 Maintainer: The package maintainer <wew@fgcz.ethz.ch>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: We benchmark the the MSstats, proDA, msqrob and proflqua packages, using several datasets.
 License: What license is it under?
 Encoding: UTF-8
 VignetteBuilder: knitr
@@ -33,7 +32,7 @@ Imports:
     R6,
     SummarizedExperiment,
     tibble
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.1
 Roxygen: list(r6 = TRUE)
 Depends: 
     R (>= 4.1)
