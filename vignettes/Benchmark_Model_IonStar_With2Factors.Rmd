@@ -60,7 +60,7 @@ datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
 
-data <- prolfqua::tidyMQ_Peptides(inputMQfile)
+data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
 length(unique(data$proteins))
 ```
 
@@ -96,7 +96,7 @@ containing the explanatory variables.
 
 config <- prolfqua::create_config_MQ_peptide()
 
-res <- prolfqua::add_annotation(
+res <- prolfquapp::add_annotation(
   data,
   annotation,
   fileName = "raw.file"
@@ -164,7 +164,7 @@ mod <- prolfqua::build_model(lfqTrans, formula_2_Factors)
 
 
 ```{r anovaPvaluePlots, fig.cap="p-value distributions for ANOVA analysis."}
-mod$anova_histogram(what = "FDR.Pr..F.")
+mod$anova_histogram(what = "FDR")
 ```
 
 ## ANOVA
@@ -175,12 +175,12 @@ Examine proteins with a significant interaction between the two factors treatmen
 ANOVA <- mod$get_anova()
 ANOVA |>
   dplyr::filter(factor == "F1.:F2.") |>
-  dplyr::arrange(FDR.Pr..F.) |>
+  dplyr::arrange(FDR) |>
   head(5)
 
 ANOVA$factor |> unique()
 protIntSig <- ANOVA |> dplyr::filter(factor == "F1.") |>
-  dplyr::filter(FDR.Pr..F. < 0.1)
+  dplyr::filter(FDR < 0.1)
 
 protInt <-  lfqTrans$get_copy()
 protInt$data <- protInt$data[protInt$data$protein_Id %in%

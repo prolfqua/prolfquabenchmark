@@ -41,11 +41,11 @@ inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 
 
 
-mqdata <- prolfqua::tidyMQ_ProteinGroups(inputMQfile)
+mqdata <- prolfquapp::tidyMQ_ProteinGroups(inputMQfile)
 mqdata <- mqdata |> dplyr::filter(!grepl("^REV__|^CON__", proteinID))
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfqua::add_annotation(
+res <- prolfquapp::add_annotation(
   mqdata,
   annotation,
   fileName = "raw.file"
@@ -178,7 +178,7 @@ benchmark2_proDA <- prolfqua::make_benchmark(xdd, model_description = "proDA", m
 ```
 
 ```{r eval=SAVE, include=FALSE}
-saveRDS(benchmark2_proDA, file = "../inst/Benchresults/benchmark_LFQquant_proDA.RDS")
+saveRDS(benchmark2_proDA, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"benchmark_LFQquant_proDA.RDS"))
 ```
 
 

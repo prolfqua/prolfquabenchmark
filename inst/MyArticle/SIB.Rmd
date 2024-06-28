@@ -166,11 +166,11 @@ kableExtra::kable(xMM,
 
 ```{r readBenchmarkData}
 getpath <- function(filN){
-    f1 <- paste0("../../inst/Benchresults/",filN)
-    if(f1 == ""){
-       f1 <- system.file("Benchresults",filN,
-                         package = "prolfquabenchmark")
+    f1 <- file.path("../../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),filN)
+    if (f1 == "") {
+        f1 <- system.file("Benchresults",format( Sys.Date(), "%Y%m%d"),filN, package = "prolfquabenchmark")
     }
+    message(f1)
     return(f1)
 }
 allBenchmarks <- readRDS(getpath("allBenchmarks.RDS"))

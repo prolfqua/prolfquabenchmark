@@ -58,14 +58,14 @@ inputMQfile <-  file.path(datadir,
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 mqdata <- list()
 
-mqdata$data <- prolfqua::tidyMQ_Peptides(inputMQfile)
+mqdata$data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
 length(unique(mqdata$data$proteins))
 
 mqdata$config <- prolfqua::create_config_MQ_peptide()
 
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfqua::add_annotation(
+res <- prolfquapp::add_annotation(
   mqdata$data,
   annotation,
   fileName = "raw.file"
@@ -655,11 +655,11 @@ allBenchmarks$benchmark_same <- benchmark_same
 
 if(SAVE){
     if (SUBSETNORM) {
-        saveRDS(allBenchmarks, file = "../inst/Benchresults/allBenchmarks.RDS")
-        saveRDS(allContrasts, file = "../inst/Benchresults/allContrasts.RDS")
+        saveRDS(allBenchmarks, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"allBenchmarks.RDS"))
+        saveRDS(allContrasts, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"allContrasts.RDS"))
     } else{
-        saveRDS(allContrasts, file = "../inst/Benchresults/allContrastsNORMAL.RDS")
-        saveRDS(allBenchmarks, file = "../inst/Benchresults/allBenchmarksNORMAL.RDS")
+        saveRDS(allContrasts, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"allContrastsNORMAL.RDS"))
+        saveRDS(allBenchmarks, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"allBenchmarksNORMAL.RDS"))
     }
     
     

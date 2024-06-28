@@ -69,7 +69,7 @@ We store all the data needed for analysis in a single data frame in a tidy table
 
 
 ```{r LFQData, echo=FALSE, fig.cap="Class Diagram for LFQData and related objects. The LFQData_Plotter class uses the LFQData class to implement methods for plotting.", out.width = '90%'}
-knitr::include_graphics("LFQData_UML_V2.png")
+knitr::include_graphics("graphics/LFQData_UML_V2.png")
 ```
 
 __R__ linear model and linear mixed effect models allow modeling parallel designs, repeated measurements, factorial designs, and many more. __R__'s formula interface for linear models is flexible, widely used, and well documented. This makes it easy to reproduce an analysis performed with `prolfqua` in other statistical programming languages. We implemented features specific to high throughput experiments, such as the experimental Bayes variance and p-value moderation, which utilizes the parallel structure of the protein measurements and the analysis [@Ritchie2015]. We also compute probabilities of differential protein regulation based on peptide level models [@Suomi2017bEnhanced]. We also integrate the results of other packages, e.g. _SaintExpress_ or _proDA_. We use R6 to model the statistical modeling functionality in `prolfqua` (see Figure \@ref(fig:ContrastUML)).
@@ -77,7 +77,7 @@ __R__ linear model and linear mixed effect models allow modeling parallel design
 (ref:ContrastUML) UML diagram of modeling and contrast related classes. Different strategies e.g. _lm_, _lmer_, and _glm_ can be used to fit the models using a model builder (see code). All classes computing contrasts implement the _Contrast_ interface. 
 
 ```{r ContrastUML, echo=FALSE, fig.cap="(ref:ContrastUML)", out.width = '90%'}
-knitr::include_graphics("ContrastClassesUML.png")
+knitr::include_graphics("graphics/ContrastClassesUML.png")
 ```
 
 # Example Analysis
@@ -89,7 +89,8 @@ The IonStar  [@shen2018ionstar] benchmark dataset contains _H. sapiens_ proteins
 ```{r prepro,  echo = TRUE , fig.cap="(ref:scaling)", out.width = '90%'}
 library(prolfqua)
 d <- prolfqua_data('data_ionstar')$filtered()
-lfqd <- prolfqua::LFQData$new(d$data, d$config) 
+lfqd <- prolfqua::LFQData$new(d$data, d$config)
+
 t <- lfqd$get_Transformer()
 lfqd <-  t$log2()$robscale()$lfq
 pl <- lfqd$get_Plotter()
@@ -142,9 +143,9 @@ gridExtra::grid.arrange(p1, p2, ncol = 2)
 # Benchmarking
 
 ```{r}
-allBenchmarks <- readRDS("../../inst/Benchresults/allBenchmarks.RDS")
-benchmark_msstats <- readRDS("../../inst/Benchresults/benchmark_msstats.RDS")
-msFragger <- readRDS(file = "../../inst/Benchresults/MSFragger_medpol_benchmark.RDS")
+allBenchmarks <- readRDS(file.path("../../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"allBenchmarks.RDS"))
+benchmark_msstats <- readRDS(file.path("../../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"benchmark_msstats.RDS"))
+msFragger <- readRDS(file = file.path("../../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"MSFragger_medpol_benchmark.RDS"))
 
 allBenchmarks$benchmark_mssstats <- benchmark_msstats
 allBenchmarks$benchmark_msFragger <- msFragger

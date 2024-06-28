@@ -302,7 +302,7 @@ The code snippets in this section demonstrate how a DEA workflow can be implemen
 R.version.string; packageVersion("prolfqua")
 
 ## read MQ peptide.txt and annotation table
-startdata <- prolfqua::tidyMQ_Peptides(system.file(
+startdata <- prolfquapp::tidyMQ_Peptides(system.file(
   "samples/maxquant_txt/tiny2.zip", package = "prolfqua"))
 annot <- readxl::read_xlsx(system.file(
   "samples/maxquant_txt/annotation_Ionstar2018_PXD003881.xlsx", package = "prolfqua"))
@@ -403,9 +403,9 @@ The IonStar/MaxQuant dataset (see Methods) captures only the variance from the c
 ```{r readBenchmarkData}
 
 getpath <- function(filN){
-    f1 <- paste0("../../inst/Benchresults/",filN)
+    f1 <- file.path("../../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),filN)
     if (f1 == "") {
-        f1 <- system.file("Benchresults",filN, package = "prolfquabenchmark")
+        f1 <- system.file("Benchresults",format( Sys.Date(), "%Y%m%d"),filN, package = "prolfquabenchmark")
     }
     message(f1)
     return(f1)

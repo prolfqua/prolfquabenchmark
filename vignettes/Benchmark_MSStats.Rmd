@@ -162,7 +162,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = Protein ,
 xdd |> head()
 benchmark2_msstats <- prolfqua::make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")
 
-saveRDS(benchmark2_msstats, file = "../inst/Benchresults/benchmark_msstats.RDS")
+saveRDS(benchmark2_msstats, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"benchmark_msstats.RDS"))
 ```
 
 ```{r fig.cap="ROC curves", eval = evalAll}

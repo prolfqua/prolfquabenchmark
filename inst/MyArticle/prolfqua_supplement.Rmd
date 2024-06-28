@@ -152,9 +152,9 @@ The Rmarkdown file which generated these results, can be found here:
 
 ```{r}
 getpath <- function(filN){
-    f1 <- paste0("../../inst/Benchresults/",filN)
+    f1 <- file.path("../../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),filN)
     if (f1 == "") {
-        f1 <- system.file("Benchresults",filN, package = "prolfquabenchmark")
+        f1 <- system.file("Benchresults",format( Sys.Date(), "%Y%m%d"),filN, package = "prolfquabenchmark")
     }
     message(f1)
     return(f1)
@@ -449,10 +449,10 @@ inputMQfile <-  file.path(datadir,
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 mqdata <- list()
 
-mqdata$data <- prolfqua::tidyMQ_Peptides(inputMQfile)
+mqdata$data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
 mqdata$config <- prolfqua::create_config_MQ_peptide()
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfqua::add_annotation(
+res <- prolfquapp::add_annotation(
   mqdata$data,
   annotation,
   fileName = "raw.file"

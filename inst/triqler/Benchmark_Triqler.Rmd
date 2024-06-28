@@ -1,0 +1,262 @@
+---
+title: "Looking into Triqler results"
+output: html_document
+date: "2023-04-18"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+## R Markdown
+
+```{r}
+library(readr)
+library(tidyverse)
+resTriq <- read_tsv("../inst/triqler/proteins.tsv")
+resTriq$peptides <- NULL
+
+resTriq <- as.data.frame(resTriq)
+resTriq$DECOY <- ifelse(grepl("^DECOY_", resTriq$protein), TRUE, FALSE)
+resTriq$protein <-  gsub("^DECOY_", "", resTriq$protein)
+resTriq <- resTriq |> tidyr::separate(protein, into =  c("ID", "Organism"), sep = "_",remove = FALSE)
+resTriq$Organism |> table()
+
+resTriq <- resTriq |> mutate(color = case_when(Organism == "YEAST" ~ "green",
+                                               Organism == "HUMAN" ~ "black",
+                                               Organism == "ECOLI" ~ "green",
+                                               TRUE ~ "pink"))
+
+resTriq <- resTriq |> arrange(color)
+plot(resTriq$log2_fold_change, -log10(resTriq$q_value), col = resTriq$color, pch = 20)
+Honly <- resTriq |> filter(color == "black")
+points(Honly$log2_fold_change, -log10(Honly$q_value), pch = 20)
+
+
+
+abline(h = -log10(0.1))
+abline(v = c(-1,1))
+
+```
+
+# Analyse data with prolfqua
+
+```{r}
+res <- read_tsv("../inst/triqler/LFQBench_PS.csv")
+res$condition <- paste0("c",res$condition)
+res <- res |> filter(!grepl("^DECOY_",res$proteins))
+hist(res$searchScore)
+
+# res <- res |> filter(searchScore > 9)
+
+resAgr <- res |> group_by(run, condition, peptide, proteins ) |>
+  summarize(intensity = sum(intensity, na.rm = TRUE), searchScore = max(searchScore, na.rm = TRUE), n = n())
+
+
+resAgr <- ungroup(resAgr)
+resAgr$identQ <- max(resAgr$searchScore) - resAgr$searchScore
+resAgr <- resAgr |> filter(!grepl("^DECOY_",resAgr$proteins))
+
+atable <- prolfqua::AnalysisTableAnnotation$new()
+atable$hierarchy[["protein_Id"]] <- "proteins"
+atable$hierarchy[["peptide_Id"]] <- "peptide"
+atable$hierarchy
+atable$hierarchy_keys()
+atable$factors[["condition"]] <- "condition"
+atable$ident_Score <- "searchScore"
+atable$ident_qValue <- "identQ"
+atable$set_response("intensity")
+atable$fileName <- "run"
+config <- prolfqua::AnalysisConfiguration$new(atable)
+
+undebug(prolfqua::setup_analysis)
+xx <- prolfqua::setup_analysis(resAgr, config)
+
+library(prolfqua)
+psmdata <- LFQData$new(xx, config)
+psmdata$to_wide()$data |> dim()
+
+psmdata$config$table$hierarchyDepth <- 1
+psmdata$config$table$hierarchy_keys_depth()
+psmdata$hierarchy_counts()
+psmdata$remove_small_intensities()
+
+tr <- psmdata$get_Transformer()$intensity_array(log)
+ag <- tr$lfq$get_Aggregator()
+ag$medpolish()
+protd <- ag$lfq_agg
+tr <- protd$get_Transformer()
+tr$intensity_array(exp, force = TRUE)
+protd <- tr$lfq
+protd$is_transformed(FALSE)
+
+stprot <- protd$get_Stats()
+stprot$violin_median()
+
+pl <- protd$get_Plotter()
+hm <- pl$heatmap()
+
+```
+
+
+
+```{r}
+print(hm)
+
+```
+
+```{r}
+
+pl$intensity_distribution_violin()
+tr <- protd$get_Transformer()
+tr$intensity_matrix(vsn::justvsn)
+lfqdata <- tr$lfq
+lfqdata$get_Plotter()$intensity_distribution_violin()
+hm <- lfqdata$get_Plotter()$heatmap()
+```
+
+
+```{r}
+print(hm)
+```
+
+
+```{r}
+st <- lfqdata$get_Stats()
+st$violin()
+
+```
+
+## Prolfqua contrasts
+
+```{r}
+lfqdata$rename_response("intensity")
+contr <- c("2vs1" = "conditionc2 - conditionc1")
+lmstr <- strategy_lm("intensity ~ condition")
+models <- build_model(lfqdata, lmstr)
+sum(models$modelDF$isSingular,na.rm = TRUE)
+sum(is.na(models$modelDF$isSingular))
+
+contrlm <- Contrasts$new(models, contr)
+contrmiss <- ContrastsMissing$new(lfqdata, contr) 
+contrlmmod <- contrlm |> ContrastsModerated$new()
+contrmissmod <- contrmiss |> ContrastsModerated$new()
+
+contrmergmod <- prolfqua::merge_contrasts_results(contrlmmod, contrmissmod)$merged
+ctrmergmod <- contrmergmod$get_contrasts()
+
+```
+
+
+
+```{r}
+
+pl <- contrmergmod$get_Plotter()
+pl$contrastDF$color <- ifelse(grepl("HUMAN",ctrmergmod$protein_Id), "black", "red")
+pl$volcano(colour = "color")
+
+```
+
+```{r}
+
+tripleprot_bench_preprocess <- function(data, idcol = "protein_Id", drop = "YEAST") {
+  
+  truepos = setdiff(c("YEAST", "ECOLI"), drop)
+  print(truepos)
+  
+  tmp <- data |>
+    ungroup() |>
+    mutate(species  = case_when(
+      grepl("HUMAN", !!sym(idcol)) ~ "HUMAN",
+      grepl("ECOLI", !!sym(idcol)) ~ "ECOLI",
+      grepl("YEAST", !!sym(idcol)) ~ "YEAST",
+      TRUE ~ "OTHER"
+    ))
+  res <- tmp |> dplyr::filter(!.data$species == "OTHER"  & !.data$species == drop)
+  res <- res |> mutate(TP = (.data$species == truepos))
+  return(list(data = res , table = table(tmp$species)))
+}
+
+```
+
+
+
+```{r moderated}
+ttd <- tripleprot_bench_preprocess(ctrmerg,drop = "YEAST" )
+dim(ttd$data)
+benchmark_mod_prolfqua <- prolfqua::make_benchmark(
+  ttd$data,
+  model_description = "prolfqua_merged",
+  model_name = "prolfqua_merged",
+  FDRvsFDP = list(list(score = "FDR", desc = FALSE))
+)
+benchmark_mod_prolfqua$pAUC_summaries()$ftable$content
+knitr::kable(benchmark_mod_prolfqua$pAUC_summaries()$ftable$content)
+prolfqua::table_facade(benchmark_mod_prolfqua$smc$summary, "Nr of estimated contrasts")
+benchmark_mod_prolfqua$plot_score_distribution()
+benchmark_mod_prolfqua$plot_ROC(0.05)
+benchmark_mod_prolfqua$plot_FDRvsFDP()
+
+```
+
+```{r}
+ttd <- tripleprot_bench_preprocess(ctrmergmod,drop = "ECOLI" )
+dim(ttd$data)
+benchmark_mod_prolfqua <- prolfqua::make_benchmark(
+  ttd$data,
+  model_description = "prolfqua_merged",
+  model_name = "prolfqua_merged",
+  FDRvsFDP = list(list(score = "FDR", desc = FALSE)),
+  benchmark = list(
+    list(score = "diff", desc = FALSE),
+    list(score = "statistic", desc = FALSE),
+    list(score = "scaled.p.value", desc = FALSE)
+  )
+)
+
+benchmark_mod_prolfqua$pAUC_summaries()$ftable$content
+prolfqua::table_facade(benchmark_mod_prolfqua$smc$summary, "Nr of estimated contrasts")
+benchmark_mod_prolfqua$plot_score_distribution()
+benchmark_mod_prolfqua$plot_ROC(0.05)
+
+benchmark_mod_prolfqua$plot_FDRvsFDP()
+benchmark_mod_prolfqua$.get_confusion
+prolfqua:::ms_bench_add_scores
+
+dx <- benchmark_mod_prolfqua$get_confusion_FDRvsFDP()
+head(dx)
+plot(dx$scorecol, dx$FDP_)
+
+```
+
+
+
+
+
+```{r}
+resTriqM <- resTriq |> filter(DECOY == FALSE)
+nrow(resTriqM)
+
+resTriqM <- resTriqM |> select(protein,log2_fold_change,q_value, color)
+ctr <- ungroup(ctrmergmod) |> select(protein_Id,diff,FDR)
+
+xx <- inner_join(resTriqM, ctr, by = c(protein = "protein_Id"))
+
+plot( xx$log2_fold_change, -xx$diff, col = xx$color)
+abline(0, 1, col = "red", lwd = 2)
+abline(h = c(-1,1), v = c(-1,1))
+
+
+plot(-log10(xx$FDR), -log10(xx$q_value), log="xy", col = xx$color )
+abline(h = -log10(0.05), v = -log10(0.05))
+```
+
+
+
+```{r}
+
+
+```
+

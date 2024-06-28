@@ -49,8 +49,8 @@ annotation <- readxl::read_xlsx(inputAnnotation)
 protein <- tibble::as_tibble(read.csv(unz(inputFragfile,"IonstarWithMSFragger/combined_protein.tsv"),
                                       header = TRUE, sep = "\t", stringsAsFactors = FALSE))
 
-undebug( prolfqua::tidy_FragPipe_combined_protein)
-protein <- prolfqua::tidy_FragPipe_combined_protein_deprec(protein)
+undebug( prolfquapp::tidy_FragPipe_combined_protein)
+protein <- prolfquapp::tidy_FragPipe_combined_protein_deprec(protein)
 protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
 merged <- dplyr::inner_join(annotation, protein)
 ```
@@ -220,7 +220,7 @@ Direct comparison with msqrob2 is impossible since, to fit the dropout model, th
 ```{r}
 
 saveRDS(list(benchmark_proDA = benchmark_proDA, benchmark_prolfqua = benchmark_prolfqua)
-  ,"../inst/Benchresults/FragPipev14_comb_prot.RDS")
+  ,file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"FragPipev14_comb_prot.RDS"))
 
 proda <- benchmark_proDA$pAUC_summaries()$ftable$content
 proda$package <- "proda"

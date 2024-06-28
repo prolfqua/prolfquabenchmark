@@ -45,7 +45,7 @@ library(prolfqua)
 datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
-data <- tidyMQ_Peptides(inputMQfile)
+data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
 
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 annotation <- readxl::read_xlsx(inputAnnotation)
@@ -55,7 +55,7 @@ Create `proLFQua` configruation for MQ `peptide.txt` file and annotate data.
 
 ```{r, eval = evalAll}
 config <- prolfqua::create_config_MQ_peptide()
-res <- add_annotation(
+res <- prolfquapp::add_annotation(
   data,
   annotation,
   fileName = "raw.file"
@@ -188,7 +188,7 @@ benchmark2_SaintExpress <- prolfqua::make_benchmark(xdd, model_description = "Sa
 ```
 
 ```{r seveBenchresults, , eval = evalAll, include=FALSE}
-saveRDS(benchmark_SaintExpres, file = "../inst/Benchresults/benchmark_medpolish_SaintExpress.RDS")
+saveRDS(benchmark_SaintExpres, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"benchmark_medpolish_SaintExpress.RDS"))
 
 ```
 

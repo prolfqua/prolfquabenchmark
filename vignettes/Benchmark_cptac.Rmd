@@ -35,7 +35,7 @@ The r-package `r BiocStyle::Biocpkg("msdata")` msdata provides a subset of the d
 library(tidyverse)
 tmp <- msdata::quant(full.names = TRUE)
 xx <- read.csv(tmp, sep = "\t")
-peptides <- prolfqua::tidyMQ_Peptides(xx)
+peptides <- prolfquapp::tidyMQ_Peptides(xx)
 
 annotation <- data.frame(raw.file = unique(peptides$raw.file))
 annotation <- annotation |> dplyr::mutate(group = gsub("^6","",raw.file)) |> mutate(group = gsub("_[0-9]$", "", group))
@@ -244,7 +244,8 @@ protAbundanceIngroup <- st$stats()
 protAbundanceIngroup <- protAbundanceIngroup |> 
   tidyr::pivot_wider(id_cols = protein_Id,
                      names_from = group., names_prefix = "abd.", 
-                     values_from = mean)
+                     values_from = meanAbundance)
+
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.b.a =  mean( c(abd.b,abd.a), na.rm = TRUE)  )
 protAbundanceIngroup <- protAbundanceIngroup |> 
   dplyr::select(-starts_with("abd")) |> 
@@ -289,11 +290,16 @@ res$barp
 
 # Compare benchmark results.
 
+
 ```{r fig.cap="Comparing msqrob2, proda and prolfqua using the pAUC_{10}"}
+
+bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
+if (!dir.exists(bdir)) {dir.create(bdir)}
+
 saveRDS(list(benchmark_msqrob = benchmark_msqrob,
              benchmark_proDA = benchmark_proDA,
              benchmark_merged = benchmark_merged),
-        file = "../inst/Benchresults/CPTAC_Benchmark.RDS")
+        file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"CPTAC_Benchmark.RDS"))
 
 mrob <- benchmark_msqrob$pAUC_summaries()$ftable$content
 mrob$package <- "msqrob2"

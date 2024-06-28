@@ -58,14 +58,14 @@ inputMQfile <-  file.path(datadir,
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 mqdata <- list()
 
-mqdata$data <- prolfqua::tidyMQ_Peptides(inputMQfile)
+mqdata$data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
 length(unique(mqdata$data$proteins))
 
 mqdata$config <- prolfqua::create_config_MQ_peptide()
 
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfqua::add_annotation(
+res <- prolfquapp::add_annotation(
   mqdata$data,
   annotation,
   fileName = "raw.file"

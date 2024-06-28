@@ -15,7 +15,7 @@ bibliography:
   - prolfqua.bib
 ---
 
-TODO(wew,jg): Can you please add a oneliner of the purpose of the vignette?
+TODO(wew,jg): Can you please add a one liner of the purpose of the vignette?
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
@@ -173,7 +173,7 @@ mod <- prolfqua::build_model(lfqTrans, formula_Batches)
 
 
 ```{r anovaPvaluePlots, fig.cap="p-value distributions for ANOVA analysis."}
-mod$anova_histogram(what = "FDR.Pr..F.")
+mod$anova_histogram(what = "FDR")
 ```
 
 ## ANOVA
@@ -184,12 +184,12 @@ Examine proteins with a significant interaction between the two factors treatmen
 ANOVA <- mod$get_anova()
 ANOVA |>
   dplyr::filter(factor == "f1.:f2.") |>
-  dplyr::arrange(FDR.Pr..F.) |>
+  dplyr::arrange(FDR) |>
   head(5)
 
 ANOVA$factor |> unique()
 protIntSig <- ANOVA |> dplyr::filter(factor == "f1.") |>
-  dplyr::filter(FDR.Pr..F. < 0.25)
+  dplyr::filter(FDR < 0.25)
 
 protInt <-  lfqTrans$get_copy()
 protInt$data <- protInt$data[protInt$data$protein_Id %in%

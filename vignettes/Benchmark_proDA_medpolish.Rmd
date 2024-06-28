@@ -35,12 +35,12 @@ inputMQfile <-  file.path(datadir,
                           "MAXQuant_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 mqdata <- list()
-mqdata$data <- prolfqua::tidyMQ_Peptides(inputMQfile)
+mqdata$data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
 length(unique(mqdata$data$proteins))
 mqdata$config <- prolfqua::create_config_MQ_peptide()
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfqua::add_annotation(
+res <- prolfquapp::add_annotation(
   mqdata$data,
   annotation,
   fileName = "raw.file"
@@ -158,7 +158,7 @@ benchmark2_proDA <- prolfqua::make_benchmark(xdd, model_description = "proDA_med
 ```
 
 ```{r eval=SAVE, include=FALSE}
-saveRDS(benchmark2_proDA, file = "../inst/Benchresults/benchmark_medpolish_proDA.RDS")
+saveRDS(benchmark2_proDA, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"benchmark_medpolish_proDA.RDS"))
 
 ```
 
