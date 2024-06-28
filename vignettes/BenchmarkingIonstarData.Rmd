@@ -652,8 +652,10 @@ allBenchmarks$benchmark_same <- benchmark_same
 ```
 
 ```{r include=FALSE}
+bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
+if (!dir.exists(bdir)) {dir.create(bdir)}
 
-if(SAVE){
+if (SAVE) {
     if (SUBSETNORM) {
         saveRDS(allBenchmarks, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"allBenchmarks.RDS"))
         saveRDS(allContrasts, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"allContrasts.RDS"))

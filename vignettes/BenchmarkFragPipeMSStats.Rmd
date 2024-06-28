@@ -531,6 +531,10 @@ allB <- list(benchmark_proDA = benchmark_proDA,
              benchmark_prolfqua = benchmark_prolfqua,
              benchmark_msqrob = benchmark_msqrob,
              benchmark_msstats = benchmark_msstats)
+
+bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
+if (!dir.exists(bdir)) {dir.create(bdir)}
+
 saveRDS(allB
   ,file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"FragPipev14_comb_MSStats.RDS"))
 

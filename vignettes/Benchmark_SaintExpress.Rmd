@@ -188,6 +188,9 @@ benchmark2_SaintExpress <- prolfqua::make_benchmark(xdd, model_description = "Sa
 ```
 
 ```{r seveBenchresults, , eval = evalAll, include=FALSE}
+bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
+if (!dir.exists(bdir)) {dir.create(bdir)}
+
 saveRDS(benchmark_SaintExpres, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"benchmark_medpolish_SaintExpress.RDS"))
 
 ```

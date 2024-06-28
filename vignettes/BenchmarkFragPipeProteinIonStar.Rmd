@@ -218,6 +218,8 @@ benchmark_proDA$plot_FDRvsFDP()
 Direct comparison with msqrob2 is impossible since, to fit the dropout model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file.
 
 ```{r}
+bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
+if (!dir.exists(bdir)) {dir.create(bdir)}
 
 saveRDS(list(benchmark_proDA = benchmark_proDA, benchmark_prolfqua = benchmark_prolfqua)
   ,file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"FragPipev14_comb_prot.RDS"))

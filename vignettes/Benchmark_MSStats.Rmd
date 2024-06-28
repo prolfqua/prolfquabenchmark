@@ -161,6 +161,8 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = Protein ,
 )
 xdd |> head()
 benchmark2_msstats <- prolfqua::make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")
+bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
+if (!dir.exists(bdir)) {dir.create(bdir)}
 
 saveRDS(benchmark2_msstats, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"benchmark_msstats.RDS"))
 ```

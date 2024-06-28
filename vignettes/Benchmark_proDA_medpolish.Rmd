@@ -158,6 +158,9 @@ benchmark2_proDA <- prolfqua::make_benchmark(xdd, model_description = "proDA_med
 ```
 
 ```{r eval=SAVE, include=FALSE}
+bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
+if (!dir.exists(bdir)) {dir.create(bdir)}
+
 saveRDS(benchmark2_proDA, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"benchmark_medpolish_proDA.RDS"))
 
 ```

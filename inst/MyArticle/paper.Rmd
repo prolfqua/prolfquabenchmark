@@ -302,20 +302,10 @@ The code snippets in this section demonstrate how a DEA workflow can be implemen
 R.version.string; packageVersion("prolfqua")
 
 ## read MQ peptide.txt and annotation table
-startdata <- prolfquapp::tidyMQ_Peptides(system.file(
-  "samples/maxquant_txt/tiny2.zip", package = "prolfqua"))
-annot <- readxl::read_xlsx(system.file(
-  "samples/maxquant_txt/annotation_Ionstar2018_PXD003881.xlsx", package = "prolfqua"))
-startdata <- dplyr::inner_join(annot, startdata, by = "raw.file")
-
-## create MaxQuant configuration
-config <- prolfqua::create_config_MQ_peptide()
-
-## specify explanatory variable
-config$table$factors[['dilution.']] = "sample"
+startdata <- prolfqua::sim_lfq_data_peptide_config(Nprot = 100)
 
 ## create R6 object
-lfqpep <- prolfqua::LFQData$new(startdata, config, setup = TRUE) 
+lfqpep <- prolfqua::LFQData$new(startdata$data, startdata$config, setup = FALSE) 
 
 ## remove observation with 0 intensity and filter for 2 peptides per protein
 lfqpep$remove_small_intensities()$filter_proteins_by_peptide_count()
@@ -349,11 +339,11 @@ The following code example illustrates how we compute differences among groups. 
 ```{r figure2, fig.cap="(ref:figure2)", echo=TRUE, out.width = '90%', fig.width = 8, fig.height = 5}
 ## specify differences among groups
 contrasts <- c(
-  "e_vs_d" =   "dilution.e - dilution.d",
-  "d_vs_c" =   "dilution.d - dilution.c"
+  "a_vs_c" =   "group_A - group_Ctrl",
+  "b_vs_c" =   "group_B - group_Ctrl"
 )
 ## fit model
-lmmodel <- paste(lfqpro$response()," ~ dilution.")
+lmmodel <- paste(lfqpro$response()," ~ group_")
 modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "lm")
 models <- prolfqua::build_model(lfqpro, modelFunction)
 
