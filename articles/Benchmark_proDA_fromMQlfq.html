@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -110,7 +110,7 @@ Dataset MQ LFQ intensities</h1>
                         <h4 data-toc-skip class="author">Witold E
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2023-04-12</h4>
+            <h4 data-toc-skip class="date">2024-06-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_proDA_fromMQlfq.Rmd" class="external-link"><code>vignettes/Benchmark_proDA_fromMQlfq.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_proDA_fromMQlfq.Rmd</code></div>
@@ -131,11 +131,11 @@ Wolski</h4>
 <span></span>
 <span></span>
 <span></span>
-<span><span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/tidyMQ_ProteinGroups.html" class="external-link">tidyMQ_ProteinGroups</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
+<span><span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/tidyMQ_ProteinGroups.html" class="external-link">tidyMQ_ProteinGroups</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
 <span><span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="va">mqdata</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^REV__|^CON__"</span>, <span class="va">proteinID</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/add_annotation.html" class="external-link">add_annotation</a></span><span class="op">(</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/add_annotation.html" class="external-link">add_annotation</a></span><span class="op">(</span></span>
 <span>  <span class="va">mqdata</span>,</span>
 <span>  <span class="va">annotation</span>,</span>
 <span>  fileName <span class="op">=</span> <span class="st">"raw.file"</span></span>
@@ -279,107 +279,107 @@ proDA_lfqInt</caption>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">87.09611</td>
-<td align="right">49.73274</td>
-<td align="right">65.37912</td>
+<td align="right">87.09756</td>
+<td align="right">49.75113</td>
+<td align="right">65.40752</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.pval</td>
-<td align="right">88.72671</td>
-<td align="right">65.75266</td>
-<td align="right">70.90339</td>
+<td align="right">88.71111</td>
+<td align="right">65.69896</td>
+<td align="right">70.85527</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">88.72671</td>
-<td align="right">65.75266</td>
-<td align="right">70.90339</td>
+<td align="right">88.71111</td>
+<td align="right">65.69896</td>
+<td align="right">70.85527</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">86.63950</td>
-<td align="right">42.39472</td>
-<td align="right">58.71851</td>
+<td align="right">86.62882</td>
+<td align="right">42.39776</td>
+<td align="right">58.71829</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.pval</td>
-<td align="right">87.90560</td>
-<td align="right">63.24862</td>
-<td align="right">67.09877</td>
+<td align="right">87.88730</td>
+<td align="right">63.23166</td>
+<td align="right">67.08573</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">t_statistic</td>
-<td align="right">87.90560</td>
-<td align="right">63.24862</td>
-<td align="right">67.09877</td>
+<td align="right">87.88730</td>
+<td align="right">63.23166</td>
+<td align="right">67.08573</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">84.53554</td>
-<td align="right">51.30713</td>
-<td align="right">64.70569</td>
+<td align="right">84.53459</td>
+<td align="right">51.29454</td>
+<td align="right">64.69918</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.pval</td>
-<td align="right">87.54307</td>
-<td align="right">64.42301</td>
-<td align="right">69.19994</td>
+<td align="right">87.53802</td>
+<td align="right">64.37040</td>
+<td align="right">69.17364</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">t_statistic</td>
-<td align="right">87.54307</td>
-<td align="right">64.42301</td>
-<td align="right">69.19994</td>
+<td align="right">87.53802</td>
+<td align="right">64.37040</td>
+<td align="right">69.17364</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">87.04350</td>
-<td align="right">48.35976</td>
-<td align="right">64.93901</td>
+<td align="right">87.07032</td>
+<td align="right">48.47045</td>
+<td align="right">65.07249</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.pval</td>
-<td align="right">88.65916</td>
-<td align="right">64.51041</td>
-<td align="right">70.58087</td>
+<td align="right">88.66911</td>
+<td align="right">64.51128</td>
+<td align="right">70.58608</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">t_statistic</td>
-<td align="right">88.65916</td>
-<td align="right">64.51041</td>
-<td align="right">70.58087</td>
+<td align="right">88.66911</td>
+<td align="right">64.51128</td>
+<td align="right">70.58608</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">89.92722</td>
-<td align="right">58.26186</td>
-<td align="right">73.48723</td>
+<td align="right">89.93573</td>
+<td align="right">58.24146</td>
+<td align="right">73.47725</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.pval</td>
-<td align="right">90.79007</td>
-<td align="right">70.13933</td>
-<td align="right">76.42175</td>
+<td align="right">90.74224</td>
+<td align="right">69.98976</td>
+<td align="right">76.26501</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">t_statistic</td>
-<td align="right">90.79007</td>
-<td align="right">70.13933</td>
-<td align="right">76.42175</td>
+<td align="right">90.74224</td>
+<td align="right">69.98976</td>
+<td align="right">76.26501</td>
 </tr>
 </tbody>
 </table>
@@ -429,7 +429,7 @@ plot FDR vs FDP
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

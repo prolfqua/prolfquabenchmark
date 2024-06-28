@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -110,7 +110,7 @@ Ionstar Dataset</h1>
                         <h4 data-toc-skip class="author">Witold E
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2023-04-12</h4>
+            <h4 data-toc-skip class="date">2024-06-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_rlm.Rmd" class="external-link"><code>vignettes/Benchmark_rlm.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_rlm.Rmd</code></div>
@@ -139,7 +139,7 @@ data:</p>
 <span><span class="va">inputAnnotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"annotation_Ionstar2018_PXD003881.xlsx"</span><span class="op">)</span></span>
 <span><span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">proteins</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 5295</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -147,7 +147,7 @@ data:</p>
 <span></span>
 <span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/add_annotation.html" class="external-link">add_annotation</a></span><span class="op">(</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/add_annotation.html" class="external-link">add_annotation</a></span><span class="op">(</span></span>
 <span>  <span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  <span class="va">annotation</span>,</span>
 <span>  fileName <span class="op">=</span> <span class="st">"raw.file"</span></span>
@@ -240,20 +240,20 @@ contrasts.</p>
 <span><span class="va">mod_rlm_ProtLevel</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/build_model.html" class="external-link">build_model</a></span><span class="op">(</span><span class="va">lfqNormSubset</span><span class="op">$</span><span class="va">data</span>, <span class="va">modelFunction</span><span class="op">)</span></span>
 <span><span class="va">mod_rlm_ProtLevel</span><span class="op">$</span><span class="fu">get_anova</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 4,639 × 10</span></span></span>
-<span><span class="co">##    protein_Id  isSin…¹ nrcoef factor    Df Sum.Sq Mean.Sq F.value Pr..F. FDR.P…²</span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> sp|A0AVT1|… FALSE        5 dilut…     4 0.533   0.133   0.414   0.798    1.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> sp|A0FGR8|… FALSE        5 dilut…     4 0.071<span style="text-decoration: underline;">1</span>  0.017<span style="text-decoration: underline;">8</span>  0.021<span style="text-decoration: underline;">3</span>  0.999    1.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> sp|A0MZ66|… FALSE        5 dilut…     4 0.581   0.145   0.224   0.925    1.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> sp|A1L0T0|… FALSE        5 dilut…     4 0.386   0.096<span style="text-decoration: underline;">5</span>  0.246   0.910    1.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> sp|A1X283|… FALSE        5 dilut…     4 0.410   0.102   0.522   0.720    1.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> sp|A2RRP1|… FALSE        5 dilut…     4 0.118   0.029<span style="text-decoration: underline;">6</span>  0.314   0.867    1.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> sp|A3KN83|… FALSE        5 dilut…     4 1.27    0.317   0.791   0.539    1.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> sp|A4D1E9|… FALSE        5 dilut…     4 0.825   0.206   0.693   0.599    1.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> sp|A5PLL7|… FALSE        5 dilut…     4 0.834   0.208   0.115   0.976    1.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> sp|A5YKK6|… FALSE        5 dilut…     4 0.774   0.194   0.244   0.913    1.00</span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 4,629 more rows, and abbreviated variable names ¹​isSingular,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ²​FDR.Pr..F.</span></span></span></code></pre>
+<span><span class="co">##    protein_Id      isSingular nrcoef factor    Df Sum.Sq Mean.Sq F.value p.value</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> sp|A0AVT1|UBA6… FALSE           5 dilut…     4 0.533   0.133   0.414    0.798</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> sp|A0FGR8|ESYT… FALSE           5 dilut…     4 0.071<span style="text-decoration: underline;">1</span>  0.017<span style="text-decoration: underline;">8</span>  0.021<span style="text-decoration: underline;">3</span>   0.999</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> sp|A0MZ66|SHOT… FALSE           5 dilut…     4 0.581   0.145   0.224    0.925</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> sp|A1L0T0|ILVB… FALSE           5 dilut…     4 0.386   0.096<span style="text-decoration: underline;">5</span>  0.246    0.910</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> sp|A1X283|SPD2… FALSE           5 dilut…     4 0.410   0.102   0.522    0.720</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> sp|A2RRP1|NBAS… FALSE           5 dilut…     4 0.118   0.029<span style="text-decoration: underline;">6</span>  0.314    0.867</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> sp|A3KN83|SBNO… FALSE           5 dilut…     4 1.27    0.317   0.791    0.539</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> sp|A4D1E9|GTPB… FALSE           5 dilut…     4 0.825   0.206   0.693    0.599</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> sp|A5PLL7|TM18… FALSE           5 dilut…     4 0.834   0.208   0.115    0.976</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> sp|A5YKK6|CNOT… FALSE           5 dilut…     4 0.774   0.194   0.244    0.913</span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 4,629 more rows</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: FDR &lt;dbl&gt;</span></span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_rlm_ProtLevel</span><span class="op">$</span><span class="fu">anova_histogram</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
 <p><img src="Benchmark_rlm_files/figure-html/buildModelrlm-1.png" width="480"></p>
@@ -423,7 +423,7 @@ Dataset</caption>
 <p><img src="Benchmark_rlm_files/figure-html/contrastModelRLM1Moderation-1.png" width="480"></p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">contrProtRLMModerated</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">protein_Id</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 4756</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 4731</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ttd</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/ionstar_bench_preprocess.html" class="external-link">ionstar_bench_preprocess</a></span><span class="op">(</span><span class="va">contrProtRLMModerated</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">benchmark_ProtRLMModerated</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/make_benchmark.html" class="external-link">make_benchmark</a></span><span class="op">(</span></span>
@@ -448,19 +448,19 @@ Dataset</caption>
 </tr>
 <tr class="even">
 <td align="right">1</td>
-<td align="right">13</td>
+<td align="right">87</td>
 </tr>
 <tr class="odd">
 <td align="right">2</td>
-<td align="right">118</td>
+<td align="right">73</td>
 </tr>
 <tr class="even">
 <td align="right">3</td>
-<td align="right">46</td>
+<td align="right">33</td>
 </tr>
 <tr class="odd">
 <td align="right">4</td>
-<td align="right">100</td>
+<td align="right">59</td>
 </tr>
 </tbody>
 </table>
@@ -492,7 +492,7 @@ Dataset</caption>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

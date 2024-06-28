@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2023-04-12</h4>
+            <h4 data-toc-skip class="date">2024-06-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_SaintExpress.Rmd" class="external-link"><code>vignettes/Benchmark_SaintExpress.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_SaintExpress.Rmd</code></div>
@@ -133,7 +133,7 @@ If you are on MacOS this vingette will not render.</p>
 <span><span class="va">datadir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/find.package.html" class="external-link">find.package</a></span><span class="op">(</span><span class="st">"prolfquadata"</span><span class="op">)</span> , <span class="st">"quantdata"</span><span class="op">)</span></span>
 <span><span class="va">inputMQfile</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>,</span>
 <span>                          <span class="st">"MAXQuant_IonStar2018_PXD003881.zip"</span><span class="op">)</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">inputAnnotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"annotation_Ionstar2018_PXD003881.xlsx"</span><span class="op">)</span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span></code></pre></div>
@@ -141,7 +141,7 @@ If you are on MacOS this vingette will not render.</p>
 <code>peptide.txt</code> file and annotate data.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/concrete_AnalysisConfiguration.html" class="external-link">create_config_MQ_peptide</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/add_annotation.html" class="external-link">add_annotation</a></span><span class="op">(</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/add_annotation.html" class="external-link">add_annotation</a></span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">annotation</span>,</span>
 <span>  fileName <span class="op">=</span> <span class="st">"raw.file"</span></span>
@@ -208,7 +208,7 @@ samples with higher concentrations (dilution ‘b’, ‘c’, ‘d’, ‘e’)
 <span></span>
 <span></span>
 <span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/saintExpress.html" class="external-link">protein_2localSaint</a></span><span class="op">(</span><span class="va">exampleDat</span>,quantcolumn <span class="op">=</span> <span class="st">"medpolish"</span>,</span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">protein_2localSaint</span><span class="op">(</span><span class="va">exampleDat</span>,quantcolumn <span class="op">=</span> <span class="st">"medpolish"</span>,</span>
 <span>                           proteinID <span class="op">=</span> <span class="st">"protein_Id"</span>,</span>
 <span>                           proteinLength <span class="op">=</span> <span class="st">"protein.length"</span>,</span>
 <span>                           IP_name <span class="op">=</span> <span class="st">"raw.file"</span>,</span>
@@ -216,7 +216,7 @@ samples with higher concentrations (dilution ‘b’, ‘c’, ‘d’, ‘e’)
 <span>                           CorTCol <span class="op">=</span> <span class="st">"CorT"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="st">"inter"</span>, <span class="st">"prey"</span>,  <span class="st">"bait"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">resSaint</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/saintExpress.html" class="external-link">runSaint</a></span><span class="op">(</span><span class="va">res</span>,filedir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">resSaint</span> <span class="op">&lt;-</span> <span class="fu">runSaint</span><span class="op">(</span><span class="va">res</span>,filedir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">resSaint</span><span class="op">)</span></span>
 <span><span class="va">ctr</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va">ContrastsSaintExpress</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">resSaint</span><span class="op">$</span><span class="va">list</span><span class="op">)</span></span></code></pre></div>
@@ -345,7 +345,7 @@ computes the <em>BFDR</em> for all Baits not for each.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

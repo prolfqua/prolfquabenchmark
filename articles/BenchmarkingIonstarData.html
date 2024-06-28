@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -110,7 +110,7 @@ models using the Ionstar Dataset</h1>
                         <h4 data-toc-skip class="author">Witold
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2023-04-12</h4>
+            <h4 data-toc-skip class="date">2024-06-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/BenchmarkingIonstarData.Rmd" class="external-link"><code>vignettes/BenchmarkingIonstarData.Rmd</code></a></small>
       <div class="hidden name"><code>BenchmarkingIonstarData.Rmd</code></div>
@@ -139,7 +139,7 @@ data:</p>
 <span><span class="va">inputAnnotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"annotation_Ionstar2018_PXD003881.xlsx"</span><span class="op">)</span></span>
 <span><span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">proteins</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 5295</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -147,7 +147,7 @@ data:</p>
 <span></span>
 <span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/add_annotation.html" class="external-link">add_annotation</a></span><span class="op">(</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/add_annotation.html" class="external-link">add_annotation</a></span><span class="op">(</span></span>
 <span>  <span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  <span class="va">annotation</span>,</span>
 <span>  fileName <span class="op">=</span> <span class="st">"raw.file"</span></span>
@@ -565,107 +565,107 @@ missingness modelling</caption>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">91.9</td>
-<td align="right">64.8</td>
-<td align="right">77.3</td>
+<td align="right">92.1</td>
+<td align="right">67.7</td>
+<td align="right">78.5</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.p.value</td>
-<td align="right">92.2</td>
-<td align="right">71.0</td>
-<td align="right">77.7</td>
+<td align="right">91.9</td>
+<td align="right">70.0</td>
+<td align="right">76.8</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">statistic</td>
-<td align="right">92.1</td>
-<td align="right">70.1</td>
-<td align="right">77.3</td>
+<td align="right">91.9</td>
+<td align="right">69.7</td>
+<td align="right">76.7</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">92.1</td>
-<td align="right">75.8</td>
-<td align="right">81.6</td>
-</tr>
-<tr class="odd">
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">scaled.p.value</td>
-<td align="right">92.2</td>
-<td align="right">79.1</td>
-<td align="right">82.1</td>
-</tr>
-<tr class="even">
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">statistic</td>
-<td align="right">92.1</td>
-<td align="right">78.0</td>
+<td align="right">91.5</td>
+<td align="right">77.3</td>
 <td align="right">81.5</td>
 </tr>
 <tr class="odd">
+<td align="left">dilution_(4.5/3)_1.5</td>
+<td align="left">scaled.p.value</td>
+<td align="right">91.4</td>
+<td align="right">77.1</td>
+<td align="right">80.2</td>
+</tr>
+<tr class="even">
+<td align="left">dilution_(4.5/3)_1.5</td>
+<td align="left">statistic</td>
+<td align="right">91.4</td>
+<td align="right">76.8</td>
+<td align="right">80.1</td>
+</tr>
+<tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
+<td align="right">92.4</td>
+<td align="right">69.8</td>
+<td align="right">79.5</td>
+</tr>
+<tr class="even">
+<td align="left">dilution_(6/4.5)_1.3(3)</td>
+<td align="left">scaled.p.value</td>
 <td align="right">91.8</td>
-<td align="right">67.6</td>
-<td align="right">78.9</td>
-</tr>
-<tr class="even">
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">scaled.p.value</td>
-<td align="right">92.1</td>
-<td align="right">72.7</td>
-<td align="right">78.8</td>
+<td align="right">70.1</td>
+<td align="right">76.4</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">statistic</td>
-<td align="right">91.9</td>
-<td align="right">71.6</td>
-<td align="right">78.3</td>
+<td align="right">91.7</td>
+<td align="right">69.8</td>
+<td align="right">76.3</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">90.8</td>
-<td align="right">57.3</td>
-<td align="right">73.1</td>
+<td align="right">91.5</td>
+<td align="right">61.2</td>
+<td align="right">75.4</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.p.value</td>
-<td align="right">91.2</td>
-<td align="right">65.2</td>
-<td align="right">73.7</td>
+<td align="right">91.4</td>
+<td align="right">65.0</td>
+<td align="right">73.5</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">statistic</td>
-<td align="right">91.2</td>
-<td align="right">64.6</td>
-<td align="right">73.5</td>
+<td align="right">91.4</td>
+<td align="right">65.0</td>
+<td align="right">73.6</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
 <td align="right">92.9</td>
-<td align="right">57.6</td>
-<td align="right">75.3</td>
+<td align="right">61.3</td>
+<td align="right">77.1</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.p.value</td>
-<td align="right">93.2</td>
-<td align="right">66.6</td>
-<td align="right">76.4</td>
+<td align="right">93.0</td>
+<td align="right">67.0</td>
+<td align="right">77.0</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">statistic</td>
-<td align="right">93.1</td>
-<td align="right">65.7</td>
-<td align="right">76.1</td>
+<td align="right">93.0</td>
+<td align="right">66.6</td>
+<td align="right">76.9</td>
 </tr>
 </tbody>
 </table>
@@ -709,19 +709,19 @@ missingness modelling</caption>
 </tr>
 <tr class="even">
 <td align="right">1</td>
-<td align="right">14</td>
+<td align="right">61</td>
 </tr>
 <tr class="odd">
 <td align="right">2</td>
-<td align="right">74</td>
+<td align="right">39</td>
 </tr>
 <tr class="even">
 <td align="right">3</td>
-<td align="right">17</td>
+<td align="right">10</td>
 </tr>
 <tr class="odd">
 <td align="right">4</td>
-<td align="right">26</td>
+<td align="right">13</td>
 </tr>
 </tbody>
 </table>
@@ -751,7 +751,7 @@ missingness modelling</caption>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="va">contrProtMixed</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">pl</span><span class="op">$</span><span class="va">protein_Id</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 3939</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 4001</span></span></code></pre>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">allContrasts</span><span class="op">$</span><span class="va">contrProtMixed</span> <span class="op">&lt;-</span> <span class="va">contrProtMixed</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ttd</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/ionstar_bench_preprocess.html" class="external-link">ionstar_bench_preprocess</a></span><span class="op">(</span><span class="va">contrProtMixed</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -769,10 +769,24 @@ missingness modelling</caption>
 <th align="right">nr_missing</th>
 <th align="right">protein_Id</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody>
+<tr class="odd">
 <td align="right">0</td>
 <td align="right">3939</td>
-</tr></tbody>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">42</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">18</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+</tbody>
 </table>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#benchmark_mixed$plot_score_distribution()</span></span>
@@ -792,7 +806,7 @@ Histogram).</p>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">ctr</span><span class="op">$</span><span class="va">df</span></span>
 <span><span class="va">df</span><span class="op">[</span><span class="va">df</span> <span class="op">&gt;</span> <span class="fl">59</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">60</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1]  1.465724 60.000000</span></span></code></pre>
+<pre><code><span><span class="co">## [1]  0.9968624 60.0000000</span></span></code></pre>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">df</span>, breaks <span class="op">=</span> <span class="fl">100</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">61</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -820,10 +834,24 @@ Histogram of degrees of freedom for mixed model
 <th align="right">nr_missing</th>
 <th align="right">protein_Id</th>
 </tr></thead>
-<tbody><tr class="odd">
+<tbody>
+<tr class="odd">
 <td align="right">0</td>
 <td align="right">3939</td>
-</tr></tbody>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">42</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">18</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+</tbody>
 </table>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#benchmark_mixedModerated$plot_score_distribution()</span></span>
@@ -877,23 +905,23 @@ and finally we aggregate the fold change estimates and p-values.</p>
 <tbody>
 <tr class="odd">
 <td align="right">0</td>
-<td align="right">4016</td>
+<td align="right">4018</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
-<td align="right">16</td>
+<td align="right">64</td>
 </tr>
 <tr class="odd">
 <td align="right">2</td>
-<td align="right">79</td>
+<td align="right">43</td>
 </tr>
 <tr class="even">
 <td align="right">3</td>
-<td align="right">26</td>
+<td align="right">21</td>
 </tr>
 <tr class="odd">
 <td align="right">4</td>
-<td align="right">36</td>
+<td align="right">18</td>
 </tr>
 </tbody>
 </table>
@@ -935,23 +963,23 @@ Summary of partial area under the ROC curve.
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">92.1</td>
-<td align="right">63.5</td>
-<td align="right">77.3</td>
+<td align="right">91.8</td>
+<td align="right">63.0</td>
+<td align="right">76.6</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.beta.based.significance</td>
-<td align="right">94.1</td>
-<td align="right">78.8</td>
-<td align="right">84.7</td>
+<td align="right">93.7</td>
+<td align="right">77.5</td>
+<td align="right">83.7</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">statistic</td>
-<td align="right">94.4</td>
-<td align="right">77.8</td>
-<td align="right">84.6</td>
+<td align="right">94.0</td>
+<td align="right">76.6</td>
+<td align="right">83.6</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
@@ -963,79 +991,79 @@ Summary of partial area under the ROC curve.
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.beta.based.significance</td>
-<td align="right">94.8</td>
-<td align="right">84.1</td>
-<td align="right">88.0</td>
+<td align="right">94.6</td>
+<td align="right">83.5</td>
+<td align="right">87.8</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">statistic</td>
 <td align="right">95.4</td>
-<td align="right">85.8</td>
+<td align="right">85.7</td>
 <td align="right">89.1</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">92.2</td>
-<td align="right">67.6</td>
-<td align="right">79.3</td>
+<td align="right">91.2</td>
+<td align="right">66.1</td>
+<td align="right">77.5</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.beta.based.significance</td>
-<td align="right">93.7</td>
-<td align="right">80.7</td>
-<td align="right">85.2</td>
+<td align="right">92.4</td>
+<td align="right">76.5</td>
+<td align="right">82.4</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">statistic</td>
-<td align="right">94.3</td>
-<td align="right">80.5</td>
-<td align="right">85.7</td>
+<td align="right">93.0</td>
+<td align="right">76.6</td>
+<td align="right">82.8</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">90.1</td>
-<td align="right">52.7</td>
-<td align="right">70.6</td>
+<td align="right">90.0</td>
+<td align="right">52.5</td>
+<td align="right">70.1</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.beta.based.significance</td>
 <td align="right">92.9</td>
-<td align="right">74.1</td>
-<td align="right">81.5</td>
+<td align="right">73.6</td>
+<td align="right">80.9</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">statistic</td>
-<td align="right">93.1</td>
-<td align="right">71.4</td>
-<td align="right">80.4</td>
+<td align="right">93.0</td>
+<td align="right">70.8</td>
+<td align="right">79.7</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">92.4</td>
-<td align="right">53.7</td>
-<td align="right">73.2</td>
+<td align="right">92.2</td>
+<td align="right">53.4</td>
+<td align="right">72.8</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.beta.based.significance</td>
-<td align="right">94.9</td>
-<td align="right">76.7</td>
-<td align="right">84.2</td>
+<td align="right">94.8</td>
+<td align="right">76.3</td>
+<td align="right">83.8</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">statistic</td>
-<td align="right">94.6</td>
-<td align="right">74.4</td>
-<td align="right">83.4</td>
+<td align="right">94.7</td>
+<td align="right">73.5</td>
+<td align="right">83.0</td>
 </tr>
 </tbody>
 </table>
@@ -1108,107 +1136,107 @@ ROC curves for merged benchmark
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">91.92328</td>
-<td align="right">64.80872</td>
-<td align="right">77.25999</td>
+<td align="right">91.97551</td>
+<td align="right">65.68438</td>
+<td align="right">77.62483</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.p.value</td>
-<td align="right">92.45606</td>
-<td align="right">72.28752</td>
-<td align="right">78.82013</td>
+<td align="right">92.39791</td>
+<td align="right">72.27018</td>
+<td align="right">78.66324</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">statistic</td>
-<td align="right">92.39573</td>
-<td align="right">71.69743</td>
-<td align="right">78.54725</td>
+<td align="right">92.37255</td>
+<td align="right">72.01880</td>
+<td align="right">78.55498</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">92.08722</td>
-<td align="right">75.84453</td>
-<td align="right">81.59166</td>
+<td align="right">92.05969</td>
+<td align="right">76.81841</td>
+<td align="right">81.84991</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.p.value</td>
-<td align="right">92.21610</td>
-<td align="right">78.39920</td>
-<td align="right">81.60181</td>
+<td align="right">92.08219</td>
+<td align="right">78.38420</td>
+<td align="right">81.46662</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">statistic</td>
-<td align="right">92.12471</td>
-<td align="right">77.50427</td>
-<td align="right">81.15853</td>
+<td align="right">92.05802</td>
+<td align="right">78.17602</td>
+<td align="right">81.36627</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">91.75108</td>
-<td align="right">67.63093</td>
-<td align="right">78.92716</td>
+<td align="right">91.83409</td>
+<td align="right">68.47558</td>
+<td align="right">79.33140</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.p.value</td>
-<td align="right">92.24825</td>
-<td align="right">73.86413</td>
-<td align="right">79.87700</td>
+<td align="right">92.12960</td>
+<td align="right">73.21443</td>
+<td align="right">79.18805</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">statistic</td>
-<td align="right">92.18107</td>
-<td align="right">73.25236</td>
-<td align="right">79.57972</td>
+<td align="right">92.10155</td>
+<td align="right">72.92950</td>
+<td align="right">79.05838</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">90.77340</td>
-<td align="right">57.34122</td>
-<td align="right">73.11850</td>
+<td align="right">90.84027</td>
+<td align="right">58.01783</td>
+<td align="right">73.46430</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.p.value</td>
-<td align="right">91.61390</td>
-<td align="right">67.53081</td>
-<td align="right">75.51990</td>
+<td align="right">91.58246</td>
+<td align="right">67.61285</td>
+<td align="right">75.42066</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">statistic</td>
-<td align="right">91.57258</td>
-<td align="right">67.20265</td>
-<td align="right">75.36089</td>
+<td align="right">91.55992</td>
+<td align="right">67.42319</td>
+<td align="right">75.33994</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">92.92366</td>
-<td align="right">57.61822</td>
-<td align="right">75.27731</td>
+<td align="right">92.98192</td>
+<td align="right">58.34157</td>
+<td align="right">75.60017</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.p.value</td>
-<td align="right">93.67899</td>
-<td align="right">69.31494</td>
-<td align="right">78.60628</td>
+<td align="right">93.69456</td>
+<td align="right">69.60472</td>
+<td align="right">78.73728</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">statistic</td>
-<td align="right">93.63532</td>
-<td align="right">68.79403</td>
-<td align="right">78.41243</td>
+<td align="right">93.66876</td>
+<td align="right">69.27524</td>
+<td align="right">78.62260</td>
 </tr>
 </tbody>
 </table>
@@ -1368,7 +1396,7 @@ Compare FDR estimate with false discovery proportion (FDP).
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

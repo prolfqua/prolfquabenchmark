@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -110,7 +110,7 @@ IonStar/FragPipeV14/combined_protein.tsv</h1>
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2023-04-12</h4>
+            <h4 data-toc-skip class="date">2024-06-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/BenchmarkFragPipeProteinIonStar.Rmd" class="external-link"><code>vignettes/BenchmarkFragPipeProteinIonStar.Rmd</code></a></small>
       <div class="hidden name"><code>BenchmarkFragPipeProteinIonStar.Rmd</code></div>
@@ -138,8 +138,8 @@ from github</p>
 <span><span class="va">protein</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">unz</a></span><span class="op">(</span><span class="va">inputFragfile</span>,<span class="st">"IonstarWithMSFragger/combined_protein.tsv"</span><span class="op">)</span>,</span>
 <span>                                      header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/debug.html" class="external-link">undebug</a></span><span class="op">(</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/tidy_FragPipe_combined_protein.html" class="external-link">tidy_FragPipe_combined_protein</a></span><span class="op">)</span></span>
-<span><span class="va">protein</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/tidy_FragPipe_combined_protein_deprec.html" class="external-link">tidy_FragPipe_combined_protein_deprec</a></span><span class="op">(</span><span class="va">protein</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/debug.html" class="external-link">undebug</a></span><span class="op">(</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfquapp/man/tidy_FragPipe_combined_protein.html" class="external-link">tidy_FragPipe_combined_protein</a></span><span class="op">)</span></span>
+<span><span class="va">protein</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/tidy_FragPipe_combined_protein_deprec.html" class="external-link">tidy_FragPipe_combined_protein_deprec</a></span><span class="op">(</span><span class="va">protein</span><span class="op">)</span></span>
 <span><span class="va">protein</span> <span class="op">&lt;-</span> <span class="va">protein</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">unique.stripped.peptides</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">merged</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">annotation</span>, <span class="va">protein</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -238,107 +238,107 @@ from github</p>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">93.70853</td>
-<td align="right">68.97015</td>
-<td align="right">79.42198</td>
+<td align="right">94.03414</td>
+<td align="right">72.03297</td>
+<td align="right">80.81840</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.p.value</td>
-<td align="right">95.07662</td>
-<td align="right">81.60778</td>
-<td align="right">85.20479</td>
+<td align="right">95.12016</td>
+<td align="right">81.86899</td>
+<td align="right">85.01266</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">statistic</td>
-<td align="right">94.77869</td>
-<td align="right">78.67474</td>
-<td align="right">83.75369</td>
+<td align="right">95.01501</td>
+<td align="right">80.86869</td>
+<td align="right">84.54175</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">91.49805</td>
-<td align="right">69.85723</td>
-<td align="right">74.44799</td>
+<td align="right">91.74353</td>
+<td align="right">71.35642</td>
+<td align="right">74.94692</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.p.value</td>
-<td align="right">92.01450</td>
-<td align="right">75.25195</td>
-<td align="right">76.74445</td>
+<td align="right">91.97449</td>
+<td align="right">74.07253</td>
+<td align="right">75.69785</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">statistic</td>
-<td align="right">91.73260</td>
-<td align="right">72.39391</td>
-<td align="right">75.31917</td>
+<td align="right">91.88659</td>
+<td align="right">73.16519</td>
+<td align="right">75.26106</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">94.05423</td>
-<td align="right">74.66867</td>
-<td align="right">81.86333</td>
+<td align="right">94.51047</td>
+<td align="right">77.29426</td>
+<td align="right">83.11132</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.p.value</td>
-<td align="right">95.03269</td>
-<td align="right">83.18175</td>
-<td align="right">85.71120</td>
+<td align="right">95.25739</td>
+<td align="right">82.86520</td>
+<td align="right">85.39251</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">statistic</td>
-<td align="right">94.74218</td>
-<td align="right">80.35798</td>
-<td align="right">84.30869</td>
+<td align="right">95.15824</td>
+<td align="right">82.03018</td>
+<td align="right">84.98705</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">93.21492</td>
-<td align="right">59.92208</td>
-<td align="right">77.19946</td>
+<td align="right">93.58321</td>
+<td align="right">64.35484</td>
+<td align="right">79.10116</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.p.value</td>
-<td align="right">95.09970</td>
-<td align="right">81.23104</td>
-<td align="right">86.49186</td>
+<td align="right">95.02455</td>
+<td align="right">82.23264</td>
+<td align="right">86.55908</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">statistic</td>
-<td align="right">94.77115</td>
-<td align="right">77.76614</td>
-<td align="right">84.86948</td>
+<td align="right">94.93966</td>
+<td align="right">81.16409</td>
+<td align="right">86.10408</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">95.61186</td>
-<td align="right">70.91614</td>
-<td align="right">83.72299</td>
+<td align="right">95.95465</td>
+<td align="right">74.05003</td>
+<td align="right">85.26557</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.p.value</td>
-<td align="right">97.73820</td>
-<td align="right">87.65308</td>
-<td align="right">91.90694</td>
+<td align="right">97.96069</td>
+<td align="right">89.12013</td>
+<td align="right">92.60967</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">statistic</td>
-<td align="right">97.46123</td>
-<td align="right">85.01249</td>
-<td align="right">90.59790</td>
+<td align="right">97.80569</td>
+<td align="right">87.74253</td>
+<td align="right">91.93801</td>
 </tr>
 </tbody>
 </table>
@@ -436,107 +436,107 @@ from github</p>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">91.94047</td>
-<td align="right">61.83882</td>
-<td align="right">76.42115</td>
+<td align="right">91.98572</td>
+<td align="right">61.80708</td>
+<td align="right">76.42777</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.pval</td>
-<td align="right">94.22696</td>
-<td align="right">79.97900</td>
-<td align="right">83.57846</td>
+<td align="right">94.25220</td>
+<td align="right">80.00458</td>
+<td align="right">83.61569</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">94.22696</td>
-<td align="right">79.97900</td>
-<td align="right">83.57846</td>
+<td align="right">94.25220</td>
+<td align="right">80.00458</td>
+<td align="right">83.61569</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">diff</td>
-<td align="right">89.68071</td>
-<td align="right">69.09558</td>
-<td align="right">76.45281</td>
+<td align="right">89.71740</td>
+<td align="right">69.09986</td>
+<td align="right">76.46164</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">scaled.pval</td>
-<td align="right">91.77079</td>
-<td align="right">74.74044</td>
-<td align="right">77.26400</td>
+<td align="right">91.77572</td>
+<td align="right">74.75383</td>
+<td align="right">77.27739</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(4.5/3)_1.5</td>
 <td align="left">t_statistic</td>
-<td align="right">91.77079</td>
-<td align="right">74.74044</td>
-<td align="right">77.26400</td>
+<td align="right">91.77572</td>
+<td align="right">74.75383</td>
+<td align="right">77.27739</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">diff</td>
-<td align="right">92.40330</td>
-<td align="right">68.81759</td>
-<td align="right">79.74658</td>
+<td align="right">92.40609</td>
+<td align="right">68.82938</td>
+<td align="right">79.75274</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">scaled.pval</td>
-<td align="right">94.09895</td>
-<td align="right">81.68363</td>
-<td align="right">84.46482</td>
+<td align="right">94.10163</td>
+<td align="right">81.69756</td>
+<td align="right">84.47152</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="left">t_statistic</td>
-<td align="right">94.09895</td>
-<td align="right">81.68363</td>
-<td align="right">84.46482</td>
+<td align="right">94.10163</td>
+<td align="right">81.69756</td>
+<td align="right">84.47152</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">diff</td>
-<td align="right">91.04776</td>
-<td align="right">48.04050</td>
-<td align="right">70.46649</td>
+<td align="right">91.19843</td>
+<td align="right">48.03461</td>
+<td align="right">70.53237</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">scaled.pval</td>
-<td align="right">93.82745</td>
-<td align="right">79.56367</td>
-<td align="right">84.13435</td>
+<td align="right">93.93789</td>
+<td align="right">79.56795</td>
+<td align="right">84.22487</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="left">t_statistic</td>
-<td align="right">93.82745</td>
-<td align="right">79.56367</td>
-<td align="right">84.13435</td>
+<td align="right">93.93789</td>
+<td align="right">79.56795</td>
+<td align="right">84.22487</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">diff</td>
-<td align="right">94.42611</td>
-<td align="right">61.53268</td>
-<td align="right">78.98199</td>
+<td align="right">94.41486</td>
+<td align="right">61.39717</td>
+<td align="right">78.91664</td>
 </tr>
 <tr class="even">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">scaled.pval</td>
-<td align="right">97.21330</td>
-<td align="right">85.21495</td>
-<td align="right">89.28671</td>
+<td align="right">97.21319</td>
+<td align="right">85.20960</td>
+<td align="right">89.28350</td>
 </tr>
 <tr class="odd">
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="left">t_statistic</td>
-<td align="right">97.21330</td>
-<td align="right">85.21495</td>
-<td align="right">89.28671</td>
+<td align="right">97.21319</td>
+<td align="right">85.20960</td>
+<td align="right">89.28350</td>
 </tr>
 </tbody>
 </table>
@@ -572,8 +572,11 @@ dropout model, the peptide intensities are required, while here, we are
 starting the analysis from the <code>combined_proteins.tsv</code>
 file.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>benchmark_proDA <span class="op">=</span> <span class="va">benchmark_proDA</span>, benchmark_prolfqua <span class="op">=</span> <span class="va">benchmark_prolfqua</span><span class="op">)</span></span>
-<span>  ,<span class="st">"../inst/Benchresults/FragPipev14_comb_prot.RDS"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">bdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"../inst/Benchresults/"</span>,<span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%Y%m%d"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.exists</a></span><span class="op">(</span><span class="va">bdir</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">bdir</span><span class="op">)</span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>benchmark_proDA <span class="op">=</span> <span class="va">benchmark_proDA</span>, benchmark_prolfqua <span class="op">=</span> <span class="va">benchmark_prolfqua</span><span class="op">)</span></span>
+<span>  ,<span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"../inst/Benchresults/"</span>,<span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%Y%m%d"</span><span class="op">)</span>,<span class="st">"FragPipev14_comb_prot.RDS"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">proda</span> <span class="op">&lt;-</span> <span class="va">benchmark_proDA</span><span class="op">$</span><span class="fu">pAUC_summaries</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">content</span></span>
 <span><span class="va">proda</span><span class="op">$</span><span class="va">package</span> <span class="op">&lt;-</span> <span class="st">"proda"</span></span>
@@ -613,7 +616,7 @@ file.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

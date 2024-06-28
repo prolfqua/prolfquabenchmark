@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2023-04-12</h4>
+            <h4 data-toc-skip class="date">2024-06-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_cptac.Rmd" class="external-link"><code>vignettes/Benchmark_cptac.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_cptac.Rmd</code></div>
@@ -121,7 +121,7 @@ Wolski</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The r-package <em><a href="https://bioconductor.org/packages/3.15/msdata" class="external-link">msdata</a></em>
+<p>The r-package <em><a href="https://bioconductor.org/packages/3.17/msdata" class="external-link">msdata</a></em>
 msdata provides a subset of the data of the 6th study of the Clinical
 Proteomic Technology Assessment for Cancer (CPTAC). In this experiment,
 the Sigma Universal Protein Standard mixture 1 (UPS1) containing <span class="math inline">\(48\)</span> different human proteins was spiked in
@@ -135,7 +135,7 @@ for each concentration.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">msdata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/msdata/man/proteomics.html" class="external-link">quant</a></span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">xx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">tmp</span>, sep <span class="op">=</span> <span class="st">"\t"</span><span class="op">)</span></span>
-<span><span class="va">peptides</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">xx</span><span class="op">)</span></span>
+<span><span class="va">peptides</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">xx</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>raw.file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">peptides</span><span class="op">$</span><span class="va">raw.file</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="va">annotation</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"^6"</span>,<span class="st">""</span>,<span class="va">raw.file</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"_[0-9]$"</span>, <span class="st">""</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span></span>
@@ -161,12 +161,12 @@ for each concentration.</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
 <span><span class="co">##   raw.file sampleName group.</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> 6a_7     a          a     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> 6a_8     a~1        a     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> 6a_9     a~2        a     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> 6b_7     b          b     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> 6b_8     b~1        b     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> 6b_9     b~2        b</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> 6a_7     6a_7       a     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> 6a_8     6a_8       a     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> 6a_9     6a_9       a     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> 6b_7     6b_7       b     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> 6b_8     6b_8       b     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> 6b_9     6b_9       b</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">lfqpeptides</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"_UPS"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -267,44 +267,44 @@ moderated and imputed</caption>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">diff</td>
-<td align="right">87.96912</td>
-<td align="right">77.22948</td>
-<td align="right">78.79635</td>
+<td align="right">88.17111</td>
+<td align="right">78.45654</td>
+<td align="right">79.40988</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.p.value</td>
-<td align="right">86.19648</td>
-<td align="right">68.54565</td>
-<td align="right">72.68935</td>
+<td align="right">86.42302</td>
+<td align="right">69.77271</td>
+<td align="right">73.46334</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">statistic</td>
-<td align="right">86.10209</td>
-<td align="right">67.50736</td>
-<td align="right">72.21740</td>
+<td align="right">86.41169</td>
+<td align="right">69.52730</td>
+<td align="right">73.40671</td>
 </tr>
 <tr class="even">
 <td align="left">b_vs_a</td>
 <td align="left">diff</td>
-<td align="right">87.96912</td>
-<td align="right">77.22948</td>
-<td align="right">78.79635</td>
+<td align="right">88.17111</td>
+<td align="right">78.45654</td>
+<td align="right">79.40988</td>
 </tr>
 <tr class="odd">
 <td align="left">b_vs_a</td>
 <td align="left">scaled.p.value</td>
-<td align="right">86.19648</td>
-<td align="right">68.54565</td>
-<td align="right">72.68935</td>
+<td align="right">86.42302</td>
+<td align="right">69.77271</td>
+<td align="right">73.46334</td>
 </tr>
 <tr class="even">
 <td align="left">b_vs_a</td>
 <td align="left">statistic</td>
-<td align="right">86.10209</td>
-<td align="right">67.50736</td>
-<td align="right">72.21740</td>
+<td align="right">86.41169</td>
+<td align="right">69.52730</td>
+<td align="right">73.40671</td>
 </tr>
 </tbody>
 </table>
@@ -481,7 +481,8 @@ proDA_medpolishInt</caption>
 <span><span class="va">protAbundanceIngroup</span> <span class="op">&lt;-</span> <span class="va">protAbundanceIngroup</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="va">protein_Id</span>,</span>
 <span>                     names_from <span class="op">=</span> <span class="va">group.</span>, names_prefix <span class="op">=</span> <span class="st">"abd."</span>, </span>
-<span>                     values_from <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span>
+<span>                     values_from <span class="op">=</span> <span class="va">meanAbundance</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">protAbundanceIngroup</span> <span class="op">&lt;-</span> <span class="va">protAbundanceIngroup</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span> avgAbd.b.a <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">abd.b</span>,<span class="va">abd.a</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="op">)</span></span>
 <span><span class="va">protAbundanceIngroup</span> <span class="op">&lt;-</span> <span class="va">protAbundanceIngroup</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"abd"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -539,44 +540,44 @@ msqrob2_QFeature</caption>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">logFC</td>
-<td align="right">91.21045</td>
-<td align="right">72.41562</td>
-<td align="right">82.47754</td>
+<td align="right">91.19724</td>
+<td align="right">72.28347</td>
+<td align="right">82.41146</td>
 </tr>
 <tr class="even">
 <td align="left">all</td>
 <td align="left">scaled.pval</td>
-<td align="right">89.14710</td>
-<td align="right">68.86657</td>
-<td align="right">75.71925</td>
+<td align="right">89.11878</td>
+<td align="right">68.80994</td>
+<td align="right">75.59654</td>
 </tr>
 <tr class="odd">
 <td align="left">all</td>
 <td align="left">t</td>
-<td align="right">88.81673</td>
-<td align="right">66.07264</td>
-<td align="right">74.19014</td>
+<td align="right">88.79974</td>
+<td align="right">66.03489</td>
+<td align="right">74.16182</td>
 </tr>
 <tr class="even">
 <td align="left">b_vs_a</td>
 <td align="left">logFC</td>
-<td align="right">91.21045</td>
-<td align="right">72.41562</td>
-<td align="right">82.47754</td>
+<td align="right">91.19724</td>
+<td align="right">72.28347</td>
+<td align="right">82.41146</td>
 </tr>
 <tr class="odd">
 <td align="left">b_vs_a</td>
 <td align="left">scaled.pval</td>
-<td align="right">89.14710</td>
-<td align="right">68.86657</td>
-<td align="right">75.71925</td>
+<td align="right">89.11878</td>
+<td align="right">68.80994</td>
+<td align="right">75.59654</td>
 </tr>
 <tr class="even">
 <td align="left">b_vs_a</td>
 <td align="left">t</td>
-<td align="right">88.81673</td>
-<td align="right">66.07264</td>
-<td align="right">74.19014</td>
+<td align="right">88.79974</td>
+<td align="right">66.03489</td>
+<td align="right">74.16182</td>
 </tr>
 </tbody>
 </table>
@@ -588,10 +589,13 @@ msqrob2_QFeature</caption>
 <h2 id="compare-benchmark-results-">Compare benchmark results.<a class="anchor" aria-label="anchor" href="#compare-benchmark-results-"></a>
 </h2>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>benchmark_msqrob <span class="op">=</span> <span class="va">benchmark_msqrob</span>,</span>
+<code class="sourceCode R"><span><span class="va">bdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"../inst/Benchresults/"</span>,<span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%Y%m%d"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.exists</a></span><span class="op">(</span><span class="va">bdir</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">bdir</span><span class="op">)</span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>benchmark_msqrob <span class="op">=</span> <span class="va">benchmark_msqrob</span>,</span>
 <span>             benchmark_proDA <span class="op">=</span> <span class="va">benchmark_proDA</span>,</span>
 <span>             benchmark_merged <span class="op">=</span> <span class="va">benchmark_merged</span><span class="op">)</span>,</span>
-<span>        file <span class="op">=</span> <span class="st">"../inst/Benchresults/CPTAC_Benchmark.RDS"</span><span class="op">)</span></span>
+<span>        file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"../inst/Benchresults/"</span>,<span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%Y%m%d"</span><span class="op">)</span>,<span class="st">"CPTAC_Benchmark.RDS"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mrob</span> <span class="op">&lt;-</span> <span class="va">benchmark_msqrob</span><span class="op">$</span><span class="fu">pAUC_summaries</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">ftable</span><span class="op">$</span><span class="va">content</span></span>
 <span><span class="va">mrob</span><span class="op">$</span><span class="va">package</span> <span class="op">&lt;-</span> <span class="st">"msqrob2"</span></span>
@@ -645,17 +649,17 @@ results of the Bootstrap test for two ROC curves.</p>
 <tr class="odd">
 <td align="left">msqrob2_vs_prolfqua</td>
 <td align="left">msqrob2_vs_prolfqua</td>
-<td align="right">0.9795312</td>
+<td align="right">0.9104878</td>
 </tr>
 <tr class="even">
 <td align="left">msqrob2_vs_proda</td>
 <td align="left">msqrob2_vs_proda</td>
-<td align="right">0.9207425</td>
+<td align="right">0.9140742</td>
 </tr>
 <tr class="odd">
 <td align="left">prolfqua_vs_proda</td>
 <td align="left">prolfqua_vs_proda</td>
-<td align="right">0.9028358</td>
+<td align="right">0.9959014</td>
 </tr>
 </tbody>
 </table>
@@ -679,7 +683,7 @@ results of the Bootstrap test for two ROC curves.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
