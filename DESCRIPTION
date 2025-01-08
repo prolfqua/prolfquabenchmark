@@ -27,6 +27,7 @@ Imports:
     msdata,
     msqrob2,
     prolfqua,
+    prolfquapp,
     prolfquadata,
     proDA,
     purrr,

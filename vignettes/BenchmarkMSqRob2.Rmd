@@ -49,16 +49,17 @@ length(unique(mqdata$data$proteins))
 mqdata$config <- prolfqua::create_config_MQ_peptide()
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfquapp::add_annotation(
+
+data <- dplyr::inner_join(
   mqdata$data,
   annotation,
-  fileName = "raw.file"
+  by = "raw.file"
 )
 
 mqdata$config$table$factors[["dilution."]] = "sample"
 mqdata$config$table$factors[["run_Id"]] = "run_ID"
 mqdata$config$table$factorDepth <- 1
-mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
+mqdata$data <- prolfqua::setup_analysis(data, mqdata$config)
 
 
 lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
