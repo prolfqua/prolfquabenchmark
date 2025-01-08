@@ -15,14 +15,12 @@ BugReports: https://github.com/wolski/proLFQuaBenchmark/issues
 LazyData: true
 Imports:
     bookdown,
-    BiocStyle,
     conflicted,
     dplyr,
     ggplot2,
     ggpubr,
     gridExtra,
     knitr,
-    kableExtra,
     MSstats,
     msdata,
     msqrob2,
@@ -35,7 +33,7 @@ Imports:
     R6,
     SummarizedExperiment,
     tibble
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Roxygen: list(r6 = TRUE)
 Depends: 
     R (>= 4.1)

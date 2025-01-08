@@ -12,13 +12,13 @@ tolong <- function(assay, rowData, colData ){
 #' @export
 cptac_bench_preprocess <- function(data, idcol = "protein_Id") {
     tmp <- data |>
-        ungroup() |>
-        mutate(species  = case_when(
+        dplyr::ungroup() |>
+        dplyr::mutate(species  = dplyr::case_when(
             grepl("YEAST", !!sym(idcol)) ~ "YEAST",
             grepl("UPS", !!sym(idcol)) ~ "UPS",
             TRUE ~ "OTHER"
         ))
     res <- tmp |> dplyr::filter(!.data$species == "OTHER")
-    res <- res |> mutate(TP = (.data$species == "UPS"))
+    res <- res |> dplyr::mutate(TP = (.data$species == "UPS"))
     return(list(data = res , table = table(tmp$species)))
 }
