@@ -55,10 +55,10 @@ Create `proLFQua` configruation for MQ `peptide.txt` file and annotate data.
 
 ```{r, eval = evalAll}
 config <- prolfqua::create_config_MQ_peptide()
-res <- prolfquapp::add_annotation(
+res <- dplyr::inner_join(
   data,
   annotation,
-  fileName = "raw.file"
+  by = "raw.file"
 )
 
 config$table$factors[["dilution."]] = "sample"

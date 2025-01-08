@@ -48,7 +48,6 @@ SAVE <- TRUE
 ```
 
 We start by loading the IonStar dataset and the annotation from the `prolfquadata` package.
-The method `add_annotation` adds the annotation to the data.
 
 ```{r loadMQData}
 
@@ -65,10 +64,10 @@ mqdata$config <- prolfqua::create_config_MQ_peptide()
 
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfquapp::add_annotation(
+res <- dplyr::inner_join(
   mqdata$data,
   annotation,
-  fileName = "raw.file"
+  by = "raw.file"
 )
 
 ```

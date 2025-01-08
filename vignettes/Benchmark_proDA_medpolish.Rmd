@@ -40,10 +40,10 @@ length(unique(mqdata$data$proteins))
 mqdata$config <- prolfqua::create_config_MQ_peptide()
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfquapp::add_annotation(
+res <- dplyr::inner_join(
   mqdata$data,
   annotation,
-  fileName = "raw.file"
+  by = "raw.file"
 )
 
 mqdata$config$table$factors[["dilution."]] = "sample"

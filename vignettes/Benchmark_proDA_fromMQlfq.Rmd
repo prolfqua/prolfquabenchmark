@@ -45,10 +45,10 @@ mqdata <- prolfquapp::tidyMQ_ProteinGroups(inputMQfile)
 mqdata <- mqdata |> dplyr::filter(!grepl("^REV__|^CON__", proteinID))
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfquapp::add_annotation(
+res <- dplyr::inner_join(
   mqdata,
   annotation,
-  fileName = "raw.file"
+  by = "raw.file"
 )
 res <- dplyr::filter(res, nr.peptides > 1)
 

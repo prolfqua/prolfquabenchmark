@@ -36,7 +36,7 @@ conflicted::conflict_prefer("filter", "dplyr")
 
 ## Load data
 
-We start by loading the IonStar dataset and the annotation from the `prolfquadata` package. The method `add_annotation` adds the annotation to the data.
+We start by loading the IonStar dataset and the annotation from the `prolfquadata` package. The method `inner_join` adds the annotation to the data.
 
 
 

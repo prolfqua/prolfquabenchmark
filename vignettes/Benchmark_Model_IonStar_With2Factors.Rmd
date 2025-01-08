@@ -96,10 +96,10 @@ containing the explanatory variables.
 
 config <- prolfqua::create_config_MQ_peptide()
 
-res <- prolfquapp::add_annotation(
+res <- dplyr::inner_join(
   data,
   annotation,
-  fileName = "raw.file"
+  by = "raw.file"
 )
 
 config$table$factors[["F1."]] = "F1"

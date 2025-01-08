@@ -48,7 +48,6 @@ SAVE <- TRUE
 ```
 
 We start by loading the IonStar dataset and the annotation from the `prolfquadata` package.
-The method `add_annotation` adds the annotation to the data.
 
 ```{r loadMQData}
 
