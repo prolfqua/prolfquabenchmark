@@ -1,17 +1,16 @@
 pandoc: 2.17.0.1
-pkgdown: 2.0.7
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  BenchmarkFragPipeMSStats: BenchmarkFragPipeMSStats.html
-  BenchmarkFragPipeProteinIonStar: BenchmarkFragPipeProteinIonStar.html
-  BenchmarkMSqRob2: BenchmarkMSqRob2.html
-  Benchmark_MSStats: Benchmark_MSStats.html
-  Benchmark_Model_IonStar_With2Factors: Benchmark_Model_IonStar_With2Factors.html
-  Benchmark_SaintExpress: Benchmark_SaintExpress.html
   Benchmark_cptac: Benchmark_cptac.html
+  Benchmark_Model_IonStar_With2Factors: Benchmark_Model_IonStar_With2Factors.html
+  Benchmark_MSStats: Benchmark_MSStats.html
   Benchmark_proDA_fromMQlfq: Benchmark_proDA_fromMQlfq.html
   Benchmark_proDA_medpolish: Benchmark_proDA_medpolish.html
   Benchmark_rlm: Benchmark_rlm.html
+  Benchmark_SaintExpress: Benchmark_SaintExpress.html
+  BenchmarkFragPipeMSStats: BenchmarkFragPipeMSStats.html
+  BenchmarkFragPipeProteinIonStar: BenchmarkFragPipeProteinIonStar.html
   BenchmarkingIonstarData: BenchmarkingIonstarData.html
-last_built: 2024-06-29T12:12Z
-
+  BenchmarkMSqRob2: BenchmarkMSqRob2.html
+last_built: 2025-01-08T20:00Z
