@@ -32,7 +32,9 @@ The r-package $msdata$ provides a subset of the data of the 6th study of the Cli
 
 
 ```{r cars}
-library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 tmp <- msdata::quant(full.names = TRUE)
 xx <- read.csv(tmp, sep = "\t")
 peptides <- prolfquapp::tidyMQ_Peptides(xx)

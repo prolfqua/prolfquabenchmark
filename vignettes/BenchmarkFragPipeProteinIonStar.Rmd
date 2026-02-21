@@ -59,7 +59,7 @@ merged <- dplyr::inner_join(annotation, protein)
 
 ```{r setupConfigs}
 
-atable <- prolfqua::AnalysisTableAnnotation$new()
+atable <- prolfqua::AnalysisConfiguration$new()
 atable$fileName = "raw.file"
 atable$hierarchy[["protein_Id"]] <- c("protein")
 

@@ -52,7 +52,7 @@ res <- dplyr::inner_join(
 )
 res <- dplyr::filter(res, nr.peptides > 1)
 
-config <- prolfqua::AnalysisTableAnnotation$new()
+config <- prolfqua::AnalysisConfiguration$new()
 config$factors[["dilution."]] = "sample"
 config$fileName = "raw.file"
 config$workIntensity = "mq.protein.lfq.intensity"

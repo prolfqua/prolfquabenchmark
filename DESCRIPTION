@@ -21,19 +21,38 @@ Imports:
     ggpubr,
     gridExtra,
     knitr,
+    limma,
     MSstats,
     msdata,
     msqrob2,
+    plotly,
     prolfqua,
     prolfquapp,
     prolfquadata,
     proDA,
+    pROC,
     purrr,
+    QFeatures,
     readxl,
     R6,
     SummarizedExperiment,
-    tibble
-RoxygenNote: 7.3.2
+    tibble,
+    tidyr,
+    vsn
+Suggests:
+    covr,
+    devtools,
+    lintr,
+    pkgdown,
+    rcmdcheck,
+    rmarkdown,
+    roxygen2,
+    testthat (>= 3.0.0)
+Remotes:
+    fgcz/prolfqua@Modelling2R6,
+    prolfqua/prolfquapp,
+    gitlab@gitlab.bfabric.org::wolski/prolfquadata
+RoxygenNote: 7.3.3
 Roxygen: list(r6 = TRUE)
 Depends: 
     R (>= 4.1)
