@@ -113,8 +113,8 @@ exampleDat$protein_Id <- gsub("~.*","", exampleDat$protein_Id)
 Ecolifasta <- system.file("fastaDBs/uniprot-proteome_UP000000625_reviewed_yes.fasta.gz",package = "prolfquadata")
 Humanfasta <- system.file("fastaDBs/uniprot-proteome_UP000005640_reviewed_yes.fasta.gz",package = "prolfquadata")
 
-Ecolifasta <- prozor::readPeptideFasta(Ecolifasta)
-Humanfasta <- prozor::readPeptideFasta(Humanfasta)
+Ecolifasta <- seqinr::read.fasta(Ecolifasta, as.string = TRUE, seqtype = "AA")
+Humanfasta <- seqinr::read.fasta(Humanfasta, as.string = TRUE, seqtype = "AA")
 fasta <- c(Ecolifasta, Humanfasta)
 exampleDat <- prolfqua::addProteinLengths(exampleDat, fasta)
 

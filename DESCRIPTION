@@ -35,6 +35,7 @@ Imports:
     QFeatures,
     readxl,
     R6,
+    seqinr,
     SummarizedExperiment,
     tibble,
     tidyr,
