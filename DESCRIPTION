@@ -51,7 +51,7 @@ Suggests:
 Remotes:
     fgcz/prolfqua@Modelling2R6,
     prolfqua/prolfquapp,
-    gitlab@gitlab.bfabric.org::wolski/prolfquadata
+    git::https://gitlab.bfabric.org/wolski/prolfquadata.git
 RoxygenNote: 7.3.3
 Roxygen: list(r6 = TRUE)
 Depends: 
