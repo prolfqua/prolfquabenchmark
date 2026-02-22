@@ -104,7 +104,7 @@ SeintExpress requires specifying a control condition.  As control `C` we will us
 
 ```{r annotateProteins, eval = evalAll}
 
-exampleDat <- lfqtrans$data |> dplyr::mutate(CorT = case_when(dilution. == "a" ~ "C", TRUE ~ "T"))
+exampleDat <- lfqtrans$data |> dplyr::mutate(CorT = dplyr::case_when(dilution. == "a" ~ "C", TRUE ~ "T"))
 exampleDat$protein_Id <- gsub("~.*","", exampleDat$protein_Id)
 
 # sample protein lengths

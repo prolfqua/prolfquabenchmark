@@ -31,3 +31,4 @@ jobs:
         with:
           args: 'c("--no-manual", "--no-vignettes")'
           build_args: 'c("--no-build-vignettes")'
+          error-on: '"error"'
