@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.4</span>
       </span>
     </div>
 
@@ -65,9 +65,6 @@
     </li>
     <li>
       <a href="../articles/Benchmark_rlm.html">Benchmarking robust linear model using the Ionstar Dataset</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_SaintExpress.html">Benchmarking SaintExpress</a>
     </li>
     <li>
       <a href="../articles/BenchmarkFragPipeMSStats.html">DEA benchmark IonStar/FragPipeV14/MSstats.tsv</a>
@@ -109,9 +106,9 @@ Dataset/MaxQuant</h1>
                         <h4 data-toc-skip class="author">Witold E
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2025-01-09</h4>
+            <h4 data-toc-skip class="date">2026-02-22</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_MSStats.Rmd" class="external-link"><code>vignettes/Benchmark_MSStats.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_MSStats.Rmd" class="external-link"><code>vignettes/Benchmark_MSStats.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_MSStats.Rmd</code></div>
 
     </div>
@@ -122,14 +119,11 @@ Wolski</h4>
 <h2 id="setting-up-analysis">Setting up analysis<a class="anchor" aria-label="anchor" href="#setting-up-analysis"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">evalAll</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="http://msstats.org" class="external-link">"MSstats"</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
-<span><span class="co">##   object 'type_sum.accel' not found</span></span></code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">storeBench</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span> <span class="op">&amp;</span> <span class="va">evalAll</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">evalAll</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="http://msstats.org" class="external-link">"MSstats"</a></span><span class="op">)</span></span>
+<span><span class="va">storeBench</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span> <span class="op">&amp;</span> <span class="va">evalAll</span></span></code></pre></div>
 <p>The following code reads the data and creates and MSStats compatible
 annotation file.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Read in MaxQuant files</span></span>
 <span><span class="va">datadir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/find.package.html" class="external-link">find.package</a></span><span class="op">(</span><span class="st">"prolfquadata"</span><span class="op">)</span> , <span class="st">"quantdata"</span><span class="op">)</span></span>
 <span><span class="va">inputMQfile</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>,</span>
@@ -151,18 +145,18 @@ annotation file.</p>
 <span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Raw.file <span class="op">=</span> <span class="va">rf</span>, raw.file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">tolower</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">msstas_annotation</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">rf</span>, <span class="va">msstas_annotation</span><span class="op">)</span></span>
 <span><span class="va">msstas_annotation</span><span class="op">$</span><span class="va">raw.file</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu">MSstats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MSstats/man/MaxQtoMSstatsFormat.html" class="external-link">MaxQtoMSstatsFormat</a></span><span class="op">(</span>evidence <span class="op">=</span> <span class="va">infile</span>, </span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu">MSstats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MSstatsConvert/man/MaxQtoMSstatsFormat.html" class="external-link">MaxQtoMSstatsFormat</a></span><span class="op">(</span>evidence <span class="op">=</span> <span class="va">infile</span>, </span>
 <span>                                    annotation <span class="op">=</span> <span class="va">msstas_annotation</span>, </span>
 <span>                                    proteinGroups <span class="op">=</span> <span class="va">proteinGroups</span>,</span>
 <span>                                    removeProtein_with1Peptide <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                                    use_log_file <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                    verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Remove reverse sequence and contaminants.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raw2</span> <span class="op">&lt;-</span> <span class="va">raw</span><span class="op">[</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"REV__"</span>,<span class="va">raw</span><span class="op">$</span><span class="va">ProteinName</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="va">raw3</span> <span class="op">&lt;-</span> <span class="va">raw2</span><span class="op">[</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"CON__"</span>,<span class="va">raw</span><span class="op">$</span><span class="va">ProteinName</span><span class="op">)</span>,<span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span></span>
 <span>  <span class="va">QuantData</span> <span class="op">&lt;-</span> <span class="fu">MSstats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MSstats/man/dataProcess.html" class="external-link">dataProcess</a></span><span class="op">(</span><span class="va">raw3</span>, use_log_file <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">)</span></span>
@@ -176,10 +170,10 @@ annotation file.</p>
 <div class="section level2">
 <h2 id="defining-contrasts-and-computing-group-comparisons">Defining Contrasts and computing group comparisons<a class="anchor" aria-label="anchor" href="#defining-contrasts-and-computing-group-comparisons"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">QuantData</span><span class="op">$</span><span class="va">ProcessedData</span><span class="op">$</span><span class="va">GROUP_ORIGINAL</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## NULL</span></span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># based on multiple comparisons  (T1 vs T3; T1 vs T7; T1 vs T9)</span></span>
 <span><span class="va">comparison1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">comparison2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -201,7 +195,7 @@ annotation file.</p>
 <div class="section level2">
 <h2 id="benchmarking">Benchmarking<a class="anchor" aria-label="anchor" href="#benchmarking"></a>
 </h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wolski/prolfqua" class="external-link">prolfqua</a></span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -224,7 +218,7 @@ annotation file.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">benchmark_msstats</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">Protein</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 4029</span></span></code></pre>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sumarry</span> <span class="op">&lt;-</span> <span class="va">benchmark_msstats</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span></span>
 <span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">sumarry</span>, caption <span class="op">=</span> <span class="st">"nr of proteins with 0, 1, 2, 3 missing contrasts."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -252,33 +246,33 @@ annotation file.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">benchmark_msstats</span><span class="op">$</span><span class="fu">pAUC_summaries</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">barp</span></span></code></pre></div>
 <div class="figure">
-<img src="Benchmark_MSStats_files/figure-html/unnamed-chunk-6-1.png" alt="ROC curves" width="700"><p class="caption">
+<img src="Benchmark_MSStats_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="ROC curves" width="700"><p class="caption">
 ROC curves
 </p>
 </div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#res$ftable</span></span>
 <span><span class="va">benchmark_msstats</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="Benchmark_MSStats_files/figure-html/unnamed-chunk-7-1.png" alt="plot ROC curves" width="700"><p class="caption">
+<img src="Benchmark_MSStats_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="plot ROC curves" width="700"><p class="caption">
 plot ROC curves
 </p>
 </div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark_msstats</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="Benchmark_MSStats_files/figure-html/unnamed-chunk-8-1.png" alt="plot FDR vs FDP" width="700"><p class="caption">
+<img src="Benchmark_MSStats_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="plot FDR vs FDP" width="700"><p class="caption">
 plot FDR vs FDP
 </p>
 </div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark_msstats</span><span class="op">$</span><span class="fu">plot_precision_recall</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="Benchmark_MSStats_files/figure-html/plotPrecisionRecall-1.png" alt="Precision recall curve." width="700"><p class="caption">
+<img src="Benchmark_MSStats_files/figure-html/plotPrecisionRecall-1.png" class="r-plt" alt="Precision recall curve." width="700"><p class="caption">
 Precision recall curve.
 </p>
 </div>
@@ -300,7 +294,7 @@ Precision recall curve.
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

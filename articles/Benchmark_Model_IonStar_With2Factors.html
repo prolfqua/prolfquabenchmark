@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prolfquabenchmark</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.4</span>
       </span>
     </div>
 
@@ -65,9 +65,6 @@
     </li>
     <li>
       <a href="../articles/Benchmark_rlm.html">Benchmarking robust linear model using the Ionstar Dataset</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_SaintExpress.html">Benchmarking SaintExpress</a>
     </li>
     <li>
       <a href="../articles/BenchmarkFragPipeMSStats.html">DEA benchmark IonStar/FragPipeV14/MSstats.tsv</a>
@@ -108,9 +105,9 @@
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2025-01-09</h4>
+            <h4 data-toc-skip class="date">2026-02-22</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_Model_IonStar_With2Factors.Rmd" class="external-link"><code>vignettes/Benchmark_Model_IonStar_With2Factors.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_Model_IonStar_With2Factors.Rmd" class="external-link"><code>vignettes/Benchmark_Model_IonStar_With2Factors.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_Model_IonStar_With2Factors.Rmd</code></div>
 
     </div>
@@ -143,21 +140,18 @@ vignette?</p>
 <span></span>
 <span><span class="va">inputAnnotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"annotation_Ionstar2018_PXD003881.xlsx"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
-<span><span class="co">##   object 'type_sum.accel' not found</span></span></code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="va">annotation</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sample</span> <span class="op">!=</span> <span class="st">"e"</span><span class="op">)</span></span>
+<span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span>
+<span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="va">annotation</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sample</span> <span class="op">!=</span> <span class="st">"e"</span><span class="op">)</span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="va">annotation</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>F1 <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>,<span class="st">"c"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"L1"</span>, <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"L2"</span><span class="op">)</span>,</span>
-<span>    F2 <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>,<span class="st">"b"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"L1"</span>, <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"L2"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>F1 <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>,<span class="st">"c"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"L1"</span>, <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"L2"</span><span class="op">)</span>,</span>
+<span>    F2 <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>,<span class="st">"b"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"L1"</span>, <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"L2"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">sample</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">datadir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/find.package.html" class="external-link">find.package</a></span><span class="op">(</span><span class="st">"prolfquadata"</span><span class="op">)</span> , <span class="st">"quantdata"</span><span class="op">)</span></span>
 <span><span class="va">inputMQfile</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>,</span>
 <span>                          <span class="st">"MAXQuant_IonStar2018_PXD003881.zip"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfquapp/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://prolfqua.github.io/prolfquapp/reference/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">proteins</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 5295</span></span></code></pre>
 <p>Read the sample annotation. The sample annotation must contain the
@@ -179,7 +173,7 @@ of the MaxQuant <code>peptide.txt</code> file we have data on protein
 level.</p>
 <p>In addition, we need to describe the <code>factors</code> of the
 analysis, i.e., the column containing the explanatory variables.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/concrete_AnalysisConfiguration.html" class="external-link">create_config_MQ_peptide</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span></span>
@@ -198,7 +192,7 @@ analysis, i.e., the column containing the explanatory variables.</p>
 <span><span class="va">lfqdata</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">data</span>, <span class="va">config</span><span class="op">)</span></span></code></pre></div>
 <p>Filter the data for small intensities (maxquant reports missing
 values as 0) and for two peptides per protein.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lfqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">lfqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^REV__|^CON__"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="va">lfqdata</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdata</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span></span>
@@ -207,7 +201,7 @@ values as 0) and for two peptides per protein.</p>
 <span><span class="co">##   isotope protein_Id peptide_Id</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span> light         <span style="text-decoration: underline;">4</span>176      <span style="text-decoration: underline;">29</span>762</span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">lfqdata</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">subset_h</span> <span class="op">&lt;-</span> <span class="va">lfqdata</span><span class="op">$</span><span class="fu">get_copy</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">subset_h</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">subset_h</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"HUMAN"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span></span>
@@ -221,7 +215,7 @@ values as 0) and for two peptides per protein.</p>
 <h2 id="model-fitting">Model Fitting<a class="anchor" aria-label="anchor" href="#model-fitting"></a>
 </h2>
 <p>defines the contrasts</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lfqTrans</span><span class="op">$</span><span class="fu">rename_response</span><span class="op">(</span><span class="st">"abundance"</span><span class="op">)</span></span>
 <span><span class="va">formula_2_Factors</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/strategy.html" class="external-link">strategy_lm</a></span><span class="op">(</span><span class="st">"abundance ~ F1. * F2. "</span><span class="op">)</span></span>
 <span></span>
@@ -236,13 +230,13 @@ values as 0) and for two peptides per protein.</p>
 <span>               <span class="st">"doFCinF2L1_differfromF2L2"</span> <span class="op">=</span> <span class="st">"`F1L1_vs_F1L2_gv_F2L1` - `F1L1_vs_F1L2_gv_F2L2`"</span></span>
 <span>               <span class="op">)</span></span></code></pre></div>
 <p>The following line fits the model.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/build_model.html" class="external-link">build_model</a></span><span class="op">(</span><span class="va">lfqTrans</span>, <span class="va">formula_2_Factors</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span><span class="op">$</span><span class="fu">anova_histogram</span><span class="op">(</span>what <span class="op">=</span> <span class="st">"FDR"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $plot</span></span></code></pre>
 <div class="figure">
-<img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/anovaPvaluePlots-1.png" alt="p-value distributions for ANOVA analysis." width="700"><p class="caption">
+<img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/anovaPvaluePlots-1.png" class="r-plt" alt="p-value distributions for ANOVA analysis." width="700"><p class="caption">
 p-value distributions for ANOVA analysis.
 </p>
 </div>
@@ -254,25 +248,25 @@ p-value distributions for ANOVA analysis.
 </h3>
 <p>Examine proteins with a significant interaction between the two
 factors treatment and batch.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ANOVA</span> <span class="op">&lt;-</span> <span class="va">mod</span><span class="op">$</span><span class="fu">get_anova</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ANOVA</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">factor</span> <span class="op">==</span> <span class="st">"F1.:F2."</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">FDR</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 5 × 10</span></span></span>
-<span><span class="co">##   protein_Id       isSingular nrcoef factor    Df Sum.Sq Mean.Sq F.value p.value</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> sp|P0A7J3|RL10_… FALSE           4 F1.:F…     1 0.174   0.174     51.2 1.15<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> sp|P0A905|SLYB_… FALSE           4 F1.:F…     1 0.122   0.122     51.5 1.12<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> sp|P0A953|FABB_… FALSE           4 F1.:F…     1 0.404   0.404     49.5 1.37<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> sp|P13029|KATG_… FALSE           4 F1.:F…     1 0.059<span style="text-decoration: underline;">9</span>  0.059<span style="text-decoration: underline;">9</span>    50.7 1.21<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> sp|P0A763|NDK_E… FALSE           4 F1.:F…     1 0.185   0.185     45.8 2.00<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span></span></span>
+<span><span class="co">##   protein_Id       factor    Df Sum.Sq Mean.Sq F.value p.value isSingular nrcoef</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> sp|P0A7J3|RL10_… F1.:F…     1 0.174   0.174     51.2 1.15<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span> FALSE           4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> sp|P0A905|SLYB_… F1.:F…     1 0.122   0.122     51.5 1.12<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span> FALSE           4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> sp|P0A953|FABB_… F1.:F…     1 0.404   0.404     49.5 1.37<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span> FALSE           4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> sp|P13029|KATG_… F1.:F…     1 0.059<span style="text-decoration: underline;">9</span>  0.059<span style="text-decoration: underline;">9</span>    50.7 1.21<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span> FALSE           4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> sp|P0A763|NDK_E… F1.:F…     1 0.185   0.185     45.8 2.00<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span> FALSE           4</span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: FDR &lt;dbl&gt;</span></span></span></code></pre>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ANOVA</span><span class="op">$</span><span class="va">factor</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "F1."     "F2."     "F1.:F2."</span></span></code></pre>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">protIntSig</span> <span class="op">&lt;-</span> <span class="va">ANOVA</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">factor</span> <span class="op">==</span> <span class="st">"F1."</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">FDR</span> <span class="op">&lt;</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span></span>
@@ -284,33 +278,33 @@ factors treatment and batch.</p>
 <span><span class="co">##   isotope protein_Id</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span> light          415</span></span></code></pre>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"ECOLI"</span>, <span class="va">protInt</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.9511936</span></span></code></pre>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#ggpubr::ggarrange(plotlist = protInt$get_Plotter()$boxplots()$boxplot)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="compute-contrasts">Compute contrasts<a class="anchor" aria-label="anchor" href="#compute-contrasts"></a>
 </h2>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">contr</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsModerated.html" class="external-link">ContrastsModerated</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/Contrasts.html" class="external-link">Contrasts</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">mod</span>, <span class="va">Contrasts</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#contr$get_contrasts_sides()</span></span>
 <span><span class="va">contrdf</span> <span class="op">&lt;-</span> <span class="va">contr</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>The code snippets graph the volcano and ma plot.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plotter</span> <span class="op">&lt;-</span> <span class="va">contr</span><span class="op">$</span><span class="fu">get_Plotter</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">plotter</span><span class="op">$</span><span class="fu">volcano</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $FDR</span></span></code></pre>
-<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/graphVolcano-1.png" width="700"></p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/graphVolcano-1.png" class="r-plt" alt="" width="700"></p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plotter</span><span class="op">$</span><span class="fu">ma_plot</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/graphVolcano-2.png" width="700"></p>
+<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/graphVolcano-2.png" class="r-plt" alt="" width="700"></p>
 <div class="section level3">
 <h3 id="annalyse-contrasts-with-missing-data-imputation">Annalyse contrasts with missing data imputation<a class="anchor" aria-label="anchor" href="#annalyse-contrasts-with-missing-data-imputation"></a>
 </h3>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lfqTrans</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">table</span><span class="op">$</span><span class="va">factorDepth</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span><span class="co"># ContrastsMissing$debug("get_contrasts")</span></span>
 <span><span class="va">contrSimple</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsMissing.html" class="external-link">ContrastsMissing</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>lfqdata <span class="op">=</span> <span class="va">lfqTrans</span>,</span>
@@ -319,75 +313,115 @@ factors treatment and batch.</p>
 <span><span class="co"># na.omit(contrdfSimple)</span></span>
 <span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="va">contrSimple</span><span class="op">$</span><span class="fu">get_Plotter</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">pl</span><span class="op">$</span><span class="fu">histogram_diff</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pl</span><span class="op">$</span><span class="fu">volcano</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $p.value</span></span></code></pre>
-<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/unnamed-chunk-6-2.png" width="700"></p>
+<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/unnamed-chunk-6-2.png" class="r-plt" alt="" width="700"></p>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## $FDR</span></span></code></pre>
-<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/unnamed-chunk-6-3.png" width="700"></p>
+<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/unnamed-chunk-6-3.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="merge-nonimputed-and-imputed-data-">Merge nonimputed and imputed data.<a class="anchor" aria-label="anchor" href="#merge-nonimputed-and-imputed-data-"></a>
 </h3>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">contr</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 20466    13</span></span></code></pre>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">contrSimple</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 20880    20</span></span></code></pre>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mergedContrasts</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/merge_contrasts_results.html" class="external-link">merge_contrasts_results</a></span><span class="op">(</span>prefer <span class="op">=</span> <span class="va">contr</span>, add <span class="op">=</span> <span class="va">contrSimple</span><span class="op">)</span><span class="op">$</span><span class="va">merged</span></span>
 <span><span class="va">cM</span> <span class="op">&lt;-</span> <span class="va">mergedContrasts</span><span class="op">$</span><span class="fu">get_Plotter</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="va">cM</span><span class="op">$</span><span class="fu">volcano</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">plot</span><span class="op">$</span><span class="va">FDR</span></span></code></pre></div>
-<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/plotNergeNonImpyted-1.png" width="700"></p>
+<p><img src="Benchmark_Model_IonStar_With2Factors_files/figure-html/plotNergeNonImpyted-1.png" class="r-plt" alt="" width="700"></p>
 <p>The <code>prolfqua</code> package is described in <span class="citation">[@Wolski2022.06.07.494524]</span>.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.4.1 (2024-06-14)</span></span>
-<span><span class="co">## Platform: aarch64-apple-darwin20</span></span>
-<span><span class="co">## Running under: macOS 15.0.1</span></span>
+<pre><code><span><span class="co">## R version 4.5.2 (2025-10-31)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib </span></span>
-<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0</span></span>
+<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
-<span><span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
+<span><span class="co">##  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
+<span><span class="co">##  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   </span></span>
+<span><span class="co">##  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
+<span><span class="co">## [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## time zone: Europe/Zurich</span></span>
-<span><span class="co">## tzcode source: internal</span></span>
+<span><span class="co">## time zone: UTC</span></span>
+<span><span class="co">## tzcode source: system (glibc)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attached base packages:</span></span>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] gtable_0.3.6       xfun_0.49          bslib_0.8.0        ggplot2_3.5.1     </span></span>
-<span><span class="co">##  [5] htmlwidgets_1.6.4  ggrepel_0.9.6      vctrs_0.6.5        tools_4.4.1       </span></span>
-<span><span class="co">##  [9] generics_0.1.3     tibble_3.2.1       pkgconfig_2.0.3    pheatmap_1.0.12   </span></span>
-<span><span class="co">## [13] data.table_1.16.4  RColorBrewer_1.1-3 desc_1.4.3         readxl_1.4.3      </span></span>
-<span><span class="co">## [17] lifecycle_1.0.4    prolfqua_1.3.6     compiler_4.4.1     farver_2.1.2      </span></span>
-<span><span class="co">## [21] stringr_1.5.1      textshaping_0.4.1  progress_1.2.3     munsell_0.5.1     </span></span>
-<span><span class="co">## [25] htmltools_0.5.8.1  sass_0.4.9         yaml_2.3.10        lazyeval_0.2.2    </span></span>
-<span><span class="co">## [29] plotly_4.10.4      pillar_1.10.0      pkgdown_2.1.1      crayon_1.5.3      </span></span>
-<span><span class="co">## [33] jquerylib_0.1.4    tidyr_1.3.1        MASS_7.3-64        prolfquapp_0.0.8  </span></span>
-<span><span class="co">## [37] cachem_1.1.0       tidyselect_1.2.1   conflicted_1.2.0   digest_0.6.37     </span></span>
-<span><span class="co">## [41] stringi_1.8.4      dplyr_1.1.4        purrr_1.0.2        labeling_0.4.3    </span></span>
-<span><span class="co">## [45] forcats_1.0.0      fastmap_1.2.0      grid_4.4.1         colorspace_2.1-1  </span></span>
-<span><span class="co">## [49] cli_3.6.3          magrittr_2.0.3     utf8_1.2.4         withr_3.0.2       </span></span>
-<span><span class="co">## [53] prettyunits_1.2.0  scales_1.3.0       rmarkdown_2.29     httr_1.4.7        </span></span>
-<span><span class="co">## [57] gridExtra_2.3      cellranger_1.1.0   ragg_1.3.3         hms_1.1.3         </span></span>
-<span><span class="co">## [61] memoise_2.0.1      evaluate_1.0.1     knitr_1.49         viridisLite_0.4.2 </span></span>
-<span><span class="co">## [65] dtplyr_1.3.1       rlang_1.1.4        Rcpp_1.0.13-1      glue_1.8.0        </span></span>
-<span><span class="co">## [69] jsonlite_1.8.9     R6_2.5.1           systemfonts_1.1.0  fs_1.6.5</span></span></code></pre>
+<span><span class="co">##   [1] gridExtra_2.3               writexl_1.5.4              </span></span>
+<span><span class="co">##   [3] readxl_1.4.5                rlang_1.1.7                </span></span>
+<span><span class="co">##   [5] magrittr_2.0.4              otel_0.2.0                 </span></span>
+<span><span class="co">##   [7] matrixStats_1.5.0           compiler_4.5.2             </span></span>
+<span><span class="co">##   [9] systemfonts_1.3.1           vctrs_0.7.1                </span></span>
+<span><span class="co">##  [11] stringr_1.6.0               pkgconfig_2.0.3            </span></span>
+<span><span class="co">##  [13] crayon_1.5.3                fastmap_1.2.0              </span></span>
+<span><span class="co">##  [15] XVector_0.50.0              labeling_0.4.3             </span></span>
+<span><span class="co">##  [17] pander_0.6.6                utf8_1.2.6                 </span></span>
+<span><span class="co">##  [19] rmarkdown_2.30              tzdb_0.5.0                 </span></span>
+<span><span class="co">##  [21] preprocessCore_1.72.0       ragg_1.5.0                 </span></span>
+<span><span class="co">##  [23] UpSetR_1.4.0                purrr_1.2.1                </span></span>
+<span><span class="co">##  [25] bit_4.6.0                   xfun_0.56                  </span></span>
+<span><span class="co">##  [27] cachem_1.1.0                jsonlite_2.0.0             </span></span>
+<span><span class="co">##  [29] progress_1.2.3              DelayedArray_0.36.0        </span></span>
+<span><span class="co">##  [31] prettyunits_1.2.0           R6_2.6.1                   </span></span>
+<span><span class="co">##  [33] bslib_0.10.0                stringi_1.8.7              </span></span>
+<span><span class="co">##  [35] RColorBrewer_1.1-3          limma_3.66.0               </span></span>
+<span><span class="co">##  [37] GenomicRanges_1.62.1        jquerylib_0.1.4            </span></span>
+<span><span class="co">##  [39] cellranger_1.1.0            Rcpp_1.1.1                 </span></span>
+<span><span class="co">##  [41] Seqinfo_1.0.0               bookdown_0.46              </span></span>
+<span><span class="co">##  [43] assertthat_0.2.1            SummarizedExperiment_1.40.0</span></span>
+<span><span class="co">##  [45] knitr_1.51                  lobstr_1.2.0               </span></span>
+<span><span class="co">##  [47] readr_2.2.0                 IRanges_2.44.0             </span></span>
+<span><span class="co">##  [49] Matrix_1.7-4                tidyselect_1.2.1           </span></span>
+<span><span class="co">##  [51] abind_1.4-8                 yaml_2.3.12                </span></span>
+<span><span class="co">##  [53] affy_1.88.0                 lattice_0.22-7             </span></span>
+<span><span class="co">##  [55] tibble_3.3.1                plyr_1.8.9                 </span></span>
+<span><span class="co">##  [57] Biobase_2.70.0              withr_3.0.2                </span></span>
+<span><span class="co">##  [59] S7_0.2.1                    prolfqua_1.4.0             </span></span>
+<span><span class="co">##  [61] evaluate_1.0.5              desc_1.4.3                 </span></span>
+<span><span class="co">##  [63] getopt_1.20.4               pillar_1.11.1              </span></span>
+<span><span class="co">##  [65] affyio_1.80.0               BiocManager_1.30.27        </span></span>
+<span><span class="co">##  [67] MatrixGenerics_1.22.0       stats4_4.5.2               </span></span>
+<span><span class="co">##  [69] plotly_4.12.0               generics_0.1.4             </span></span>
+<span><span class="co">##  [71] dtplyr_1.3.3                S4Vectors_0.48.0           </span></span>
+<span><span class="co">##  [73] hms_1.1.4                   ggplot2_4.0.2              </span></span>
+<span><span class="co">##  [75] scales_1.4.0                glue_1.8.0                 </span></span>
+<span><span class="co">##  [77] pheatmap_1.0.13             lazyeval_0.2.2             </span></span>
+<span><span class="co">##  [79] tools_4.5.2                 data.table_1.18.2.1        </span></span>
+<span><span class="co">##  [81] vsn_3.78.1                  forcats_1.0.1              </span></span>
+<span><span class="co">##  [83] fs_1.6.6                    grid_4.5.2                 </span></span>
+<span><span class="co">##  [85] optparse_1.7.5              tidyr_1.3.2                </span></span>
+<span><span class="co">##  [87] crosstalk_1.2.2             cli_3.6.5                  </span></span>
+<span><span class="co">##  [89] prolfquapp_2.0.10           textshaping_1.0.4          </span></span>
+<span><span class="co">##  [91] S4Arrays_1.10.1             viridisLite_0.4.3          </span></span>
+<span><span class="co">##  [93] arrow_23.0.0.1              dplyr_1.2.0                </span></span>
+<span><span class="co">##  [95] gtable_0.3.6                sass_0.4.10                </span></span>
+<span><span class="co">##  [97] digest_0.6.39               BiocGenerics_0.56.0        </span></span>
+<span><span class="co">##  [99] SparseArray_1.10.8          ggrepel_0.9.6              </span></span>
+<span><span class="co">## [101] htmlwidgets_1.6.4           farver_2.1.2               </span></span>
+<span><span class="co">## [103] htmltools_0.5.9             pkgdown_2.2.0              </span></span>
+<span><span class="co">## [105] lifecycle_1.0.5             httr_1.4.8                 </span></span>
+<span><span class="co">## [107] statmod_1.5.1               bit64_4.6.0-1              </span></span>
+<span><span class="co">## [109] MASS_7.3-65</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -410,7 +444,7 @@ factors treatment and batch.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

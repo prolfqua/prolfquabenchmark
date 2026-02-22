@@ -1,11 +1,11 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
+<url><loc>/CLAUDE.html</loc></url>
 <url><loc>/articles/BenchmarkFragPipeMSStats.html</loc></url>
 <url><loc>/articles/BenchmarkFragPipeProteinIonStar.html</loc></url>
 <url><loc>/articles/BenchmarkMSqRob2.html</loc></url>
 <url><loc>/articles/Benchmark_MSStats.html</loc></url>
 <url><loc>/articles/Benchmark_Model_IonStar_With2Factors.html</loc></url>
-<url><loc>/articles/Benchmark_SaintExpress.html</loc></url>
 <url><loc>/articles/Benchmark_cptac.html</loc></url>
 <url><loc>/articles/Benchmark_proDA_fromMQlfq.html</loc></url>
 <url><loc>/articles/Benchmark_proDA_medpolish.html</loc></url>
