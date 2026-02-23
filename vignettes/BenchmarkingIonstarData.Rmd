@@ -464,6 +464,43 @@ allBenchmarks$benchmark_ProtModerated <- benchmark_ProtModerated
 
 ```
 
+### Adding DEqMS Moderation
+
+DEqMS applies count-dependent variance shrinkage: proteins quantified from many peptides get less shrinkage, proteins from few peptides get more.
+
+```{r buildCountDF}
+count_df <- lfqNormSubset$data |>
+  dplyr::select(protein_Id, peptide_Id) |>
+  dplyr::distinct() |>
+  dplyr::count(protein_Id, name = "nr_peptides")
+```
+
+```{r contrastModel1DEqMS}
+contrProtDEqMS <- prolfqua::ContrastsModeratedDEqMS$new(
+  contrProt,
+  count_df = count_df,
+  count_column = "nr_peptides"
+)
+contrProtDEqMS$get_Plotter()$volcano()$FDR
+```
+
+```{r benchmarkModel1DEqMS}
+allContrasts$ProtDEqMS <- contrProtDEqMS$get_contrasts()
+ttd <- prolfqua::ionstar_bench_preprocess(contrProtDEqMS$get_contrasts())
+benchmark_ProtDEqMS <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "med. polish and lm DEqMS moderated",
+    model_name = "prolfqua_lm_DEqMS")
+
+prolfqua::table_facade(
+  benchmark_ProtDEqMS$smc$summary,
+  caption = "Nr of proteins with Nr of not estimated contrasts.",
+  digits = 1)
+
+benchmark_ProtDEqMS$plot_FDRvsFDP()
+allBenchmarks$benchmark_ProtDEqMS <- benchmark_ProtDEqMS
+```
+
 ## Contrasts from mixed effect models
 
 ```{r contrastModel2}
@@ -583,6 +620,40 @@ prolfqua::table_facade(bb$ftable$content, caption = bb$ftable$caption, digits = 
 
 ```
 
+## Contrasts from limma model
+
+Limma uses a matrix-based linear model with empirical Bayes variance moderation via `lmFit` + `eBayes`.
+This is an alternative to the per-protein `lm` + `squeezeVarRob` pipeline.
+
+```{r buildModelLimma}
+limma_formula <- paste0(protLFQ$config$table$get_response(), " ~ dilution.")
+limma_strategy <- prolfqua::strategy_limma(limma_formula)
+modLimma <- prolfqua::build_model_limma(protLFQ, limma_strategy)
+modLimma$anova_histogram()$plot
+```
+
+```{r contrastLimma}
+contrLimma <- prolfqua::ContrastsLimma$new(modLimma, relevantContrasts)
+contrLimma$get_Plotter()$volcano()$FDR
+```
+
+```{r benchmarkLimma}
+allContrasts$Limma <- contrLimma$get_contrasts()
+ttd <- prolfqua::ionstar_bench_preprocess(contrLimma$get_contrasts())
+benchmark_Limma <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "med. polish and limma",
+    model_name = "prolfqua_limma")
+
+prolfqua::table_facade(
+  benchmark_Limma$smc$summary,
+  caption = "Nr of proteins with Nr of not estimated contrasts.",
+  digits = 1)
+
+benchmark_Limma$plot_FDRvsFDP()
+allBenchmarks$benchmark_Limma <- benchmark_Limma
+```
+
 # Merging contrasts of two models.
 
 Here we merge contrasts estimates from linear models and from the models with imputation using `merge_contrasts_results`.
@@ -620,7 +691,39 @@ knitr::kable((bb$ftable$content))
 
 allBenchmarks$benchmark_merged <- benchmark_merged
 
+```
 
+### Merged with DEqMS moderation
+
+```{r mergingContrastsDEqMS}
+merged_deqms <- prolfqua::ContrastsModeratedDEqMS$new(
+  all$merged,
+  count_df = count_df,
+  count_column = "nr_peptides"
+)
+ttd <- prolfqua::ionstar_bench_preprocess(merged_deqms$get_contrasts())
+benchmark_merged_deqms <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "merge of prot DEqMS moderated and imputed",
+    model_name = "prolfqua_merged_DEqMS")
+
+benchmark_merged_deqms$plot_FDRvsFDP()
+allBenchmarks$benchmark_merged_deqms <- benchmark_merged_deqms
+```
+
+### Merged with limma
+
+```{r mergingContrastsLimma}
+all_limma <- prolfqua::merge_contrasts_results(prefer = contrLimma, add = contrImp)
+merged_limma <- prolfqua::ContrastsModerated$new(all_limma$merged)
+ttd <- prolfqua::ionstar_bench_preprocess(merged_limma$get_contrasts())
+benchmark_merged_limma <- prolfqua::make_benchmark(
+    ttd$data,
+    model_description = "merge of limma and imputed",
+    model_name = "prolfqua_limma_merged")
+
+benchmark_merged_limma$plot_FDRvsFDP()
+allBenchmarks$benchmark_merged_limma <- benchmark_merged_limma
 ```
 
 ```{r same, eval=FALSE}
@@ -672,12 +775,14 @@ if (SAVE) {
 
 The table below summarizes the contrast estimates produced which will be benchmarked.
 
-|                          |      Model      | Contrast | Moderation | Aggregation |
-|--------------------------|:---------------:|----------|------------|-------------|
-| Protein abudance         |       lm        | o        | o          |             |
-| Protein abudance Imputed | pooled variance | o        | o          |             |
-| Peptide abudance         |      lmer       | o        | o          |             |
-| Peptide abudance         |       lm        |          |            | o           |
+|                          |      Model      | Contrast | Moderation       | Aggregation |
+|--------------------------|:---------------:|----------|------------------|-------------|
+| Protein abundance        |       lm        | o        | o                |             |
+| Protein abundance        |       lm        | o        | o (DEqMS)        |             |
+| Protein abundance        |      limma      | o        | o (eBayes)       |             |
+| Protein abundance Imputed| pooled variance | o        | o                |             |
+| Peptide abundance        |      lmer       | o        | o                |             |
+| Peptide abundance        |       lm        |          |                  | o           |
 
 ```{r fig.cap="Partial area under the ROC curve at 10% FPR."}
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
