@@ -8,4 +8,5 @@
 /docs/
 vignettes/*.html
 vignettes/*_files/
-inst/Benchresults/
+inst/Benchresults/*
+!inst/Benchresults/.gitkeep
