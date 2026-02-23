@@ -4,3 +4,10 @@
 ^\.Rproj\.user$
 ^doc$
 ^Meta$
+^\.github$
+^CLAUDE\.md$
+^Makefile$
+^\.Rprofile$
+^inst/Benchresults$
+^inst/MyArticle$
+^inst/triqler$

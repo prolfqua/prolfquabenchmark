@@ -25,6 +25,7 @@ help:
 	@echo "  make renv-init       - initialize renv and install all deps (first time)"
 	@echo "  make renv-restore    - restore environment from renv.lock"
 	@echo "  make renv-snapshot   - update renv.lock after installing new packages"
+	@echo "  make renv-local      - reinstall prolfqua + prolfquapp from local sibling dirs"
 	@echo "  make renv-reset      - nuke renv library + lockfile, reinit from DESCRIPTION"
 
 document:
@@ -80,6 +81,10 @@ renv-restore:
 
 renv-snapshot:
 	Rscript -e "renv::snapshot()"
+
+renv-local:
+	Rscript -e "devtools::install('../prolfqua', upgrade = 'never')"
+	Rscript -e "devtools::install('../prolfquapp', upgrade = 'never')"
 
 renv-reset:
 	rm -rf renv/library renv.lock

@@ -6,3 +6,6 @@
 /Meta/
 .DS_Store
 /docs/
+vignettes/*.html
+vignettes/*_files/
+inst/Benchresults/

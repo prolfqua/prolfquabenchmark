@@ -14,40 +14,41 @@ URL: https://github.com/wolski/proLFQuaBenchmark
 BugReports: https://github.com/wolski/proLFQuaBenchmark/issues
 LazyData: true
 Imports:
+    dplyr,
+    prolfqua,
+    rlang,
+    tibble,
+    tidyr
+Suggests:
     bookdown,
     conflicted,
-    dplyr,
+    covr,
+    devtools,
     ggplot2,
     ggpubr,
     gridExtra,
     knitr,
     limma,
+    lintr,
     MSstats,
     msdata,
     msqrob2,
+    pkgdown,
     plotly,
-    prolfqua,
+    proDA,
     prolfquapp,
     prolfquadata,
-    proDA,
     pROC,
     purrr,
     QFeatures,
-    readxl,
     R6,
-    SummarizedExperiment,
-    tibble,
-    tidyr,
-    vsn
-Suggests:
-    covr,
-    devtools,
-    lintr,
-    pkgdown,
     rcmdcheck,
+    readxl,
     rmarkdown,
     roxygen2,
-    testthat (>= 3.0.0)
+    SummarizedExperiment,
+    testthat (>= 3.0.0),
+    vsn
 Remotes:
     fgcz/prolfqua@Modelling2R6,
     prolfqua/prolfquapp,

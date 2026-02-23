@@ -6,6 +6,11 @@
 \usage{
 cptac_bench_preprocess(data, idcol = "protein_Id")
 }
+\arguments{
+\item{data}{a data frame with contrast results}
+
+\item{idcol}{name of the protein identifier column}
+}
 \description{
 preprocess cptac dataset for benchmarking
 }
