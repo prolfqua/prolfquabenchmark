@@ -1,5 +1,7 @@
 # prolfquabenchmark
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18775961.svg)](https://doi.org/10.5281/zenodo.18775961)
+
 Benchmarking vignettes comparing differential expression analysis methods — **prolfqua**, **MSstats**, **proDA**, **msqrob2**, **limma**, and **DEqMS** — using the IonStar and CPTAC gold-standard datasets.
 
 Full documentation and rendered vignettes: **https://prolfqua.github.io/prolfquabenchmark/**
