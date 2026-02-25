@@ -24,7 +24,7 @@ The `inst/MyArticle/` directory contains the source for the prolfqua manuscript 
 ## Installation
 
 ```r
-remotes::install_github("wolski/prolfquabenchmark")
+remotes::install_github("wolski/prolfquabenchmark", dependencies = TRUE)
 ```
 
 ## Building vignettes
