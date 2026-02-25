@@ -393,11 +393,21 @@ The IonStar/MaxQuant dataset (see Methods) captures only the variance from the c
 ```{r readBenchmarkData}
 
 getpath <- function(filN){
-    f1 <- file.path("../../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),filN)
-    if (f1 == "") {
-        f1 <- system.file("Benchresults",format( Sys.Date(), "%Y%m%d"),filN, package = "prolfquabenchmark")
+    benchdir <- "../../inst/Benchresults"
+    bench_date <- Sys.getenv("BENCH_DATE", unset = "")
+    if (bench_date == "") {
+        dated <- sort(list.files(benchdir, pattern = "^[0-9]{8}$"), decreasing = TRUE)
+        bench_date <- if (length(dated) > 0) dated[1] else format(Sys.Date(), "%Y%m%d")
     }
-    message(f1)
+    f1 <- file.path(benchdir, bench_date, filN)
+    if (!file.exists(f1)) {
+        f1 <- file.path(benchdir, filN)
+    }
+    if (!file.exists(f1)) {
+        f1 <- system.file("Benchresults", filN, package = "prolfquabenchmark")
+    }
+    message("getpath: ", f1)
+    stopifnot(file.exists(f1))
     return(f1)
 }
 allBenchmarks <- readRDS(getpath("allBenchmarks.RDS"))

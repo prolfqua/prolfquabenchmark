@@ -152,11 +152,21 @@ The Rmarkdown file which generated these results, can be found here:
 
 ```{r}
 getpath <- function(filN){
-    f1 <- file.path("../../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),filN)
-    if (f1 == "") {
-        f1 <- system.file("Benchresults",format( Sys.Date(), "%Y%m%d"),filN, package = "prolfquabenchmark")
+    benchdir <- "../../inst/Benchresults"
+    bench_date <- Sys.getenv("BENCH_DATE", unset = "")
+    if (bench_date == "") {
+        dated <- sort(list.files(benchdir, pattern = "^[0-9]{8}$"), decreasing = TRUE)
+        bench_date <- if (length(dated) > 0) dated[1] else format(Sys.Date(), "%Y%m%d")
     }
-    message(f1)
+    f1 <- file.path(benchdir, bench_date, filN)
+    if (!file.exists(f1)) {
+        f1 <- file.path(benchdir, filN)
+    }
+    if (!file.exists(f1)) {
+        f1 <- system.file("Benchresults", filN, package = "prolfquabenchmark")
+    }
+    message("getpath: ", f1)
+    stopifnot(file.exists(f1))
     return(f1)
 }
 CPTACBenchmarks <- readRDS(getpath("CPTAC_Benchmark.RDS"))
@@ -452,11 +462,7 @@ mqdata <- list()
 mqdata$data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
 mqdata$config <- prolfqua::create_config_MQ_peptide()
 annotation <- readxl::read_xlsx(inputAnnotation)
-res <- prolfquapp::add_annotation(
-  mqdata$data,
-  annotation,
-  fileName = "raw.file"
-)
+res <- dplyr::inner_join(mqdata$data, annotation, by = "raw.file")
 mqdata$config$table$factors[["dilution."]] = "sample"
 mqdata$config$table$factors[["run_Id"]] = "run_ID"
 mqdata$config$table$factorDepth <- 1
@@ -516,8 +522,8 @@ The following code illustrates how to specify a model with two factors and an in
 
 To estimate treatment differences, we first specify the linear model that explains the observed protein abundances (transformedIntensities) using the explanatory variables `condition_` and `batch_` and the interaction term  `condition_:batch_`. Then, after fitting the model, we can estimate the treatment difference among the groups `Ethanol` and `Glucose` defined by the factor `condition` and similarly among the groups defined by `batch_`. Furthermore, we can examine differences between `Ethanol` and `Glucose` within each batch. We also can assess if these differences are the same or are different in both batches, i.e., if there is an interaction between condition and batch. We also show the code to compute the array of weights $c$ used to multiply the model coefficient $\beta$.
 
-```{r contrast2, eval = TRUE, echo = TRUE}
-
+```{r contrast2, eval = FALSE, echo = TRUE}
+# NOTE: data_Yeast2Factor was removed from prolfqua; showing code only
 Yeast2Factor <- prolfqua::prolfqua_data("data_Yeast2Factor")
 Yeast2Factor$data |> dplyr::select(condition_, batch_) |> dplyr::distinct()
 mlm <- prolfqua::strategy_lm(
@@ -542,7 +548,7 @@ mC <- prolfqua::linfct_matrix_contrasts(linfct, Contrasts)
 
 Table \@ref(tab:contrcoefficient) shows weights $c$ for each of the five contrasts we specified.
 
-```{r contrcoefficient}
+```{r contrcoefficient, eval = FALSE}
 cap = "Weights $c$ for each of the contrasts (rows) which will be applied to the model parameter (columns)."
 knitr::kable(mC, caption = cap,format = "latex")
 ```
@@ -561,7 +567,9 @@ Since `combined_portein.tsv` only holds protein level data, the hierarchy list h
 Finally, we have to specify which columns contain the explanatory variables of the analysis. The `AnalysisTableAnnotation` has the field `factors,` a list with as many entries as explanatory variables. Here we include two explanatory variables, the dilution, specified in the column 'sample', and 'run' stored in the column 'run_ID', representing the order of the measurement.
 
 
-```{r echo=TRUE}
+```{r echo=TRUE, eval=FALSE}
+# NOTE: tidy_FragPipe_combined_protein_deprec and AnalysisTableAnnotation
+# were removed from prolfqua; showing code only
 datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputFragfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
@@ -572,10 +580,10 @@ protein <- tibble::as_tibble(
     read.csv(unz(inputFragfile,"IonstarWithMSFragger/combined_protein.tsv"),
              header = TRUE, sep = "\t", stringsAsFactors = FALSE))
 
-# read combined_protein.tsv 
+# read combined_protein.tsv
 protein <- prolfqua::tidy_FragPipe_combined_protein_deprec(protein)
 # remove proteins identified by a single peptide
-protein <- protein |> 
+protein <- protein |>
   dplyr::filter(unique.stripped.peptides > 1)
 
 # annotate the data
@@ -609,7 +617,7 @@ lfqdata$hierarchy_counts()
 knitr::include_graphics("graphics/codeSnippet1TabCompletion.png")
 ```
 
-```{r proLFQuaSticker, echo=TRUE, out.height="5cm", eval=TRUE, fig.cap="Sticker maintainer: Witold E. Wolski; License: Creative Commons Attribution CC-BY. Feel free to share and adapt, but don't forget to credit the author."}
+```{r proLFQuaSticker, echo=TRUE, out.width="3cm", eval=TRUE, fig.cap="Sticker maintainer: Witold E. Wolski; License: Creative Commons Attribution CC-BY. Feel free to share and adapt, but don't forget to credit the author."}
 file.path("graphics/hexstrickerPRL2.png") |>
   knitr::include_graphics()
 ```
@@ -630,8 +638,8 @@ expression analysis such as linear (mixed effect) models and allows to
 specify multiple contrasts.
 
 
-```{r toc, echo=FALSE, fig.cap="(ref:toc)"}
-knitr::include_graphics("graphics/TOCv2.pdf")
+```{r toc, echo=FALSE, fig.cap="(ref:toc)", out.width="\\textwidth"}
+knitr::include_graphics("graphics/prolfqua-toc.png")
 
 ```
 
