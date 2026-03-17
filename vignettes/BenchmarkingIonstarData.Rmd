@@ -41,7 +41,7 @@ conflicted::conflict_prefer("filter", "dplyr")
 
 Decide if you work with all data or for speedup with subset of data:
 
-```{r}
+```{r setSubsetOptions}
 SUBSET <- FALSE
 SUBSETNORM <- TRUE
 SAVE <- TRUE
@@ -95,7 +95,7 @@ lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
 
 Filter the data for small intensities (maxquant reports missing values as 0) and for two peptides per protein.
 
-```{r}
+```{r filterData}
 lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
 lfqdata$filter_proteins_by_peptide_count()
 lfqdata$remove_small_intensities()
@@ -107,7 +107,7 @@ We will normalize the data using the 'LFQTransformer' class.
 Since we know that the Human proteins are the Matrix in the experiment we will normalize the data using HUMAN proteins only.
 To this task we subset the dataset by filtering for HUMAN proteins only and then use the `LFQDataTransformer` to normalize the data.
 
-```{r}
+```{r normalizeData}
 tr <- lfqdata$get_Transformer()
 subset_h <- lfqdata$get_copy()
 subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
@@ -754,7 +754,7 @@ allBenchmarks$benchmark_same <- benchmark_same
 
 ```
 
-```{r include=FALSE}
+```{r saveBenchmarks, include=FALSE}
 bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
 if (!dir.exists(bdir)) {dir.create(bdir)}
 
@@ -785,7 +785,7 @@ The table below summarizes the contrast estimates produced which will be benchma
 | Peptide abundance        |      lmer       | o        | o                |             |
 | Peptide abundance        |       lm        |          |                  | o           |
 
-```{r fig.cap="Partial area under the ROC curve at 10% FPR."}
+```{r comparepAUC10, fig.cap="Partial area under the ROC curve at 10% FPR."}
 ttt <- sapply(allBenchmarks, function(x){x$complete(FALSE)})
 res <- purrr::map_df(allBenchmarks, function(x){x$pAUC()})
 resAllB <- res |> dplyr::filter(contrast == "all")
@@ -801,7 +801,7 @@ ggplot2::ggplot(bb, ggplot2::aes(x = Name, y = pAUC_10)) +
 
 ```
 
-```{r fig.caption="Partial area under the ROC curve at 20% FPR."}
+```{r comparepAUC20, fig.caption="Partial area under the ROC curve at 20% FPR."}
 ggplot2::ggplot(bb, ggplot2::aes(x = Name, y = pAUC_20)) +
   ggplot2::geom_bar(stat = "identity") +
   ggplot2::facet_wrap(~whatfix)  +
@@ -813,7 +813,7 @@ ggplot2::ggplot(bb, ggplot2::aes(x = Name, y = pAUC_20)) +
 
 ### Look at the nr of estimated contrasts.
 
-```{r fig.cap="NR of estimated contrasts", fig.width=5, fig.height=5}
+```{r compareNrEstimatedContrasts, fig.cap="NR of estimated contrasts", fig.width=5, fig.height=5}
 dd <- purrr::map_df(allBenchmarks, function(x){res <- x$smc$summary; res$name <- x$model_name;res})
 
 

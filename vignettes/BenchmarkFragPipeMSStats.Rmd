@@ -116,7 +116,7 @@ hm
 
 ## Aggregate proteins
 
-```{r}
+```{r aggregateProteins}
 agg <- lfqdataPeptideNorm$get_Aggregator()
 agg$medpolish()
 lfqdataNormalized <- agg$lfq_agg
@@ -277,7 +277,7 @@ prlm <- msqrobHurdle(pe,
 
 Since msqrob does not report average abundances, we are computing them for each contrast.
 
-```{r}
+```{r generateAverageAbundances}
 st <- lfqdataNormalized$get_Stats()
 protAbundanceIngroup <- st$stats()
 protAbundanceIngroup <- protAbundanceIngroup |>
@@ -291,7 +291,7 @@ protAbundanceIngroup <- protAbundanceIngroup |>
 ```
 
 
-```{r}
+```{r computeHurdleContrasts}
 L <- makeContrast(c("dilution.e-dilution.d=0",
                     "dilution.d-dilution.c=0",
                     "dilution.c-dilution.b=0",
@@ -434,7 +434,7 @@ benchmark_msqrob$plot_precision_recall()
 # DEA using MSstats
 
 
-```{r}
+```{r prepareMSstatsData}
 
 annotation <- readxl::read_xlsx(inputAnnotation)
 
@@ -527,7 +527,7 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 
 Direct comparison with msqrob2 is impossible since, to fit the dropout model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file.
 
-```{r}
+```{r compareResults}
 allB <- list(benchmark_proDA = benchmark_proDA,
              benchmark_prolfqua = benchmark_prolfqua,
              benchmark_msqrob = benchmark_msqrob,
@@ -582,23 +582,23 @@ ggplot2::ggplot(all, ggplot2::aes(x = package, y = pAUC_10)) +
 ```
 
 
-```{r fig.cap= "Number of comparisons for each method"}
+```{r compareEstimatedContrasts, fig.cap= "Number of comparisons for each method"}
 
 a1 <- allB$benchmark_proDA$smc$summary
-names(a1)[2] <- "protein_Id"
 a1$name <- allB$benchmark_proDA$model_name
+names(a1)[2] <- "protein_Id"
 
 a2 <- allB$benchmark_prolfqua$smc$summary
-names(a2)[2] <- "protein_Id"
 a2$name <- allB$benchmark_prolfqua$model_name
+names(a2)[2] <- "protein_Id"
 
 a3 <- allB$benchmark_msqrob$smc$summary
-names(a3)[2] <- "protein_Id"
 a3$name <- allB$benchmark_msqrob$model_name
+names(a3)[2] <- "protein_Id"
 
 a4 <- allB$benchmark_msstats$smc$summary
-names(a4)[2] <- "protein_Id"
 a4$name <- allB$benchmark_msstats$model_name
+names(a4)[2] <- "protein_Id"
 dd <- dplyr::bind_rows(list(a1,a2,a3,a4))
 dd <- dd |> dplyr::mutate(nrcontrasts = protein_Id * (4 - nr_missing))
 dds <- dd |> dplyr::group_by(name) |> dplyr::summarize(nrcontrasts = sum(nrcontrasts))
