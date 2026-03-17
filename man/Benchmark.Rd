@@ -77,10 +77,18 @@ benchmark$pAUC()
 }
 \seealso{
 Other benchmarking: 
+\code{\link{.geomean}()},
+\code{\link{benchmark_from_file}()},
+\code{\link{collect_benchmark_results}()},
 \code{\link{ionstar_bench_preprocess}()},
 \code{\link{make_benchmark}()},
 \code{\link{ms_bench_add_scores}()},
-\code{\link{ms_bench_auc}()}
+\code{\link{ms_bench_auc}()},
+\code{\link{plot_benchmark_comparison}()},
+\code{\link{read_benchmark_results}()},
+\code{\link{read_contrast_results}()},
+\code{\link{write_benchmark_results}()},
+\code{\link{write_contrast_results}()}
 }
 \concept{benchmarking}
 \section{Public fields}{
@@ -131,12 +139,15 @@ Other benchmarking:
 \item \href{#method-Benchmark-plot_ROC}{\code{Benchmark$plot_ROC()}}
 \item \href{#method-Benchmark-pAUC_summaries}{\code{Benchmark$pAUC_summaries()}}
 \item \href{#method-Benchmark-pAUC}{\code{Benchmark$pAUC()}}
+\item \href{#method-Benchmark-summary_metrics}{\code{Benchmark$summary_metrics()}}
 \item \href{#method-Benchmark-get_confusion_FDRvsFDP}{\code{Benchmark$get_confusion_FDRvsFDP()}}
 \item \href{#method-Benchmark-n_confusion_FDRvsFDP}{\code{Benchmark$n_confusion_FDRvsFDP()}}
+\item \href{#method-Benchmark-calibration_metrics}{\code{Benchmark$calibration_metrics()}}
 \item \href{#method-Benchmark-plot_FDRvsFDP}{\code{Benchmark$plot_FDRvsFDP()}}
 \item \href{#method-Benchmark-plot_score_distribution}{\code{Benchmark$plot_score_distribution()}}
 \item \href{#method-Benchmark-plot_scatter}{\code{Benchmark$plot_scatter()}}
 \item \href{#method-Benchmark-plot_precision_recall}{\code{Benchmark$plot_precision_recall()}}
+\item \href{#method-Benchmark-to_summary_table}{\code{Benchmark$to_summary_table()}}
 \item \href{#method-Benchmark-clone}{\code{Benchmark$clone()}}
 }
 }
@@ -317,6 +328,24 @@ AUC summaries as table
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Benchmark-summary_metrics"></a>}}
+\if{latex}{\out{\hypertarget{method-Benchmark-summary_metrics}{}}}
+\subsection{Method \code{summary_metrics()}}{
+Summary metrics: geometric mean of per-contrast AUC/AP scores
+
+Computes per-contrast metrics (excluding the pooled "all" row),
+then returns the geometric mean of each metric and arithmetic mean
+of n_total, one row per score.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Benchmark$summary_metrics()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+data.frame with columns: model_name, score, AUC, pAUC_10,
+  pAUC_20, AP, pAP_50, pAP_80, n_total
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-get_confusion_FDRvsFDP"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-get_confusion_FDRvsFDP}{}}}
 \subsection{Method \code{get_confusion_FDRvsFDP()}}{
@@ -335,6 +364,37 @@ nr of elements used to determine ROC curve
 \if{html}{\out{<div class="r">}}\preformatted{Benchmark$n_confusion_FDRvsFDP()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Benchmark-calibration_metrics"></a>}}
+\if{latex}{\out{\hypertarget{method-Benchmark-calibration_metrics}{}}}
+\subsection{Method \code{calibration_metrics()}}{
+FDR calibration metrics: measures how well the nominal FDR matches
+the actual false discovery proportion (FDP).
+
+For each contrast and score, computes:
+\itemize{
+  \item \code{FDP_cal}: mean absolute deviation \code{mean(|FDP - FDR|)}
+    for FDR <= \code{fdr_threshold} (lower is better, 0 = perfect)
+  \item \code{FDP_bias}: mean signed deviation \code{mean(FDP - FDR)}
+    (positive = anticonservative, negative = conservative)
+}
+Also returns an "average" row with arithmetic mean across contrasts.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Benchmark$calibration_metrics(fdr_threshold = 0.2)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{fdr_threshold}}{maximum nominal FDR to evaluate (default 0.2)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+data.frame with columns: model_name, contrast, score,
+  FDP_cal, FDP_bias
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-plot_FDRvsFDP"></a>}}
@@ -409,6 +469,30 @@ plot precision vs recall
 }
 \subsection{Returns}{
 ggplot
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Benchmark-to_summary_table"></a>}}
+\if{latex}{\out{\hypertarget{method-Benchmark-to_summary_table}{}}}
+\subsection{Method \code{to_summary_table()}}{
+Export benchmark summary as a flat data.frame
+
+Returns one row per contrast x score with AUC metrics and counts.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Benchmark$to_summary_table(dataset = "unknown")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataset}}{dataset identifier string (default "unknown")}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+data.frame with columns: model_name, model_description, dataset,
+  contrast, score, AUC, pAUC_10, pAUC_20, n_TP, n_TN, n_total,
+  n_missing_contrasts
 }
 }
 \if{html}{\out{<hr>}}

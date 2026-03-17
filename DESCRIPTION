@@ -24,7 +24,8 @@ Imports:
     rlang,
     tibble,
     tidyr,
-    tidyselect
+    tidyselect,
+    yaml
 Suggests:
     bookdown,
     conflicted,

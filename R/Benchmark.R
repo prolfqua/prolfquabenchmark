@@ -126,6 +126,41 @@ ms_bench_auc <- function(FPR, TPR, fpr_threshold = 1) {
 }
 
 
+#' Compute Average Precision (area under Precision-Recall curve)
+#'
+#' Trapezoid integration of Recall (x-axis) vs Precision (y-axis),
+#' analogous to \code{\link{ms_bench_auc}} for ROC curves.
+#' @export
+#' @family benchmarking
+#' @param recall array of Recall (TPR) values
+#' @param precision array of corresponding Precision values
+#' @param recall_threshold max recall to integrate to (default 1)
+#' @return numeric AP score (0-100 scale)
+#' @examples
+#' recall <- c(0, 0.2, 0.4, 0.6, 0.8, 1.0)
+#' precision <- c(1.0, 0.9, 0.85, 0.8, 0.7, 0.6)
+#' ap <- ms_bench_ap(recall, precision)
+#' stopifnot(is.numeric(ap), length(ap) == 1, ap > 0)
+# Geometric mean helper (internal)
+.geomean <- function(x) {
+  x <- x[x > 0]
+  if (length(x) == 0) return(NA_real_)
+  exp(mean(log(x)))
+}
+
+
+ms_bench_ap <- function(recall, precision, recall_threshold = 1) {
+  oR <- order(recall)
+  recall <- recall[oR]
+  precision <- precision[oR]
+  idx <- recall < recall_threshold
+  recall <- recall[idx]
+  precision <- precision[idx]
+  res <- 1 / 2 * sum(diff(recall) * (head(precision, -1) + tail(precision, -1)))
+  return(res / recall_threshold * 100)
+}
+
+
 # scale_probabilities
 # @param toscale columns to scale
 # @param estimate fold change column
@@ -226,15 +261,18 @@ do_confusion_c <- function(
     dplyr::summarize(
       AUC = ms_bench_auc(.data$FPR, .data$TPR),
       pAUC_10 = ms_bench_auc(.data$FPR, .data$TPR, 0.1),
-      pAUC_20 = ms_bench_auc(.data$FPR, .data$TPR, 0.2)
+      pAUC_20 = ms_bench_auc(.data$FPR, .data$TPR, 0.2),
+      AP = ms_bench_ap(.data$TPR, .data$PREC),
+      pAP_50 = ms_bench_ap(.data$TPR, .data$PREC, 0.5),
+      pAP_80 = ms_bench_ap(.data$TPR, .data$PREC, 0.8)
     )
 
   ftable <- list(
     content = summaryS,
-    caption = paste0("AUC, and pAUC at 0.1 and 0.2 FPR for ", model_description),
+    caption = paste0("AUC, pAUC at 0.1/0.2 FPR, AP, and pAP at 0.5/0.8 Recall for ", model_description),
     digits = 2
   )
-  sumd <- tidyr::pivot_longer(summaryS, cols = matches("^AUC|^pAUC"), names_to = "AUC")
+  sumd <- tidyr::pivot_longer(summaryS, cols = matches("^AUC|^pAUC|^AP$|^pAP"), names_to = "AUC")
   barp <- ggplot(sumd, aes(x = !!sym(contrast), y = .data$value, color = NULL, fill = .data$what)) +
     geom_bar(stat = "identity", position = position_dodge()) +
     facet_wrap(~AUC, scales = "free") +
@@ -550,10 +588,56 @@ Benchmark <-
           dplyr::summarize(
             AUC = ms_bench_auc(.data$FPR, .data$TPR),
             pAUC_10 = ms_bench_auc(.data$FPR, .data$TPR, 0.1),
-            pAUC_20 = ms_bench_auc(.data$FPR, .data$TPR, 0.2)
+            pAUC_20 = ms_bench_auc(.data$FPR, .data$TPR, 0.2),
+            AP = ms_bench_ap(.data$TPR, .data$PREC),
+            pAP_50 = ms_bench_ap(.data$TPR, .data$PREC, 0.5),
+            pAP_80 = ms_bench_ap(.data$TPR, .data$PREC, 0.8)
           )
         summaryS$Name <- self$model_name
         return(summaryS)
+      },
+      #' @description
+      #' Summary metrics: geometric mean of per-contrast AUC/AP scores
+      #'
+      #' Computes per-contrast metrics (excluding the pooled "all" row),
+      #' then returns the geometric mean of each metric and arithmetic mean
+      #' of n_total, one row per score.
+      #' @return data.frame with columns: model_name, score, AUC, pAUC_10,
+      #'   pAUC_20, AP, pAP_50, pAP_80, n_total
+      summary_metrics = function() {
+        pStats <- self$get_confusion_benchmark()
+        per_contrast <- pStats |>
+          dplyr::group_by(.data$contrast, .data$what) |>
+          dplyr::summarize(
+            AUC = ms_bench_auc(.data$FPR, .data$TPR),
+            pAUC_10 = ms_bench_auc(.data$FPR, .data$TPR, 0.1),
+            pAUC_20 = ms_bench_auc(.data$FPR, .data$TPR, 0.2),
+            AP = ms_bench_ap(.data$TPR, .data$PREC),
+            pAP_50 = ms_bench_ap(.data$TPR, .data$PREC, 0.5),
+            pAP_80 = ms_bench_ap(.data$TPR, .data$PREC, 0.8),
+            n_total = dplyr::n(),
+            .groups = "drop"
+          ) |>
+          dplyr::filter(.data$contrast != "all")
+
+        summary_df <- per_contrast |>
+          dplyr::group_by(.data$what) |>
+          dplyr::summarize(
+            AUC = .geomean(.data$AUC),
+            pAUC_10 = .geomean(.data$pAUC_10),
+            pAUC_20 = .geomean(.data$pAUC_20),
+            AP = .geomean(.data$AP),
+            pAP_50 = .geomean(.data$pAP_50),
+            pAP_80 = .geomean(.data$pAP_80),
+            n_total = mean(.data$n_total),
+            .groups = "drop"
+          )
+
+        colnames(summary_df)[colnames(summary_df) == "what"] <- "score"
+        summary_df$model_name <- self$model_name
+        col_order <- c("model_name", "score", "AUC", "pAUC_10", "pAUC_20",
+                        "AP", "pAP_50", "pAP_80", "n_total")
+        summary_df[, col_order]
       },
       #' @description
       #' FDR vs FDP data
@@ -570,6 +654,48 @@ Benchmark <-
         return(n)
       },
 
+      #' @description
+      #' FDR calibration metrics: measures how well the nominal FDR matches
+      #' the actual false discovery proportion (FDP).
+      #'
+      #' For each contrast and score, computes:
+      #' \itemize{
+      #'   \item \code{FDP_cal}: mean absolute deviation \code{mean(|FDP - FDR|)}
+      #'     for FDR <= \code{fdr_threshold} (lower is better, 0 = perfect)
+      #'   \item \code{FDP_bias}: mean signed deviation \code{mean(FDP - FDR)}
+      #'     (positive = anticonservative, negative = conservative)
+      #' }
+      #' Also returns an "average" row with arithmetic mean across contrasts.
+      #' @param fdr_threshold maximum nominal FDR to evaluate (default 0.2)
+      #' @return data.frame with columns: model_name, contrast, score,
+      #'   FDP_cal, FDP_bias
+      calibration_metrics = function(fdr_threshold = 0.2) {
+        xx <- self$get_confusion_FDRvsFDP()
+
+        per_contrast <- xx |>
+          dplyr::filter(.data$scorecol <= fdr_threshold) |>
+          dplyr::group_by(.data$contrast, .data$what) |>
+          dplyr::summarize(
+            FDP_cal = mean(abs(.data$FDP - .data$scorecol)),
+            FDP_bias = mean(.data$FDP - .data$scorecol),
+            .groups = "drop"
+          ) |>
+          dplyr::filter(.data$contrast != "all")
+
+        avg_row <- per_contrast |>
+          dplyr::group_by(.data$what) |>
+          dplyr::summarize(
+            FDP_cal = mean(.data$FDP_cal),
+            FDP_bias = mean(.data$FDP_bias),
+            .groups = "drop"
+          ) |>
+          dplyr::mutate(contrast = "average")
+
+        result <- dplyr::bind_rows(per_contrast, avg_row)
+        colnames(result)[colnames(result) == "what"] <- "score"
+        result$model_name <- self$model_name
+        result[, c("model_name", "contrast", "score", "FDP_cal", "FDP_bias")]
+      },
       #' @description
       #' plot FDR vs FDP data
       #' @return ggplot
@@ -640,6 +766,49 @@ Benchmark <-
           contrast = self$contrast
         )
         return(vissum)
+      },
+      #' @description
+      #' Export benchmark summary as a flat data.frame
+      #'
+      #' Returns one row per contrast x score with AUC metrics and counts.
+      #' @param dataset dataset identifier string (default "unknown")
+      #' @return data.frame with columns: model_name, model_description, dataset,
+      #'   contrast, score, AUC, pAUC_10, pAUC_20, n_TP, n_TN, n_total,
+      #'   n_missing_contrasts
+      to_summary_table = function(dataset = "unknown") {
+        pStats <- self$get_confusion_benchmark()
+        auc_summary <- pStats |>
+          dplyr::group_by(.data$contrast, .data$what) |>
+          dplyr::summarize(
+            AUC = ms_bench_auc(.data$FPR, .data$TPR),
+            pAUC_10 = ms_bench_auc(.data$FPR, .data$TPR, 0.1),
+            pAUC_20 = ms_bench_auc(.data$FPR, .data$TPR, 0.2),
+            AP = ms_bench_ap(.data$TPR, .data$PREC),
+            pAP_50 = ms_bench_ap(.data$TPR, .data$PREC, 0.5),
+            pAP_80 = ms_bench_ap(.data$TPR, .data$PREC, 0.8),
+            n_TP = max(.data$T_),
+            n_TN = max(.data$F_),
+            n_total = dplyr::n(),
+            .groups = "drop"
+          )
+        colnames(auc_summary)[colnames(auc_summary) == "what"] <- "score"
+
+        # Count proteins with missing contrasts
+        smc <- self$missing_contrasts()
+        n_miss <- sum(smc$nr_na$nr_na > 0)
+
+        auc_summary$model_name <- self$model_name
+        auc_summary$model_description <- self$model_description
+        auc_summary$dataset <- dataset
+        auc_summary$n_missing_contrasts <- n_miss
+
+        # Reorder columns
+        col_order <- c("model_name", "model_description", "dataset", "contrast",
+                        "score", "AUC", "pAUC_10", "pAUC_20",
+                        "AP", "pAP_50", "pAP_80",
+                        "n_TP", "n_TN",
+                        "n_total", "n_missing_contrasts")
+        auc_summary[, col_order]
       }
     )
   )

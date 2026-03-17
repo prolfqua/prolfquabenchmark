@@ -1,0 +1,411 @@
+---
+title: "Pipeline Demo: Fit → Write → Score → Aggregate"
+author: "Witold Wolski"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      toc_collapsed: false
+papersize: a4
+geometry: margin=.5in
+vignette: >
+  %\VignetteIndexEntry{Pipeline Demo: Fit-Write-Score-Aggregate}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
+  markdown:
+    wrap: sentence
+---
+
+This vignette demonstrates the **pipeline architecture** for benchmarking.
+Instead of fitting models and benchmarking in one monolithic script, the workflow
+is split into three decoupled steps:
+
+1. **Fit** — fit models and compute contrasts, write standardized output files
+2. **Score** — load contrast result files, create Benchmark objects, compute metrics
+3. **Aggregate** — collect benchmark summaries across methods for comparison
+
+Each fitting step produces a directory with `contrasts.tsv` + `metadata.yaml`.
+This enables a future Snakemake pipeline: `for each dataset × method → fit → score → aggregate`.
+
+```{r setup, include=FALSE}
+library(prolfquabenchmark)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 5,
+  knitr.table.format = "pipe"
+)
+```
+
+```{r loadRequiredPackages}
+conflicted::conflict_prefer("filter", "dplyr")
+```
+
+# Shared Data Preparation
+
+This section is identical to `BenchmarkingIonstarData.Rmd` — load and normalize
+the IonStar dataset, aggregate peptides to proteins via median polish.
+
+```{r loadAndPrepareData}
+datadir <- file.path(find.package("prolfquadata"), "quantdata")
+inputMQfile <- file.path(datadir, "MAXQuant_IonStar2018_PXD003881.zip")
+inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
+
+mqdata <- list()
+mqdata$data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
+mqdata$config <- prolfqua::create_config_MQ_peptide()
+
+annotation <- readxl::read_xlsx(inputAnnotation)
+res <- dplyr::inner_join(mqdata$data, annotation, by = "raw.file")
+
+mqdata$config$table$factors[["dilution."]] <- "sample"
+mqdata$config$table$factors[["run_Id"]] <- "run_ID"
+mqdata$config$table$factorDepth <- 1
+mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
+
+lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
+lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id))
+lfqdata$filter_proteins_by_peptide_count()
+lfqdata$remove_small_intensities()
+
+# Normalize using HUMAN subset
+tr <- lfqdata$get_Transformer()
+subset_h <- lfqdata$get_copy()
+subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h <- subset_h$get_Transformer()$log2()$lfq
+lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h, preserveMean = FALSE)$lfq
+
+# Median polish aggregation
+lfqAggMedpol <- lfqdataNormalized$get_Aggregator()
+lfqAggMedpol$medpolish()
+protLFQ <- lfqAggMedpol$lfq_agg
+```
+
+```{r defineContrasts}
+relevantContrasts <- c(
+  "dilution_(9/7.5)_1.2"    = "dilution.e - dilution.d",
+  "dilution_(7.5/6)_1.25"   = "dilution.d - dilution.c",
+  "dilution_(6/4.5)_1.3(3)" = "dilution.c - dilution.b",
+  "dilution_(4.5/3)_1.5"    = "dilution.b - dilution.a"
+)
+```
+
+```{r createOutputDir}
+output_base <- tempfile("benchmark_pipeline_")
+dir.create(output_base)
+message("Pipeline output directory: ", output_base)
+```
+
+# Step 1: Fit & Write
+
+Each method fits models, computes contrasts, and writes the results using
+`write_contrast_results()`. This produces a `contrasts.tsv` + `metadata.yaml`
+per method.
+
+## Method: Linear model (lm)
+
+```{r fitLM}
+lmmodel <- paste0(protLFQ$config$table$get_response(), " ~ dilution.")
+modelFunction <- prolfqua::strategy_lm(lmmodel, model_name = "Model")
+modLinearProt <- prolfqua::build_model(protLFQ$data, modelFunction)
+
+contrProt <- prolfqua::Contrasts$new(modLinearProt, relevantContrasts)
+contrast_data_lm <- contrProt$get_contrasts()
+
+```
+
+```{r writeLM}
+write_contrast_results(
+  data = contrast_data_lm,
+  path = file.path(output_base, "ionstar_lm"),
+  metadata = list(
+    dataset = "ionstar_maxquant",
+    method = "prolfqua_lm",
+    method_description = "Linear model on median-polished proteins",
+    input_level = "peptide",
+    aggregation = "median_polish",
+    normalization = "robscale",
+    software_version = paste0("prolfqua ", packageVersion("prolfqua")),
+    date = as.character(Sys.Date()),
+    contrasts = names(relevantContrasts),
+    ground_truth = list(
+      id_column = "protein_id",
+      positive = list(label = "ECOLI", pattern = "ECOLI"),
+      negative = list(label = "HUMAN", pattern = "HUMAN")
+    )
+  )
+)
+```
+
+## Method: Moderated linear model (lm + moderation)
+
+```{r fitLMmod}
+contrProtModerated <- prolfqua::ContrastsModerated$new(contrProt)
+contrast_data_lm_mod <- contrProtModerated$get_contrasts()
+```
+
+```{r writeLMmod}
+write_contrast_results(
+  data = contrast_data_lm_mod,
+  path = file.path(output_base, "ionstar_lm_mod"),
+  metadata = list(
+    dataset = "ionstar_maxquant",
+    method = "prolfqua_lm_mod",
+    method_description = "Linear model with variance moderation on median-polished proteins",
+    input_level = "peptide",
+    aggregation = "median_polish",
+    normalization = "robscale",
+    software_version = paste0("prolfqua ", packageVersion("prolfqua")),
+    date = as.character(Sys.Date()),
+    contrasts = names(relevantContrasts),
+    ground_truth = list(
+      id_column = "protein_id",
+      positive = list(label = "ECOLI", pattern = "ECOLI"),
+      negative = list(label = "HUMAN", pattern = "HUMAN")
+    )
+  )
+)
+```
+
+## Method: Imputation (missing value model)
+
+```{r fitImputed}
+contrImp <- prolfqua::ContrastsMissing$new(protLFQ, relevantContrasts)
+contrast_data_imp <- contrImp$get_contrasts()
+```
+
+```{r writeImputed}
+write_contrast_results(
+  data = contrast_data_imp,
+  path = file.path(output_base, "ionstar_missing"),
+  metadata = list(
+    dataset = "ionstar_maxquant",
+    method = "prolfqua_missing",
+    method_description = "Median polish and missingness modelling",
+    input_level = "peptide",
+    aggregation = "median_polish",
+    normalization = "robscale",
+    software_version = paste0("prolfqua ", packageVersion("prolfqua")),
+    date = as.character(Sys.Date()),
+    contrasts = names(relevantContrasts),
+    ground_truth = list(
+      id_column = "protein_id",
+      positive = list(label = "ECOLI", pattern = "ECOLI"),
+      negative = list(label = "HUMAN", pattern = "HUMAN")
+    )
+  )
+)
+```
+
+## Method: Merged (lm + imputation, moderated)
+
+```{r fitMerged}
+all_merged <- prolfqua::merge_contrasts_results(prefer = contrProt, add = contrImp)
+merged_mod <- prolfqua::ContrastsModerated$new(all_merged$merged)
+contrast_data_merged <- merged_mod$get_contrasts()
+```
+
+```{r writeMerged}
+write_contrast_results(
+  data = contrast_data_merged,
+  path = file.path(output_base, "ionstar_merged"),
+  metadata = list(
+    dataset = "ionstar_maxquant",
+    method = "prolfqua_merged",
+    method_description = "Merge of lm moderated and imputed contrasts",
+    input_level = "peptide",
+    aggregation = "median_polish",
+    normalization = "robscale",
+    software_version = paste0("prolfqua ", packageVersion("prolfqua")),
+    date = as.character(Sys.Date()),
+    contrasts = names(relevantContrasts),
+    ground_truth = list(
+      id_column = "protein_id",
+      positive = list(label = "ECOLI", pattern = "ECOLI"),
+      negative = list(label = "HUMAN", pattern = "HUMAN")
+    )
+  )
+)
+```
+
+### Inspect output files
+
+```{r inspectOutput}
+list.files(output_base, recursive = TRUE)
+```
+
+```{r showTSV}
+lm_data <- utils::read.delim(
+  file.path(output_base, "ionstar_lm", "contrasts.tsv"),
+  nrows = 5
+)
+knitr::kable(lm_data, caption = "First 5 rows of ionstar_lm/contrasts.tsv")
+```
+
+```{r showYAML}
+cat(readLines(file.path(output_base, "ionstar_lm", "metadata.yaml")), sep = "\n")
+```
+
+# Step 2: Score
+
+Load each contrast result directory with `benchmark_from_file()` and compute
+benchmark metrics. No knowledge of the fitting step is needed — the ground
+truth specification comes from `metadata.yaml`.
+
+```{r scoreMethods}
+method_dirs <- list.dirs(output_base, recursive = FALSE)
+names(method_dirs) <- basename(method_dirs)
+
+benchmarks <- lapply(method_dirs, benchmark_from_file)
+```
+
+```{r showROC, fig.width=8, fig.height=6}
+benchmarks$ionstar_lm$plot_ROC(xlim = 0.15)
+```
+
+```{r showPrecisionRecall}
+benchmarks$ionstar_lm_mod$plot_precision_recall()
+```
+
+```{r showFDR}
+benchmarks$ionstar_merged$plot_FDRvsFDP()
+```
+
+# Step 3: Aggregate & Compare
+
+Use `to_summary_table()` to extract metrics from each Benchmark, then combine
+with `collect_benchmark_results()` for cross-method comparison.
+
+```{r extractSummaries}
+summary_files <- character()
+for (method_name in names(benchmarks)) {
+  bench <- benchmarks[[method_name]]
+  bench$complete(FALSE)
+  summary <- bench$to_summary_table(dataset = "ionstar_maxquant")
+
+  outfile <- file.path(output_base, method_name, "benchmark_results.tsv")
+  write_benchmark_results(summary, outfile)
+  summary_files <- c(summary_files, outfile)
+}
+```
+
+```{r collectResults}
+combined <- collect_benchmark_results(summary_files)
+knitr::kable(
+  combined |> dplyr::filter(contrast == "all"),
+  caption = "Benchmark summary across methods (all contrasts pooled)",
+  digits = 2
+)
+```
+
+```{r comparePlot, fig.width=9, fig.height=6}
+combined_all <- combined |> dplyr::filter(contrast == "all")
+long <- tidyr::pivot_longer(
+  combined_all,
+  cols = c("AUC", "pAUC_10", "pAUC_20", "AP", "pAP_50", "pAP_80"),
+  names_to = "metric",
+  values_to = "value"
+)
+ggplot2::ggplot(
+  long,
+  ggplot2::aes(x = value, y = n_total, color = model_name, shape = score)
+) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::facet_wrap(~metric, scales = "free_x") +
+  ggplot2::labs(
+    x = "Metric score (%)", y = "Nr. quantified proteins",
+    color = "Method", shape = "Ranking score"
+  )
+```
+
+```{r summaryMetrics, fig.width=10, fig.height=6}
+# Geometric mean across contrasts — complements the pooled "all" row above
+summary_list <- lapply(benchmarks, function(b) {
+  b$complete(FALSE)
+  b$summary_metrics()
+})
+combined_summary <- dplyr::bind_rows(summary_list)
+
+long_summary <- tidyr::pivot_longer(
+  combined_summary,
+  cols = c("AUC", "pAUC_10", "pAUC_20", "AP", "pAP_50", "pAP_80"),
+  names_to = "metric",
+  values_to = "value"
+)
+ggplot2::ggplot(
+  long_summary,
+  ggplot2::aes(x = value, y = n_total, color = model_name, shape = score)
+) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::facet_wrap(~metric, scales = "free_x") +
+  ggplot2::labs(
+    x = "Geometric mean of metric across contrasts (%)",
+    y = "Mean nr. quantified proteins",
+    color = "Method", shape = "Ranking score",
+    title = "Cross-contrast summary (geometric mean)"
+  )
+```
+
+# Validation: Round-Trip Comparison
+
+Verify that the file-based pipeline produces the same AUC values as the
+direct (in-memory) path used in the original vignette.
+
+```{r validateRoundTrip}
+# Direct path (as in BenchmarkingIonstarData.Rmd)
+ttd_direct <- ionstar_bench_preprocess(contrast_data_lm)
+bench_direct <- make_benchmark(
+  ttd_direct$data,
+  model_description = "med. polish and lm",
+  model_name = "prolfqua_lm"
+)
+pauc_direct <- bench_direct$pAUC()
+
+# File-based path
+pauc_file <- benchmarks$ionstar_lm$pAUC()
+
+# Compare — AUC and AP values should be identical
+comparison <- dplyr::inner_join(
+  pauc_direct |> dplyr::select(contrast, what, AUC_direct = AUC,
+                                pAUC_10_direct = pAUC_10,
+                                AP_direct = AP),
+  pauc_file |> dplyr::select(contrast, what, AUC_file = AUC,
+                              pAUC_10_file = pAUC_10,
+                              AP_file = AP),
+  by = c("contrast", "what")
+)
+comparison$AUC_match <- abs(comparison$AUC_direct - comparison$AUC_file) < 0.01
+comparison$pAUC_10_match <- abs(comparison$pAUC_10_direct - comparison$pAUC_10_file) < 0.01
+comparison$AP_match <- abs(comparison$AP_direct - comparison$AP_file) < 0.01
+
+knitr::kable(comparison, caption = "Round-trip validation: direct vs file-based AUC and AP", digits = 3)
+
+stopifnot(all(comparison$AUC_match), all(comparison$pAUC_10_match), all(comparison$AP_match))
+message("Round-trip validation PASSED: all AUC and AP values match.")
+```
+
+# Summary
+
+The pipeline architecture decouples fitting from scoring:
+
+- **`write_contrast_results()`** serializes contrast results + metadata to `contrasts.tsv` + `metadata.yaml`
+- **`benchmark_from_file()`** loads results, applies ground truth annotation from metadata, creates a `Benchmark` object
+- **`to_summary_table()`** extracts AUC metrics into a flat table
+- **`collect_benchmark_results()`** combines summaries across methods
+
+This enables:
+
+- Independent execution of fitting steps (parallelizable via Snakemake)
+- Reproducible scoring without re-running expensive model fitting
+- Easy addition of new methods (just produce `contrasts.tsv` + `metadata.yaml`)
+- Cross-method comparison from summary TSV files
+
+```{r cleanup, include=FALSE}
+unlink(output_base, recursive = TRUE)
+```
