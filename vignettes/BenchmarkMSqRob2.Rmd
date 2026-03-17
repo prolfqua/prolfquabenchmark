@@ -23,14 +23,21 @@ library(prolfquabenchmark)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-library(limma)
-library(QFeatures)
-library(msqrob2)
-library(plotly)
 library(gridExtra)
 
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
-evalAll <- require(proDA)
+evalAll <- requireNamespace("QFeatures", quietly = TRUE) && 
+  requireNamespace("msqrob2", quietly = TRUE) &&
+  requireNamespace("limma", quietly = TRUE) &&
+  requireNamespace("plotly", quietly = TRUE)
+
+if (evalAll) {
+  library(limma)
+  library(QFeatures)
+  library(msqrob2)
+  library(plotly)
+}
+
 SAVE = TRUE
 
 ```
@@ -72,7 +79,7 @@ lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
 Filter the data for small intensities (maxquant reports missing values as 0) and for two peptides per protein.
 
 
-```{r}
+```{r, eval = evalAll}
 lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
 lfqdata$filter_proteins_by_peptide_count()
 lfqdata$remove_small_intensities()
@@ -83,7 +90,7 @@ lfqdata$hierarchy_counts()
 
 
 
-```{r}
+```{r, eval = evalAll}
 tr <- lfqdata$get_Transformer()
 subset_h <- lfqdata$get_copy()
 subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
@@ -94,7 +101,7 @@ lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
 
 
 
-```{r}
+```{r, eval = evalAll}
 lfqAggMedpol <- lfqdataNormalized$get_Aggregator()
 lfqAggMedpol$medpolish()
 lfqtrans <- lfqAggMedpol$lfq_agg
@@ -111,7 +118,7 @@ protAbundanceIngroup <- protAbundanceIngroup |>
 ```
 
 
-```{r aggregateMedianPolish, eval=TRUE, include = FALSE}
+```{r aggregateMedianPolish, eval=TRUE, include = FALSE, eval = evalAll}
 se <- prolfqua::LFQDataToSummarizedExperiment(lfqdata = lfqdataNormalized)
 pe <- QFeatures::QFeatures(list(peptide = se), colData = colData(se))
 
@@ -134,7 +141,7 @@ To use `proDA`, we need to create an `SummarizedExperiment`. We use the `to_wide
 
 As usual, two steps are required, first fit the models, then compute the contrasts.
 
-```{r runMSRob, eval=evalAll, include=TRUE}
+```{r runMSRob, eval=evalAll, include=TRUE, eval = evalAll}
 prlm <- msqrobHurdle(pe,
                      i = "protein",
                      formula = ~dilution.,
@@ -145,7 +152,7 @@ prlm <- msqrobHurdle(pe,
 
 Since msqrob does not report average abundances, we are computing them for each contrast.
 
-```{r}
+```{r, eval = evalAll}
 L <- makeContrast(c("dilution.e-dilution.d=0",
                     "dilution.d-dilution.c=0",
                     "dilution.c-dilution.b=0",
@@ -177,7 +184,7 @@ hurdle <- dplyr::bind_rows(res)
 
 Now we need to merge the results of both models msqrobHurdleIntensity and msqrobHurdleCount. To find out which models were not estimated by `msqrobHurdleIntensity` we check for NA's and use the `anti_join` to select those from the `msqrobHurdleCount` models.
 
-```{r merge}
+```{r merge, eval = evalAll}
 
 logFC <- hurdle |> dplyr::select("name","contrast", starts_with("logFC"))
 logFC <- filter(logFC ,!is.na(logFCt))
@@ -262,7 +269,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
 benchmark2_msqrob <- make_benchmark(xdd, model_description = "msqrob2", model_name = "msqrob2")
 ```
 
-```{r eval=SAVE, include=FALSE}
+```{r eval=SAVE, include=FALSE, eval = evalAll}
 bdir <- file.path("../inst/Benchresults",format( Sys.Date(), "%Y%m%d"))
 if (!dir.exists(bdir)) {dir.create(bdir)}
 

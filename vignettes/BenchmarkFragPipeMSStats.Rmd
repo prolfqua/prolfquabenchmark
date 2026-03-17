@@ -28,9 +28,10 @@ knitr::opts_chunk$set(
   fig.width = 10,
   fig.height = 10
 )
+evalAll <- requireNamespace("proDA", quietly = TRUE) && requireNamespace("MSstats", quietly = TRUE)
 ```
 
-```{r conflicted}
+```{r conflicted, eval = evalAll}
 conflicted::conflict_prefer("filter", "dplyr")
 
 ```
@@ -43,7 +44,7 @@ conflicted::conflict_prefer("filter", "dplyr")
 ## Load data
 
 
-```{r loaddata}
+```{r loaddata, eval = evalAll}
 datadir <- file.path(find.package("prolfquadata") , "quantdata")
 inputFragfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
@@ -70,7 +71,7 @@ summedPep <- merged |> dplyr::group_by(raw.file, run_ID, sample, ProteinName, Pe
 
 ## Create prolfqua configuration
 
-```{r setupConfigs}
+```{r setupConfigs, eval = evalAll}
 atable <- prolfqua::AnalysisConfiguration$new()
 atable$fileName = "raw.file"
 atable$hierarchy[["protein_Id"]] <- c("ProteinName")
@@ -98,7 +99,7 @@ knitr::kable(lfqdata$hierarchy_counts(), caption = "number of proteins and pepti
 
 ## Normalize data using human proteins
 
-```{r createPlotter}
+```{r createPlotter, eval = evalAll}
 pl <- lfqdata$get_Plotter()
 pl$intensity_distribution_density()
 subset_h <- lfqdata$get_copy()$get_Transformer()$log2()$lfq
@@ -110,13 +111,13 @@ pl$intensity_distribution_density()
 hm <- pl$NA_heatmap()
 ```
 
-```{r showHeatmap}
+```{r showHeatmap, eval = evalAll}
 hm
 ```
 
 ## Aggregate proteins
 
-```{r aggregateProteins}
+```{r aggregateProteins, eval = evalAll}
 agg <- lfqdataPeptideNorm$get_Aggregator()
 agg$medpolish()
 lfqdataNormalized <- agg$lfq_agg
@@ -126,7 +127,7 @@ lfqdataNormalized$hierarchy_counts()
 
 # DEA using prolfqua
 
-```{r specifyContrasts}
+```{r specifyContrasts, eval = evalAll}
 Contrasts <- c(
   "dilution_(9/7.5)_1.2" =   "dilution.e - dilution.d",
   "dilution_(7.5/6)_1.25" =   "dilution.d - dilution.c",
@@ -157,7 +158,7 @@ cp$volcano()$FDR
 ## Benchmarking 
 
 
-```{r benchmark}
+```{r benchmark, eval = evalAll}
 ttd <- ionstar_bench_preprocess(mergedmod$get_contrasts())
 benchmark_prolfqua <- make_benchmark(ttd$data,
                                              model_description = "prolfqua_merged",
@@ -179,7 +180,7 @@ benchmark_prolfqua$plot_FDRvsFDP()
 
 # DEA using proDA
 
-```{r prodaFit}
+```{r prodaFit, eval = evalAll}
 se <- prolfqua::LFQDataToSummarizedExperiment(lfqdataNormalized)
 fit <- proDA::proDA(se, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
 
@@ -206,7 +207,7 @@ bb <- dplyr::bind_rows(contr)
 ## Benchmarking 
 
 
-```{r prodabenchmark}
+```{r prodabenchmark, eval = evalAll}
 
 ttd <- ionstar_bench_preprocess( bb , idcol = "name" )
 
@@ -240,7 +241,7 @@ benchmark_proDA$plot_FDRvsFDP()
 
 # DEA using msqrob2
 
-```{r aggregateMedianPolish, eval=TRUE, include = FALSE}
+```{r aggregateMedianPolish, eval=TRUE, include = FALSE, eval = evalAll}
 library(QFeatures)
 library(msqrob2)
 
@@ -266,7 +267,7 @@ To use `proDA`, we need to create an `SummarizedExperiment`. We use the `to_wide
 
 As usual, two steps are required, first fit the models, then compute the contrasts.
 
-```{r runMSRob,  include=TRUE}
+```{r runMSRob,  include=TRUE, eval = evalAll}
 prlm <- msqrobHurdle(pe,
                      i = "protein",
                      formula = ~dilution.,
@@ -277,7 +278,7 @@ prlm <- msqrobHurdle(pe,
 
 Since msqrob does not report average abundances, we are computing them for each contrast.
 
-```{r generateAverageAbundances}
+```{r generateAverageAbundances, eval = evalAll}
 st <- lfqdataNormalized$get_Stats()
 protAbundanceIngroup <- st$stats()
 protAbundanceIngroup <- protAbundanceIngroup |>
@@ -291,7 +292,7 @@ protAbundanceIngroup <- protAbundanceIngroup |>
 ```
 
 
-```{r computeHurdleContrasts}
+```{r computeHurdleContrasts, eval = evalAll}
 L <- makeContrast(c("dilution.e-dilution.d=0",
                     "dilution.d-dilution.c=0",
                     "dilution.c-dilution.b=0",
@@ -323,7 +324,7 @@ hurdle <- dplyr::bind_rows(res)
 
 Now we need to merge the results of both models msqrobHurdleIntensity and msqrobHurdleCount. To find out which models were not estimated by `msqrobHurdleIntensity` we check for NA's and use the `anti_join` to select those from the `msqrobHurdleCount` models.
 
-```{r merge}
+```{r merge, eval = evalAll}
 logFC <- hurdle |> dplyr::select("name","contrast", starts_with("logFC"))
 logFC <- dplyr::filter(logFC ,!is.na(logFCt))
 
@@ -370,7 +371,7 @@ bb <- dplyr::inner_join(all, protAbundanceIngroup, by = c("name" = "protein_Id",
 
 Here we use `proflqua` benchmark functions to generate some summaries.
 
-```{r setUPBenchmark}
+```{r setUPBenchmark, eval = evalAll}
 
 ttd <- ionstar_bench_preprocess( bb , idcol = "name" )
 benchmark_msqrob <- make_benchmark(ttd$data,
@@ -394,7 +395,7 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 ```
 
 
-```{r prepBenchmarkforComparison, include= FALSE}
+```{r prepBenchmarkforComparison, include= FALSE, eval = evalAll}
 xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
                                  contrast = contrast,
                                  avgInt = avgAbd,
@@ -412,29 +413,29 @@ benchmark2_msqrob <- make_benchmark(xdd, model_description = "msqrob2", model_na
 
 
 
-```{r rocCurve, fig.cap="ROC curves"}
+```{r rocCurve, fig.cap="ROC curves", eval = evalAll}
 res <- benchmark_msqrob$pAUC_summaries()
 knitr::kable(res$ftable$content,caption = res$ftable$caption)
 res$barp
 ```
 
-```{r pAUC02, fig.cap="plot ROC curves"}
+```{r pAUC02, fig.cap="plot ROC curves", eval = evalAll}
 #res$ftable
 benchmark_msqrob$plot_ROC(xlim = 0.2)
 ```
 
-```{r fdrfdp, fig.cap = "plot FDR vs FDP"}
+```{r fdrfdp, fig.cap = "plot FDR vs FDP", eval = evalAll}
 benchmark_msqrob$plot_FDRvsFDP()
 ```
 
-```{r fdptpr}
+```{r fdptpr, eval = evalAll}
 benchmark_msqrob$plot_precision_recall()
 ```
 
 # DEA using MSstats
 
 
-```{r prepareMSstatsData}
+```{r prepareMSstatsData, eval = evalAll}
 
 annotation <- readxl::read_xlsx(inputAnnotation)
 
@@ -473,7 +474,7 @@ invisible(utils::capture.output(
 ```
 
 
-```{r computeContrasts}
+```{r computeContrasts, eval = evalAll}
 
 # based on multiple comparisons  (T1 vs T3; T1 vs T7; T1 vs T9)
 comparison1 <- matrix(c(0,0,0,-1,1),nrow = 1)
@@ -496,7 +497,7 @@ bb <- testResultMultiComparisons$ComparisonResult
 
 ## Benchmarking
 
-```{r setUPBenchmarkMSstats}
+```{r setUPBenchmarkMSstats, eval = evalAll}
 library(prolfqua)
 ttd <- ionstar_bench_preprocess(bb, idcol = "Protein")
 benchmark_msstats <- make_benchmark(
@@ -527,7 +528,7 @@ prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missin
 
 Direct comparison with msqrob2 is impossible since, to fit the dropout model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file.
 
-```{r compareResults}
+```{r compareResults, eval = evalAll}
 allB <- list(benchmark_proDA = benchmark_proDA,
              benchmark_prolfqua = benchmark_prolfqua,
              benchmark_msqrob = benchmark_msqrob,
@@ -582,7 +583,7 @@ ggplot2::ggplot(all, ggplot2::aes(x = package, y = pAUC_10)) +
 ```
 
 
-```{r compareEstimatedContrasts, fig.cap= "Number of comparisons for each method"}
+```{r compareEstimatedContrasts, fig.cap= "Number of comparisons for each method", eval = evalAll}
 
 a1 <- allB$benchmark_proDA$smc$summary
 a1$name <- allB$benchmark_proDA$model_name
