@@ -294,7 +294,7 @@ res$barp
 # Compare benchmark results.
 
 
-```{r fig.cap="Comparing msqrob2, proda and prolfqua using the pAUC_{10, eval = evalAll}"}
+```{r fig.cap="Comparing msqrob2, proda and prolfqua using the pAUC_{10}", eval = evalAll}
 
 bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
 if (!dir.exists(bdir)) {dir.create(bdir)}
