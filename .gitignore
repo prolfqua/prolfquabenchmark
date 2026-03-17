@@ -10,3 +10,6 @@ vignettes/*.html
 vignettes/*_files/
 inst/Benchresults/*
 !inst/Benchresults/.gitkeep
+inst/doc/
+prolfquabenchmark.Rcheck/
+prolfquabenchmark_*.tar.gz
