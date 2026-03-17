@@ -1,4 +1,4 @@
-.PHONY: all check check-fast test build build-vignettes document coverage install lint format clean help site deploy renv-init renv-restore renv-snapshot renv-reset
+.PHONY: all check check-fast test build build-vignettes document coverage install lint format clean help site deploy
 
 all: check
 
@@ -20,14 +20,6 @@ help:
 	@echo "  make site            - build pkgdown site locally"
 	@echo "  make deploy          - build pkgdown site and push to gh-pages"
 	@echo "  make clean           - remove build artifacts"
-	@echo ""
-	@echo "  Environment (renv):"
-	@echo "  make renv-init       - initialize renv and install all deps (first time)"
-	@echo "  make renv-restore    - restore environment from renv.lock"
-	@echo "  make renv-snapshot   - update renv.lock after installing new packages"
-	@echo "  make renv-local      - reinstall prolfqua + prolfquapp from local sibling dirs"
-	@echo "  make renv-reset      - nuke renv library + lockfile, reinit from DESCRIPTION"
-
 document:
 	Rscript -e "devtools::document()"
 
@@ -72,23 +64,6 @@ site: document
 
 deploy: document
 	Rscript -e "pkgdown::deploy_to_branch()"
-
-renv-init:
-	Rscript -e "renv::init(bioconductor = TRUE)"
-
-renv-restore:
-	Rscript -e "renv::restore()"
-
-renv-snapshot:
-	Rscript -e "renv::snapshot()"
-
-renv-local:
-	Rscript -e "devtools::install('../prolfqua', upgrade = 'never')"
-	Rscript -e "devtools::install('../prolfquapp', upgrade = 'never')"
-
-renv-reset:
-	rm -rf renv/library renv.lock
-	Rscript -e "renv::init(bioconductor = TRUE)"
 
 clean:
 	rm -rf *.Rcheck

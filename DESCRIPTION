@@ -15,17 +15,21 @@ BugReports: https://github.com/wolski/proLFQuaBenchmark/issues
 LazyData: true
 Imports:
     dplyr,
+    ggplot2,
+    ggpubr,
+    ggridges,
     prolfqua,
+    purrr,
+    R6,
     rlang,
     tibble,
-    tidyr
+    tidyr,
+    tidyselect
 Suggests:
     bookdown,
     conflicted,
     covr,
     devtools,
-    ggplot2,
-    ggpubr,
     gridExtra,
     knitr,
     limma,
@@ -39,9 +43,7 @@ Suggests:
     prolfquapp,
     prolfquadata,
     pROC,
-    purrr,
     QFeatures,
-    R6,
     rcmdcheck,
     readxl,
     rmarkdown,

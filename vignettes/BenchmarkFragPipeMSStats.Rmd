@@ -157,8 +157,8 @@ cp$volcano()$FDR
 
 
 ```{r benchmark}
-ttd <- prolfqua::ionstar_bench_preprocess(mergedmod$get_contrasts())
-benchmark_prolfqua <- prolfqua::make_benchmark(ttd$data,
+ttd <- ionstar_bench_preprocess(mergedmod$get_contrasts())
+benchmark_prolfqua <- make_benchmark(ttd$data,
                                              model_description = "prolfqua_merged",
                                              model_name = "prolfqua_merged",
                                              FDRvsFDP = list(list(score = "FDR", desc = FALSE))
@@ -207,9 +207,9 @@ bb <- dplyr::bind_rows(contr)
 
 ```{r prodabenchmark}
 
-ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
+ttd <- ionstar_bench_preprocess( bb , idcol = "name" )
 
-benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
+benchmark_proDA <- make_benchmark(ttd$data,
                                             contrast = "contrast",
                                             toscale = c("pval"),
                                             fcestimate = "diff",
@@ -371,8 +371,8 @@ Here we use `proflqua` benchmark functions to generate some summaries.
 
 ```{r setUPBenchmark}
 
-ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
-benchmark_msqrob <- prolfqua::make_benchmark(ttd$data,
+ttd <- ionstar_bench_preprocess( bb , idcol = "name" )
+benchmark_msqrob <- make_benchmark(ttd$data,
                                              contrast = "contrast",
                                              toscale = c("pval"),
                                              fcestimate = "logFC",
@@ -404,7 +404,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
 )
 
 #prolfqua::Benchmark$undebug("get_confusion_FDRvsFDP")
-benchmark2_msqrob <- prolfqua::make_benchmark(xdd, model_description = "msqrob2", model_name = "msqrob2")
+benchmark2_msqrob <- make_benchmark(xdd, model_description = "msqrob2", model_name = "msqrob2")
 
 ```
 
@@ -497,8 +497,8 @@ bb <- testResultMultiComparisons$ComparisonResult
 
 ```{r setUPBenchmarkMSstats}
 library(prolfqua)
-ttd <- prolfqua::ionstar_bench_preprocess(bb, idcol = "Protein")
-benchmark_msstats <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(bb, idcol = "Protein")
+benchmark_msstats <- make_benchmark(
     ttd$data,
     contrast = "Label",
     toscale = c("pvalue"),

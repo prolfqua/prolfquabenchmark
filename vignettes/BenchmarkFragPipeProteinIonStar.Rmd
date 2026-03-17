@@ -132,8 +132,8 @@ cp$volcano()
 
 
 ```{r benchmark}
-ttd <- prolfqua::ionstar_bench_preprocess(mergedmod$get_contrasts())
-benchmark_prolfqua <- prolfqua::make_benchmark(ttd$data,
+ttd <- ionstar_bench_preprocess(mergedmod$get_contrasts())
+benchmark_prolfqua <- make_benchmark(ttd$data,
                                              model_description = "MSFragger med. polish and lm. density",
                                              model_name = "MSFragger_prot_med_lm",
                                              FDRvsFDP = list(list(score = "FDR", desc = FALSE))
@@ -182,9 +182,9 @@ bb <- dplyr::bind_rows(contr)
 
 ```{r prodabenchmark}
 
-ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
+ttd <- ionstar_bench_preprocess( bb , idcol = "name" )
 
-benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
+benchmark_proDA <- make_benchmark(ttd$data,
                                             contrast = "contrast",
                                             toscale = c("pval"),
                                             fcestimate = "diff",

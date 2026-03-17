@@ -126,9 +126,9 @@ bb <- testResultMultiComparisons$ComparisonResult
 library(prolfqua)
 
 
-ttd <- prolfqua::ionstar_bench_preprocess(bb, idcol = "Protein")
+ttd <- ionstar_bench_preprocess(bb, idcol = "Protein")
 
-benchmark_msstats <- prolfqua::make_benchmark(
+benchmark_msstats <- make_benchmark(
     ttd$data,
     contrast = "Label",
     toscale = c("pvalue"),
@@ -160,7 +160,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = Protein ,
                                  FDR = adj.pvalue  
 )
 xdd |> head()
-benchmark2_msstats <- prolfqua::make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")
+benchmark2_msstats <- make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")
 bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
 if (!dir.exists(bdir)) {dir.create(bdir)}
 

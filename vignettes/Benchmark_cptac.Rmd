@@ -109,7 +109,7 @@ Contaminants are removed. This leaves 1460 proteins.
 
 ```{r}
 ttd <- prolfquabenchmark::cptac_bench_preprocess(cmod$get_contrasts(), idcol = "protein_Id")
-benchmark_merged <- prolfqua::make_benchmark(
+benchmark_merged <- make_benchmark(
   ttd$data,
   model_description = "merge of prot moderated and imputed",
   model_name = "prolfqua_merged")
@@ -153,7 +153,7 @@ tmp$get_Plotter()$volcano()$adj_pval
 
 
 ttd <- prolfquabenchmark::cptac_bench_preprocess(tmp$get_contrasts(), idcol = "name")
-benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
+benchmark_proDA <- make_benchmark(ttd$data,
                                             contrast = "contrast",
                                             toscale = c("pval"),
                                             fcestimate = "diff",
@@ -262,7 +262,7 @@ bb <- dplyr::inner_join(all, protAbundanceIngroup, by = c("name" = "protein_Id",
 
 
 ttd <- prolfquabenchmark::cptac_bench_preprocess(bb, idcol = "name")
-benchmark_msqrob <- prolfqua::make_benchmark(ttd$data,
+benchmark_msqrob <- make_benchmark(ttd$data,
                                              contrast = "contrast",
                                              toscale = c("pval"),
                                              fcestimate = "logFC",

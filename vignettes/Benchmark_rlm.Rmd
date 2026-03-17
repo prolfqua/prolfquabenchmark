@@ -229,10 +229,10 @@ pl$histogram()
 
 
 ```{r benchmarkModel_RLM , include = FALSE}
-ttd <- prolfqua::ionstar_bench_preprocess(contrProt_RLM$get_contrasts())
+ttd <- ionstar_bench_preprocess(contrProt_RLM$get_contrasts())
 
 
-benchmark_Prot_RLM <- prolfqua::make_benchmark(
+benchmark_Prot_RLM <- make_benchmark(
     ttd$data,
     model_description = "med. polish and rlm",
     model_name = "prolfqua_rlm"
@@ -260,8 +260,8 @@ contrProtRLMModerated$get_contrasts()$protein_Id |> unique() |> length()
 
 ```{r benchmarkModelRLM11Moderation}
 
-ttd <- prolfqua::ionstar_bench_preprocess(contrProtRLMModerated$get_contrasts())
-benchmark_ProtRLMModerated <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(contrProtRLMModerated$get_contrasts())
+benchmark_ProtRLMModerated <- make_benchmark(
     ttd$data,
     model_description = "med. polish and rlm moderated",
     model_name = "prolfqua_rlm_mod")

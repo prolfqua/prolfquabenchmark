@@ -225,8 +225,8 @@ Here we use `proflqua` benchmark functions to generate some summaries.
 
 ```{r setUPBenchmark, eval = evalAll}
 
-ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
-benchmark_msqrob <- prolfqua::make_benchmark(ttd$data,
+ttd <- ionstar_bench_preprocess( bb , idcol = "name" )
+benchmark_msqrob <- make_benchmark(ttd$data,
                                              contrast = "contrast",
                                              toscale = c("pval"),
                                              fcestimate = "logFC",
@@ -258,7 +258,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
                                  p.value = pval,
                                  FDR = FDR  
 )
-benchmark2_msqrob <- prolfqua::make_benchmark(xdd, model_description = "msqrob2", model_name = "msqrob2")
+benchmark2_msqrob <- make_benchmark(xdd, model_description = "msqrob2", model_name = "msqrob2")
 ```
 
 ```{r eval=SAVE, include=FALSE}

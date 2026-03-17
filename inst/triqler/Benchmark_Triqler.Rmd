@@ -186,7 +186,7 @@ tripleprot_bench_preprocess <- function(data, idcol = "protein_Id", drop = "YEAS
 ```{r moderated}
 ttd <- tripleprot_bench_preprocess(ctrmerg,drop = "YEAST" )
 dim(ttd$data)
-benchmark_mod_prolfqua <- prolfqua::make_benchmark(
+benchmark_mod_prolfqua <- make_benchmark(
   ttd$data,
   model_description = "prolfqua_merged",
   model_name = "prolfqua_merged",
@@ -204,7 +204,7 @@ benchmark_mod_prolfqua$plot_FDRvsFDP()
 ```{r}
 ttd <- tripleprot_bench_preprocess(ctrmergmod,drop = "ECOLI" )
 dim(ttd$data)
-benchmark_mod_prolfqua <- prolfqua::make_benchmark(
+benchmark_mod_prolfqua <- make_benchmark(
   ttd$data,
   model_description = "prolfqua_merged",
   model_name = "prolfqua_merged",
@@ -223,7 +223,7 @@ benchmark_mod_prolfqua$plot_ROC(0.05)
 
 benchmark_mod_prolfqua$plot_FDRvsFDP()
 benchmark_mod_prolfqua$.get_confusion
-prolfqua:::ms_bench_add_scores
+ms_bench_add_scores
 
 dx <- benchmark_mod_prolfqua$get_confusion_FDRvsFDP()
 head(dx)

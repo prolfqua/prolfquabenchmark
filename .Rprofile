@@ -1,1 +1,1 @@
-source("renv/activate.R")
+# renv autoload disabled for this workspace.

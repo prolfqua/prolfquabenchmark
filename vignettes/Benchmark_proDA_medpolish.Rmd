@@ -120,9 +120,9 @@ bb <- dplyr::bind_rows(contr)
 ```{r setUPBenchmark, eval = evalAll}
 
 bb$name |> unique() |> length()
-ttd <- prolfqua::ionstar_bench_preprocess( bb , idcol = "name" )
+ttd <- ionstar_bench_preprocess( bb , idcol = "name" )
 
-benchmark_proDA <- prolfqua::make_benchmark(ttd$data,
+benchmark_proDA <- make_benchmark(ttd$data,
                                             contrast = "contrast",
                                             toscale = c("pval"),
                                             fcestimate = "diff",
@@ -153,7 +153,7 @@ xdd <- ttd$data |> dplyr::rename(protein_Id = name ,
                                  p.value = pval,
                                  FDR = adj_pval  
 )
-benchmark2_proDA <- prolfqua::make_benchmark(xdd, model_description = "proDA_medpolishInt", model_name = "proDA")
+benchmark2_proDA <- make_benchmark(xdd, model_description = "proDA_medpolishInt", model_name = "proDA")
 
 ```
 

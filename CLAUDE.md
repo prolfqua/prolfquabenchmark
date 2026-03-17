@@ -10,19 +10,17 @@ Benchmarking vignettes comparing MSstats, proDA, msqrob2, and prolfqua using Ion
 make check-fast    # R CMD check without vignettes (quick)
 make check         # Full R CMD check including vignettes (~15 min)
 make vignette V=BenchmarkingIonstarData  # Build a single vignette
-make renv-init     # First-time renv setup (installs all deps from DESCRIPTION)
-make renv-restore  # Restore from lockfile
 ```
 
 ## Dependency Management
 
-DESCRIPTION is the single source of truth for all dependencies. Never manually run `renv::install("pkg")` to fix missing packages — add them to DESCRIPTION (Imports or Suggests) instead, then `make renv-init`.
+DESCRIPTION is the single source of truth for all dependencies. If a package is missing, add it to `DESCRIPTION` in the appropriate field instead of relying on ad hoc local installs.
 
 - **Imports:** packages used in vignettes and R code (prolfqua, tidyverse, QFeatures, etc.)
 - **Suggests:** dev tooling (devtools, roxygen2, covr, lintr, etc.)
 - **Remotes:** non-CRAN packages (prolfqua from GitHub, prolfquadata from GitLab)
 
-The `renv/settings.json` includes `Suggests` in `package.dependency.fields` so dev tools are installed by renv.
+Use the normal user / system R libraries for this workspace; `renv` autoload is disabled.
 
 ## Key Notes
 

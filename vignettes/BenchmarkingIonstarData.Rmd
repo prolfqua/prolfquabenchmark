@@ -374,9 +374,9 @@ plc$histogram()$p.value
 ```{r benchmarkImputed}
 allContrasts <- list()
 allContrasts$imputation <- contrImp$get_contrasts()
-ttd <- prolfqua::ionstar_bench_preprocess(contrImp$get_contrasts())
+ttd <- ionstar_bench_preprocess(contrImp$get_contrasts())
 
-benchmark_missing <- prolfqua::make_benchmark(
+benchmark_missing <- make_benchmark(
     ttd$data,
     model_description = "med. polish and missingness modelling",
     model_name = "prolfqua_missing",
@@ -421,9 +421,9 @@ pl$histogram()$p.value
 ```{r benchmarkModel1}
 allContrasts$Prot <- contrProt$get_contrasts()
 
-ttd <- prolfqua::ionstar_bench_preprocess(contrProt$get_contrasts())
+ttd <- ionstar_bench_preprocess(contrProt$get_contrasts())
 
-benchmark_Prot <- prolfqua::make_benchmark(
+benchmark_Prot <- make_benchmark(
     ttd$data,
     model_description = "med. polish and lm",
     model_name = "prolfqua_lm"
@@ -448,8 +448,8 @@ contrProtModerated$get_Plotter()$volcano()$FDR
 
 ```{r benchmarkModel1Moderation, include = FALSE}
 allContrasts$ProtModerated <- contrProtModerated$get_contrasts()
-ttd <- prolfqua::ionstar_bench_preprocess(contrProtModerated$get_contrasts())
-benchmark_ProtModerated <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(contrProtModerated$get_contrasts())
+benchmark_ProtModerated <- make_benchmark(
     ttd$data,
     model_description = "med. polish and lm moderated",
     model_name = "prolfqua_lm_mod")
@@ -486,8 +486,8 @@ contrProtDEqMS$get_Plotter()$volcano()$FDR
 
 ```{r benchmarkModel1DEqMS}
 allContrasts$ProtDEqMS <- contrProtDEqMS$get_contrasts()
-ttd <- prolfqua::ionstar_bench_preprocess(contrProtDEqMS$get_contrasts())
-benchmark_ProtDEqMS <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(contrProtDEqMS$get_contrasts())
+benchmark_ProtDEqMS <- make_benchmark(
     ttd$data,
     model_description = "med. polish and lm DEqMS moderated",
     model_name = "prolfqua_lm_DEqMS")
@@ -516,8 +516,8 @@ pl$protein_Id |> unique() |> length()
 
 ```{r benchmarkModel2}
 allContrasts$contrProtMixed <- contrProtMixed$get_contrasts()
-ttd <- prolfqua::ionstar_bench_preprocess(contrProtMixed$get_contrasts())
-benchmark_mixed <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(contrProtMixed$get_contrasts())
+benchmark_mixed <- make_benchmark(
     ttd$data,
     model_description = "mixed effect model",
     model_name = "prolfqua_mix_eff"
@@ -552,9 +552,9 @@ contrProtMixedModerated$get_Plotter()$volcano()$FDR
 ```{r benchmarkModel2Moderation}
 allContrasts$contrProtMixedModerated <- contrProtMixedModerated$get_contrasts()
 
-ttd <- prolfqua::ionstar_bench_preprocess(contrProtMixedModerated$get_contrasts())
+ttd <- ionstar_bench_preprocess(contrProtMixedModerated$get_contrasts())
 
-benchmark_mixedModerated <- prolfqua::make_benchmark(
+benchmark_mixedModerated <- make_benchmark(
     ttd$data,
     model_description = "mixed effect model moderated",
     model_name = "prolfqua_mix_eff_mod")
@@ -582,8 +582,8 @@ contrROPECA$get_Plotter()$histogram()$FDR
 
 ```{r benchmarkROPECA}
 cr <- contrROPECA$get_contrasts()
-ttd <- prolfqua::ionstar_bench_preprocess(cr)
-benchmark_ropeca <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(cr)
+benchmark_ropeca <- make_benchmark(
     ttd$data,
     toscale = c("beta.based.significance"),
     benchmark = list(
@@ -639,8 +639,8 @@ contrLimma$get_Plotter()$volcano()$FDR
 
 ```{r benchmarkLimma}
 allContrasts$Limma <- contrLimma$get_contrasts()
-ttd <- prolfqua::ionstar_bench_preprocess(contrLimma$get_contrasts())
-benchmark_Limma <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(contrLimma$get_contrasts())
+benchmark_Limma <- make_benchmark(
     ttd$data,
     model_description = "med. polish and limma",
     model_name = "prolfqua_limma")
@@ -664,8 +664,8 @@ We prefer the contrasts estimated with linear models and if missing augment them
 all <- prolfqua::merge_contrasts_results(prefer = contrProt, add = contrImp)
 
 merged <- prolfqua::ContrastsModerated$new(all$merged)
-ttd <- prolfqua::ionstar_bench_preprocess(merged$get_contrasts())
-benchmark_merged <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(merged$get_contrasts())
+benchmark_merged <- make_benchmark(
     ttd$data,
     model_description = "merge of prot moderated and imputed",
     model_name = "prolfqua_merged")
@@ -701,8 +701,8 @@ merged_deqms <- prolfqua::ContrastsModeratedDEqMS$new(
   count_df = count_df,
   count_column = "nr_peptides"
 )
-ttd <- prolfqua::ionstar_bench_preprocess(merged_deqms$get_contrasts())
-benchmark_merged_deqms <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(merged_deqms$get_contrasts())
+benchmark_merged_deqms <- make_benchmark(
     ttd$data,
     model_description = "merge of prot DEqMS moderated and imputed",
     model_name = "prolfqua_merged_DEqMS")
@@ -716,8 +716,8 @@ allBenchmarks$benchmark_merged_deqms <- benchmark_merged_deqms
 ```{r mergingContrastsLimma}
 all_limma <- prolfqua::merge_contrasts_results(prefer = contrLimma, add = contrImp)
 merged_limma <- prolfqua::ContrastsModerated$new(all_limma$merged)
-ttd <- prolfqua::ionstar_bench_preprocess(merged_limma$get_contrasts())
-benchmark_merged_limma <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(merged_limma$get_contrasts())
+benchmark_merged_limma <- make_benchmark(
     ttd$data,
     model_description = "merge of limma and imputed",
     model_name = "prolfqua_limma_merged")
@@ -730,8 +730,8 @@ allBenchmarks$benchmark_merged_limma <- benchmark_merged_limma
 same <- all$same
 allBenchmarks$benchmark_Prot$smc$summary
 
-ttd <- prolfqua::ionstar_bench_preprocess(same$get_contrasts())
-benchmark_same <- prolfqua::make_benchmark(
+ttd <- ionstar_bench_preprocess(same$get_contrasts())
+benchmark_same <- make_benchmark(
     ttd$data,
     model_description = "imputed_same_as_lm",
     model_name = "imputed_same_as_lm")
