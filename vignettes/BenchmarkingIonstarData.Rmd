@@ -655,6 +655,33 @@ benchmark_Limma$plot_FDRvsFDP()
 allBenchmarks$benchmark_Limma <- benchmark_Limma
 ```
 
+## Robust Linear Model (RLM)
+
+Robust linear model fitted to protein abundances using `strategy_rlm`, with variance moderation via `ContrastsModerated`.
+
+```{r contrastRLM}
+fa_rlm <- prolfqua::ContrastsRLMFacade$new(protLFQ, "~ dilution.", relevantContrasts)
+fa_rlm$get_Plotter()$volcano()$FDR
+```
+
+```{r benchmarkRLM}
+allContrasts$RLM <- fa_rlm$get_contrasts()
+ttd <- ionstar_bench_preprocess(fa_rlm$get_contrasts())
+benchmark_rlm <- make_benchmark(
+    ttd$data,
+    model_description = "med. polish and rlm moderated",
+    model_name = "prolfqua_rlm")
+
+prolfqua::table_facade(
+  benchmark_rlm$smc$summary,
+  caption = "Nr of proteins with Nr of not estimated contrasts.",
+  digits = 1)
+
+benchmark_rlm$plot_ROC(xlim = 0.2)
+benchmark_rlm$plot_FDRvsFDP()
+allBenchmarks$benchmark_rlm <- benchmark_rlm
+```
+
 # Merging contrasts of two models.
 
 Here we merge contrasts estimates from linear models and from the models with imputation using `merge_contrasts_results`.

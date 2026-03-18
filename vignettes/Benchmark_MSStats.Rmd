@@ -1,8 +1,8 @@
 ---
-title: "Benchmarking MSstats DEA using the Ionstar Dataset/MaxQuant"
+title: "Benchmarking MSstats DEA using the IonStar Dataset"
 author: "Witold E Wolski"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_depth: 3
@@ -11,7 +11,7 @@ output:
 papersize: a4
 geometry: margin=.5in
 vignette: >
-  %\VignetteIndexEntry{Benchmarking MSstats using the Ionstar Dataset} 
+  %\VignetteIndexEntry{Benchmarking MSstats using the IonStar Dataset}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options:
@@ -19,170 +19,175 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-library(prolfquabenchmark) 
+library(prolfquabenchmark)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-
-
-# Setting up analysis
-
+# Setup
 
 ```{r}
 evalAll <- require("MSstats")
-storeBench <- TRUE & evalAll
 ```
 
-The following code reads the data and creates and MSStats compatible annotation file.
-
-```{r eval = evalAll}
-
-# Read in MaxQuant files
-datadir <- file.path(find.package("prolfquadata") , "quantdata")
-inputMQfile <-  file.path(datadir,
-                          "MAXQuant_IonStar2018_PXD003881.zip")
+```{r sharedSetup, eval = evalAll}
+datadir <- file.path(find.package("prolfquadata"), "quantdata")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 
+# Contrast matrix shared by both datasets
+comparison1 <- matrix(c(0, 0, 0, -1, 1), nrow = 1)
+comparison2 <- matrix(c(0, 0, -1, 1, 0), nrow = 1)
+comparison3 <- matrix(c(0, -1, 1, 0, 0), nrow = 1)
+comparison4 <- matrix(c(-1, 1, 0, 0, 0), nrow = 1)
+comparison <- rbind(comparison1, comparison2, comparison3, comparison4)
+row.names(comparison) <- c("dilution_(9/7.5)_1.2", "dilution_(7.5/6)_1.25",
+                           "dilution_(6/4.5)_1.3(3)", "dilution_(4.5/3)_1.5")
+colnames(comparison) <- c("a", "b", "c", "d", "e")
+```
 
-proteinGroups <- read.table(unz(inputMQfile,"proteinGroups.txt"), sep = "\t", header = TRUE)
-infile <- read.table(unz(inputMQfile,"evidence.txt"), sep = "\t", header = TRUE)
+
+# Dataset 1: IonStar / MaxQuant
+
+```{r mqReadData, eval = evalAll}
+inputMQfile <- file.path(datadir, "MAXQuant_IonStar2018_PXD003881.zip")
+
+proteinGroups <- read.table(unz(inputMQfile, "proteinGroups.txt"), sep = "\t", header = TRUE)
+infile <- read.table(unz(inputMQfile, "evidence.txt"), sep = "\t", header = TRUE)
 
 annotation <- readxl::read_xlsx(inputAnnotation)
-msstas_annotation <- annotation |> dplyr::select(raw.file, Condition = sample, BioReplicate = run_ID)
+msstas_annotation <- annotation |>
+  dplyr::select(raw.file, Condition = sample, BioReplicate = run_ID)
 msstas_annotation$IsotopeLabelType <- "L"
-msstas_annotation <- msstas_annotation |> tidyr::unite("Experiment", Condition, BioReplicate, sep="_", remove = FALSE)
-# Read in annotation including condition and biological replicates per run.
-# Users should make this annotation file. It is not the output from MaxQuant.
+msstas_annotation <- msstas_annotation |>
+  tidyr::unite("Experiment", Condition, BioReplicate, sep = "_", remove = FALSE)
 
 rf <- unique(infile$Raw.file)
 rf <- data.frame(Raw.file = rf, raw.file = tolower(rf))
 msstas_annotation <- dplyr::inner_join(rf, msstas_annotation)
 msstas_annotation$raw.file <- NULL
-
-
 ```
 
-
-
-```{r eval = evalAll}
-raw <- MSstats::MaxQtoMSstatsFormat(evidence = infile, 
-                                    annotation = msstas_annotation, 
-                                    proteinGroups = proteinGroups,
-                                    removeProtein_with1Peptide = TRUE,
-                                    use_log_file = FALSE,
-                                    verbose = FALSE)
+```{r mqConvert, eval = evalAll}
+raw <- MSstats::MaxQtoMSstatsFormat(
+  evidence = infile,
+  annotation = msstas_annotation,
+  proteinGroups = proteinGroups,
+  removeProtein_with1Peptide = TRUE,
+  use_log_file = FALSE,
+  verbose = FALSE)
 ```
 
+Remove reverse sequences and contaminants.
 
-Remove reverse sequence and contaminants.
-
-```{r eval = evalAll}
-raw2 <- raw[ !grepl("REV__",raw$ProteinName),]
-raw3 <- raw2[ !grepl("CON__",raw$ProteinName),]
+```{r mqFilter, eval = evalAll}
+raw2 <- raw[!grepl("REV__", raw$ProteinName), ]
+raw3 <- raw2[!grepl("CON__", raw2$ProteinName), ]
 ```
 
-
-```{r dataPreprocess, eval = evalAll}
+```{r mqProcess, eval = evalAll}
 invisible(utils::capture.output(
-  QuantData <- MSstats::dataProcess(raw3, use_log_file = FALSE, verbose = FALSE)
-  ))
-# Profile plot
-#dataProcessPlots(data=QuantData, type = "ProfilePlot")
-# Quality control plot 
-#dataProcessPlots(data=QuantData, type = "QCPlot") 
-# Quantification plot for conditions
-#dataProcessPlots(data=QuantData, type = "ConditionPlot")
-
+  QuantData_mq <- MSstats::dataProcess(raw3, use_log_file = FALSE, verbose = FALSE)
+))
 ```
 
-# Defining Contrasts and computing group comparisons
-
-```{r computeContrasts, eval = evalAll}
-
-levels(QuantData$ProcessedData$GROUP_ORIGINAL)
-
-# based on multiple comparisons  (T1 vs T3; T1 vs T7; T1 vs T9)
-comparison1 <- matrix(c(0,0,0,-1,1),nrow = 1)
-comparison2 <- matrix(c(0,0,-1,1,0),nrow = 1)
-comparison3 <- matrix(c(0,-1,1,0,0),nrow = 1)
-comparison4 <- matrix(c(-1,1,0,0,0),nrow = 1)
-comparison <- rbind(comparison1,comparison2, comparison3, comparison4)
-row.names(comparison) <- c("dilution_(9/7.5)_1.2","dilution_(7.5/6)_1.25","dilution_(6/4.5)_1.3(3)","dilution_(4.5/3)_1.5")
-colnames(comparison) <- c("a","b","c","d","e")
+```{r mqContrasts, eval = evalAll}
 invisible(utils::capture.output(
-  testResultMultiComparisons <- MSstats::groupComparison(
+  testResult_mq <- MSstats::groupComparison(
     contrast.matrix = comparison,
-    data = QuantData,
+    data = QuantData_mq,
     verbose = FALSE,
     use_log_file = FALSE)
-  ))
-
-bb <- testResultMultiComparisons$ComparisonResult
-
+))
+bb_mq <- testResult_mq$ComparisonResult
 ```
 
-# Benchmarking
-
-```{r setUPBenchmark, eval = evalAll}
-library(prolfqua)
-
-
-ttd <- ionstar_bench_preprocess(bb, idcol = "Protein")
-
-benchmark_msstats <- make_benchmark(
-    ttd$data,
-    contrast = "Label",
-    toscale = c("pvalue"),
-    fcestimate = "log2FC",
-    benchmark = list(
-        list(score = "log2FC", desc = TRUE),
-        list(score = "Tvalue", desc = TRUE),
-        list(score = "scaled.pvalue", desc = TRUE)
-    ),  
-    model_description = "MSStats",
-    model_name = "MSStats",
-    FDRvsFDP = list(list(score = "adj.pvalue", desc = FALSE))
-    , hierarchy = c("Protein"), summarizeNA = "Tvalue"
+```{r mqWriteContrasts, eval = evalAll}
+msstats_col_map <- c(
+  "Protein" = "protein_id",
+  "Label" = "contrast",
+  "log2FC" = "log_fc",
+  "Tvalue" = "t_statistic",
+  "pvalue" = "p_value",
+  "adj.pvalue" = "p_value_adjusted"
 )
-sum(benchmark_msstats$smc$summary$Protein)
 
-sumarry <- benchmark_msstats$smc$summary
-prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
-```
-
-
-```{r include=FALSE, eval=storeBench}
-
-xdd <- ttd$data |> dplyr::rename(protein_Id = Protein ,
-                                 contrast = Label,
-                                 diff = log2FC,
-                                 statistic = Tvalue,
-                                 p.value = pvalue,
-                                 FDR = adj.pvalue  
+write_contrast_results(
+  bb_mq,
+  path = "../inst/Benchresults/MSstats_MaxQuant",
+  metadata = list(
+    dataset = "IonStar_MaxQuant",
+    method = "MSstats",
+    method_description = "MSstats on MaxQuant evidence.txt",
+    input_file = "MAXQuant_IonStar2018_PXD003881.zip/evidence.txt",
+    software_version = paste0("MSstats ", packageVersion("MSstats")),
+    date = as.character(Sys.Date()),
+    ground_truth = list(
+      id_column = "protein_id",
+      positive = list(label = "ECOLI", pattern = "ECOLI"),
+      negative = list(label = "HUMAN", pattern = "HUMAN")
+    )
+  ),
+  col_map = msstats_col_map
 )
-xdd |> head()
-benchmark2_msstats <- make_benchmark(xdd, model_description = "MSStats", model_name = "MSStats")
-bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
-if (!dir.exists(bdir)) {dir.create(bdir)}
-
-saveRDS(benchmark2_msstats, file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"benchmark_msstats.RDS"))
 ```
 
-```{r fig.cap="ROC curves", eval = evalAll}
 
-res <- benchmark_msstats$pAUC_summaries()
-res$barp
+# Dataset 2: IonStar / FragPipe
+
+```{r fpReadData, eval = evalAll}
+inputFragfile <- file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
+
+msstats_fp <- read.csv(
+  unz(inputFragfile, "IonstarWithMSFragger/MSstats.csv"),
+  header = TRUE, sep = ",", stringsAsFactors = FALSE)
+
+msstats_fp$BioReplicate <- NULL
+msstats_fp$Run <- tolower(msstats_fp$Run)
+msstats_fp$Condition <- NULL
+
+annotation_fp <- readxl::read_xlsx(inputAnnotation)
+annotation_fp$BioReplicate <- annotation_fp$run_ID
+annotation_fp$run_ID <- NULL
+annotation_fp$date <- NULL
+annotation_fp$Condition <- annotation_fp$sample
+annotation_fp$sample <- NULL
+
+msstats_fp <- dplyr::inner_join(msstats_fp, annotation_fp, by = c(Run = "raw.file"))
 ```
 
-```{r fig.cap="plot ROC curves", eval = evalAll}
-#res$ftable
-benchmark_msstats$plot_ROC(xlim = 0.2)
+```{r fpProcess, eval = evalAll}
+invisible(utils::capture.output(
+  QuantData_fp <- MSstats::dataProcess(msstats_fp, use_log_file = FALSE, verbose = FALSE)
+))
 ```
 
-```{r fig.cap = "plot FDR vs FDP",eval = evalAll}
-benchmark_msstats$plot_FDRvsFDP()
+```{r fpContrasts, eval = evalAll}
+invisible(utils::capture.output(
+  testResult_fp <- MSstats::groupComparison(
+    contrast.matrix = comparison,
+    data = QuantData_fp,
+    verbose = FALSE,
+    use_log_file = FALSE)
+))
+bb_fp <- testResult_fp$ComparisonResult
 ```
 
-```{r plotPrecisionRecall, fig.cap="Precision recall curve.", eval = evalAll}
-benchmark_msstats$plot_precision_recall()
+```{r fpWriteContrasts, eval = evalAll}
+write_contrast_results(
+  bb_fp,
+  path = "../inst/Benchresults/MSstats_FragPipe",
+  metadata = list(
+    dataset = "IonStar_FragPipe",
+    method = "MSstats",
+    method_description = "MSstats on FragPipe MSstats.csv",
+    input_file = "MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/MSstats.csv",
+    software_version = paste0("MSstats ", packageVersion("MSstats")),
+    date = as.character(Sys.Date()),
+    ground_truth = list(
+      id_column = "protein_id",
+      positive = list(label = "ECOLI", pattern = "ECOLI"),
+      negative = list(label = "HUMAN", pattern = "HUMAN")
+    )
+  ),
+  col_map = msstats_col_map
+)
 ```

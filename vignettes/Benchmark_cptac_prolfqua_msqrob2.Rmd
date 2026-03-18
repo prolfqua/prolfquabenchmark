@@ -1,8 +1,8 @@
 ---
-title: "DEA benchmark CPTAC/MaxQuant/peptide.txt"
+title: "DEA benchmark CPTAC/MaxQuant/peptide.txt (prolfqua, msqrob2)"
 author: "Witold E. Wolski"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_depth: 2
@@ -11,12 +11,12 @@ output:
 papersize: a4
 geometry: margin=.5in
 vignette: >
-  %\VignetteIndexEntry{DEA benchmark CPTAC/MaxQuant/peptide.txt} 
+  %\VignetteIndexEntry{DEA benchmark CPTAC/MaxQuant/peptide.txt (prolfqua, msqrob2)}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+editor_options:
   chunk_output_type: console
-  markdown: 
+  markdown:
     wrap: sentence
 
 ---
@@ -129,59 +129,6 @@ res$barp
 
 
 
-
-# Fit model with proDA
-
-```{r fitProDAmodel, eval = evalAll}
-library(prolfqua)
-library(proDA)
-library(SummarizedExperiment)
-se <- prolfqua::LFQDataToSummarizedExperiment(lfqProt)
-
-mm <- model.matrix(~ group., colData(se))
-proModel <- proDA::proDA(se, design = mm, data_is_log_transformed = TRUE)
-res <- test_diff(proModel, "group.b", sort_by = "pval")
-res$contrast = "b_vs_a"
-tmp <- prolfqua::ContrastsProDA$new(res, c("a_vs_b" = "group.b - group.a"))
-tmp$get_Plotter()$volcano()$adj_pval
-
-```
-
-
-
-
-```{r setupproDABenchmark, eval = evalAll}
-
-
-ttd <- prolfquabenchmark::cptac_bench_preprocess(tmp$get_contrasts(), idcol = "name")
-benchmark_proDA <- make_benchmark(ttd$data,
-                                            contrast = "contrast",
-                                            toscale = c("pval"),
-                                            fcestimate = "diff",
-                                            benchmark = list(
-                                              list(score = "diff", desc = TRUE),
-                                              list(score = "t_statistic", desc = TRUE),
-                                              list(score = "scaled.pval", desc = TRUE)
-                                            ),  
-                                            model_description = "proDA_medpolishInt",
-                                            model_name = "proDA_medpolishInt",
-                                            FDRvsFDP = list(list(score = "adj_pval", desc = FALSE))
-                                            , hierarchy = c("name"), summarizeNA = "t_statistic"
-)
-
-sumarry <- benchmark_proDA$smc$summary
-prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
-
-```
-
-```{r benchmarkProDA, eval = evalAll}
-res <- benchmark_proDA$pAUC_summaries()
-knitr::kable(res$ftable$content,caption = res$ftable$caption)
-res$barp
-```
-
-
-
 # Fit model with msqrob
 
 ```{r setUPQFeatures, eval = evalAll}
@@ -198,7 +145,7 @@ my_medianPolish <- function(x, verbose = FALSE, ...){
 pe <- QFeatures::aggregateFeatures(
   pe,
   i = "peptide", fcol = "protein_Id",
-  name = "protein", fun = my_medianPolish, 
+  name = "protein", fun = my_medianPolish,
 )
 
 ```
@@ -220,7 +167,7 @@ xx <- rowData(prlm[["protein"]])
 hurdle <- xx[grepl("hurdle_",names(xx))]
 
 res <- list()
-for (i in names(hurdle)) { 
+for (i in names(hurdle)) {
   hurdle[[i]]$contrast <- i
   res[[i]] <- prolfqua::matrix_to_tibble(hurdle[[i]], preserve_row_names = "name")
 }
@@ -244,17 +191,17 @@ all$contrast <- "b_vs_a"
 st <- lfqProt$get_Stats()
 protAbundanceIngroup <- st$stats()
 
-protAbundanceIngroup <- protAbundanceIngroup |> 
+protAbundanceIngroup <- protAbundanceIngroup |>
   tidyr::pivot_wider(id_cols = protein_Id,
-                     names_from = group., names_prefix = "abd.", 
+                     names_from = group., names_prefix = "abd.",
                      values_from = meanAbundance)
 
 protAbundanceIngroup <- protAbundanceIngroup |> dplyr::mutate( avgAbd.b.a =  mean( c(abd.b,abd.a), na.rm = TRUE)  )
-protAbundanceIngroup <- protAbundanceIngroup |> 
-  dplyr::select(-starts_with("abd")) |> 
+protAbundanceIngroup <- protAbundanceIngroup |>
+  dplyr::select(-starts_with("abd")) |>
   tidyr::pivot_longer(starts_with("avgAbd"), names_to = "contrast" ,values_to = "avgAbd")
 
-protAbundanceIngroup$contrast <- "b_vs_a" 
+protAbundanceIngroup$contrast <- "b_vs_a"
 bb <- dplyr::inner_join(all, protAbundanceIngroup, by = c("name" = "protein_Id", "contrast" = "contrast"))
 
 ```
@@ -271,7 +218,7 @@ benchmark_msqrob <- make_benchmark(ttd$data,
                                                list(score = "logFC", desc = TRUE),
                                                list(score = "t", desc = TRUE),
                                                list(score = "scaled.pval", desc = TRUE)
-                                             ),  
+                                             ),
                                              model_description = "msqrob2_QFeature",
                                              model_name = "msqrob2_QFeature",
                                              FDRvsFDP = list(list(score = "pval.adjusted", desc = FALSE))
@@ -294,24 +241,21 @@ res$barp
 # Compare benchmark results.
 
 
-```{r fig.cap="Comparing msqrob2, proda and prolfqua using the pAUC_{10}", eval = evalAll}
+```{r fig.cap="Comparing msqrob2 and prolfqua using the pAUC_{10}", eval = evalAll}
 
 bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
 if (!dir.exists(bdir)) {dir.create(bdir)}
 
 saveRDS(list(benchmark_msqrob = benchmark_msqrob,
-             benchmark_proDA = benchmark_proDA,
              benchmark_merged = benchmark_merged),
         file = file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"CPTAC_Benchmark.RDS"))
 
 mrob <- benchmark_msqrob$pAUC_summaries()$ftable$content
 mrob$package <- "msqrob2"
-proda <- benchmark_proDA$pAUC_summaries()$ftable$content
-proda$package <- "proDA"
 prolfqua <- benchmark_merged$pAUC_summaries()$ftable$content
 prolfqua$package <- "prolfqua"
 
-all <- dplyr::bind_rows(list(mrob, proda, prolfqua))
+all <- dplyr::bind_rows(list(mrob, prolfqua))
 all <- all |> filter(contrast == "b_vs_a")
 all$what[all$what == "statistic"] <- "t_statistic"
 all$what[all$what == "t"] <- "t_statistic"
@@ -319,7 +263,7 @@ all$what[all$what == "scaled.pval"] <- "scaled.p.value"
 all$what[all$what == "logFC"] <- "diff"
 
 all |> ggplot(aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
-  geom_bar(stat = "identity",  position = position_dodge()) 
+  geom_bar(stat = "identity",  position = position_dodge())
 
 ```
 
@@ -333,17 +277,10 @@ ddmsqrob <- pROC::roc(ttmsqrob$TP, ttmsqrob$scaled.pval, partial.auc = c(1, 0.9)
 ttprolfqua <- benchmark_merged$data()
 ddprolfqua <- pROC::roc(ttprolfqua$TP, ttprolfqua$scaled.p.value, partial.auc = c(1, 0.9))
 
-ttproda <- benchmark_proDA$data()
-ddproda <- pROC::roc(ttproda$TP, ttproda$scaled.pval, partial.auc = c(1, 0.9))
 
-
-tmp <- c(msqrob2_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua, progress = "none")$p.value,
-         msqrob2_vs_proda = pROC::roc.test(ddmsqrob,ddproda, progress = "none")$p.value,
-         prolfqua_vs_proda = pROC::roc.test(ddprolfqua,ddproda, progress = "none")$p.value)
+tmp <- c(msqrob2_vs_prolfqua = pROC::roc.test(ddmsqrob,ddprolfqua, progress = "none")$p.value)
 
 ```
-
-We observe that for this benchmark data, there are no significant differences among the $AUC_{10}$ for the three packages. The Table \@ref(tab:shwoROCtestREsults) shows the results of the Bootstrap test for two ROC curves.
 
 ```{r shwoROCtestREsults, eval = evalAll}
 knitr::kable(data.frame(pROC_test = names(tmp), p.value = tmp), caption = "p-values for pairwise comparsions of partial AUC")

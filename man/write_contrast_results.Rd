@@ -11,7 +11,9 @@ write_contrast_results(data, path, metadata, col_map = .col_map_to_standard)
 
 \item{path}{directory to write to (created if it does not exist)}
 
-\item{metadata}{list with fitting provenance and ground truth specification}
+\item{metadata}{list with required fields: \code{dataset}, \code{method},
+\code{method_description}, \code{input_file}, \code{software_version},
+\code{date}, and \code{ground_truth}}
 
 \item{col_map}{named character vector mapping input column names to standard
 names. Defaults to the prolfqua-native mapping. Names are input columns,
@@ -31,6 +33,7 @@ metadata <- list(
   dataset = "ionstar_maxquant",
   method = "prolfqua_lm_mod",
   method_description = "Linear model with variance moderation",
+  input_file = "MAXQuant_IonStar2018_PXD003881.zip/evidence.txt",
   input_level = "peptide",
   aggregation = "median_polish",
   normalization = "robscale",

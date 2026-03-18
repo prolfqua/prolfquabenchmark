@@ -16,6 +16,7 @@ test_that("write and read contrast results round-trips correctly", {
     dataset = "test_dataset",
     method = "test_method",
     method_description = "Test method for round-trip",
+    input_file = "test_input.txt",
     input_level = "protein",
     aggregation = "none",
     normalization = "none",
@@ -107,9 +108,27 @@ test_that("ms_bench_ap computes correct average precision", {
 })
 
 
-test_that("write_contrast_results errors on missing required columns", {
+test_that("write_contrast_results errors on missing required metadata", {
   bad_data <- data.frame(protein_Id = "P1", contrast = "A", x = 1)
   metadata <- list(dataset = "test")
+  tmpdir <- tempfile("bad_data_test")
+  expect_error(
+    write_contrast_results(bad_data, tmpdir, metadata),
+    "Missing required metadata fields"
+  )
+})
+
+test_that("write_contrast_results errors on missing required columns", {
+  bad_data <- data.frame(protein_Id = "P1", contrast = "A", x = 1)
+  metadata <- list(
+    dataset = "test", method = "test", method_description = "test",
+    input_file = "test.txt", software_version = "1.0", date = "2026-03-17",
+    ground_truth = list(
+      id_column = "protein_id",
+      positive = list(label = "ECOLI", pattern = "ECOLI"),
+      negative = list(label = "HUMAN", pattern = "HUMAN")
+    )
+  )
   tmpdir <- tempfile("bad_data_test")
   expect_error(
     write_contrast_results(bad_data, tmpdir, metadata),

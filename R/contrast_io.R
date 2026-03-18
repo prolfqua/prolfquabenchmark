@@ -21,6 +21,10 @@ NULL
 .required_standard_cols <- c("protein_id", "contrast", "log_fc", "t_statistic",
                              "p_value", "p_value_adjusted")
 
+.required_metadata_fields <- c("dataset", "method", "method_description",
+                               "input_file", "software_version", "date",
+                               "ground_truth")
+
 
 #' Write contrast results to a standardized file format
 #'
@@ -30,7 +34,9 @@ NULL
 #'
 #' @param data data.frame with contrast results (one row per protein x contrast)
 #' @param path directory to write to (created if it does not exist)
-#' @param metadata list with fitting provenance and ground truth specification
+#' @param metadata list with required fields: \code{dataset}, \code{method},
+#'   \code{method_description}, \code{input_file}, \code{software_version},
+#'   \code{date}, and \code{ground_truth}
 #' @param col_map named character vector mapping input column names to standard
 #'   names. Defaults to the prolfqua-native mapping. Names are input columns,
 #'   values are output columns.
@@ -43,6 +49,7 @@ NULL
 #'   dataset = "ionstar_maxquant",
 #'   method = "prolfqua_lm_mod",
 #'   method_description = "Linear model with variance moderation",
+#'   input_file = "MAXQuant_IonStar2018_PXD003881.zip/evidence.txt",
 #'   input_level = "peptide",
 #'   aggregation = "median_polish",
 #'   normalization = "robscale",
@@ -59,6 +66,13 @@ NULL
 #' }
 write_contrast_results <- function(data, path, metadata,
                                    col_map = .col_map_to_standard) {
+  # Validate required metadata fields
+  missing_meta <- setdiff(.required_metadata_fields, names(metadata))
+  if (length(missing_meta) > 0) {
+    stop("Missing required metadata fields: ",
+         paste(missing_meta, collapse = ", "))
+  }
+
   if (!dir.exists(path)) {
     dir.create(path, recursive = TRUE)
   }

@@ -1,5 +1,5 @@
 ---
-title: "DEA benchmark IonStar/FragPipeV14/combined_protein.tsv"
+title: "DEA benchmark IonStar/FragPipeV14/combined_protein.tsv (prolfqua)"
 author: "Witold E. Wolski"
 date: "`r Sys.Date()`"
 output:
@@ -10,10 +10,10 @@ output:
 papersize: a4
 geometry: margin=.5in
 vignette: >
-  %\VignetteIndexEntry{DEA benchmark IonStar/FragPipeV14/combined_protein.tsv} 
+  %\VignetteIndexEntry{DEA benchmark IonStar/FragPipeV14/combined_protein.tsv (prolfqua)}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -28,11 +28,6 @@ knitr::opts_chunk$set(
   fig.width = 10,
   fig.height = 10
 )
-```
-
-```{r conflicted}
-conflicted::conflict_prefer("filter", "dplyr")
-
 ```
 
 ## Load data
@@ -50,7 +45,6 @@ annotation <- readxl::read_xlsx(inputAnnotation)
 protein <- tibble::as_tibble(read.csv(unz(inputFragfile,"IonstarWithMSFragger/combined_protein.tsv"),
                                       header = TRUE, sep = "\t", stringsAsFactors = FALSE))
 
-undebug( prolfquapp::tidy_FragPipe_combined_protein)
 protein <- prolfquapp::tidy_FragPipe_combined_protein_deprec(protein)
 protein <- protein |> dplyr::filter(unique.stripped.peptides > 1)
 merged <- dplyr::inner_join(annotation, protein)
@@ -129,7 +123,7 @@ cp$volcano()
 ```
 
 
-## Benchmark data 
+## Benchmark data
 
 
 ```{r benchmark}
@@ -150,98 +144,5 @@ benchmark_prolfqua$plot_ROC(0.05)
 benchmark_prolfqua$plot_FDRvsFDP()
 
 ```
-
-
-# Model data using proDA and specify contrasts
-
-```{r prodaFit}
-se <- prolfqua::LFQDataToSummarizedExperiment(lfqdataNormalized)
-fit <- proDA::proDA(se, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
-
-contr <- list()
-contr[["dilution_(9/7.5)_1.2"]] <- data.frame(
-  contrast = "dilution_(9/7.5)_1.2",
-  proDA::test_diff(fit, contrast = "dilution.e - dilution.d"))
-contr[["dilution_(7.5/6)_1.25"]] <- data.frame(
-  contrast = "dilution_(7.5/6)_1.25",
-  proDA::test_diff(fit, contrast = "dilution.d - dilution.c"))
-contr[["dilution_(6/4.5)_1.3(3)"]] <- data.frame(
-  contrast = "dilution_(6/4.5)_1.3(3)", 
-  proDA::test_diff(fit, contrast = "dilution.c - dilution.b"))
-contr[["dilution_(4.5/3)_1.5"]] <- data.frame(
-  contrast = "dilution_(4.5/3)_1.5", 
-  proDA::test_diff(fit, contrast = "dilution.b - dilution.a" ))
-
-bb <- dplyr::bind_rows(contr)
-
-
-```
-
-
-## Benchmark data 
-
-
-```{r prodabenchmark}
-
-ttd <- ionstar_bench_preprocess( bb , idcol = "name" )
-
-benchmark_proDA <- make_benchmark(ttd$data,
-                                            contrast = "contrast",
-                                            toscale = c("pval"),
-                                            fcestimate = "diff",
-                                            benchmark = list(
-                                              list(score = "diff", desc = TRUE),
-                                              list(score = "t_statistic", desc = TRUE),
-                                              list(score = "scaled.pval", desc = TRUE)
-                                            ),  
-                                            model_description = "proDA_medpolishInt",
-                                            model_name = "proDA_medpolishInt",
-                                            FDRvsFDP = list(list(score = "adj_pval", desc = FALSE))
-                                            , hierarchy = c("name"), summarizeNA = "t_statistic"
-)
-
-sumarry <- benchmark_proDA$smc$summary
-prolfqua::table_facade(sumarry, caption = "nr of proteins with 0, 1, 2, 3 missing contrasts.")
-
-knitr::kable(benchmark_proDA$pAUC_summaries()$ftable$content)
-
-prolfqua::table_facade(benchmark_prolfqua$smc$summary, "Nr of estimated contrasts")
-
-benchmark_proDA$plot_score_distribution()
-benchmark_proDA$plot_ROC(0.05)
-benchmark_proDA$plot_FDRvsFDP()
-
-```
-
-
-# Compare prolfqua and proda
-
-Direct comparison with msqrob2 is impossible since, to fit the dropout model, the peptide intensities are required, while here, we are starting the analysis from the `combined_proteins.tsv` file.
-
-```{r}
-bdir <- file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"))
-if (!dir.exists(bdir)) {dir.create(bdir)}
-
-saveRDS(list(benchmark_proDA = benchmark_proDA, benchmark_prolfqua = benchmark_prolfqua)
-  ,file.path("../inst/Benchresults/",format( Sys.Date(), "%Y%m%d"),"FragPipev14_comb_prot.RDS"))
-
-proda <- benchmark_proDA$pAUC_summaries()$ftable$content
-proda$package <- "proda"
-prolfqua <- benchmark_prolfqua$pAUC_summaries()$ftable$content
-prolfqua$package <- "prolfqua"
-
-tmp <- dplyr::bind_rows(proda, prolfqua)
-tmp$what |> unique()
-tmp$what[tmp$what == "statistic"] <- "t_statistic"
-tmp$what[tmp$what == "scaled.pval"] <- "scaled.p.value"
-
-tmp |> ggplot2::ggplot(ggplot2::aes(x = what, y = pAUC_10, group = package, color = NULL, fill = package)) +
-  ggplot2::geom_bar(stat = "identity",  position = ggplot2::position_dodge()) +
-  ggplot2::facet_wrap(~ contrast) +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1))
-
-```
-
-
 
 
