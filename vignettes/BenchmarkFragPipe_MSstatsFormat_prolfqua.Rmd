@@ -1,0 +1,197 @@
+---
+title: "DEA benchmark IonStar/FragPipeV14/MSstats.csv (prolfqua)"
+author: "Witold E. Wolski"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+papersize: a4
+geometry: margin=.5in
+vignette: >
+  %\VignetteIndexEntry{DEA benchmark IonStar/FragPipeV14/MSstats.csv (prolfqua)}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
+---
+
+Please download and install the `prolfquadata` package from github
+
+```{r setup, include=FALSE}
+library(prolfquabenchmark)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 10,
+  fig.height = 10
+)
+evalAll <- TRUE
+```
+
+```{r conflicted, eval = evalAll}
+conflicted::conflict_prefer("filter", "dplyr")
+
+```
+
+
+# Data preprocessing
+
+
+
+## Load data
+
+
+```{r loaddata, eval = evalAll}
+datadir <- file.path(find.package("prolfquadata") , "quantdata")
+inputFragfile <-  file.path(datadir, "MSFragger_IonStar2018_PXD003881.zip")
+inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
+annotation <- readxl::read_xlsx(inputAnnotation)
+
+unzip(inputFragfile, list = TRUE)
+msstats <- read.csv(
+    unz(inputFragfile,"IonstarWithMSFragger/MSstats.csv"),
+    header = TRUE,
+    sep = ",",
+    stringsAsFactors = FALSE)
+
+
+
+msstats <- tibble::tibble(msstats)
+msstats$Run <- tolower(msstats$Run)
+
+merged <- dplyr::inner_join(annotation, msstats, by = c("raw.file" = "Run"))
+
+summedPep <- merged |> dplyr::group_by(raw.file, run_ID, sample, ProteinName, PeptideSequence) |> dplyr::summarize(nprecursor = dplyr::n(),pepIntensity = sum(Intensity, na.rm = TRUE), .groups = "drop")
+
+
+```
+
+## Create prolfqua configuration
+
+```{r setupConfigs, eval = evalAll}
+atable <- prolfqua::AnalysisConfiguration$new()
+atable$fileName = "raw.file"
+atable$hierarchy[["protein_Id"]] <- c("ProteinName")
+atable$hierarchy[["peptide_Id"]] <- c("PeptideSequence")
+
+atable$hierarchyDepth <- 1
+atable$set_response("pepIntensity")
+atable$factors[["dilution."]] = "sample"
+atable$factors[["run"]] = "run_ID"
+atable$factorDepth <- 1
+
+config <- prolfqua::AnalysisConfiguration$new(atable)
+
+adata <- prolfqua::setup_analysis(summedPep, config)
+lfqdata <- prolfqua::LFQData$new(adata, config)
+lfqdata$hierarchy_counts()
+lfqdata$filter_proteins_by_peptide_count()
+lfqdata$hierarchy_counts()
+lfqdata$remove_small_intensities()
+lfqdata$hierarchy_counts()
+
+knitr::kable(lfqdata$hierarchy_counts(), caption = "number of proteins and peptides.")
+
+```
+
+## Normalize data using human proteins
+
+```{r createPlotter, eval = evalAll}
+pl <- lfqdata$get_Plotter()
+pl$intensity_distribution_density()
+subset_h <- lfqdata$get_copy()$get_Transformer()$log2()$lfq
+subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
+tr <- lfqdata$get_Transformer()
+lfqdataPeptideNorm <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
+pl <- lfqdataPeptideNorm$get_Plotter()
+pl$intensity_distribution_density()
+hm <- pl$NA_heatmap()
+```
+
+```{r showHeatmap, eval = evalAll}
+hm
+```
+
+## Aggregate proteins
+
+```{r aggregateProteins, eval = evalAll}
+agg <- lfqdataPeptideNorm$get_Aggregator()
+agg$medpolish()
+lfqdataNormalized <- agg$lfq_agg
+lfqdataNormalized$hierarchy_counts()
+```
+
+
+# DEA using prolfqua
+
+```{r specifyContrasts, eval = evalAll}
+Contrasts <- c(
+  "dilution_(9/7.5)_1.2" =   "dilution.e - dilution.d",
+  "dilution_(7.5/6)_1.25" =   "dilution.d - dilution.c",
+  "dilution_(6/4.5)_1.3(3)" =   "dilution.c - dilution.b",
+  "dilution_(4.5/3)_1.5" =   "dilution.b - dilution.a"
+)
+
+
+lmmodel <- "~ dilution."
+lmmodel <- paste0(lfqdataNormalized$config$table$get_response() , lmmodel)
+
+modelFunction <- prolfqua::strategy_lm( lmmodel, model_name = "Model")
+
+
+mod <- prolfqua::build_model(lfqdataNormalized$data, modelFunction)
+contr <- prolfqua::Contrasts$new(mod, Contrasts)
+contrimp <- prolfqua::ContrastsMissing$new(lfqdataNormalized, Contrasts)
+
+merged <- prolfqua::merge_contrasts_results(contr, contrimp)
+mergedmod <- prolfqua::ContrastsModerated$new(merged$merged)
+
+cp <- mergedmod$get_Plotter()
+cp$volcano()$FDR
+
+```
+
+
+## Benchmarking
+
+
+```{r benchmark, eval = evalAll}
+ttd <- ionstar_bench_preprocess(mergedmod$get_contrasts())
+benchmark_prolfqua <- make_benchmark(ttd$data,
+                                             model_description = "prolfqua_merged",
+                                             model_name = "prolfqua_merged",
+                                             FDRvsFDP = list(list(score = "FDR", desc = FALSE))
+)
+
+
+knitr::kable(benchmark_prolfqua$pAUC_summaries()$ftable$content)
+
+
+prolfqua::table_facade(benchmark_prolfqua$smc$summary, "Nr of estimated contrasts")
+benchmark_prolfqua$plot_score_distribution()
+benchmark_prolfqua$plot_ROC(0.05)
+benchmark_prolfqua$plot_FDRvsFDP()
+
+```
+
+```{r writeContrasts, eval = evalAll}
+write_contrast_results(
+  mergedmod$get_contrasts(),
+  path = "../inst/Benchresults/prolfqua_IonStar_FragPipe",
+  metadata = list(
+    dataset = "IonStar_FragPipe",
+    method = "prolfqua",
+    method_description = "prolfqua merged + moderated on FragPipe MSstats.csv",
+    input_file = "MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/MSstats.csv",
+    software_version = paste0("prolfqua ", packageVersion("prolfqua")),
+    date = as.character(Sys.Date()),
+    ground_truth = list(
+      id_column = "protein_id",
+      positive = list(label = "ECOLI", pattern = "ECOLI"),
+      negative = list(label = "HUMAN", pattern = "HUMAN")
+    )
+  ))
+```
