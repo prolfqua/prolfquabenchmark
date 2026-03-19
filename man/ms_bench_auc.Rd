@@ -24,13 +24,13 @@ stopifnot(is.numeric(auc), length(auc) == 1, auc > 0)
 }
 \seealso{
 Other benchmarking: 
-\code{\link{.geomean}()},
 \code{\link{Benchmark}},
 \code{\link{benchmark_from_file}()},
 \code{\link{collect_benchmark_results}()},
 \code{\link{ionstar_bench_preprocess}()},
 \code{\link{make_benchmark}()},
 \code{\link{ms_bench_add_scores}()},
+\code{\link{ms_bench_ap}()},
 \code{\link{plot_benchmark_comparison}()},
 \code{\link{read_benchmark_results}()},
 \code{\link{read_contrast_results}()},

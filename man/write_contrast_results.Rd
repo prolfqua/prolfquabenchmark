@@ -51,13 +51,13 @@ write_contrast_results(contrast_data, "/tmp/ionstar_lm", metadata)
 }
 \seealso{
 Other benchmarking: 
-\code{\link{.geomean}()},
 \code{\link{Benchmark}},
 \code{\link{benchmark_from_file}()},
 \code{\link{collect_benchmark_results}()},
 \code{\link{ionstar_bench_preprocess}()},
 \code{\link{make_benchmark}()},
 \code{\link{ms_bench_add_scores}()},
+\code{\link{ms_bench_ap}()},
 \code{\link{ms_bench_auc}()},
 \code{\link{plot_benchmark_comparison}()},
 \code{\link{read_benchmark_results}()},

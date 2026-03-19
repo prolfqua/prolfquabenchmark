@@ -37,10 +37,10 @@ build-vignettes: document
 	mkdir -p inst/doc
 	cp doc/*.html doc/*.Rmd doc/*.R inst/doc/ 2>/dev/null || true
 
-# Build a single vignette by name: make vignette V=BenchmarkingIonstarData
+# Build a single vignette by name: make vignette V=Benchmark_prolfqua
 vignette:
 ifndef V
-	$(error Usage: make vignette V=<vignette_name>, e.g. make vignette V=BenchmarkingIonstarData)
+	$(error Usage: make vignette V=<vignette_name>, e.g. make vignette V=Benchmark_prolfqua)
 endif
 	Rscript -e "rmarkdown::render('vignettes/$(V).Rmd')"
 

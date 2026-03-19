@@ -370,7 +370,7 @@ write_contrast_results(
 
 # Dataset 3: CPTAC
 
-```{r ds3LoadData, eval = evalAll}
+```{r ds3LoadData}
 evalCPTAC <- requireNamespace("msdata", quietly = TRUE) && evalAll
 ```
 

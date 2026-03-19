@@ -125,6 +125,13 @@ ms_bench_auc <- function(FPR, TPR, fpr_threshold = 1) {
   return(res / fpr_threshold * 100)
 }
 
+# Geometric mean helper (internal)
+.geomean <- function(x) {
+  x <- x[x > 0]
+  if (length(x) == 0) return(NA_real_)
+  exp(mean(log(x)))
+}
+
 
 #' Compute Average Precision (area under Precision-Recall curve)
 #'
@@ -141,14 +148,6 @@ ms_bench_auc <- function(FPR, TPR, fpr_threshold = 1) {
 #' precision <- c(1.0, 0.9, 0.85, 0.8, 0.7, 0.6)
 #' ap <- ms_bench_ap(recall, precision)
 #' stopifnot(is.numeric(ap), length(ap) == 1, ap > 0)
-# Geometric mean helper (internal)
-.geomean <- function(x) {
-  x <- x[x > 0]
-  if (length(x) == 0) return(NA_real_)
-  exp(mean(log(x)))
-}
-
-
 ms_bench_ap <- function(recall, precision, recall_threshold = 1) {
   oR <- order(recall)
   recall <- recall[oR]
