@@ -32,34 +32,22 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="articles/Benchmark_cptac.html">DEA benchmark CPTAC/MaxQuant/peptide.txt</a>
-    </li>
-    <li>
       <a href="articles/Benchmark_Model_IonStar_With2Factors.html">Modelling with Interactions</a>
     </li>
     <li>
-      <a href="articles/Benchmark_MSStats.html">Benchmarking MSstats DEA using the Ionstar Dataset/MaxQuant</a>
+      <a href="articles/Benchmark_msqrob2.html">Benchmarking msqrob2 across multiple datasets</a>
     </li>
     <li>
-      <a href="articles/Benchmark_proDA_fromMQlfq.html">Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities</a>
+      <a href="articles/Benchmark_MSStats.html">Benchmarking MSstats DEA using the IonStar Dataset</a>
     </li>
     <li>
-      <a href="articles/Benchmark_proDA_medpolish.html">Benchmarking the proDA package using the Ionstar Dataset starting from peptides</a>
+      <a href="articles/Benchmark_pipeline_demo.html">Pipeline Demo: Fit → Write → Score → Aggregate</a>
     </li>
     <li>
-      <a href="articles/Benchmark_rlm.html">Benchmarking robust linear model using the Ionstar Dataset</a>
+      <a href="articles/Benchmark_proDA.html">Benchmarking proDA across multiple datasets</a>
     </li>
     <li>
-      <a href="articles/BenchmarkFragPipeMSStats.html">DEA benchmark IonStar/FragPipeV14/MSstats.tsv</a>
-    </li>
-    <li>
-      <a href="articles/BenchmarkFragPipeProteinIonStar.html">DEA benchmark IonStar/FragPipeV14/combined_protein.tsv</a>
-    </li>
-    <li>
-      <a href="articles/BenchmarkingIonstarData.html">Benchmarking normalization, aggregation and models using the Ionstar Dataset</a>
-    </li>
-    <li>
-      <a href="articles/BenchmarkMSqRob2.html">Benchmarking the msqrob2 package using the Ionstar Dataset starting from peptides.txt</a>
+      <a href="articles/Benchmark_prolfqua.html">Benchmarking prolfqua across multiple datasets</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -90,20 +78,18 @@
 <h2 id="build--test">Build &amp; Test<a class="anchor" aria-label="anchor" href="#build--test"></a></h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">make</span> check-fast    <span class="co"># R CMD check without vignettes (quick)</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">make</span> check         <span class="co"># Full R CMD check including vignettes (~15 min)</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">make</span> vignette V=BenchmarkingIonstarData  <span class="co"># Build a single vignette</span></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">make</span> renv-init     <span class="co"># First-time renv setup (installs all deps from DESCRIPTION)</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">make</span> renv-restore  <span class="co"># Restore from lockfile</span></span></code></pre></div>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">make</span> vignette V=BenchmarkingIonstarData  <span class="co"># Build a single vignette</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="dependency-management">Dependency Management<a class="anchor" aria-label="anchor" href="#dependency-management"></a></h2>
-<p>DESCRIPTION is the single source of truth for all dependencies. Never manually run <code>renv::install("pkg")</code> to fix missing packages — add them to DESCRIPTION (Imports or Suggests) instead, then <code>make renv-init</code>.</p>
+<p>DESCRIPTION is the single source of truth for all dependencies. If a package is missing, add it to <code>DESCRIPTION</code> in the appropriate field instead of relying on ad hoc local installs.</p>
 <ul><li>
 <strong>Imports:</strong> packages used in vignettes and R code (prolfqua, tidyverse, QFeatures, etc.)</li>
 <li>
 <strong>Suggests:</strong> dev tooling (devtools, roxygen2, covr, lintr, etc.)</li>
 <li>
 <strong>Remotes:</strong> non-CRAN packages (prolfqua from GitHub, prolfquadata from GitLab)</li>
-</ul><p>The <code>renv/settings.json</code> includes <code>Suggests</code> in <code>package.dependency.fields</code> so dev tools are installed by renv.</p>
+</ul><p>Use the normal user / system R libraries for this workspace; <code>renv</code> autoload is disabled.</p>
 </div>
 <div class="section level2">
 <h2 id="key-notes">Key Notes<a class="anchor" aria-label="anchor" href="#key-notes"></a></h2>

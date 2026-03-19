@@ -32,34 +32,22 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/Benchmark_cptac.html">DEA benchmark CPTAC/MaxQuant/peptide.txt</a>
-    </li>
-    <li>
       <a href="../articles/Benchmark_Model_IonStar_With2Factors.html">Modelling with Interactions</a>
     </li>
     <li>
-      <a href="../articles/Benchmark_MSStats.html">Benchmarking MSstats DEA using the Ionstar Dataset/MaxQuant</a>
+      <a href="../articles/Benchmark_msqrob2.html">Benchmarking msqrob2 across multiple datasets</a>
     </li>
     <li>
-      <a href="../articles/Benchmark_proDA_fromMQlfq.html">Benchmarking the proDA package using the Ionstar Dataset MQ LFQ intensities</a>
+      <a href="../articles/Benchmark_MSStats.html">Benchmarking MSstats DEA using the IonStar Dataset</a>
     </li>
     <li>
-      <a href="../articles/Benchmark_proDA_medpolish.html">Benchmarking the proDA package using the Ionstar Dataset starting from peptides</a>
+      <a href="../articles/Benchmark_pipeline_demo.html">Pipeline Demo: Fit → Write → Score → Aggregate</a>
     </li>
     <li>
-      <a href="../articles/Benchmark_rlm.html">Benchmarking robust linear model using the Ionstar Dataset</a>
+      <a href="../articles/Benchmark_proDA.html">Benchmarking proDA across multiple datasets</a>
     </li>
     <li>
-      <a href="../articles/BenchmarkFragPipeMSStats.html">DEA benchmark IonStar/FragPipeV14/MSstats.tsv</a>
-    </li>
-    <li>
-      <a href="../articles/BenchmarkFragPipeProteinIonStar.html">DEA benchmark IonStar/FragPipeV14/combined_protein.tsv</a>
-    </li>
-    <li>
-      <a href="../articles/BenchmarkingIonstarData.html">Benchmarking normalization, aggregation and models using the Ionstar Dataset</a>
-    </li>
-    <li>
-      <a href="../articles/BenchmarkMSqRob2.html">Benchmarking the msqrob2 package using the Ionstar Dataset starting from peptides.txt</a>
+      <a href="../articles/Benchmark_prolfqua.html">Benchmarking prolfqua across multiple datasets</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -85,9 +73,53 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
+          <p><code><a href="Benchmark.html">Benchmark</a></code> </p>
+        </td>
+        <td><p>Benchmark R6 class</p></td>
+      </tr><tr><td>
+          <p><code><a href="benchmark_from_file.html">benchmark_from_file()</a></code> </p>
+        </td>
+        <td><p>Create a Benchmark object from a contrast result directory</p></td>
+      </tr><tr><td>
+          <p><code><a href="collect_benchmark_results.html">collect_benchmark_results()</a></code> </p>
+        </td>
+        <td><p>Collect benchmark results from multiple files</p></td>
+      </tr><tr><td>
           <p><code><a href="cptac_bench_preprocess.html">cptac_bench_preprocess()</a></code> </p>
         </td>
         <td><p>preprocess cptac dataset for benchmarking</p></td>
+      </tr><tr><td>
+          <p><code><a href="ionstar_bench_preprocess.html">ionstar_bench_preprocess()</a></code> </p>
+        </td>
+        <td><p>prepare benchmark data</p></td>
+      </tr><tr><td>
+          <p><code><a href="make_benchmark.html">make_benchmark()</a></code> </p>
+        </td>
+        <td><p>make Benchmark</p></td>
+      </tr><tr><td>
+          <p><code><a href="ms_bench_ap.html">ms_bench_ap()</a></code> </p>
+        </td>
+        <td><p>Compute Average Precision (area under Precision-Recall curve)</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot_benchmark_comparison.html">plot_benchmark_comparison()</a></code> </p>
+        </td>
+        <td><p>Plot comparison of benchmark results across methods</p></td>
+      </tr><tr><td>
+          <p><code><a href="read_benchmark_results.html">read_benchmark_results()</a></code> </p>
+        </td>
+        <td><p>Read benchmark summary results from TSV</p></td>
+      </tr><tr><td>
+          <p><code><a href="read_contrast_results.html">read_contrast_results()</a></code> </p>
+        </td>
+        <td><p>Read contrast results from standardized file format</p></td>
+      </tr><tr><td>
+          <p><code><a href="write_benchmark_results.html">write_benchmark_results()</a></code> </p>
+        </td>
+        <td><p>Write benchmark summary results to TSV</p></td>
+      </tr><tr><td>
+          <p><code><a href="write_contrast_results.html">write_contrast_results()</a></code> </p>
+        </td>
+        <td><p>Write contrast results to a standardized file format</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
