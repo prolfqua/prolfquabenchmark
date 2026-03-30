@@ -27,6 +27,7 @@ combined <- collect_benchmark_results(files)
 Other benchmarking: 
 \code{\link{Benchmark}},
 \code{\link{benchmark_from_file}()},
+\code{\link{benchmark_from_result}()},
 \code{\link{ionstar_bench_preprocess}()},
 \code{\link{make_benchmark}()},
 \code{\link{ms_bench_add_scores}()},

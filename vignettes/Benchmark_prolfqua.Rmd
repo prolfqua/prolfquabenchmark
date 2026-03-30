@@ -265,6 +265,13 @@ results_cp <- run_prolfqua_benchmark(
 evalCPTAC <- requireNamespace("msdata", quietly = TRUE)
 ```
 
+```{r ds4Notice, echo=FALSE, results='asis'}
+if (!evalCPTAC) {
+  cat("> **Note:** The CPTAC section requires the `msdata` package, which is not currently installed.",
+      "CPTAC code chunks are skipped. Install it and re-render to see results.\n")
+}
+```
+
 ```{r ds4LoadData, eval = evalCPTAC}
 tmp <- msdata::quant(full.names = TRUE)
 xx <- read.csv(tmp, sep = "\t")

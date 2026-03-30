@@ -29,6 +29,7 @@ stopifnot("TP" \%in\% colnames(res$data))
 Other benchmarking: 
 \code{\link{Benchmark}},
 \code{\link{benchmark_from_file}()},
+\code{\link{benchmark_from_result}()},
 \code{\link{collect_benchmark_results}()},
 \code{\link{make_benchmark}()},
 \code{\link{ms_bench_add_scores}()},

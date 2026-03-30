@@ -19,6 +19,7 @@ Creates grouped bar charts of AUC metrics by method and contrast.
 Other benchmarking: 
 \code{\link{Benchmark}},
 \code{\link{benchmark_from_file}()},
+\code{\link{benchmark_from_result}()},
 \code{\link{collect_benchmark_results}()},
 \code{\link{ionstar_bench_preprocess}()},
 \code{\link{make_benchmark}()},

@@ -26,6 +26,17 @@ evalAll <- requireNamespace("QFeatures", quietly = TRUE) &&
   requireNamespace("limma", quietly = TRUE)
 ```
 
+```{r pkgNotice, echo=FALSE, results='asis'}
+if (!evalAll) {
+  missing <- c("QFeatures", "msqrob2", "limma")[
+    !vapply(c("QFeatures", "msqrob2", "limma"), requireNamespace,
+            logical(1), quietly = TRUE)]
+  cat("> **Note:** This vignette requires packages not currently installed:",
+      paste0("`", missing, "`", collapse = ", "),
+      ". All code chunks are skipped. Install them and re-render to see results.\n")
+}
+```
+
 # Setup
 
 We benchmark the msqrob2 `msqrobHurdle` method across three datasets.
@@ -48,7 +59,8 @@ msqrob2_col_map <- c(
   "logFC" = "log_fc",
   "t" = "t_statistic",
   "pval" = "p_value",
-  "FDR" = "p_value_adjusted"
+  "FDR" = "p_value_adjusted",
+  "avgAbd" = "avg_intensity"
 )
 
 ionstar_ground_truth <- list(
@@ -228,28 +240,7 @@ bb_mq <- run_msqrob2_hurdle(
 ```
 
 ```{r ds1Benchmark, eval = evalAll}
-ttd <- ionstar_bench_preprocess(bb_mq, idcol = "name")
-benchmark_mq <- make_benchmark(ttd$data,
-  contrast = "contrast",
-  toscale = c("pval"),
-  fcestimate = "logFC",
-  benchmark = list(
-    list(score = "logFC", desc = TRUE),
-    list(score = "t", desc = TRUE),
-    list(score = "scaled.pval", desc = TRUE)),
-  model_description = "msqrob2 hurdle on IonStar/MQ peptides",
-  model_name = "msqrob2_MQ",
-  FDRvsFDP = list(list(score = "FDR", desc = FALSE)),
-  hierarchy = c("name"), summarizeNA = "t")
-
-prolfqua::table_facade(benchmark_mq$smc$summary,
-  caption = "Nr of proteins with 0, 1, 2, 3 missing contrasts.")
-benchmark_mq$plot_ROC(xlim = 0.2)
-benchmark_mq$plot_FDRvsFDP()
-```
-
-```{r ds1Write, eval = evalAll}
-write_contrast_results(
+res_mq <- write_contrast_results(
   bb_mq,
   path = "../inst/Benchresults/msqrob2_IonStar_MQ",
   metadata = list(
@@ -261,6 +252,12 @@ write_contrast_results(
     date = as.character(Sys.Date()),
     ground_truth = ionstar_ground_truth),
   col_map = msqrob2_col_map)
+
+benchmark_mq <- benchmark_from_result(res_mq)
+prolfqua::table_facade(benchmark_mq$smc$summary,
+  caption = "Nr of proteins with 0, 1, 2, 3 missing contrasts.")
+benchmark_mq$plot_ROC(xlim = 0.2)
+benchmark_mq$plot_FDRvsFDP()
 ```
 
 
@@ -332,28 +329,7 @@ bb_fp <- run_msqrob2_hurdle(
 ```
 
 ```{r ds2Benchmark, eval = evalAll}
-ttd <- ionstar_bench_preprocess(bb_fp, idcol = "name")
-benchmark_fp <- make_benchmark(ttd$data,
-  contrast = "contrast",
-  toscale = c("pval"),
-  fcestimate = "logFC",
-  benchmark = list(
-    list(score = "logFC", desc = TRUE),
-    list(score = "t", desc = TRUE),
-    list(score = "scaled.pval", desc = TRUE)),
-  model_description = "msqrob2 hurdle on IonStar/FragPipe",
-  model_name = "msqrob2_FragPipe",
-  FDRvsFDP = list(list(score = "FDR", desc = FALSE)),
-  hierarchy = c("name"), summarizeNA = "t")
-
-prolfqua::table_facade(benchmark_fp$smc$summary,
-  caption = "Nr of proteins with 0, 1, 2, 3 missing contrasts.")
-benchmark_fp$plot_ROC(xlim = 0.2)
-benchmark_fp$plot_FDRvsFDP()
-```
-
-```{r ds2Write, eval = evalAll}
-write_contrast_results(
+res_fp <- write_contrast_results(
   bb_fp,
   path = "../inst/Benchresults/msqrob2_IonStar_FragPipe",
   metadata = list(
@@ -365,6 +341,12 @@ write_contrast_results(
     date = as.character(Sys.Date()),
     ground_truth = ionstar_ground_truth),
   col_map = msqrob2_col_map)
+
+benchmark_fp <- benchmark_from_result(res_fp)
+prolfqua::table_facade(benchmark_fp$smc$summary,
+  caption = "Nr of proteins with 0, 1, 2, 3 missing contrasts.")
+benchmark_fp$plot_ROC(xlim = 0.2)
+benchmark_fp$plot_FDRvsFDP()
 ```
 
 
@@ -461,28 +443,7 @@ bb_cptac <- dplyr::inner_join(all, protAbundanceIngroup,
 ```
 
 ```{r ds3Benchmark, eval = evalCPTAC}
-ttd <- prolfquabenchmark::cptac_bench_preprocess(bb_cptac, idcol = "name")
-benchmark_cptac <- make_benchmark(ttd$data,
-  contrast = "contrast",
-  toscale = c("pval"),
-  fcestimate = "logFC",
-  benchmark = list(
-    list(score = "logFC", desc = TRUE),
-    list(score = "t", desc = TRUE),
-    list(score = "scaled.pval", desc = TRUE)),
-  model_description = "msqrob2 hurdle on CPTAC",
-  model_name = "msqrob2_CPTAC",
-  FDRvsFDP = list(list(score = "pval.adjusted", desc = FALSE)),
-  hierarchy = c("name"), summarizeNA = "t")
-
-prolfqua::table_facade(benchmark_cptac$smc$summary,
-  caption = "Nr of proteins with 0, 1, 2, 3 missing contrasts.")
-benchmark_cptac$plot_ROC(xlim = 0.2)
-benchmark_cptac$plot_FDRvsFDP()
-```
-
-```{r ds3Write, eval = evalCPTAC}
-write_contrast_results(
+res_cptac <- write_contrast_results(
   bb_cptac,
   path = "../inst/Benchresults/msqrob2_CPTAC",
   metadata = list(
@@ -498,4 +459,10 @@ write_contrast_results(
       negative = list(label = "YEAST", pattern = "_YEAST")
     )),
   col_map = msqrob2_col_map)
+
+benchmark_cptac <- benchmark_from_result(res_cptac)
+prolfqua::table_facade(benchmark_cptac$smc$summary,
+  caption = "Nr of proteins with 0, 1, 2, 3 missing contrasts.")
+benchmark_cptac$plot_ROC(xlim = 0.2)
+benchmark_cptac$plot_FDRvsFDP()
 ```

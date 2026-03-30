@@ -37,6 +37,48 @@ benchmark_from_file <- function(path, ...) {
 }
 
 
+#' Create a Benchmark object from a write_contrast_results return value
+#'
+#' Convenience factory that takes the list returned by
+#' \code{\link{write_contrast_results}} (with \code{data} and \code{metadata}
+#' elements), applies ground truth annotation, and creates a
+#' \code{\link{Benchmark}} R6 object.
+#'
+#' @param result list with \code{data} and \code{metadata} as returned by
+#'   \code{\link{write_contrast_results}}
+#' @param ... additional arguments passed to \code{\link{make_benchmark}}
+#' @return \code{\link{Benchmark}} R6 object
+#' @export
+#' @family benchmarking
+#' @examples
+#' \dontrun{
+#' res <- write_contrast_results(contrast_data, "/tmp/ionstar_lm", metadata)
+#' bench <- benchmark_from_result(res)
+#' bench$plot_ROC()
+#' }
+benchmark_from_result <- function(result, ...) {
+  data <- annotate_ground_truth(result$data, result$metadata$ground_truth)
+  data <- dplyr::ungroup(data)
+  make_benchmark(
+    prpr = data,
+    model_name = result$metadata$method,
+    model_description = result$metadata$method_description %||% result$metadata$method,
+    fcestimate = "log_fc",
+    toscale = c("p_value"),
+    hierarchy = c("protein_id"),
+    avgInt = "avg_intensity",
+    benchmark = list(
+      list(score = "log_fc", desc = TRUE),
+      list(score = "t_statistic", desc = TRUE),
+      list(score = "scaled.p_value", desc = TRUE)
+    ),
+    FDRvsFDP = list(list(score = "p_value_adjusted", desc = FALSE)),
+    summarizeNA = "t_statistic",
+    ...
+  )
+}
+
+
 #' Write benchmark summary results to TSV
 #'
 #' Writes a benchmark_results.tsv file with AUC metrics per

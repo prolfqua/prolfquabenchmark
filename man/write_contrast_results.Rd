@@ -20,7 +20,8 @@ names. Defaults to the prolfqua-native mapping. Names are input columns,
 values are output columns.}
 }
 \value{
-Invisibly returns the path written to.
+Invisibly returns a list with elements \code{data} (the
+  column-renamed data.frame) and \code{metadata} (the input metadata list).
 }
 \description{
 Writes a contrasts.tsv file and a metadata.yaml sidecar file to the
@@ -53,6 +54,7 @@ write_contrast_results(contrast_data, "/tmp/ionstar_lm", metadata)
 Other benchmarking: 
 \code{\link{Benchmark}},
 \code{\link{benchmark_from_file}()},
+\code{\link{benchmark_from_result}()},
 \code{\link{collect_benchmark_results}()},
 \code{\link{ionstar_bench_preprocess}()},
 \code{\link{make_benchmark}()},

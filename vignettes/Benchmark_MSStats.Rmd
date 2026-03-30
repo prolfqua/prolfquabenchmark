@@ -29,6 +29,13 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 evalAll <- require("MSstats")
 ```
 
+```{r pkgNotice, echo=FALSE, results='asis'}
+if (!evalAll) {
+  cat("> **Note:** This vignette requires the `MSstats` package, which is not currently installed.",
+      "All code chunks are skipped. Install it and re-render to see results.\n")
+}
+```
+
 ```{r sharedSetup, eval = evalAll}
 datadir <- file.path(find.package("prolfquadata"), "quantdata")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")

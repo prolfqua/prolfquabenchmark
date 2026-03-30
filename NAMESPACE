@@ -3,6 +3,7 @@
 export(.summarise_missing_contrasts)
 export(Benchmark)
 export(benchmark_from_file)
+export(benchmark_from_result)
 export(collect_benchmark_results)
 export(cptac_bench_preprocess)
 export(ionstar_bench_preprocess)

@@ -40,7 +40,8 @@ NULL
 #' @param col_map named character vector mapping input column names to standard
 #'   names. Defaults to the prolfqua-native mapping. Names are input columns,
 #'   values are output columns.
-#' @return Invisibly returns the path written to.
+#' @return Invisibly returns a list with elements \code{data} (the
+#'   column-renamed data.frame) and \code{metadata} (the input metadata list).
 #' @export
 #' @family benchmarking
 #' @examples
@@ -103,7 +104,37 @@ write_contrast_results <- function(data, path, metadata,
   yaml::write_yaml(metadata, file = yaml_path)
 
   message("Wrote contrast results to: ", path)
-  invisible(path)
+  invisible(list(data = data_out, metadata = metadata))
+}
+
+
+#' Annotate ground truth species and TP columns
+#'
+#' @param data data.frame with contrast results
+#' @param ground_truth list with \code{id_column}, \code{positive} (list with
+#'   \code{label} and \code{pattern}), and \code{negative} (list with
+#'   \code{label} and \code{pattern})
+#' @return data.frame with added \code{species} and \code{TP} columns, filtered
+#'   to remove rows matching neither positive nor negative pattern
+#' @keywords internal
+annotate_ground_truth <- function(data, ground_truth) {
+  if (is.null(ground_truth)) {
+    return(data)
+  }
+  id_col <- ground_truth$id_column
+  if (!id_col %in% colnames(data)) {
+    stop("ground_truth$id_column '", id_col, "' not found in data")
+  }
+  data |>
+    dplyr::mutate(
+      species = dplyr::case_when(
+        grepl(ground_truth$positive$pattern, !!rlang::sym(id_col)) ~ ground_truth$positive$label,
+        grepl(ground_truth$negative$pattern, !!rlang::sym(id_col)) ~ ground_truth$negative$label,
+        TRUE ~ "OTHER"
+      )
+    ) |>
+    dplyr::filter(.data$species != "OTHER") |>
+    dplyr::mutate(TP = (.data$species == ground_truth$positive$label))
 }
 
 
@@ -148,24 +179,7 @@ read_contrast_results <- function(path) {
          paste(missing_cols, collapse = ", "))
   }
 
-  # Apply ground truth annotation from metadata
-  gt <- meta$ground_truth
-  if (!is.null(gt)) {
-    id_col <- gt$id_column
-    if (!id_col %in% colnames(data)) {
-      stop("ground_truth$id_column '", id_col, "' not found in data")
-    }
-    data <- data |>
-      dplyr::mutate(
-        species = dplyr::case_when(
-          grepl(gt$positive$pattern, !!rlang::sym(id_col)) ~ gt$positive$label,
-          grepl(gt$negative$pattern, !!rlang::sym(id_col)) ~ gt$negative$label,
-          TRUE ~ "OTHER"
-        )
-      ) |>
-      dplyr::filter(.data$species != "OTHER") |>
-      dplyr::mutate(TP = (.data$species == gt$positive$label))
-  }
+  data <- annotate_ground_truth(data, meta$ground_truth)
 
   list(data = data, metadata = meta)
 }
