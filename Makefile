@@ -30,7 +30,7 @@ check: build
 	Rscript -e "devtools::check()"
 
 check-fast: document
-	Rscript -e "devtools::check(build_args = '--no-build-vignettes', args = '--no-vignettes')"
+	Rscript -e "devtools::check(build_args = '--no-build-vignettes', args = '--no-vignettes', vignettes = FALSE)"
 
 build-vignettes: document
 	Rscript -e "devtools::build_vignettes()"
