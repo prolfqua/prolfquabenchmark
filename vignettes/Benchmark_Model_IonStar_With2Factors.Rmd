@@ -19,6 +19,19 @@ TODO(wew,jg): Can you please add a one-liner of the purpose of the vignette?
 library(prolfquabenchmark)
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 evalAll = TRUE
+
+create_mq_peptide_config <- function() {
+  config <- prolfqua::AnalysisConfiguration$new()
+  config$file_name <- "raw.file"
+  config$hierarchy[["protein_Id"]] <- "leading.razor.protein"
+  config$hierarchy[["peptide_Id"]] <- "sequence"
+  config$hierarchy_depth <- 1
+  config$ident_q_value <- "pep"
+  config$set_response("peptide.intensity")
+  config$isotope_label <- "isotope"
+  config$min_peptides_protein <- 2
+  config
+}
 ```
 
 ```{r}
@@ -69,17 +82,17 @@ Read the sample annotation. The sample annotation must contain the `raw.file` na
 
 
 Then you need to _tell_ `prolfqua` which columns in the data frame contain what
-information. You do it using the `AnalysisTableAnnotation` class.
+information. You do it using the `AnalysisConfiguration` class.
 
 
-The `AnalysisTableAnnotation` has the following fields that need to be populated:
-- fileName
+The `AnalysisConfiguration` has the following fields that need to be populated:
+- file_name
 - hierarchy
 - factors
-- workingIntensity
+- work_intensity
 , and we will discuss it in more detail below.
 
-The `fileName` is the column with the raw file names, however for labelled TMT experiments, it can be used to hold the name of the TMT channel.
+The `file_name` is the column with the raw file names, however for labelled TMT experiments, it can be used to hold the name of the TMT channel.
 
 
 The `hierarchy` field describes the structure of the MS data e.g, 
@@ -95,7 +108,7 @@ containing the explanatory variables.
 
 ```{r}
 
-config <- prolfqua::create_config_MQ_peptide()
+config <- create_mq_peptide_config()
 
 res <- dplyr::inner_join(
   data,
@@ -103,9 +116,9 @@ res <- dplyr::inner_join(
   by = "raw.file"
 )
 
-config$table$factors[["F1."]] = "F1"
-config$table$factors[["F2."]] = "F2"
-config$table$factorDepth <- 2
+config$factors[["F1."]] = "F1"
+config$factors[["F2."]] = "F2"
+config$factor_depth <- 2
 
 data <- prolfqua::setup_analysis(res, config)
 
@@ -117,7 +130,7 @@ Filter the data for small intensities (maxquant reports missing values as 0) and
 
 
 ```{r}
-lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)) 
+lfqdata$set_data(lfqdata$data_long() |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)))
 lfqdata$filter_proteins_by_peptide_count()
 lfqdata$remove_small_intensities()
 lfqdata$hierarchy_counts()
@@ -126,12 +139,12 @@ lfqdata$hierarchy_counts()
 ```{r}
 tr <- lfqdata$get_Transformer()
 subset_h <- lfqdata$get_copy()
-subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h$set_data(subset_h$data_long() |> dplyr::filter(grepl("HUMAN", protein_Id)))
 subset_h <- subset_h$get_Transformer()$log2()$lfq
 lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
 
 lfqAggMedpol <- lfqdataNormalized$get_Aggregator()
-lfqAggMedpol$medpolish()
+lfqAggMedpol$aggregate()
 lfqTrans <- lfqAggMedpol$lfq_agg
 
 ```
@@ -184,10 +197,9 @@ protIntSig <- ANOVA |> dplyr::filter(factor == "F1.") |>
   dplyr::filter(FDR < 0.1)
 
 protInt <-  lfqTrans$get_copy()
-protInt$data <- protInt$data[protInt$data$protein_Id %in%
-                               protIntSig$protein_Id, ]
+protInt$set_data(protInt$data_long() |> dplyr::filter(protein_Id %in% protIntSig$protein_Id))
 protInt$hierarchy_counts()
-mean(grepl("ECOLI", protInt$data$protein_Id))
+mean(grepl("ECOLI", protInt$data_long()$protein_Id))
 
 ```
 
@@ -215,7 +227,7 @@ plotter$ma_plot()
 ## Annalyse contrasts with missing data imputation
 
 ```{r}
-lfqTrans$config$table$factorDepth <- 2
+lfqTrans$set_config_value("factor_depth", 2)
 # ContrastsMissing$debug("get_contrasts")
 contrSimple <- prolfqua::ContrastsMissing$new(lfqdata = lfqTrans,
                                                    Contrasts)
@@ -252,7 +264,6 @@ sessionInfo()
 ```
 
 # References
-
 
 
 

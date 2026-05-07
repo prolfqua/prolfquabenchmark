@@ -24,6 +24,19 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 evalAll <- requireNamespace("QFeatures", quietly = TRUE) &&
   requireNamespace("msqrob2", quietly = TRUE) &&
   requireNamespace("limma", quietly = TRUE)
+
+create_mq_peptide_config <- function() {
+  config <- prolfqua::AnalysisConfiguration$new()
+  config$file_name <- "raw.file"
+  config$hierarchy[["protein_Id"]] <- "leading.razor.protein"
+  config$hierarchy[["peptide_Id"]] <- "sequence"
+  config$hierarchy_depth <- 1
+  config$ident_q_value <- "pep"
+  config$set_response("peptide.intensity")
+  config$isotope_label <- "isotope"
+  config$min_peptides_protein <- 2
+  config
+}
 ```
 
 ```{r pkgNotice, echo=FALSE, results='asis'}
@@ -194,21 +207,21 @@ inputMQfile <- file.path(datadir, "MAXQuant_IonStar2018_PXD003881.zip")
 inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 mqdata <- list()
 mqdata$data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
-mqdata$config <- prolfqua::create_config_MQ_peptide()
+mqdata$config <- create_mq_peptide_config()
 
 annotation <- readxl::read_xlsx(inputAnnotation)
 data <- dplyr::inner_join(mqdata$data, annotation, by = "raw.file")
 
-mqdata$config$table$factors[["dilution."]] <- "sample"
-mqdata$config$table$factors[["run_Id"]] <- "run_ID"
-mqdata$config$table$factorDepth <- 1
+mqdata$config$factors[["dilution."]] <- "sample"
+mqdata$config$factors[["run_Id"]] <- "run_ID"
+mqdata$config$factor_depth <- 1
 mqdata$data <- prolfqua::setup_analysis(data, mqdata$config)
 
 lfqdata_mq <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
 ```
 
 ```{r ds1Filter, eval = evalAll}
-lfqdata_mq$data <- lfqdata_mq$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id))
+lfqdata_mq$set_data(lfqdata_mq$data_long() |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)))
 lfqdata_mq$filter_proteins_by_peptide_count()
 lfqdata_mq$remove_small_intensities()
 lfqdata_mq$hierarchy_counts()
@@ -217,14 +230,14 @@ lfqdata_mq$hierarchy_counts()
 ```{r ds1Normalize, eval = evalAll}
 tr <- lfqdata_mq$get_Transformer()
 subset_h <- lfqdata_mq$get_copy()
-subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h$set_data(subset_h$data_long() |> dplyr::filter(grepl("HUMAN", protein_Id)))
 subset_h <- subset_h$get_Transformer()$log2()$lfq
 lfqdataNorm_mq <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
 ```
 
 ```{r ds1Aggregate, eval = evalAll}
 lfqAgg_mq <- lfqdataNorm_mq$get_Aggregator()
-lfqAgg_mq$medpolish()
+lfqAgg_mq$aggregate()
 lfqProt_mq <- lfqAgg_mq$lfq_agg
 ```
 
@@ -282,16 +295,16 @@ summedPep <- merged |>
 
 ```{r ds2Config, eval = evalAll}
 atable <- prolfqua::AnalysisConfiguration$new()
-atable$fileName <- "raw.file"
+atable$file_name <- "raw.file"
 atable$hierarchy[["protein_Id"]] <- c("ProteinName")
 atable$hierarchy[["peptide_Id"]] <- c("PeptideSequence")
-atable$hierarchyDepth <- 1
+atable$hierarchy_depth <- 1
 atable$set_response("pepIntensity")
 atable$factors[["dilution."]] <- "sample"
 atable$factors[["run"]] <- "run_ID"
-atable$factorDepth <- 1
+atable$factor_depth <- 1
 
-config_fp <- prolfqua::AnalysisConfiguration$new(atable)
+config_fp <- atable
 adata_fp <- prolfqua::setup_analysis(summedPep, config_fp)
 lfqdata_fp <- prolfqua::LFQData$new(adata_fp, config_fp)
 lfqdata_fp$hierarchy_counts()
@@ -305,14 +318,14 @@ knitr::kable(lfqdata_fp$hierarchy_counts(), caption = "number of proteins and pe
 pl <- lfqdata_fp$get_Plotter()
 pl$intensity_distribution_density()
 subset_h <- lfqdata_fp$get_copy()$get_Transformer()$log2()$lfq
-subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h$set_data(subset_h$data_long() |> dplyr::filter(grepl("HUMAN", protein_Id)))
 tr <- lfqdata_fp$get_Transformer()
 lfqdataNorm_fp <- tr$log2()$robscale_subset(lfqsubset = subset_h)$lfq
 ```
 
 ```{r ds2Aggregate, eval = evalAll}
 agg_fp <- lfqdataNorm_fp$get_Aggregator()
-agg_fp$medpolish()
+agg_fp$aggregate()
 lfqProt_fp <- agg_fp$lfq_agg
 lfqProt_fp$hierarchy_counts()
 ```
@@ -368,8 +381,8 @@ annotation_cptac <- annotation_cptac |>
 
 peptides <- dplyr::inner_join(annotation_cptac, peptides)
 
-config_cptac <- prolfqua::create_config_MQ_peptide()
-config_cptac$table$factors["group."] <- "group"
+config_cptac <- create_mq_peptide_config()
+config_cptac$factors["group."] <- "group"
 
 peptides <- prolfqua::setup_analysis(peptides, config_cptac)
 lfqpeptides <- prolfqua::LFQData$new(peptides, config_cptac)
@@ -383,7 +396,7 @@ tr <- lfqpeptides$get_Transformer()
 tr <- tr$intensity_matrix(vsn::justvsn)
 lfqtransformed <- tr$lfq
 agg <- lfqtransformed$get_Aggregator()
-agg$medpolish()
+agg$aggregate()
 lfqProt_cptac <- agg$lfq_agg
 ```
 

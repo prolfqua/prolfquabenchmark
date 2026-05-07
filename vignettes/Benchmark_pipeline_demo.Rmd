@@ -41,6 +41,19 @@ knitr::opts_chunk$set(
   fig.height = 5,
   knitr.table.format = "pipe"
 )
+
+create_mq_peptide_config <- function() {
+  config <- prolfqua::AnalysisConfiguration$new()
+  config$file_name <- "raw.file"
+  config$hierarchy[["protein_Id"]] <- "leading.razor.protein"
+  config$hierarchy[["peptide_Id"]] <- "sequence"
+  config$hierarchy_depth <- 1
+  config$ident_q_value <- "pep"
+  config$set_response("peptide.intensity")
+  config$isotope_label <- "isotope"
+  config$min_peptides_protein <- 2
+  config
+}
 ```
 
 ```{r loadRequiredPackages}
@@ -59,31 +72,31 @@ inputAnnotation <- file.path(datadir, "annotation_Ionstar2018_PXD003881.xlsx")
 
 mqdata <- list()
 mqdata$data <- prolfquapp::tidyMQ_Peptides(inputMQfile)
-mqdata$config <- prolfqua::create_config_MQ_peptide()
+mqdata$config <- create_mq_peptide_config()
 
 annotation <- readxl::read_xlsx(inputAnnotation)
 res <- dplyr::inner_join(mqdata$data, annotation, by = "raw.file")
 
-mqdata$config$table$factors[["dilution."]] <- "sample"
-mqdata$config$table$factors[["run_Id"]] <- "run_ID"
-mqdata$config$table$factorDepth <- 1
+mqdata$config$factors[["dilution."]] <- "sample"
+mqdata$config$factors[["run_Id"]] <- "run_ID"
+mqdata$config$factor_depth <- 1
 mqdata$data <- prolfqua::setup_analysis(res, mqdata$config)
 
 lfqdata <- prolfqua::LFQData$new(mqdata$data, mqdata$config)
-lfqdata$data <- lfqdata$data |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id))
+lfqdata$set_data(lfqdata$data_long() |> dplyr::filter(!grepl("^REV__|^CON__", protein_Id)))
 lfqdata$filter_proteins_by_peptide_count()
 lfqdata$remove_small_intensities()
 
 # Normalize using HUMAN subset
 tr <- lfqdata$get_Transformer()
 subset_h <- lfqdata$get_copy()
-subset_h$data <- subset_h$data |> dplyr::filter(grepl("HUMAN", protein_Id))
+subset_h$set_data(subset_h$data_long() |> dplyr::filter(grepl("HUMAN", protein_Id)))
 subset_h <- subset_h$get_Transformer()$log2()$lfq
-lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h, preserveMean = FALSE)$lfq
+lfqdataNormalized <- tr$log2()$robscale_subset(lfqsubset = subset_h, preserve_mean = FALSE)$lfq
 
 # Median polish aggregation
 lfqAggMedpol <- lfqdataNormalized$get_Aggregator()
-lfqAggMedpol$medpolish()
+lfqAggMedpol$aggregate()
 protLFQ <- lfqAggMedpol$lfq_agg
 ```
 
@@ -111,9 +124,9 @@ per method.
 ## Method: Linear model (lm)
 
 ```{r fitLM}
-lmmodel <- paste0(protLFQ$config$table$get_response(), " ~ dilution.")
+lmmodel <- paste0(protLFQ$response(), " ~ dilution.")
 modelFunction <- prolfqua::strategy_lm(lmmodel, model_name = "Model")
-modLinearProt <- prolfqua::build_model(protLFQ$data, modelFunction)
+modLinearProt <- prolfqua::build_model(protLFQ, modelFunction)
 
 contrProt <- prolfqua::Contrasts$new(modLinearProt, relevantContrasts)
 contrast_data_lm <- contrProt$get_contrasts()
