@@ -6,6 +6,7 @@ TARBALL := ../$(PKG_NAME)_$(PKG_VERSION).tar.gz
 
 DOCUMENT_CMD = Rscript -e "devtools::document()"
 BUILD_CMD = Rscript -e "devtools::build(vignettes = TRUE)"
+INSTALL_BUILD_CMD = Rscript -e "devtools::build(vignettes = FALSE)"
 CHECK_CMD = Rscript -e "devtools::check()"
 CHECK_FAST_CMD = Rscript -e "devtools::check(build_args = '--no-build-vignettes', args = '--no-vignettes', vignettes = FALSE)"
 CHECK_BIOC_CMD = Rscript -e "BiocCheck::BiocCheck()"
@@ -28,7 +29,7 @@ help:
 	@echo "  make build           - build source tarball with vignettes"
 	@echo "  make build-vignettes - build vignettes into inst/doc"
 	@echo "  make vignettes       - alias for build-vignettes"
-	@echo "  make install         - build source tarball with vignettes and install it"
+	@echo "  make install         - build source tarball without vignettes and install it"
 	@echo "  make test            - run testthat tests"
 	@echo "  make check-fast      - R CMD check without vignettes"
 	@echo "  make check-bioc      - run BiocCheck"
@@ -56,7 +57,8 @@ build-vignettes: document
 
 vignettes: build-vignettes
 
-install: build
+install: document
+	$(INSTALL_BUILD_CMD)
 	$(INSTALL_CMD)
 
 test: document
