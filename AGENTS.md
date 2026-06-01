@@ -25,5 +25,5 @@ Use the normal user / system R libraries for this workspace; `renv` autoload is 
 ## Key Notes
 
 - Vignettes are the main content — there is minimal R code outside of them
-- prolfqua is on the `Modelling2R6` branch (specified in Remotes)
+- prolfqua is on the `main` branch (specified in Remotes)
 - The old `AnalysisTableAnnotation` class was merged into `AnalysisConfiguration` in prolfqua

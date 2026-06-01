@@ -53,7 +53,7 @@ Suggests:
     testthat (>= 3.0.0),
     vsn
 Remotes:
-    fgcz/prolfqua@Modelling2R6,
+    fgcz/prolfqua@main,
     prolfqua/prolfquapp,
     git::https://gitlab.bfabric.org/wolski/prolfquadata.git
 RoxygenNote: 7.3.3
