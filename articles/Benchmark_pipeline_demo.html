@@ -94,9 +94,9 @@ Aggregate</h1>
                         <h4 data-toc-skip class="author">Witold
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-03-19</h4>
+            <h4 data-toc-skip class="date">2026-06-01</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_pipeline_demo.Rmd" class="external-link"><code>vignettes/Benchmark_pipeline_demo.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_pipeline_demo.Rmd" class="external-link"><code>vignettes/Benchmark_pipeline_demo.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_pipeline_demo.Rmd</code></div>
 
     </div>
@@ -136,31 +136,31 @@ via median polish.</p>
 <span></span>
 <span><span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://prolfqua.github.io/prolfquapp/reference/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/concrete_AnalysisConfiguration.html" class="external-link">create_config_MQ_peptide</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">create_mq_peptide_config</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>, <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"raw.file"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">table</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"dilution."</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"sample"</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">table</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"run_Id"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"run_ID"</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">table</span><span class="op">$</span><span class="va">factorDepth</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"dilution."</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"sample"</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"run_Id"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"run_ID"</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">factor_depth</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">lfqdata</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
-<span><span class="va">lfqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">lfqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^REV__|^CON__"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">lfqdata</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">lfqdata</span><span class="op">$</span><span class="fu">set_data</span><span class="op">(</span><span class="va">lfqdata</span><span class="op">$</span><span class="fu">data_long</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^REV__|^CON__"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">lfqdata</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdata</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Normalize using HUMAN subset</span></span>
 <span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">lfqdata</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">subset_h</span> <span class="op">&lt;-</span> <span class="va">lfqdata</span><span class="op">$</span><span class="fu">get_copy</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">subset_h</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">subset_h</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"HUMAN"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">subset_h</span><span class="op">$</span><span class="fu">set_data</span><span class="op">(</span><span class="va">subset_h</span><span class="op">$</span><span class="fu">data_long</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"HUMAN"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">subset_h</span> <span class="op">&lt;-</span> <span class="va">subset_h</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">log2</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">lfq</span></span>
-<span><span class="va">lfqdataNormalized</span> <span class="op">&lt;-</span> <span class="va">tr</span><span class="op">$</span><span class="fu">log2</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">robscale_subset</span><span class="op">(</span>lfqsubset <span class="op">=</span> <span class="va">subset_h</span>, preserveMean <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">$</span><span class="va">lfq</span></span>
+<span><span class="va">lfqdataNormalized</span> <span class="op">&lt;-</span> <span class="va">tr</span><span class="op">$</span><span class="fu">log2</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">robscale_subset</span><span class="op">(</span>lfqsubset <span class="op">=</span> <span class="va">subset_h</span>, preserve_mean <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">$</span><span class="va">lfq</span></span>
 <span></span>
 <span><span class="co"># Median polish aggregation</span></span>
 <span><span class="va">lfqAggMedpol</span> <span class="op">&lt;-</span> <span class="va">lfqdataNormalized</span><span class="op">$</span><span class="fu">get_Aggregator</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">lfqAggMedpol</span><span class="op">$</span><span class="fu">medpolish</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">lfqAggMedpol</span><span class="op">$</span><span class="fu">aggregate</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">protLFQ</span> <span class="op">&lt;-</span> <span class="va">lfqAggMedpol</span><span class="op">$</span><span class="va">lfq_agg</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">relevantContrasts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -184,11 +184,11 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <h3 id="method-linear-model-lm">Method: Linear model (lm)<a class="anchor" aria-label="anchor" href="#method-linear-model-lm"></a>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lmmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">protLFQ</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">table</span><span class="op">$</span><span class="fu">get_response</span><span class="op">(</span><span class="op">)</span>, <span class="st">" ~ dilution."</span><span class="op">)</span></span>
-<span><span class="va">modelFunction</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/strategy.html" class="external-link">strategy_lm</a></span><span class="op">(</span><span class="va">lmmodel</span>, model_name <span class="op">=</span> <span class="st">"Model"</span><span class="op">)</span></span>
-<span><span class="va">modLinearProt</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/build_model.html" class="external-link">build_model</a></span><span class="op">(</span><span class="va">protLFQ</span><span class="op">$</span><span class="va">data</span>, <span class="va">modelFunction</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">lmmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">protLFQ</span><span class="op">$</span><span class="fu">response</span><span class="op">(</span><span class="op">)</span>, <span class="st">" ~ dilution."</span><span class="op">)</span></span>
+<span><span class="va">modelFunction</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/strategy.html" class="external-link">strategy_lm</a></span><span class="op">(</span><span class="va">lmmodel</span>, model_name <span class="op">=</span> <span class="st">"Model"</span><span class="op">)</span></span>
+<span><span class="va">modLinearProt</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/build_model.html" class="external-link">build_model</a></span><span class="op">(</span><span class="va">protLFQ</span>, <span class="va">modelFunction</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">contrProt</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/Contrasts.html" class="external-link">Contrasts</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">modLinearProt</span>, <span class="va">relevantContrasts</span><span class="op">)</span></span>
+<span><span class="va">contrProt</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/Contrasts.html" class="external-link">Contrasts</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">modLinearProt</span>, <span class="va">relevantContrasts</span><span class="op">)</span></span>
 <span><span class="va">contrast_data_lm</span> <span class="op">&lt;-</span> <span class="va">contrProt</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
@@ -216,7 +216,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <h3 id="method-moderated-linear-model-lm-moderation">Method: Moderated linear model (lm + moderation)<a class="anchor" aria-label="anchor" href="#method-moderated-linear-model-lm-moderation"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">contrProtModerated</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsModerated.html" class="external-link">ContrastsModerated</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">contrProt</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">contrProtModerated</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/ContrastsModerated.html" class="external-link">ContrastsModerated</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">contrProt</span><span class="op">)</span></span>
 <span><span class="va">contrast_data_lm_mod</span> <span class="op">&lt;-</span> <span class="va">contrProtModerated</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
@@ -244,7 +244,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <h3 id="method-imputation-missing-value-model">Method: Imputation (missing value model)<a class="anchor" aria-label="anchor" href="#method-imputation-missing-value-model"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">contrImp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsMissing.html" class="external-link">ContrastsMissing</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">protLFQ</span>, <span class="va">relevantContrasts</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">contrImp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/ContrastsMissing.html" class="external-link">ContrastsMissing</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">protLFQ</span>, <span class="va">relevantContrasts</span><span class="op">)</span></span>
 <span><span class="va">contrast_data_imp</span> <span class="op">&lt;-</span> <span class="va">contrImp</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
@@ -272,8 +272,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <h3 id="method-merged-lm-imputation-moderated">Method: Merged (lm + imputation, moderated)<a class="anchor" aria-label="anchor" href="#method-merged-lm-imputation-moderated"></a>
 </h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">all_merged</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/merge_contrasts_results.html" class="external-link">merge_contrasts_results</a></span><span class="op">(</span>prefer <span class="op">=</span> <span class="va">contrProt</span>, add <span class="op">=</span> <span class="va">contrImp</span><span class="op">)</span></span>
-<span><span class="va">merged_mod</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/ContrastsModerated.html" class="external-link">ContrastsModerated</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">all_merged</span><span class="op">$</span><span class="va">merged</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">all_merged</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/merge_contrasts_results.html" class="external-link">merge_contrasts_results</a></span><span class="op">(</span>prefer <span class="op">=</span> <span class="va">contrProt</span>, add <span class="op">=</span> <span class="va">contrImp</span><span class="op">)</span></span>
+<span><span class="va">merged_mod</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/ContrastsModerated.html" class="external-link">ContrastsModerated</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">all_merged</span><span class="op">$</span><span class="va">merged</span><span class="op">)</span></span>
 <span><span class="va">contrast_data_merged</span> <span class="op">&lt;-</span> <span class="va">merged_mod</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
@@ -311,22 +311,22 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <span>  nrows <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">lm_data</span>, caption <span class="op">=</span> <span class="st">"First 5 rows of ionstar_lm/contrasts.tsv"</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>First 5 rows of ionstar_lm/contrasts.tsv</caption>
 <colgroup>
 <col width="5%">
-<col width="18%">
-<col width="14%">
+<col width="20%">
+<col width="13%">
 <col width="5%">
 <col width="1%">
 <col width="6%">
 <col width="9%">
 <col width="5%">
-<col width="7%">
-<col width="5%">
 <col width="6%">
 <col width="5%">
 <col width="6%">
+<col width="5%">
+<col width="5%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">modelName</th>
@@ -346,6 +346,36 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <tbody>
 <tr class="odd">
 <td align="left">WaldTest</td>
+<td align="left">sp|A0A0U1RRL7|MMPOS_HUMAN</td>
+<td align="left">dilution_(9/7.5)_1.2</td>
+<td align="right">0.1921227</td>
+<td align="right">1</td>
+<td align="right">0.4215677</td>
+<td align="right">0.8644976</td>
+<td align="right">0.2717025</td>
+<td align="right">1.5515785</td>
+<td align="right">0.3644665</td>
+<td align="right">-3.0307396</td>
+<td align="right">3.8738750</td>
+<td align="right">-1.653570</td>
+</tr>
+<tr class="even">
+<td align="left">WaldTest</td>
+<td align="left">sp|A0A0U1RRL7|MMPOS_HUMAN</td>
+<td align="left">dilution_(7.5/6)_1.25</td>
+<td align="right">0.1921227</td>
+<td align="right">1</td>
+<td align="right">-0.4075537</td>
+<td align="right">0.8633605</td>
+<td align="right">0.2353012</td>
+<td align="right">-1.7320508</td>
+<td align="right">0.3333333</td>
+<td align="right">-3.3973395</td>
+<td align="right">2.5822321</td>
+<td align="right">-1.660577</td>
+</tr>
+<tr class="odd">
+<td align="left">WaldTest</td>
 <td align="left">sp|A0AVT1|UBA6_HUMAN</td>
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="right">0.1350528</td>
@@ -357,7 +387,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <td align="right">0.5901146</td>
 <td align="right">-0.2561127</td>
 <td align="right">0.1509803</td>
-<td align="right">-1.3494300</td>
+<td align="right">-1.349430</td>
 </tr>
 <tr class="even">
 <td align="left">WaldTest</td>
@@ -372,7 +402,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <td align="right">0.3595683</td>
 <td align="right">-0.2938035</td>
 <td align="right">0.1132895</td>
-<td align="right">-1.2780184</td>
+<td align="right">-1.278018</td>
 </tr>
 <tr class="odd">
 <td align="left">WaldTest</td>
@@ -387,37 +417,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <td align="right">0.6119287</td>
 <td align="right">-0.2530257</td>
 <td align="right">0.1540672</td>
-<td align="right">-1.2081503</td>
-</tr>
-<tr class="even">
-<td align="left">WaldTest</td>
-<td align="left">sp|A0AVT1|UBA6_HUMAN</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="right">0.1350528</td>
-<td align="right">15</td>
-<td align="right">0.0837284</td>
-<td align="right">0.8888834</td>
-<td align="right">0.0954967</td>
-<td align="right">0.8767667</td>
-<td align="right">0.3944387</td>
-<td align="right">-0.1198181</td>
-<td align="right">0.2872748</td>
-<td align="right">-1.2252748</td>
-</tr>
-<tr class="odd">
-<td align="left">WaldTest</td>
-<td align="left">sp|A0FGR8|ESYT2_HUMAN</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="right">0.0854070</td>
-<td align="right">15</td>
-<td align="right">-0.0533352</td>
-<td align="right">0.8725464</td>
-<td align="right">0.0603918</td>
-<td align="right">-0.8831531</td>
-<td align="right">0.3910883</td>
-<td align="right">-0.1820574</td>
-<td align="right">0.0753869</td>
-<td align="right">-0.3097215</td>
+<td align="right">-1.208150</td>
 </tr>
 </tbody>
 </table>
@@ -429,8 +429,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <span><span class="co">## input_file: MAXQuant_IonStar2018_PXD003881.zip/peptides.txt</span></span>
 <span><span class="co">## aggregation: median_polish</span></span>
 <span><span class="co">## normalization: robscale</span></span>
-<span><span class="co">## software_version: prolfqua 1.5.0</span></span>
-<span><span class="co">## date: '2026-03-19'</span></span>
+<span><span class="co">## software_version: prolfqua 1.6.2</span></span>
+<span><span class="co">## date: '2026-06-01'</span></span>
 <span><span class="co">## contrasts:</span></span>
 <span><span class="co">## - dilution_(9/7.5)_1.2</span></span>
 <span><span class="co">## - dilution_(7.5/6)_1.25</span></span>

@@ -94,9 +94,9 @@ datasets</h1>
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-03-19</h4>
+            <h4 data-toc-skip class="date">2026-06-01</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/vignettes/Benchmark_msqrob2.Rmd" class="external-link"><code>vignettes/Benchmark_msqrob2.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_msqrob2.Rmd" class="external-link"><code>vignettes/Benchmark_msqrob2.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_msqrob2.Rmd</code></div>
 
     </div>
@@ -113,7 +113,7 @@ three datasets. The hurdle model produces inference using
 intensity-based estimates are found.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rformassspectrometry.github.io/QFeatures" class="external-link">QFeatures</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">msqrob2</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/statOmics/msqrob2" class="external-link">msqrob2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">my_medianPolish</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">verbose</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">medpol</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/medpolish.html" class="external-link">medpolish</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span>, trace.iter <span class="op">=</span> <span class="va">verbose</span>, maxiter <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -126,7 +126,8 @@ intensity-based estimates are found.</p>
 <span>  <span class="st">"logFC"</span> <span class="op">=</span> <span class="st">"log_fc"</span>,</span>
 <span>  <span class="st">"t"</span> <span class="op">=</span> <span class="st">"t_statistic"</span>,</span>
 <span>  <span class="st">"pval"</span> <span class="op">=</span> <span class="st">"p_value"</span>,</span>
-<span>  <span class="st">"FDR"</span> <span class="op">=</span> <span class="st">"p_value_adjusted"</span></span>
+<span>  <span class="st">"FDR"</span> <span class="op">=</span> <span class="st">"p_value_adjusted"</span>,</span>
+<span>  <span class="st">"avgAbd"</span> <span class="op">=</span> <span class="st">"avg_intensity"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ionstar_ground_truth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -135,7 +136,7 @@ intensity-based estimates are found.</p>
 <span>  negative <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>label <span class="op">=</span> <span class="st">"HUMAN"</span>, pattern <span class="op">=</span> <span class="st">"HUMAN"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ionstar_contrasts_L</span> <span class="op">&lt;-</span> <span class="fu">makeContrast</span><span class="op">(</span></span>
+<span><span class="va">ionstar_contrasts_L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/makeContrast.html" class="external-link">makeContrast</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dilution.e-dilution.d=0"</span>,</span>
 <span>    <span class="st">"dilution.d-dilution.c=0"</span>,</span>
 <span>    <span class="st">"dilution.c-dilution.b=0"</span>,</span>
@@ -170,15 +171,15 @@ intensity-based estimates are found.</p>
 <span>                               <span class="va">formula</span>, <span class="va">L</span>, <span class="va">contrast_map</span>, <span class="va">abd_contrast_map</span>,</span>
 <span>                               <span class="va">factor_col</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Create QFeatures and aggregate</span></span>
-<span>  <span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/LFQDataToSummarizedExperiment.html" class="external-link">LFQDataToSummarizedExperiment</a></span><span class="op">(</span>lfqdata <span class="op">=</span> <span class="va">lfqdataPeptideNorm</span><span class="op">)</span></span>
+<span>  <span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/LFQDataToSummarizedExperiment.html" class="external-link">LFQDataToSummarizedExperiment</a></span><span class="op">(</span>lfqdata <span class="op">=</span> <span class="va">lfqdataPeptideNorm</span><span class="op">)</span></span>
 <span>  <span class="va">pe</span> <span class="op">&lt;-</span> <span class="fu">QFeatures</span><span class="fu">::</span><span class="fu"><a href="https://rformassspectrometry.github.io/QFeatures/reference/QFeatures-class.html" class="external-link">QFeatures</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>peptide <span class="op">=</span> <span class="va">se</span><span class="op">)</span>, colData <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">pe</span> <span class="op">&lt;-</span> <span class="fu">QFeatures</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">aggregateFeatures</a></span><span class="op">(</span></span>
 <span>    <span class="va">pe</span>, i <span class="op">=</span> <span class="st">"peptide"</span>, fcol <span class="op">=</span> <span class="st">"protein_Id"</span>,</span>
 <span>    name <span class="op">=</span> <span class="st">"protein"</span>, fun <span class="op">=</span> <span class="va">my_medianPolish</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Fit hurdle model</span></span>
-<span>  <span class="va">prlm</span> <span class="op">&lt;-</span> <span class="fu">msqrobHurdle</span><span class="op">(</span><span class="va">pe</span>, i <span class="op">=</span> <span class="st">"protein"</span>, formula <span class="op">=</span> <span class="va">formula</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="va">prlm</span> <span class="op">&lt;-</span> <span class="fu">hypothesisTestHurdle</span><span class="op">(</span><span class="va">prlm</span>, i <span class="op">=</span> <span class="st">"protein"</span>, <span class="va">L</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">prlm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/msqrobHurdle.html" class="external-link">msqrobHurdle</a></span><span class="op">(</span><span class="va">pe</span>, i <span class="op">=</span> <span class="st">"protein"</span>, formula <span class="op">=</span> <span class="va">formula</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">prlm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/hypothesisTest.html" class="external-link">hypothesisTestHurdle</a></span><span class="op">(</span><span class="va">prlm</span>, i <span class="op">=</span> <span class="st">"protein"</span>, <span class="va">L</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Extract hurdle results</span></span>
 <span>  <span class="va">xx</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">prlm</span><span class="op">[[</span><span class="st">"protein"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
@@ -186,7 +187,7 @@ intensity-based estimates are found.</p>
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">hurdle</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="va">i</span></span>
-<span>    <span class="va">res</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/matrix_to_tibble.html" class="external-link">matrix_to_tibble</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, preserve_row_names <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
+<span>    <span class="va">res</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/matrix_to_tibble.html" class="external-link">matrix_to_tibble</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, preserve_row_names <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span>  <span class="va">hurdle</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span></span>
@@ -202,7 +203,7 @@ intensity-based estimates are found.</p>
 <span></span>
 <span>  <span class="va">ddd</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">logOR</span>, <span class="va">logFC</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"contrast"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ddd</span>, <span class="va">logFC</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="va">name</span><span class="op">)</span></span>
-<span>  <span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/adjust_p_values.html" class="external-link">adjust_p_values</a></span><span class="op">(</span><span class="va">all</span>, column <span class="op">=</span> <span class="st">"pval"</span>, group_by_col <span class="op">=</span> <span class="st">"contrast"</span><span class="op">)</span></span>
+<span>  <span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/adjust_p_values.html" class="external-link">adjust_p_values</a></span><span class="op">(</span><span class="va">all</span>, column <span class="op">=</span> <span class="st">"pval"</span>, group_by_col <span class="op">=</span> <span class="st">"contrast"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Remap contrast names</span></span>
 <span>  <span class="va">all</span> <span class="op">&lt;-</span> <span class="va">all</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -257,33 +258,37 @@ intensity-based estimates are found.</p>
 <span><span class="va">inputAnnotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"annotation_Ionstar2018_PXD003881.xlsx"</span><span class="op">)</span></span>
 <span><span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://prolfqua.github.io/prolfquapp/reference/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/concrete_AnalysisConfiguration.html" class="external-link">create_config_MQ_peptide</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">create_mq_peptide_config</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>, <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"raw.file"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">table</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"dilution."</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"sample"</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">table</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"run_Id"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"run_ID"</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">table</span><span class="op">$</span><span class="va">factorDepth</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"dilution."</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"sample"</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"run_Id"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"run_ID"</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">factor_depth</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">lfqdata_mq</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">lfqdata_mq</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">lfqdata_mq</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^REV__|^CON__"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">set_data</span><span class="op">(</span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">data_long</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^REV__|^CON__"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">##   isotope protein_Id peptide_Id</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> light         <span style="text-decoration: underline;">4</span>178      <span style="text-decoration: underline;">29</span>879</span></span></code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">subset_h</span> <span class="op">&lt;-</span> <span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">get_copy</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">subset_h</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">subset_h</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"HUMAN"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">subset_h</span><span class="op">$</span><span class="fu">set_data</span><span class="op">(</span><span class="va">subset_h</span><span class="op">$</span><span class="fu">data_long</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"HUMAN"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">subset_h</span> <span class="op">&lt;-</span> <span class="va">subset_h</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">log2</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">lfq</span></span>
 <span><span class="va">lfqdataNorm_mq</span> <span class="op">&lt;-</span> <span class="va">tr</span><span class="op">$</span><span class="fu">log2</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">robscale_subset</span><span class="op">(</span>lfqsubset <span class="op">=</span> <span class="va">subset_h</span><span class="op">)</span><span class="op">$</span><span class="va">lfq</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lfqAgg_mq</span> <span class="op">&lt;-</span> <span class="va">lfqdataNorm_mq</span><span class="op">$</span><span class="fu">get_Aggregator</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">lfqAgg_mq</span><span class="op">$</span><span class="fu">medpolish</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">lfqProt_mq</span> <span class="op">&lt;-</span> <span class="va">lfqAgg_mq</span><span class="op">$</span><span class="va">lfq_agg</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lfqAgg_mq</span> <span class="op">&lt;-</span> <span class="va">lfqdataNorm_mq</span><span class="op">$</span><span class="fu">get_Aggregator</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">lfqAgg_mq</span><span class="op">$</span><span class="fu">aggregate</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">lfqProt_mq</span> <span class="op">&lt;-</span> <span class="va">lfqAgg_mq</span><span class="op">$</span><span class="va">lfq_agg</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bb_mq</span> <span class="op">&lt;-</span> <span class="fu">run_msqrob2_hurdle</span><span class="op">(</span></span>
 <span>  lfqdataPeptideNorm <span class="op">=</span> <span class="va">lfqdataNorm_mq</span>,</span>
 <span>  lfqdataProtein <span class="op">=</span> <span class="va">lfqProt_mq</span>,</span>
@@ -292,27 +297,10 @@ intensity-based estimates are found.</p>
 <span>  contrast_map <span class="op">=</span> <span class="va">ionstar_contrast_map</span>,</span>
 <span>  abd_contrast_map <span class="op">=</span> <span class="va">ionstar_abd_contrast_map</span>,</span>
 <span>  factor_col <span class="op">=</span> <span class="st">"dilution."</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ttd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ionstar_bench_preprocess.html">ionstar_bench_preprocess</a></span><span class="op">(</span><span class="va">bb_mq</span>, idcol <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
-<span><span class="va">benchmark_mq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_benchmark.html">make_benchmark</a></span><span class="op">(</span><span class="va">ttd</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>  contrast <span class="op">=</span> <span class="st">"contrast"</span>,</span>
-<span>  toscale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pval"</span><span class="op">)</span>,</span>
-<span>  fcestimate <span class="op">=</span> <span class="st">"logFC"</span>,</span>
-<span>  benchmark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"logFC"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"t"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"scaled.pval"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  model_description <span class="op">=</span> <span class="st">"msqrob2 hurdle on IonStar/MQ peptides"</span>,</span>
-<span>  model_name <span class="op">=</span> <span class="st">"msqrob2_MQ"</span>,</span>
-<span>  FDRvsFDP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"FDR"</span>, desc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  hierarchy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span><span class="op">)</span>, summarizeNA <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">benchmark_mq</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Nr of proteins with 0, 1, 2, 3 missing contrasts."</span><span class="op">)</span></span>
-<span><span class="va">benchmark_mq</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
-<span><span class="va">benchmark_mq</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
+<pre><code><span><span class="co">##   |                                                                              |                                                                      |   0%</span></span></code></pre>
+<pre><code><span><span class="co">##   |                                                                              |======================================================================| 100%</span></span></code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_mq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
 <span>  <span class="va">bb_mq</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"../inst/Benchresults/msqrob2_IonStar_MQ"</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -323,12 +311,33 @@ intensity-based estimates are found.</p>
 <span>    software_version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"msqrob2 "</span>, <span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"msqrob2"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    ground_truth <span class="op">=</span> <span class="va">ionstar_ground_truth</span><span class="op">)</span>,</span>
-<span>  col_map <span class="op">=</span> <span class="va">msqrob2_col_map</span><span class="op">)</span></span></code></pre></div>
+<span>  col_map <span class="op">=</span> <span class="va">msqrob2_col_map</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">benchmark_mq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/benchmark_from_result.html">benchmark_from_result</a></span><span class="op">(</span><span class="va">res_mq</span><span class="op">)</span></span>
+<span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">benchmark_mq</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span>,</span>
+<span>  caption <span class="op">=</span> <span class="st">"Nr of proteins with 0, 1, 2, 3 missing contrasts."</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Nr of proteins with 0, 1, 2, 3 missing contrasts.</caption>
+<thead><tr class="header">
+<th align="right">nr_missing</th>
+<th align="right">protein_id</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="right">0</td>
+<td align="right">4178</td>
+</tr></tbody>
+</table>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">benchmark_mq</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Benchmark_msqrob2_files/figure-html/ds1Benchmark-1.png" class="r-plt" alt="" width="700"></p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">benchmark_mq</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Benchmark_msqrob2_files/figure-html/ds1Benchmark-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="dataset-2-ionstar-fragpipe-msstats-csv">Dataset 2: IonStar / FragPipe MSstats.csv<a class="anchor" aria-label="anchor" href="#dataset-2-ionstar-fragpipe-msstats-csv"></a>
 </h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inputFragfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"MSFragger_IonStar2018_PXD003881.zip"</span><span class="op">)</span></span>
 <span><span class="va">annotation_fp</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span>
 <span></span>
@@ -343,38 +352,62 @@ intensity-based estimates are found.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">raw.file</span>, <span class="va">run_ID</span>, <span class="va">sample</span>, <span class="va">ProteinName</span>, <span class="va">PeptideSequence</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>nprecursor <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                   pepIntensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">Intensity</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">atable</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/AnalysisConfiguration.html" class="external-link">AnalysisConfiguration</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">atable</span><span class="op">$</span><span class="va">fileName</span> <span class="op">&lt;-</span> <span class="st">"raw.file"</span></span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">atable</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/AnalysisConfiguration.html" class="external-link">AnalysisConfiguration</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">atable</span><span class="op">$</span><span class="va">file_name</span> <span class="op">&lt;-</span> <span class="st">"raw.file"</span></span>
 <span><span class="va">atable</span><span class="op">$</span><span class="va">hierarchy</span><span class="op">[[</span><span class="st">"protein_Id"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ProteinName"</span><span class="op">)</span></span>
 <span><span class="va">atable</span><span class="op">$</span><span class="va">hierarchy</span><span class="op">[[</span><span class="st">"peptide_Id"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PeptideSequence"</span><span class="op">)</span></span>
-<span><span class="va">atable</span><span class="op">$</span><span class="va">hierarchyDepth</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">atable</span><span class="op">$</span><span class="va">hierarchy_depth</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">atable</span><span class="op">$</span><span class="fu">set_response</span><span class="op">(</span><span class="st">"pepIntensity"</span><span class="op">)</span></span>
 <span><span class="va">atable</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"dilution."</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"sample"</span></span>
 <span><span class="va">atable</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"run"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"run_ID"</span></span>
-<span><span class="va">atable</span><span class="op">$</span><span class="va">factorDepth</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">atable</span><span class="op">$</span><span class="va">factor_depth</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span></span>
-<span><span class="va">config_fp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/AnalysisConfiguration.html" class="external-link">AnalysisConfiguration</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">atable</span><span class="op">)</span></span>
-<span><span class="va">adata_fp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">summedPep</span>, <span class="va">config_fp</span><span class="op">)</span></span>
-<span><span class="va">lfqdata_fp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">adata_fp</span>, <span class="va">config_fp</span><span class="op">)</span></span>
-<span><span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">config_fp</span> <span class="op">&lt;-</span> <span class="va">atable</span></span>
+<span><span class="va">adata_fp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">summedPep</span>, <span class="va">config_fp</span><span class="op">)</span></span>
+<span><span class="va">lfqdata_fp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">adata_fp</span>, <span class="va">config_fp</span><span class="op">)</span></span>
+<span><span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">##   isotopeLabel protein_Id peptide_Id</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> light              <span style="text-decoration: underline;">5</span>122      <span style="text-decoration: underline;">31</span>107</span></span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span>, caption <span class="op">=</span> <span class="st">"number of proteins and peptides."</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<table class="table">
+<caption>number of proteins and peptides.</caption>
+<thead><tr class="header">
+<th align="left">isotopeLabel</th>
+<th align="right">protein_Id</th>
+<th align="right">peptide_Id</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="left">light</td>
+<td align="right">3904</td>
+<td align="right">29889</td>
+</tr></tbody>
+</table>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">get_Plotter</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">pl</span><span class="op">$</span><span class="fu">intensity_distribution_density</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">subset_h</span> <span class="op">&lt;-</span> <span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">get_copy</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">log2</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">lfq</span></span>
-<span><span class="va">subset_h</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">subset_h</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"HUMAN"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">pl</span><span class="op">$</span><span class="fu">intensity_distribution_density</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Benchmark_msqrob2_files/figure-html/ds2Normalize-1.png" class="r-plt" alt="" width="700"></p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">subset_h</span> <span class="op">&lt;-</span> <span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">get_copy</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">log2</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">lfq</span></span>
+<span><span class="va">subset_h</span><span class="op">$</span><span class="fu">set_data</span><span class="op">(</span><span class="va">subset_h</span><span class="op">$</span><span class="fu">data_long</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"HUMAN"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdataNorm_fp</span> <span class="op">&lt;-</span> <span class="va">tr</span><span class="op">$</span><span class="fu">log2</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">robscale_subset</span><span class="op">(</span>lfqsubset <span class="op">=</span> <span class="va">subset_h</span><span class="op">)</span><span class="op">$</span><span class="va">lfq</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">agg_fp</span> <span class="op">&lt;-</span> <span class="va">lfqdataNorm_fp</span><span class="op">$</span><span class="fu">get_Aggregator</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">agg_fp</span><span class="op">$</span><span class="fu">medpolish</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">agg_fp</span><span class="op">$</span><span class="fu">aggregate</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqProt_fp</span> <span class="op">&lt;-</span> <span class="va">agg_fp</span><span class="op">$</span><span class="va">lfq_agg</span></span>
 <span><span class="va">lfqProt_fp</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
+<span><span class="co">##   isotopeLabel protein_Id</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> light              <span style="text-decoration: underline;">3</span>904</span></span></code></pre>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bb_fp</span> <span class="op">&lt;-</span> <span class="fu">run_msqrob2_hurdle</span><span class="op">(</span></span>
 <span>  lfqdataPeptideNorm <span class="op">=</span> <span class="va">lfqdataNorm_fp</span>,</span>
 <span>  lfqdataProtein <span class="op">=</span> <span class="va">lfqProt_fp</span>,</span>
@@ -383,27 +416,10 @@ intensity-based estimates are found.</p>
 <span>  contrast_map <span class="op">=</span> <span class="va">ionstar_contrast_map</span>,</span>
 <span>  abd_contrast_map <span class="op">=</span> <span class="va">ionstar_abd_contrast_map</span>,</span>
 <span>  factor_col <span class="op">=</span> <span class="st">"dilution."</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ttd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ionstar_bench_preprocess.html">ionstar_bench_preprocess</a></span><span class="op">(</span><span class="va">bb_fp</span>, idcol <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
-<span><span class="va">benchmark_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_benchmark.html">make_benchmark</a></span><span class="op">(</span><span class="va">ttd</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>  contrast <span class="op">=</span> <span class="st">"contrast"</span>,</span>
-<span>  toscale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pval"</span><span class="op">)</span>,</span>
-<span>  fcestimate <span class="op">=</span> <span class="st">"logFC"</span>,</span>
-<span>  benchmark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"logFC"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"t"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"scaled.pval"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  model_description <span class="op">=</span> <span class="st">"msqrob2 hurdle on IonStar/FragPipe"</span>,</span>
-<span>  model_name <span class="op">=</span> <span class="st">"msqrob2_FragPipe"</span>,</span>
-<span>  FDRvsFDP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"FDR"</span>, desc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  hierarchy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span><span class="op">)</span>, summarizeNA <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">benchmark_fp</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Nr of proteins with 0, 1, 2, 3 missing contrasts."</span><span class="op">)</span></span>
-<span><span class="va">benchmark_fp</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
-<span><span class="va">benchmark_fp</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
+<pre><code><span><span class="co">##   |                                                                              |                                                                      |   0%</span></span></code></pre>
+<pre><code><span><span class="co">##   |                                                                              |======================================================================| 100%</span></span></code></pre>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
 <span>  <span class="va">bb_fp</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"../inst/Benchresults/msqrob2_IonStar_FragPipe"</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -414,15 +430,36 @@ intensity-based estimates are found.</p>
 <span>    software_version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"msqrob2 "</span>, <span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"msqrob2"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    ground_truth <span class="op">=</span> <span class="va">ionstar_ground_truth</span><span class="op">)</span>,</span>
-<span>  col_map <span class="op">=</span> <span class="va">msqrob2_col_map</span><span class="op">)</span></span></code></pre></div>
+<span>  col_map <span class="op">=</span> <span class="va">msqrob2_col_map</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">benchmark_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/benchmark_from_result.html">benchmark_from_result</a></span><span class="op">(</span><span class="va">res_fp</span><span class="op">)</span></span>
+<span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">benchmark_fp</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span>,</span>
+<span>  caption <span class="op">=</span> <span class="st">"Nr of proteins with 0, 1, 2, 3 missing contrasts."</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Nr of proteins with 0, 1, 2, 3 missing contrasts.</caption>
+<thead><tr class="header">
+<th align="right">nr_missing</th>
+<th align="right">protein_id</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="right">0</td>
+<td align="right">3899</td>
+</tr></tbody>
+</table>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">benchmark_fp</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Benchmark_msqrob2_files/figure-html/ds2Benchmark-1.png" class="r-plt" alt="" width="700"></p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">benchmark_fp</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Benchmark_msqrob2_files/figure-html/ds2Benchmark-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="dataset-3-cptac">Dataset 3: CPTAC<a class="anchor" aria-label="anchor" href="#dataset-3-cptac"></a>
 </h2>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">evalCPTAC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"msdata"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="va">evalAll</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">msdata</span><span class="fu">::</span><span class="fu">quant</span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">msdata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/msdata/man/proteomics.html" class="external-link">quant</a></span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">xx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">tmp</span>, sep <span class="op">=</span> <span class="st">"\t"</span><span class="op">)</span></span>
 <span><span class="va">peptides</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://prolfqua.github.io/prolfquapp/reference/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">xx</span><span class="op">)</span></span>
 <span></span>
@@ -433,43 +470,49 @@ intensity-based estimates are found.</p>
 <span></span>
 <span><span class="va">peptides</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">annotation_cptac</span>, <span class="va">peptides</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">config_cptac</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/concrete_AnalysisConfiguration.html" class="external-link">create_config_MQ_peptide</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">config_cptac</span><span class="op">$</span><span class="va">table</span><span class="op">$</span><span class="va">factors</span><span class="op">[</span><span class="st">"group."</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"group"</span></span>
+<span><span class="va">config_cptac</span> <span class="op">&lt;-</span> <span class="fu">create_mq_peptide_config</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">config_cptac</span><span class="op">$</span><span class="va">factors</span><span class="op">[</span><span class="st">"group."</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"group"</span></span>
 <span></span>
-<span><span class="va">peptides</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">peptides</span>, <span class="va">config_cptac</span><span class="op">)</span></span>
-<span><span class="va">lfqpeptides</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfqua/man/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">peptides</span>, <span class="va">config_cptac</span><span class="op">)</span></span>
+<span><span class="va">peptides</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">peptides</span>, <span class="va">config_cptac</span><span class="op">)</span></span>
+<span><span class="va">lfqpeptides</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">peptides</span>, <span class="va">config_cptac</span><span class="op">)</span></span>
 <span><span class="va">lfqpeptides</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqpeptides</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqpeptides</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">##   isotope protein_Id peptide_Id</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> light         <span style="text-decoration: underline;">1</span>341       <span style="text-decoration: underline;">7</span>787</span></span></code></pre>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">lfqpeptides</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">tr</span><span class="op">$</span><span class="fu">intensity_matrix</span><span class="op">(</span><span class="fu">vsn</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/vsn/man/justvsn.html" class="external-link">justvsn</a></span><span class="op">)</span></span>
 <span><span class="va">lfqtransformed</span> <span class="op">&lt;-</span> <span class="va">tr</span><span class="op">$</span><span class="va">lfq</span></span>
 <span><span class="va">agg</span> <span class="op">&lt;-</span> <span class="va">lfqtransformed</span><span class="op">$</span><span class="fu">get_Aggregator</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">agg</span><span class="op">$</span><span class="fu">medpolish</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">agg</span><span class="op">$</span><span class="fu">aggregate</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqProt_cptac</span> <span class="op">&lt;-</span> <span class="va">agg</span><span class="op">$</span><span class="va">lfq_agg</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># CPTAC has a single contrast: group.b vs group.a</span></span>
-<span><span class="va">L_cptac</span> <span class="op">&lt;-</span> <span class="fu">makeContrast</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group.b=0"</span><span class="op">)</span>, parameterNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group.b"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">L_cptac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/makeContrast.html" class="external-link">makeContrast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group.b=0"</span><span class="op">)</span>, parameterNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group.b"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cptac_contrast_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hurdle_group.b"</span> <span class="op">=</span> <span class="st">"b_vs_a"</span><span class="op">)</span></span>
 <span><span class="va">cptac_abd_contrast_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"avgAbd.b.a"</span> <span class="op">=</span> <span class="st">"b_vs_a"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/LFQDataToSummarizedExperiment.html" class="external-link">LFQDataToSummarizedExperiment</a></span><span class="op">(</span><span class="va">lfqtransformed</span><span class="op">)</span></span>
+<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/LFQDataToSummarizedExperiment.html" class="external-link">LFQDataToSummarizedExperiment</a></span><span class="op">(</span><span class="va">lfqtransformed</span><span class="op">)</span></span>
 <span><span class="va">pe</span> <span class="op">&lt;-</span> <span class="fu">QFeatures</span><span class="fu">::</span><span class="fu"><a href="https://rformassspectrometry.github.io/QFeatures/reference/QFeatures-class.html" class="external-link">QFeatures</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>peptide <span class="op">=</span> <span class="va">se</span><span class="op">)</span>, colData <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">pe</span> <span class="op">&lt;-</span> <span class="fu">QFeatures</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">aggregateFeatures</a></span><span class="op">(</span></span>
 <span>  <span class="va">pe</span>, i <span class="op">=</span> <span class="st">"peptide"</span>, fcol <span class="op">=</span> <span class="st">"protein_Id"</span>,</span>
-<span>  name <span class="op">=</span> <span class="st">"protein"</span>, fun <span class="op">=</span> <span class="va">my_medianPolish</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">prlm</span> <span class="op">&lt;-</span> <span class="fu">msqrobHurdle</span><span class="op">(</span><span class="va">pe</span>, i <span class="op">=</span> <span class="st">"protein"</span>, formula <span class="op">=</span> <span class="op">~</span><span class="va">group.</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">prlm</span> <span class="op">&lt;-</span> <span class="fu">hypothesisTestHurdle</span><span class="op">(</span><span class="va">prlm</span>, i <span class="op">=</span> <span class="st">"protein"</span>, <span class="va">L_cptac</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  name <span class="op">=</span> <span class="st">"protein"</span>, fun <span class="op">=</span> <span class="va">my_medianPolish</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   |                                                                              |                                                                      |   0%</span></span></code></pre>
+<pre><code><span><span class="co">##   |                                                                              |======================================================================| 100%</span></span></code></pre>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">prlm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/msqrobHurdle.html" class="external-link">msqrobHurdle</a></span><span class="op">(</span><span class="va">pe</span>, i <span class="op">=</span> <span class="st">"protein"</span>, formula <span class="op">=</span> <span class="op">~</span><span class="va">group.</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">prlm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/msqrob2/man/hypothesisTest.html" class="external-link">hypothesisTestHurdle</a></span><span class="op">(</span><span class="va">prlm</span>, i <span class="op">=</span> <span class="st">"protein"</span>, <span class="va">L_cptac</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">xx</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">prlm</span><span class="op">[[</span><span class="st">"protein"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">hurdle</span> <span class="op">&lt;-</span> <span class="va">xx</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"hurdle_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">xx</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">hurdle</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="va">i</span></span>
-<span>  <span class="va">res</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/matrix_to_tibble.html" class="external-link">matrix_to_tibble</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, preserve_row_names <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
+<span>  <span class="va">res</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/matrix_to_tibble.html" class="external-link">matrix_to_tibble</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, preserve_row_names <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="va">hurdle</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span></span>
@@ -483,7 +526,7 @@ intensity-based estimates are found.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">logOR</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"contrast"</span>, <span class="st">"logFC"</span>, <span class="st">"se"</span>, <span class="st">"df"</span>, <span class="st">"t"</span>, <span class="st">"pval"</span>, <span class="st">"modelName"</span><span class="op">)</span></span>
 <span><span class="va">ddd</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">logOR</span>, <span class="va">logFC</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"contrast"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ddd</span>, <span class="va">logFC</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="va">name</span><span class="op">)</span></span>
-<span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/adjust_p_values.html" class="external-link">adjust_p_values</a></span><span class="op">(</span><span class="va">all</span>, column <span class="op">=</span> <span class="st">"pval"</span>, group_by_col <span class="op">=</span> <span class="st">"contrast"</span><span class="op">)</span></span>
+<span><span class="va">all</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/adjust_p_values.html" class="external-link">adjust_p_values</a></span><span class="op">(</span><span class="va">all</span>, column <span class="op">=</span> <span class="st">"pval"</span>, group_by_col <span class="op">=</span> <span class="st">"contrast"</span><span class="op">)</span></span>
 <span><span class="va">all</span><span class="op">$</span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="st">"b_vs_a"</span></span>
 <span></span>
 <span><span class="va">st</span> <span class="op">&lt;-</span> <span class="va">lfqProt_cptac</span><span class="op">$</span><span class="fu">get_Stats</span><span class="op">(</span><span class="op">)</span></span>
@@ -501,27 +544,8 @@ intensity-based estimates are found.</p>
 <span></span>
 <span><span class="va">bb_cptac</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">all</span>, <span class="va">protAbundanceIngroup</span>,</span>
 <span>  by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span> <span class="op">=</span> <span class="st">"protein_Id"</span>, <span class="st">"contrast"</span> <span class="op">=</span> <span class="st">"contrast"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ttd</span> <span class="op">&lt;-</span> <span class="fu">prolfquabenchmark</span><span class="fu">::</span><span class="fu"><a href="../reference/cptac_bench_preprocess.html">cptac_bench_preprocess</a></span><span class="op">(</span><span class="va">bb_cptac</span>, idcol <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
-<span><span class="va">benchmark_cptac</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_benchmark.html">make_benchmark</a></span><span class="op">(</span><span class="va">ttd</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>  contrast <span class="op">=</span> <span class="st">"contrast"</span>,</span>
-<span>  toscale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pval"</span><span class="op">)</span>,</span>
-<span>  fcestimate <span class="op">=</span> <span class="st">"logFC"</span>,</span>
-<span>  benchmark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"logFC"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"t"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"scaled.pval"</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  model_description <span class="op">=</span> <span class="st">"msqrob2 hurdle on CPTAC"</span>,</span>
-<span>  model_name <span class="op">=</span> <span class="st">"msqrob2_CPTAC"</span>,</span>
-<span>  FDRvsFDP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>score <span class="op">=</span> <span class="st">"pval.adjusted"</span>, desc <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  hierarchy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span><span class="op">)</span>, summarizeNA <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">benchmark_cptac</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Nr of proteins with 0, 1, 2, 3 missing contrasts."</span><span class="op">)</span></span>
-<span><span class="va">benchmark_cptac</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
-<span><span class="va">benchmark_cptac</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_cptac</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
 <span>  <span class="va">bb_cptac</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"../inst/Benchresults/msqrob2_CPTAC"</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -536,7 +560,28 @@ intensity-based estimates are found.</p>
 <span>      positive <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>label <span class="op">=</span> <span class="st">"UPS"</span>, pattern <span class="op">=</span> <span class="st">"_UPS"</span><span class="op">)</span>,</span>
 <span>      negative <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>label <span class="op">=</span> <span class="st">"YEAST"</span>, pattern <span class="op">=</span> <span class="st">"_YEAST"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span><span class="op">)</span>,</span>
-<span>  col_map <span class="op">=</span> <span class="va">msqrob2_col_map</span><span class="op">)</span></span></code></pre></div>
+<span>  col_map <span class="op">=</span> <span class="va">msqrob2_col_map</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">benchmark_cptac</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/benchmark_from_result.html">benchmark_from_result</a></span><span class="op">(</span><span class="va">res_cptac</span><span class="op">)</span></span>
+<span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/table_facade.html" class="external-link">table_facade</a></span><span class="op">(</span><span class="va">benchmark_cptac</span><span class="op">$</span><span class="va">smc</span><span class="op">$</span><span class="va">summary</span>,</span>
+<span>  caption <span class="op">=</span> <span class="st">"Nr of proteins with 0, 1, 2, 3 missing contrasts."</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Nr of proteins with 0, 1, 2, 3 missing contrasts.</caption>
+<thead><tr class="header">
+<th align="right">nr_missing</th>
+<th align="right">protein_id</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="right">0</td>
+<td align="right">1333</td>
+</tr></tbody>
+</table>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">benchmark_cptac</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Benchmark_msqrob2_files/figure-html/ds3Benchmark-1.png" class="r-plt" alt="" width="700"></p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">benchmark_cptac</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Benchmark_msqrob2_files/figure-html/ds3Benchmark-2.png" class="r-plt" alt="" width="700"></p>
 </div>
   </div>
 

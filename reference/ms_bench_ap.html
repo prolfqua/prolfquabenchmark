@@ -67,7 +67,7 @@ analogous to ms_bench_auc for ROC curves."><!-- mathjax --><script src="https://
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute Average Precision (area under Precision-Recall curve)</h1>
-    <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/R/Benchmark.R" class="external-link"><code>R/Benchmark.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/R/Benchmark.R" class="external-link"><code>R/Benchmark.R</code></a></small>
     <div class="hidden name"><code>ms_bench_ap.Rd</code></div>
     </div>
 
@@ -105,6 +105,7 @@ analogous to <code><a href="ms_bench_auc.html">ms_bench_auc</a></code> for ROC c
     <div class="dont-index"><p>Other benchmarking:
 <code><a href="Benchmark.html">Benchmark</a></code>,
 <code><a href="benchmark_from_file.html">benchmark_from_file()</a></code>,
+<code><a href="benchmark_from_result.html">benchmark_from_result()</a></code>,
 <code><a href="collect_benchmark_results.html">collect_benchmark_results()</a></code>,
 <code><a href="ionstar_bench_preprocess.html">ionstar_bench_preprocess()</a></code>,
 <code><a href="make_benchmark.html">make_benchmark()</a></code>,
@@ -122,9 +123,7 @@ analogous to <code><a href="ms_bench_auc.html">ms_bench_auc</a></code> for ROC c
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">recall</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">precision</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">0.9</span>, <span class="fl">0.85</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ap</span> <span class="op">&lt;-</span> <span class="fu">ms_bench_ap</span><span class="op">(</span><span class="va">recall</span>, <span class="va">precision</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ms_bench_ap(recall, precision):</span> could not find function "ms_bench_ap"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">ap</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ap</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">ap</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'ap' not found</span>
 </code></pre></div>
     </div>
   </div>

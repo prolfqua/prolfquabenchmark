@@ -67,7 +67,7 @@ Benchmark R6 class"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Benchmark R6 class</h1>
-    <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/R/Benchmark.R" class="external-link"><code>R/Benchmark.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/R/Benchmark.R" class="external-link"><code>R/Benchmark.R</code></a></small>
     <div class="hidden name"><code>Benchmark.Rd</code></div>
     </div>
 
@@ -81,6 +81,7 @@ Benchmark R6 class"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
     <h2>See also</h2>
     <div class="dont-index"><p>Other benchmarking:
 <code><a href="benchmark_from_file.html">benchmark_from_file()</a></code>,
+<code><a href="benchmark_from_result.html">benchmark_from_result()</a></code>,
 <code><a href="collect_benchmark_results.html">collect_benchmark_results()</a></code>,
 <code><a href="ionstar_bench_preprocess.html">ionstar_bench_preprocess()</a></code>,
 <code><a href="make_benchmark.html">make_benchmark()</a></code>,
@@ -551,7 +552,10 @@ the actual false discovery proportion (FDP).</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/prolfqua_data.html" class="external-link">prolfqua_data</a></span><span class="op">(</span><span class="st">'data_benchmarkExample'</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">statistic</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/prolfqua_data.html" class="external-link">prolfqua_data</a></span><span class="op">(</span><span class="st">'data_benchmarkExample'</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">statistic</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Registered S3 method overwritten by 'lme4':</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   method           from</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   na.action.merMod car </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Registered S3 method overwritten by 'prolfqua':</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   method         from    </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   print.pheatmap pheatmap</span>
@@ -653,12 +657,12 @@ the actual false discovery proportion (FDP).</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">benchmark</span><span class="op">$</span><span class="fu">plot_ROC</span><span class="op">(</span>xlim <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 102224 rows containing missing values or values outside the scale</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> range (`geom_path()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 102224 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_path()`).</span>
 <span class="r-plt img"><img src="Benchmark-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="va">benchmark</span><span class="op">$</span><span class="fu">plot_precision_recall</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 107894 rows containing missing values or values outside the scale</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> range (`geom_path()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 107894 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_path()`).</span>
 <span class="r-plt img"><img src="Benchmark-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">benchmark</span><span class="op">$</span><span class="fu">plot_FDRvsFDP</span><span class="op">(</span><span class="op">)</span></span></span>
@@ -669,8 +673,8 @@ the actual false discovery proportion (FDP).</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 20 rows containing missing values or values outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 172 rows containing missing values or values outside the scale</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> range (`geom_point()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 172 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
 <span class="r-plt img"><img src="Benchmark-7.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="va">benchmark</span><span class="op">$</span><span class="fu">complete</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">benchmark</span><span class="op">$</span><span class="fu">missing_contrasts</span><span class="op">(</span><span class="op">)</span></span></span>

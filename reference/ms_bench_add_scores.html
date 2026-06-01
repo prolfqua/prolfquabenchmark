@@ -66,7 +66,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>adds FDR, TPR and FDP to data.</h1>
-    <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/R/Benchmark.R" class="external-link"><code>R/Benchmark.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/R/Benchmark.R" class="external-link"><code>R/Benchmark.R</code></a></small>
     <div class="hidden name"><code>ms_bench_add_scores.Rd</code></div>
     </div>
 
@@ -117,6 +117,7 @@ TP_hits - true positives</p>
     <div class="dont-index"><p>Other benchmarking:
 <code><a href="Benchmark.html">Benchmark</a></code>,
 <code><a href="benchmark_from_file.html">benchmark_from_file()</a></code>,
+<code><a href="benchmark_from_result.html">benchmark_from_result()</a></code>,
 <code><a href="collect_benchmark_results.html">collect_benchmark_results()</a></code>,
 <code><a href="ionstar_bench_preprocess.html">ionstar_bench_preprocess()</a></code>,
 <code><a href="make_benchmark.html">make_benchmark()</a></code>,
@@ -131,7 +132,7 @@ TP_hits - true positives</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prolfqua/man/prolfqua_data.html" class="external-link">prolfqua_data</a></span><span class="op">(</span><span class="st">'data_test_confusion_matrix_scores'</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/prolfqua_data.html" class="external-link">prolfqua_data</a></span><span class="op">(</span><span class="st">'data_test_confusion_matrix_scores'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">xd</span> <span class="op">&lt;-</span> <span class="fu">ms_bench_add_scores</span><span class="op">(</span><span class="va">dd</span>, arrangeby <span class="op">=</span> <span class="st">"estimate"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xd</span><span class="op">$</span><span class="va">TPR</span>,<span class="va">xd</span><span class="op">$</span><span class="va">PREC</span>, type<span class="op">=</span><span class="st">"l"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ms_bench_add_scores-1.png" alt="" width="700" height="433"></span>

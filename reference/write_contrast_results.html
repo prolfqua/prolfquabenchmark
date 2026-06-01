@@ -68,7 +68,7 @@ them to the standardized snake_case format."><!-- mathjax --><script src="https:
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Write contrast results to a standardized file format</h1>
-    <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/HEAD/R/contrast_io.R" class="external-link"><code>R/contrast_io.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/R/contrast_io.R" class="external-link"><code>R/contrast_io.R</code></a></small>
     <div class="hidden name"><code>write_contrast_results.Rd</code></div>
     </div>
 
@@ -108,13 +108,15 @@ values are output columns.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Invisibly returns the path written to.</p>
+    <p>Invisibly returns a list with elements <code>data</code> (the
+  column-renamed data.frame) and <code>metadata</code> (the input metadata list).</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>Other benchmarking:
 <code><a href="Benchmark.html">Benchmark</a></code>,
 <code><a href="benchmark_from_file.html">benchmark_from_file()</a></code>,
+<code><a href="benchmark_from_result.html">benchmark_from_result()</a></code>,
 <code><a href="collect_benchmark_results.html">collect_benchmark_results()</a></code>,
 <code><a href="ionstar_bench_preprocess.html">ionstar_bench_preprocess()</a></code>,
 <code><a href="make_benchmark.html">make_benchmark()</a></code>,
