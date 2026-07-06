@@ -1,0 +1,3 @@
+# prolfquabenchmark 0.3.4
+
+- Began tracking user-visible changes in `NEWS.md`. For changes before this version, see the git history.
