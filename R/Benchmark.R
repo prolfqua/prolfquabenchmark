@@ -67,13 +67,20 @@ ionstar_bench_preprocess <- function(data, idcol = "protein_Id") {
 #' plot(xd$TPR,xd$PREC, type="l")
 #' plot(1- xd$PREC, xd$FDP)
 #'
-ms_bench_add_scores <- function(data, TP_col = "TP", arrangeby = "diff", desc = TRUE, subject_Id = "protein_Id") {
+ms_bench_add_scores <- function(
+  data,
+  TP_col = "TP",
+  arrangeby = "diff",
+  desc = TRUE,
+  subject_Id = "protein_Id"
+) {
   data <- if (!desc) {
     data |> arrange(!!sym(arrangeby))
   } else {
     data |> arrange(desc(!!sym(arrangeby)))
   }
-  data <- data |> select(!!sym(subject_Id), scorecol = !!sym(arrangeby), !!sym(TP_col))
+  data <- data |>
+    select(!!sym(subject_Id), scorecol = !!sym(arrangeby), !!sym(TP_col))
   data$what <- arrangeby
 
   data <- na.omit(data)
@@ -128,7 +135,9 @@ ms_bench_auc <- function(FPR, TPR, fpr_threshold = 1) {
 # Geometric mean helper (internal)
 .geomean <- function(x) {
   x <- x[x > 0]
-  if (length(x) == 0) return(NA_real_)
+  if (length(x) == 0) {
+    return(NA_real_)
+  }
   exp(mean(log(x)))
 }
 
@@ -168,7 +177,14 @@ ms_bench_ap <- function(recall, precision, recall_threshold = 1) {
     addScaledP <- function(data, fcestimate, scale) {
       scaled.p <- paste0("scaled.", scale)
       data <-
-        data |> dplyr::mutate(!!scaled.p := ifelse(!!sym(fcestimate) > 0, 1 - !!sym(scale), !!sym(scale) - 1))
+        data |>
+        dplyr::mutate(
+          !!scaled.p := ifelse(
+            !!sym(fcestimate) > 0,
+            1 - !!sym(scale),
+            !!sym(scale) - 1
+          )
+        )
       return(data)
     }
 
@@ -192,12 +208,24 @@ do_confusion <-
     subject_Id = "protein_Id"
   ) {
     # TODO add to prolfqua
-    est <- data |> ungroup() |> dplyr::select(all_of(c(subject_Id, "TP", purrr::map_chr(arrangeby, "score"))))
+    est <- data |>
+      ungroup() |>
+      dplyr::select(all_of(c(
+        subject_Id,
+        "TP",
+        purrr::map_chr(arrangeby, "score")
+      )))
     res <- list()
     for (arrange in arrangeby) {
       score <- arrange$score
       res[[score]] <-
-        ms_bench_add_scores(est, TP_col = "TP", arrangeby = score, desc = arrange$desc, subject_Id = subject_Id)
+        ms_bench_add_scores(
+          est,
+          TP_col = "TP",
+          arrangeby = score,
+          desc = arrange$desc,
+          subject_Id = subject_Id
+        )
     }
     all <- bind_rows(res)
     return(all)
@@ -244,17 +272,27 @@ do_confusion_c <- function(
 
 .plot_precision_recall <-
   function(pStats, precision_lim = 0.7, recall_lim = 1, contrast = "contrast") {
-    p2 <- ggplot(pStats, aes(x = .data$TPR, y = .data$PREC, color = .data$what)) +
+    p2 <- ggplot(
+      pStats,
+      aes(x = .data$TPR, y = .data$PREC, color = .data$what)
+    ) +
       geom_path() +
       xlim(0, recall_lim) +
       ylim(precision_lim, 1) +
       facet_wrap(as.formula(paste0("~", contrast))) +
-      labs(y = "Precision [TP/(TP + FP)] or (1 - FDP)", x = "Recall (TPR) [TP/(TP + FN)]")
+      labs(
+        y = "Precision [TP/(TP + FP)] or (1 - FDP)",
+        x = "Recall (TPR) [TP/(TP + FN)]"
+      )
     invisible(p2)
   }
 
 
-.partial_AUC_summary <- function(pStats, model_description = "mixed effects model", contrast = "contrast") {
+.partial_AUC_summary <- function(
+  pStats,
+  model_description = "mixed effects model",
+  contrast = "contrast"
+) {
   summaryS <- pStats |>
     dplyr::group_by(!!sym(contrast), .data$what) |>
     dplyr::summarize(
@@ -268,11 +306,21 @@ do_confusion_c <- function(
 
   ftable <- list(
     content = summaryS,
-    caption = paste0("AUC, pAUC at 0.1/0.2 FPR, AP, and pAP at 0.5/0.8 Recall for ", model_description),
+    caption = paste0(
+      "AUC, pAUC at 0.1/0.2 FPR, AP, and pAP at 0.5/0.8 Recall for ",
+      model_description
+    ),
     digits = 2
   )
-  sumd <- tidyr::pivot_longer(summaryS, cols = matches("^AUC|^pAUC|^AP$|^pAP"), names_to = "AUC")
-  barp <- ggplot(sumd, aes(x = !!sym(contrast), y = .data$value, color = NULL, fill = .data$what)) +
+  sumd <- tidyr::pivot_longer(
+    summaryS,
+    cols = matches("^AUC|^pAUC|^AP$|^pAP"),
+    names_to = "AUC"
+  )
+  barp <- ggplot(
+    sumd,
+    aes(x = !!sym(contrast), y = .data$value, color = NULL, fill = .data$what)
+  ) +
     geom_bar(stat = "identity", position = position_dodge()) +
     facet_wrap(~AUC, scales = "free") +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -293,7 +341,12 @@ do_confusion_c <- function(
 #' ttd <- ionstar_bench_preprocess(prolfqua::prolfqua_data('data_benchmarkExample'))
 #' x <- .summarise_missing_contrasts(ttd$data)
 #' x2 <- tibble::as_tibble(x$summary)
-.summarise_missing_contrasts <- function(data, hierarchy = c("protein_Id"), contrast = "contrast", what = "statistic") {
+.summarise_missing_contrasts <- function(
+  data,
+  hierarchy = c("protein_Id"),
+  contrast = "contrast",
+  what = "statistic"
+) {
   data <- tidyr::complete(
     data,
     tidyr::nesting(!!!syms(contrast)),
@@ -312,7 +365,10 @@ do_confusion_c <- function(
 # plot score distributions by species
 .plot_score_distribution <- function(
   data,
-  score = list(list(score = "diff", xlim = c(-1, 2)), list(score = "statistic", xlim = c(-3, 10))),
+  score = list(
+    list(score = "diff", xlim = c(-1, 2)),
+    list(score = "statistic", xlim = c(-3, 10))
+  ),
   contrast = "contrast",
   species = "species",
   annot = "peptide level statistics density"
@@ -321,15 +377,26 @@ do_confusion_c <- function(
   for (i in score) {
     xlim <- i$xlim
     score <- i$score
-    plots[[score]] <- ggplot(data, aes(x = !!sym(score), y = !!sym(contrast), color = !!sym(species))) +
+    plots[[score]] <- ggplot(
+      data,
+      aes(x = !!sym(score), y = !!sym(contrast), color = !!sym(species))
+    ) +
       ggridges::geom_density_ridges(alpha = 0.1) +
       if (!is.null(xlim)) {
         ggplot2::xlim(xlim)
       }
   }
-  fig <- ggpubr::ggarrange(plotlist = plots, nrow = 1, common.legend = TRUE, legend = "bottom")
+  fig <- ggpubr::ggarrange(
+    plotlist = plots,
+    nrow = 1,
+    common.legend = TRUE,
+    legend = "bottom"
+  )
 
-  fig <- ggpubr::annotate_figure(fig, bottom = ggpubr::text_grob(annot, size = 10))
+  fig <- ggpubr::annotate_figure(
+    fig,
+    bottom = ggpubr::text_grob(annot, size = 10)
+  )
   return(fig)
 }
 
@@ -490,7 +557,11 @@ Benchmark <-
           contrast = contrast,
           what = summarizeNA
         )
-        self$.data <- .scale_probabilities(self$.data, toscale = toscale, fcestimate = self$fcestimate)
+        self$.data <- .scale_probabilities(
+          self$.data,
+          toscale = toscale,
+          fcestimate = self$fcestimate
+        )
       },
       #' @description
       #' get data
@@ -572,7 +643,10 @@ Benchmark <-
         confusion <- self$get_confusion_benchmark()
         pauc <- .partial_AUC_summary(
           confusion,
-          model_description = paste0(ifelse(self$complete(), " (CC) ", " (NC) "), self$model_description),
+          model_description = paste0(
+            ifelse(self$complete(), " (CC) ", " (NC) "),
+            self$model_description
+          ),
           contrast = self$contrast
         )
         return(pauc)
@@ -634,8 +708,17 @@ Benchmark <-
 
         colnames(summary_df)[colnames(summary_df) == "what"] <- "score"
         summary_df$model_name <- self$model_name
-        col_order <- c("model_name", "score", "AUC", "pAUC_10", "pAUC_20",
-                        "AP", "pAP_50", "pAP_80", "n_total")
+        col_order <- c(
+          "model_name",
+          "score",
+          "AUC",
+          "pAUC_10",
+          "pAUC_20",
+          "AP",
+          "pAP_50",
+          "pAP_80",
+          "n_total"
+        )
         summary_df[, col_order]
       },
       #' @description
@@ -700,7 +783,10 @@ Benchmark <-
       #' @return ggplot
       plot_FDRvsFDP = function() {
         xx <- self$get_confusion_FDRvsFDP()
-        p <- ggplot(xx, aes(x = scorecol, y = FDP_, color = !!sym(self$contrast))) +
+        p <- ggplot(
+          xx,
+          aes(x = scorecol, y = FDP_, color = !!sym(self$contrast))
+        ) +
           geom_line() +
           geom_abline(slope = max(xx$FDP_), col = 2) +
           facet_wrap(~what)
@@ -738,7 +824,14 @@ Benchmark <-
           score <- i$score
           ylim <- i$ylim
 
-          plots[[score]] <- ggplot(x, aes(x = !!sym(self$avgInt), y = !!sym(score), color = !!sym(self$species))) +
+          plots[[score]] <- ggplot(
+            x,
+            aes(
+              x = !!sym(self$avgInt),
+              y = !!sym(score),
+              color = !!sym(self$species)
+            )
+          ) +
             geom_point(alpha = 0.2) +
             ggplot2::facet_wrap(as.formula(paste("~", self$contrast))) +
             if (!is.null(ylim)) {
@@ -747,8 +840,16 @@ Benchmark <-
               NULL
             }
         }
-        fig <- ggpubr::ggarrange(plotlist = plots, nrow = 1, common.legend = TRUE, legend = "bottom")
-        fig <- ggpubr::annotate_figure(fig, bottom = ggpubr::text_grob(self$model_typ, size = 10))
+        fig <- ggpubr::ggarrange(
+          plotlist = plots,
+          nrow = 1,
+          common.legend = TRUE,
+          legend = "bottom"
+        )
+        fig <- ggpubr::annotate_figure(
+          fig,
+          bottom = ggpubr::text_grob(self$model_typ, size = 10)
+        )
         return(fig)
       },
       #' @description
@@ -802,11 +903,23 @@ Benchmark <-
         auc_summary$n_missing_contrasts <- n_miss
 
         # Reorder columns
-        col_order <- c("model_name", "model_description", "dataset", "contrast",
-                        "score", "AUC", "pAUC_10", "pAUC_20",
-                        "AP", "pAP_50", "pAP_80",
-                        "n_TP", "n_TN",
-                        "n_total", "n_missing_contrasts")
+        col_order <- c(
+          "model_name",
+          "model_description",
+          "dataset",
+          "contrast",
+          "score",
+          "AUC",
+          "pAUC_10",
+          "pAUC_20",
+          "AP",
+          "pAP_50",
+          "pAP_80",
+          "n_TP",
+          "n_TN",
+          "n_total",
+          "n_missing_contrasts"
+        )
         auc_summary[, col_order]
       }
     )

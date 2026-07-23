@@ -1,8 +1,16 @@
 test_that("write and read contrast results round-trips correctly", {
   # Create test data with prolfqua-native column names
   test_data <- data.frame(
-    protein_Id = c("P1_HUMAN", "P2_ECOLI", "P3_HUMAN", "P4_ECOLI",
-                   "P1_HUMAN", "P2_ECOLI", "P3_HUMAN", "P4_ECOLI"),
+    protein_Id = c(
+      "P1_HUMAN",
+      "P2_ECOLI",
+      "P3_HUMAN",
+      "P4_ECOLI",
+      "P1_HUMAN",
+      "P2_ECOLI",
+      "P3_HUMAN",
+      "P4_ECOLI"
+    ),
     contrast = rep(c("A_vs_B", "C_vs_D"), each = 4),
     diff = c(0.1, 1.2, -0.3, 0.8, 0.2, 0.9, -0.1, 0.7),
     statistic = c(0.5, 3.1, -1.0, 2.5, 0.8, 2.8, -0.3, 2.2),
@@ -57,7 +65,7 @@ test_that("write and read contrast results round-trips correctly", {
   expect_true("species" %in% colnames(res$data))
   expect_true("TP" %in% colnames(res$data))
   expect_true(all(res$data$species %in% c("HUMAN", "ECOLI")))
-  expect_equal(sum(res$data$TP), 4)  # 4 ECOLI entries
+  expect_equal(sum(res$data$TP), 4) # 4 ECOLI entries
 
   # Check metadata preserved
   expect_equal(res$metadata$method, "test_method")
@@ -121,8 +129,12 @@ test_that("write_contrast_results errors on missing required metadata", {
 test_that("write_contrast_results errors on missing required columns", {
   bad_data <- data.frame(protein_Id = "P1", contrast = "A", x = 1)
   metadata <- list(
-    dataset = "test", method = "test", method_description = "test",
-    input_file = "test.txt", software_version = "1.0", date = "2026-03-17",
+    dataset = "test",
+    method = "test",
+    method_description = "test",
+    input_file = "test.txt",
+    software_version = "1.0",
+    date = "2026-03-17",
     ground_truth = list(
       id_column = "protein_id",
       positive = list(label = "ECOLI", pattern = "ECOLI"),

@@ -20,7 +20,8 @@ benchmark_from_file <- function(path, ...) {
   make_benchmark(
     prpr = res$data,
     model_name = res$metadata$method,
-    model_description = res$metadata$method_description %||% res$metadata$method,
+    model_description = res$metadata$method_description %||%
+      res$metadata$method,
     fcestimate = "log_fc",
     toscale = c("p_value"),
     hierarchy = c("protein_id"),
@@ -62,7 +63,8 @@ benchmark_from_result <- function(result, ...) {
   make_benchmark(
     prpr = data,
     model_name = result$metadata$method,
-    model_description = result$metadata$method_description %||% result$metadata$method,
+    model_description = result$metadata$method_description %||%
+      result$metadata$method,
     fcestimate = "log_fc",
     toscale = c("p_value"),
     hierarchy = c("protein_id"),
@@ -91,8 +93,13 @@ benchmark_from_result <- function(result, ...) {
 #' @export
 #' @family benchmarking
 write_benchmark_results <- function(summary_table, path) {
-  utils::write.table(summary_table, file = path, sep = "\t",
-                     row.names = FALSE, quote = FALSE)
+  utils::write.table(
+    summary_table,
+    file = path,
+    sep = "\t",
+    row.names = FALSE,
+    quote = FALSE
+  )
   message("Wrote benchmark results to: ", path)
   invisible(path)
 }

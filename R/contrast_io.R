@@ -18,12 +18,24 @@ NULL
   .col_map_to_standard
 )
 
-.required_standard_cols <- c("protein_id", "contrast", "log_fc", "t_statistic",
-                             "p_value", "p_value_adjusted")
+.required_standard_cols <- c(
+  "protein_id",
+  "contrast",
+  "log_fc",
+  "t_statistic",
+  "p_value",
+  "p_value_adjusted"
+)
 
-.required_metadata_fields <- c("dataset", "method", "method_description",
-                               "input_file", "software_version", "date",
-                               "ground_truth")
+.required_metadata_fields <- c(
+  "dataset",
+  "method",
+  "method_description",
+  "input_file",
+  "software_version",
+  "date",
+  "ground_truth"
+)
 
 
 #' Write contrast results to a standardized file format
@@ -65,13 +77,19 @@ NULL
 #' )
 #' write_contrast_results(contrast_data, "/tmp/ionstar_lm", metadata)
 #' }
-write_contrast_results <- function(data, path, metadata,
-                                   col_map = .col_map_to_standard) {
+write_contrast_results <- function(
+  data,
+  path,
+  metadata,
+  col_map = .col_map_to_standard
+) {
   # Validate required metadata fields
   missing_meta <- setdiff(.required_metadata_fields, names(metadata))
   if (length(missing_meta) > 0) {
-    stop("Missing required metadata fields: ",
-         paste(missing_meta, collapse = ", "))
+    stop(
+      "Missing required metadata fields: ",
+      paste(missing_meta, collapse = ", ")
+    )
   }
 
   if (!dir.exists(path)) {
@@ -88,15 +106,23 @@ write_contrast_results <- function(data, path, metadata,
   # Validate required columns
   missing_cols <- setdiff(.required_standard_cols, colnames(data_out))
   if (length(missing_cols) > 0) {
-    stop("Missing required columns after mapping: ",
-         paste(missing_cols, collapse = ", "),
-         "\nPresent columns: ", paste(colnames(data_out), collapse = ", "))
+    stop(
+      "Missing required columns after mapping: ",
+      paste(missing_cols, collapse = ", "),
+      "\nPresent columns: ",
+      paste(colnames(data_out), collapse = ", ")
+    )
   }
 
   # Write TSV
   tsv_path <- file.path(path, "contrasts.tsv")
-  utils::write.table(data_out, file = tsv_path, sep = "\t",
-                     row.names = FALSE, quote = FALSE)
+  utils::write.table(
+    data_out,
+    file = tsv_path,
+    sep = "\t",
+    row.names = FALSE,
+    quote = FALSE
+  )
 
   # Write metadata YAML
 
@@ -128,8 +154,14 @@ annotate_ground_truth <- function(data, ground_truth) {
   data |>
     dplyr::mutate(
       species = dplyr::case_when(
-        grepl(ground_truth$positive$pattern, !!rlang::sym(id_col)) ~ ground_truth$positive$label,
-        grepl(ground_truth$negative$pattern, !!rlang::sym(id_col)) ~ ground_truth$negative$label,
+        grepl(
+          ground_truth$positive$pattern,
+          !!rlang::sym(id_col)
+        ) ~ ground_truth$positive$label,
+        grepl(
+          ground_truth$negative$pattern,
+          !!rlang::sym(id_col)
+        ) ~ ground_truth$negative$label,
         TRUE ~ "OTHER"
       )
     ) |>
@@ -175,8 +207,10 @@ read_contrast_results <- function(path) {
   # Validate required columns
   missing_cols <- setdiff(.required_standard_cols, colnames(data))
   if (length(missing_cols) > 0) {
-    stop("contrasts.tsv missing required columns: ",
-         paste(missing_cols, collapse = ", "))
+    stop(
+      "contrasts.tsv missing required columns: ",
+      paste(missing_cols, collapse = ", ")
+    )
   }
 
   data <- annotate_ground_truth(data, meta$ground_truth)

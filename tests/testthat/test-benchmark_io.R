@@ -1,8 +1,16 @@
 test_that("benchmark_from_file creates a working Benchmark object", {
   # Create test data in standard format (already snake_case)
   test_data <- data.frame(
-    protein_id = c("P1_HUMAN", "P2_ECOLI", "P3_HUMAN", "P4_ECOLI",
-                   "P1_HUMAN", "P2_ECOLI", "P3_HUMAN", "P4_ECOLI"),
+    protein_id = c(
+      "P1_HUMAN",
+      "P2_ECOLI",
+      "P3_HUMAN",
+      "P4_ECOLI",
+      "P1_HUMAN",
+      "P2_ECOLI",
+      "P3_HUMAN",
+      "P4_ECOLI"
+    ),
     contrast = rep(c("A_vs_B", "C_vs_D"), each = 4),
     log_fc = c(0.1, 1.2, -0.3, 0.8, 0.2, 0.9, -0.1, 0.7),
     t_statistic = c(0.5, 3.1, -1.0, 2.5, 0.8, 2.8, -0.3, 2.2),
@@ -27,8 +35,13 @@ test_that("benchmark_from_file creates a working Benchmark object", {
   dir.create(tmpdir)
 
   # Write files directly in standard format (no column mapping needed)
-  utils::write.table(test_data, file.path(tmpdir, "contrasts.tsv"),
-                     sep = "\t", row.names = FALSE, quote = FALSE)
+  utils::write.table(
+    test_data,
+    file.path(tmpdir, "contrasts.tsv"),
+    sep = "\t",
+    row.names = FALSE,
+    quote = FALSE
+  )
   yaml::write_yaml(metadata, file.path(tmpdir, "metadata.yaml"))
 
   # Create benchmark from file
@@ -45,9 +58,21 @@ test_that("benchmark_from_file creates a working Benchmark object", {
   # Check to_summary_table works
   summary <- bench$to_summary_table(dataset = "test_dataset")
   expect_true(is.data.frame(summary))
-  expect_true(all(c("model_name", "dataset", "contrast", "score",
-                     "AUC", "pAUC_10", "pAUC_20",
-                     "AP", "pAP_50", "pAP_80") %in% colnames(summary)))
+  expect_true(all(
+    c(
+      "model_name",
+      "dataset",
+      "contrast",
+      "score",
+      "AUC",
+      "pAUC_10",
+      "pAUC_20",
+      "AP",
+      "pAP_50",
+      "pAP_80"
+    ) %in%
+      colnames(summary)
+  ))
   expect_equal(unique(summary$model_name), "test_lm")
   expect_equal(unique(summary$dataset), "test_dataset")
 
@@ -135,9 +160,21 @@ test_that("summary_metrics returns one row per score with valid values", {
 
   sm <- bench$summary_metrics()
   expect_true(is.data.frame(sm))
-  expect_equal(nrow(sm), 3)  # one row per score
-  expect_true(all(c("model_name", "score", "AUC", "pAUC_10", "pAUC_20",
-                     "AP", "pAP_50", "pAP_80", "n_total") %in% colnames(sm)))
+  expect_equal(nrow(sm), 3) # one row per score
+  expect_true(all(
+    c(
+      "model_name",
+      "score",
+      "AUC",
+      "pAUC_10",
+      "pAUC_20",
+      "AP",
+      "pAP_50",
+      "pAP_80",
+      "n_total"
+    ) %in%
+      colnames(sm)
+  ))
   expect_true(all(sm$AUC >= 0 & sm$AUC <= 100))
   expect_true(all(sm$AP >= 0 & sm$AP <= 100))
   expect_true(all(sm$n_total > 0))
@@ -175,8 +212,10 @@ test_that("calibration_metrics returns per-contrast and average rows", {
 
   cal <- bench$calibration_metrics(fdr_threshold = 0.2)
   expect_true(is.data.frame(cal))
-  expect_true(all(c("model_name", "contrast", "score",
-                     "FDP_cal", "FDP_bias") %in% colnames(cal)))
+  expect_true(all(
+    c("model_name", "contrast", "score", "FDP_cal", "FDP_bias") %in%
+      colnames(cal)
+  ))
   expect_equal(unique(cal$model_name), "test_model")
 
   # Should have per-contrast rows + "average" row
@@ -198,10 +237,22 @@ test_that("calibration_metrics returns per-contrast and average rows", {
 
 
 test_that("collect_benchmark_results combines multiple files", {
-  s1 <- data.frame(model_name = "m1", contrast = "A", score = "x",
-                   AUC = 80, pAUC_10 = 40, pAUC_20 = 50)
-  s2 <- data.frame(model_name = "m2", contrast = "A", score = "x",
-                   AUC = 90, pAUC_10 = 45, pAUC_20 = 55)
+  s1 <- data.frame(
+    model_name = "m1",
+    contrast = "A",
+    score = "x",
+    AUC = 80,
+    pAUC_10 = 40,
+    pAUC_20 = 50
+  )
+  s2 <- data.frame(
+    model_name = "m2",
+    contrast = "A",
+    score = "x",
+    AUC = 90,
+    pAUC_10 = 45,
+    pAUC_20 = 55
+  )
 
   f1 <- tempfile(fileext = ".tsv")
   f2 <- tempfile(fileext = ".tsv")
