@@ -66,7 +66,13 @@
     <li>
       <a href="../articles/Benchmark_prolfqua.html">Benchmarking prolfqua across multiple datasets</a>
     </li>
+    <li>
+      <a href="../articles/SqueezeVar_comparison.html">Comparing squeezeVar: limma, msqrob2, and prolfqua</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -94,7 +100,7 @@ Aggregate</h1>
                         <h4 data-toc-skip class="author">Witold
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-06-02</h4>
+            <h4 data-toc-skip class="date">2026-07-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_pipeline_demo.Rmd" class="external-link"><code>vignettes/Benchmark_pipeline_demo.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_pipeline_demo.Rmd</code></div>
@@ -135,7 +141,7 @@ via median polish.</p>
 <span><span class="va">inputAnnotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">datadir</span>, <span class="st">"annotation_Ionstar2018_PXD003881.xlsx"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mqdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://prolfqua.github.io/prolfquapp/reference/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfquapp</span><span class="fu">::</span><span class="fu"><a href="https://prolfqua.github.io/prolfquapp/man/tidyMQ_Peptides.html" class="external-link">tidyMQ_Peptides</a></span><span class="op">(</span><span class="va">inputMQfile</span><span class="op">)</span></span>
 <span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">create_mq_peptide_config</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">inputAnnotation</span><span class="op">)</span></span>
@@ -315,21 +321,23 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <caption>First 5 rows of ionstar_lm/contrasts.tsv</caption>
 <colgroup>
 <col width="5%">
-<col width="20%">
-<col width="13%">
+<col width="7%">
+<col width="19%">
+<col width="12%">
 <col width="5%">
 <col width="1%">
-<col width="6%">
+<col width="5%">
 <col width="9%">
 <col width="5%">
 <col width="6%">
 <col width="5%">
-<col width="6%">
+<col width="5%">
 <col width="5%">
 <col width="5%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">modelName</th>
+<th align="left">estimate_type</th>
 <th align="left">protein_id</th>
 <th align="left">contrast</th>
 <th align="right">sigma</th>
@@ -346,6 +354,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <tbody>
 <tr class="odd">
 <td align="left">WaldTest</td>
+<td align="left">observed</td>
 <td align="left">sp|A0A0U1RRL7|MMPOS_HUMAN</td>
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="right">0.1921227</td>
@@ -361,6 +370,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 </tr>
 <tr class="even">
 <td align="left">WaldTest</td>
+<td align="left">observed</td>
 <td align="left">sp|A0A0U1RRL7|MMPOS_HUMAN</td>
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="right">0.1921227</td>
@@ -376,6 +386,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 </tr>
 <tr class="odd">
 <td align="left">WaldTest</td>
+<td align="left">observed</td>
 <td align="left">sp|A0AVT1|UBA6_HUMAN</td>
 <td align="left">dilution_(9/7.5)_1.2</td>
 <td align="right">0.1350528</td>
@@ -391,6 +402,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 </tr>
 <tr class="even">
 <td align="left">WaldTest</td>
+<td align="left">observed</td>
 <td align="left">sp|A0AVT1|UBA6_HUMAN</td>
 <td align="left">dilution_(7.5/6)_1.25</td>
 <td align="right">0.1350528</td>
@@ -406,6 +418,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 </tr>
 <tr class="odd">
 <td align="left">WaldTest</td>
+<td align="left">observed</td>
 <td align="left">sp|A0AVT1|UBA6_HUMAN</td>
 <td align="left">dilution_(6/4.5)_1.3(3)</td>
 <td align="right">0.1350528</td>
@@ -429,8 +442,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <span><span class="co">## input_file: MAXQuant_IonStar2018_PXD003881.zip/peptides.txt</span></span>
 <span><span class="co">## aggregation: median_polish</span></span>
 <span><span class="co">## normalization: robscale</span></span>
-<span><span class="co">## software_version: prolfqua 1.6.2</span></span>
-<span><span class="co">## date: '2026-06-02'</span></span>
+<span><span class="co">## software_version: prolfqua 1.7.0</span></span>
+<span><span class="co">## date: '2026-07-25'</span></span>
 <span><span class="co">## contrasts:</span></span>
 <span><span class="co">## - dilution_(9/7.5)_1.2</span></span>
 <span><span class="co">## - dilution_(7.5/6)_1.25</span></span>
@@ -607,12 +620,12 @@ median-polished proteins</td>
 <td align="left">ionstar_maxquant</td>
 <td align="left">all</td>
 <td align="left">scaled.p_value</td>
-<td align="right">93.28</td>
-<td align="right">74.25</td>
-<td align="right">80.67</td>
-<td align="right">84.25</td>
+<td align="right">93.26</td>
+<td align="right">74.14</td>
+<td align="right">80.58</td>
+<td align="right">84.19</td>
 <td align="right">99.33</td>
-<td align="right">94.68</td>
+<td align="right">94.63</td>
 <td align="right">2484</td>
 <td align="right">13955</td>
 <td align="right">16439</td>
@@ -625,12 +638,12 @@ median-polished proteins</td>
 <td align="left">ionstar_maxquant</td>
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">93.26</td>
-<td align="right">74.09</td>
-<td align="right">80.61</td>
-<td align="right">83.80</td>
-<td align="right">98.48</td>
-<td align="right">94.10</td>
+<td align="right">93.24</td>
+<td align="right">73.98</td>
+<td align="right">80.51</td>
+<td align="right">83.73</td>
+<td align="right">98.47</td>
+<td align="right">94.04</td>
 <td align="right">2484</td>
 <td align="right">13955</td>
 <td align="right">16439</td>
@@ -659,12 +672,12 @@ median-polished proteins</td>
 <td align="left">ionstar_maxquant</td>
 <td align="left">all</td>
 <td align="left">scaled.p_value</td>
-<td align="right">92.40</td>
-<td align="right">72.27</td>
-<td align="right">78.66</td>
-<td align="right">82.79</td>
+<td align="right">92.38</td>
+<td align="right">72.17</td>
+<td align="right">78.58</td>
+<td align="right">82.72</td>
 <td align="right">99.17</td>
-<td align="right">93.81</td>
+<td align="right">93.75</td>
 <td align="right">2564</td>
 <td align="right">14148</td>
 <td align="right">16712</td>
@@ -676,12 +689,12 @@ median-polished proteins</td>
 <td align="left">ionstar_maxquant</td>
 <td align="left">all</td>
 <td align="left">t_statistic</td>
-<td align="right">92.37</td>
-<td align="right">72.02</td>
-<td align="right">78.55</td>
-<td align="right">82.08</td>
-<td align="right">97.89</td>
-<td align="right">92.91</td>
+<td align="right">92.35</td>
+<td align="right">71.91</td>
+<td align="right">78.47</td>
+<td align="right">82.01</td>
+<td align="right">97.88</td>
+<td align="right">92.85</td>
 <td align="right">2564</td>
 <td align="right">14148</td>
 <td align="right">16712</td>
@@ -903,7 +916,7 @@ Snakemake)</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>
