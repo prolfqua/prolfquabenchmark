@@ -1,0 +1,406 @@
+---
+title: "Comparing squeezeVar: limma, msqrob2, and prolfqua"
+author: "Witold E Wolski"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      toc_collapsed: true
+papersize: a4
+geometry: margin=.5in
+vignette: >
+  %\VignetteIndexEntry{Comparing squeezeVar: limma, msqrob2, and prolfqua}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 6, fig.height = 4)
+run <- requireNamespace("limma", quietly = TRUE)
+```
+
+## Why this vignette exists
+
+`prolfqua` used to ship its own empirical-Bayes variance-moderation routine, `squeezeVarRob()`.
+The source header records where it came from:
+
+> `# Code from https://raw.githubusercontent.com/statOmics/MSqRob/master/R/squeezeVarRob.R`
+
+That is the **old** MSqRob package (the 2016-era predecessor of `msqrob2`). It was never entirely
+clear *why* MSqRob carried its own copy of a function that already exists in `limma`. This vignette
+answers that empirically by running the three implementations side by side:
+
+1. `limma::squeezeVar()` — the reference implementation.
+2. `msqrob2` — the current Bioconductor package.
+3. `prolfqua::squeezeVarRob()` — the former prolfqua backend, inherited from old MSqRob.
+
+> **Outcome.** The benchmark in this vignette (synthetic + real IonStar spike-in data) shows the two
+> estimators produce near-identical results, so **`prolfqua` has migrated its variance moderation to
+> `limma::squeezeVar()`** (`moderated_p_limma()` as of prolfqua 1.6.3), and the vendored
+> `squeezeVarRob()` has been **removed**. This vignette reconstructs its behaviour from limma
+> primitives (`limma::squeezeVar(legacy = TRUE)` + a `min_df` filter) for the comparison below.
+
+The short answer, established below:
+
+- **`msqrob2` does not have its own implementation.** It calls `limma::squeezeVar()` directly, so
+  it *is* limma.
+- **The former `prolfqua::squeezeVarRob()` was limma's classic ("legacy") `fitFDist` plus one
+  addition: a `min_df` pre-filter (default `1`)** that drops features whose residual degrees of freedom
+  are `<= min_df` before estimating the prior.
+- Old MSqRob added that filter because the classic estimator **mis-estimates the prior (collapses to
+  `df.prior = Inf`, i.e. no moderation) when the data contain many low / fractional-df features** —
+  exactly what peptide-level robust/ridge regression produces. **Modern limma fixed the same problem
+  upstream** with a redesigned estimator (the `legacy` argument), which is why `msqrob2` needs no
+  patch.
+- **This regime is live in `prolfqua`, not hypothetical.** `prolfqua` feeds its variance moderation the
+  per-contrast residual df, and several of its estimators produce **fractional or low df**: `rlm` and
+  `rfit` (df = sum of robust weights − rank), `lmer_nested` (Satterthwaite df on peptide-level mixed
+  models), and the imputation facades (`lm_impute` / `lm_missing`, with borrowed / low df). Only plain
+  `lm` gives integer df. So the behavioural difference between the classic-plus-`min_df` fork and
+  modern limma **can change prolfqua results** on exactly those paths — it is not merely historical.
+  (`firth` and `firth_nested` are *not* consumers — they use their own `ContrastsFirth` inference, not
+  `squeezeVarRob`.)
+
+```{r libs}
+library(limma)
+library(prolfqua)
+library(ggplot2)
+```
+
+## msqrob2 delegates to limma
+
+`msqrob2::msqrobLm()` and `msqrob2::msqrobLmer()` compute the moderated variance with a plain call to
+`limma::squeezeVar()` (default arguments: non-robust, no covariate):
+
+```{r msqrob2_source, eval = requireNamespace("msqrob2", quietly = TRUE)}
+body_lines <- deparse(getNamespace("msqrob2")$msqrobLm)
+cat(body_lines[grep("squeezeVar", body_lines)[1] + 0:1], sep = "\n")
+```
+
+So "the msqrob2 implementation" is `limma::squeezeVar(var, df)`. We keep it as a separate column
+below only to make the three-way comparison explicit; it is identical to the limma column by
+construction.
+
+## The three implementations
+
+The former `prolfqua::squeezeVarRob()` was **removed** in prolfqua 1.6.3, so we reproduce it here from
+limma primitives — which is exactly what it was: limma's **classic** estimator (`legacy = TRUE`) plus
+MSqRob's `min_df` pre-filter (drop features with residual df ≤ `min_df` before estimating the prior,
+then apply the fitted prior to all features).
+
+```{r impls}
+recycle <- function(x, k) if (length(x) == 1L) rep(x, k) else x
+
+# Exact reconstruction of the removed prolfqua::squeezeVarRob() (non-robust path).
+former_fork <- function(var, df, min_df = 1) {
+  n <- length(var)
+  dfv <- recycle(df, n)
+  keep <- is.finite(dfv) & dfv > min_df
+  fit <- limma::squeezeVar(var[keep], df = dfv[keep], legacy = TRUE)  # limma classic fitFDist
+  var.post <- if (is.infinite(fit$df.prior)) {
+    rep(fit$var.prior, n)                                             # full collapse -> prior variance
+  } else {
+    (dfv * var + fit$df.prior * fit$var.prior) / (dfv + fit$df.prior)
+  }
+  list(df.prior = fit$df.prior, var.prior = fit$var.prior, var.post = var.post)
+}
+
+run_three <- function(var, df) {
+  n <- length(var)
+  lim  <- limma::squeezeVar(var, df)          # modern default -> what prolfqua now uses
+  msq  <- limma::squeezeVar(var = var, df = df)  # exactly the msqrob2 call
+  pro  <- former_fork(var, df)                 # the removed squeezeVarRob fork
+  tibble::tibble(
+    df               = df,
+    var              = var,
+    varpost_limma    = lim$var.post,
+    varpost_msqrob2  = msq$var.post,
+    varpost_prolfqua = pro$var.post,
+    dfprior_limma    = recycle(lim$df.prior, n),
+    dfprior_prolfqua = recycle(pro$df.prior, n),
+    varprior_limma   = recycle(lim$var.prior, n),
+    varprior_prolfqua = recycle(pro$var.prior, n)
+  )
+}
+
+# scaled-F generative model that the estimators assume:
+# per-feature true variance sigma^2 ~ scaled inverse chi-square(df_prior, var_prior),
+# observed sample variance ~ sigma^2 * chisq(df) / df.
+gen_scaled_F <- function(n, df, df_prior = 4, var_prior = 0.4) {
+  sigma2 <- var_prior * df_prior / rchisq(n, df_prior)
+  sigma2 * rchisq(n, df) / df
+}
+
+summarise_cmp <- function(d) {
+  data.frame(
+    dfprior_limma     = d$dfprior_limma[1],
+    dfprior_prolfqua  = d$dfprior_prolfqua[1],
+    varprior_limma    = d$varprior_limma[1],
+    varprior_prolfqua = d$varprior_prolfqua[1],
+    max_abs_varpost_diff  = max(abs(d$varpost_limma - d$varpost_prolfqua)),
+    mean_rel_varpost_diff = mean(abs(d$varpost_limma - d$varpost_prolfqua) / d$varpost_limma),
+    msqrob2_equals_limma  = isTRUE(all.equal(d$varpost_limma, d$varpost_msqrob2))
+  )
+}
+```
+
+## Regime 1 — integer residual df (baseline)
+
+The controlled baseline: 4000 features with integer df in `3:9`, as produced by plain `lm` fits. This
+establishes what the estimators do when they agree.
+
+```{r integer_df}
+set.seed(7)
+n  <- 4000
+df_int <- sample(3:9, n, replace = TRUE)
+var_int <- gen_scaled_F(n, df_int)
+
+cmp_int <- run_three(var_int, df_int)
+
+knitr::kable(summarise_cmp(cmp_int), digits = 6,
+  caption = "Integer df: modern limma vs the former fork (msqrob2 == limma).")
+```
+
+The posterior variances are indistinguishable (mean relative difference `< 1e-3`). The former fork
+matches limma's **legacy** algorithm exactly here (all df > 1, so the `min_df` filter is inert):
+
+```{r integer_legacy}
+lg <- limma::squeezeVar(var_int, df_int, legacy = TRUE)
+pr <- former_fork(var_int, df_int)
+c(dfprior_limma_legacy = lg$df.prior,
+  dfprior_former_fork  = pr$df.prior,
+  varprior_limma_legacy = lg$var.prior,
+  varprior_former_fork  = pr$var.prior)
+```
+
+```{r integer_scatter, fig.cap = "Posterior variances agree on the diagonal (integer df, non-robust)."}
+ggplot(cmp_int, aes(varpost_limma, varpost_prolfqua)) +
+  geom_point(alpha = 0.2, size = 0.6) +
+  geom_abline(slope = 1, intercept = 0, colour = "red") +
+  scale_x_log10() + scale_y_log10() +
+  labs(x = "var.post (limma)", y = "var.post (prolfqua)") +
+  theme_bw()
+```
+
+## Regime 2 — fractional / low residual df (why MSqRob forked it — and why it matters here)
+
+Robust and mixed-model fits produce **fractional** residual df, and sparse fits produce **low** df.
+This is the regime where the classic estimator misbehaves. We simulate df drawn uniformly from
+`[0.3, 4]`.
+
+```{r frac_df}
+set.seed(7)
+df_frac  <- runif(n, 0.3, 4)
+var_frac <- gen_scaled_F(n, pmax(df_frac, 0.3))
+cat("features with df <= 1:", sum(df_frac <= 1), "of", n, "\n")
+
+cmp_frac <- run_three(var_frac, df_frac)
+knitr::kable(summarise_cmp(cmp_frac), digits = 6,
+             caption = "Fractional df: limma (modern default) vs prolfqua.")
+```
+
+Here the two diverge. The reason is not merely the `min_df` threshold — it is that the former fork was
+limma's **classic** estimator, while modern `limma::squeezeVar()` defaults to a **redesigned** one. We
+can expose all the moving parts:
+
+```{r frac_decompose}
+show <- function(tag, x) {
+  data.frame(source = tag, df.prior = x$df.prior[1], var.prior = x$var.prior[1])
+}
+rbind(
+  show("limma default (new estimator)",      limma::squeezeVar(var_frac, df_frac)),
+  show("limma legacy = TRUE (classic)",       limma::squeezeVar(var_frac, df_frac, legacy = TRUE)),
+  show("former fork, min_df = 1e-15 (none)",  former_fork(var_frac, df_frac, min_df = 1e-15)),
+  show("former fork, min_df = 1 (default)",   former_fork(var_frac, df_frac))
+)
+```
+
+Two exact identities fall out of this table:
+
+- **former fork with `min_df = 1e-15` == `limma(legacy = TRUE)`** — both return `df.prior = Inf`.
+  This confirms the former `squeezeVarRob()` *was* limma's classic `fitFDist`. On this fractional data
+  the classic estimator **collapses to `df.prior = Inf`**: no shrinkage, every feature falls back to a
+  pooled variance. That is the failure mode MSqRob hit.
+- **former fork with `min_df = 1`** (the shipped default) recovers a sensible finite `df.prior` by
+  excluding the `<= 1`-df features from the prior fit. That is precisely the patch MSqRob added.
+- **Modern `limma` (default)** also recovers a sensible `df.prior`, but via its new algorithm rather
+  than a df filter.
+
+```{r frac_dfprior_bar, fig.cap = "Estimated prior df on fractional-df data: classic limma collapses to Inf; the min_df patch and modern limma both recover a finite value."}
+dfp <- data.frame(
+  method = factor(
+    c("limma\n(new default)", "limma\n(legacy)", "former fork\n(min_df=1e-15)", "former fork\n(min_df=1)"),
+    levels = c("limma\n(legacy)", "former fork\n(min_df=1e-15)", "limma\n(new default)", "former fork\n(min_df=1)")),
+  df.prior = c(limma::squeezeVar(var_frac, df_frac)$df.prior,
+               limma::squeezeVar(var_frac, df_frac, legacy = TRUE)$df.prior,
+               former_fork(var_frac, df_frac, min_df = 1e-15)$df.prior,
+               former_fork(var_frac, df_frac)$df.prior)
+)
+dfp$label <- ifelse(is.finite(dfp$df.prior), sprintf("%.2f", dfp$df.prior), "Inf")
+dfp$plot_val <- ifelse(is.finite(dfp$df.prior), dfp$df.prior, max(dfp$df.prior[is.finite(dfp$df.prior)]) * 1.3)
+ggplot(dfp, aes(method, plot_val, fill = is.finite(df.prior))) +
+  geom_col() +
+  geom_text(aes(label = label), vjust = -0.3) +
+  scale_fill_manual(values = c(`TRUE` = "steelblue", `FALSE` = "firebrick"),
+                    labels = c(`TRUE` = "finite", `FALSE` = "Inf (collapsed)"), name = NULL) +
+  labs(x = NULL, y = "estimated prior df") +
+  theme_bw()
+```
+
+## Where prolfqua feeds the squeeze
+
+There is a single call site in `prolfqua`: `moderated_p_limma()` (in `tidyMS_moderation.R`), which
+squeezes the per-contrast residual variances. It now calls `limma::squeezeVar()` (the migration this
+vignette justifies); it previously called the vendored `squeezeVarRob()`:
+
+```r
+# current (prolfqua >= 1.6.3)
+squeezed_var <- limma::squeezeVar(contrast_df$sigma^2, df = contrast_df[[df]], robust = robust)
+# former
+# squeezed_var <- prolfqua::squeezeVarRob(contrast_df$sigma^2, df = contrast_df[[df]], robust = robust)
+
+# prior degrees of freedom are Inf
+if (all(is.infinite(squeezed_var$df.prior))) {
+  squeezed_var$df.prior <- mean(contrast_df[[df]]) * nrow(contrast_df) / 10
+}
+```
+
+The fallback on the second line is itself evidence: `prolfqua` already has to catch the
+`df.prior = Inf` **collapse** on real data. `moderated_p_limma()` is called by `ContrastsModerated`
+(the moderated-Wald path wrapping `lm`, `rlm`, `rfit`, the `lm_impute` / `lm_missing` / `rfit_impute`
+facades, and `lmer_nested`) and by the DEqMS small-group fallback.
+
+The `df` column fed in is the per-contrast residual df, and it is **not** integer for several
+estimators:
+
+- **`rlm`, `rfit`** — the robust residual df is `sum(robust weights) − rank`; the weights lie in
+  `(0, 1]`, so the df is **fractional**.
+- **`lmer_nested`** — the contrast df is the **Satterthwaite** denominator df from
+  `lmerTest::contest()`, **fractional** and, on peptide-level nested models, often small.
+- **`lm_impute` / `lm_missing` / `rfit_impute`** — residual df can be **low or borrowed** when groups
+  are (partly) imputed, where the `min_df = 1` filter changes which features enter the prior fit.
+- **`lm`** — integer residual df; the only path that stays in Regime 1.
+
+(`firth` / `firth_nested` do **not** feed `squeezeVarRob` — they use their own `ContrastsFirth`
+inference. Likewise `limma*` uses limma's own `eBayes`, and `limpa` its own moderation.)
+
+A quick check that `rlm` really produces fractional df:
+
+```{r rlm_frac_df}
+set.seed(1)
+x <- rnorm(12); y <- 2 * x + rnorm(12); y[3] <- y[3] + 8   # inject one outlier
+m <- MASS::rlm(cbind(1, x), y)
+c(rank = m$rank, sum_weights = sum(m$w), rlm_df_residual = sum(m$w) - m$rank)
+```
+
+So the classic-vs-modern difference shown above is reachable in ordinary `prolfqua` usage —
+`rlm` / `rfit` and `lmer_nested` on peptide-level data, and the imputation facades — not only in a
+synthetic peptide-ridge scenario.
+
+## So why did MSqRob roll its own?
+
+Putting the pieces together:
+
+- Around 2016, MSqRob copied limma's `fitFDist` / `squeezeVar` and added a **`min_df` guard**.
+- The motivation: MSqRob fits **peptide-level robust ridge regressions**, whose residual degrees of
+  freedom are fractional and frequently `< 1`. On such data, limma's estimator of that era collapsed
+  to `df.prior = Inf` — effectively switching moderation off and returning pooled variances. Dropping
+  the `<= min_df` features before the prior fit restores a usable, finite prior df.
+- **Modern limma made the fork obsolete for limma's own users.** Recent limma (the `legacy`
+  argument; default `legacy = NULL` selects the new estimator for non-integer df) handles fractional
+  df robustly on its own. `msqrob2` therefore dropped the custom code and simply calls
+  `limma::squeezeVar()`.
+- **For `prolfqua` the fork is still doing work.** `prolfqua` inherited the classic estimator plus
+  the `min_df` patch and applies it to `rlm` / `rfit` (fractional df), `lmer_nested` (fractional
+  Satterthwaite df), and the imputation facades (low / borrowed df) — precisely the regime where
+  classic limma collapses. The `min_df` filter is what keeps those paths from falling back to
+  unmoderated pooled variances (with a further explicit `Inf`-collapse guard in `moderated_p_limma()`).
+  It only leaves `lm` unaffected.
+
+## Does it matter? Benchmark
+
+The algorithm analysis above shows the fork and modern limma *diverge* on fractional-df paths. Whether
+that divergence *matters* for real conclusions is an empirical question. Both backends were run through
+the **same** models, contrasts and downstream statistics — only the squeeze backend varied — on two
+data sources:
+
+- **Synthetic** — 30 replicates × 2 noise scenarios (~300 proteins each) with known regulated proteins.
+- **Real IonStar** spike-in data (`prolfquadata`, PXD003881): *E. coli* (true positives) spiked into a
+  constant human background (true negatives); 4178 proteins, 4 dilution contrasts.
+
+Three moderated facades were compared, spanning the df regimes: `lm` (integer df), `rlm` (robust,
+fractional df) and `lmer_nested` (peptide-level mixed model, fractional Satterthwaite df). Results are
+cached in the package (fitting IonStar `lmer_nested` on all proteins is too slow to run at build time).
+
+```{r load_bench}
+bench_file <- system.file("extdata", "squeezeVar_benchmark.rds", package = "prolfquabenchmark")
+if (!nzchar(bench_file)) {
+  # dev / build-time fallback: vignettes/ sits next to inst/
+  alt <- file.path("..", "inst", "extdata", "squeezeVar_benchmark.rds")
+  if (file.exists(alt)) bench_file <- alt
+}
+bench <- if (nzchar(bench_file) && file.exists(bench_file)) readRDS(bench_file) else NULL
+```
+
+### The divergence regime is genuinely reached
+
+On real IonStar data, `rlm` and `lmer_nested` feed overwhelmingly fractional df into the squeeze,
+while `lm` stays integer — so any classic-vs-modern difference is exercised, not hypothetical:
+
+```{r df_regime}
+if (!is.null(bench)) knitr::kable(bench$ionstar$df_regime, caption = "IonStar: residual df fed into the squeeze, by method.")
+```
+
+### Real IonStar: ranking, calibration, per-protein calls
+
+```{r ionstar_metrics}
+if (!is.null(bench)) knitr::kable(bench$ionstar$metrics,
+  caption = "IonStar @ BH q <= 0.05. AUC = ranking; FDP_at_0.05 = observed false-discovery proportion (E.coli/HUMAN truth); power = fraction of E.coli called.")
+```
+
+```{r ionstar_concordance}
+if (!is.null(bench)) knitr::kable(bench$ionstar$concordance,
+  caption = "IonStar: agreement of significance calls (q <= 0.05) between the two backends.")
+```
+
+AUC is identical to three decimals, the observed false-discovery proportion tracks the same value for
+both backends, and **≥ 99.7% of significance calls are identical** — only 5 (`lm`), 30 (`rlm`) and 43
+(`lmer_nested`) of ~16,000 protein×contrast calls flip when switching backends.
+
+### Synthetic replicates
+
+```{r synthetic_metrics}
+if (!is.null(bench)) knitr::kable(bench$synthetic$metrics, digits = 3,
+  caption = "Synthetic, mean over 30 replicates @ BH q <= 0.05.")
+```
+
+The synthetic replicates agree with IonStar: AUC, power and FDP are near-identical between backends in
+every cell. (The synthetic `lmer_nested` FDP is inflated for *both* backends because `sim_lfq_data`'s
+peptide mode redraws peptide baselines per group — an anti-conservative simulator artifact that cancels
+in the backend-vs-backend comparison; the real IonStar FDP above is the calibration-trustworthy number.)
+
+## Conclusion
+
+| Implementation | What it is | Status |
+|---|---|---|
+| `limma::squeezeVar()` (default) | modern reference estimator; handles fractional df natively | **what prolfqua now uses** |
+| `msqrob2` | calls `limma::squeezeVar(var, df)` | identical to limma |
+| `prolfqua::squeezeVarRob()` (former) | limma **classic** `fitFDist` + `min_df` filter (from MSqRob) | **removed** from prolfqua |
+
+The fork and modern limma agree on the integer-df (`lm`) path and *diverge algorithmically* on the
+fractional/low-df paths (`rlm` / `rfit`, `lmer_nested`, imputation facades) — but the benchmark shows
+that divergence is **immaterial to conclusions**: identical AUC, maintained FDR calibration, and
+≥ 99.7% identical calls on gold-standard spike-in data.
+
+Because modern `limma::squeezeVar()` solves the same fractional-df collapse without the `min_df`
+heuristic — and is actively maintained, whereas the fork was a static 2016 copy — **prolfqua migrated
+its variance moderation to `limma::squeezeVar()`** (`moderated_p_limma()`, prolfqua 1.6.3), and
+the vendored `squeezeVarRob()` has been removed. This vignette is the evidence behind that decision.
+
+```{r session}
+sessionInfo()
+```
