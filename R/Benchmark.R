@@ -595,7 +595,7 @@ Benchmark <-
         if (missing(value)) {
           return(self$is_complete)
         } else {
-          self$is_complete = value
+          self$is_complete <- value
         }
       },
       #' @description
@@ -798,7 +798,7 @@ Benchmark <-
       #' @return ggplot
       plot_score_distribution = function(score) {
         if (missing(score)) {
-          score = self$benchmark
+          score <- self$benchmark
         }
         .plot_score_distribution(
           self$data(),
@@ -814,7 +814,7 @@ Benchmark <-
       #' @return ggplot
       plot_scatter = function(score) {
         if (missing(score)) {
-          score = self$benchmark
+          score <- self$benchmark
         }
         x <- self$data()
         x <- x |> arrange(desc(!!sym(self$species)))
