@@ -117,9 +117,9 @@ sim_data <- function(N, seed, wm, pep) {
   raw$isotopeLabel <- "light"
   raw$qValue <- 0
   truth <- raw |>
-    dplyr::filter(group == "A") |>
+    dplyr::filter(.data$group == "A") |>
     dplyr::transmute(
-      protein_Id = paste(proteinID, idtype2, sep = SEP),
+      protein_Id = paste(.data$proteinID, .data$idtype2, sep = SEP),
       is_true = as.integer(mean != 0)
     ) |>
     dplyr::distinct()
@@ -139,67 +139,109 @@ SIM_METHODS <- list(
 )
 SCEN <- list(moderate = list(N = 6, wm = 0.2), low_df = list(N = 4, wm = 0.5))
 R <- 30
-syn <- list()
-syndf <- list()
-for (si in seq_along(SCEN)) {
-  sc <- names(SCEN)[si]
-  p <- SCEN[[sc]]
-  for (r in seq_len(R)) {
-    for (m in names(SIM_METHODS)) {
-      spec <- SIM_METHODS[[m]]
-      s <- tryCatch(
-        sim_data(p$N, 1000 * si + r, p$wm, spec$pep),
-        error = function(e) NULL
-      )
-      if (is.null(s)) {
-        next
-      }
-      fa <- tryCatch(
-        build_contrast_analysis(s$lfq, spec$f, CT_SIM, method = m),
-        error = function(e) NULL
-      )
-      if (is.null(fa)) {
-        next
-      }
-      cd <- suppressMessages(raw_contrasts(fa))
-      syndf[[paste(sc, r, m)]] <- data.frame(
-        scenario = sc,
-        method = m,
-        frac_df = mean(cd$df %% 1 != 0, na.rm = TRUE),
-        median_df = median(cd$df, na.rm = TRUE)
-      )
-      for (b in names(BACKENDS)) {
-        mod <- moderate_generic(cd, function(v, df, robust) {
-          BACKENDS[[b]](v, df, robust)
-        })
-        if (is.null(mod)) {
-          next
-        }
-        d <- dplyr::inner_join(mod, s$truth, by = "protein_Id")
-        d <- d[is.finite(d$mod.p), ]
-        if (length(unique(d$is_true)) < 2) {
-          next
-        }
-        roc <- pROC::roc(
-          d$is_true,
-          -log10(pmax(d$mod.p, 1e-300)),
-          quiet = TRUE,
-          direction = "<"
-        )
-        called <- d$mod.q <= 0.05
-        syn[[paste(sc, r, m, b)]] <- data.frame(
-          scenario = sc,
-          method = m,
-          backend = b,
-          AUC = as.numeric(pROC::auc(roc)),
-          FDP_at_0.05 = if (sum(called)) mean(d$is_true[called] == 0) else NA,
-          power = sum(called & d$is_true == 1) / sum(d$is_true == 1)
-        )
-      }
-    }
+run_synthetic_backend <- function(cd, truth, scenario, method, backend) {
+  mod <- moderate_generic(cd, function(v, df, robust) {
+    BACKENDS[[backend]](v, df, robust)
+  })
+  if (is.null(mod)) {
+    return(NULL)
   }
-  message("synthetic scenario done: ", sc)
+  d <- dplyr::inner_join(mod, truth, by = "protein_Id")
+  d <- d[is.finite(d$mod.p), ]
+  if (length(unique(d$is_true)) < 2) {
+    return(NULL)
+  }
+  roc <- pROC::roc(
+    d$is_true,
+    -log10(pmax(d$mod.p, 1e-300)),
+    quiet = TRUE,
+    direction = "<"
+  )
+  called <- d$mod.q <= 0.05
+  data.frame(
+    scenario = scenario,
+    method = method,
+    backend = backend,
+    AUC = as.numeric(pROC::auc(roc)),
+    FDP_at_0.05 = if (sum(called)) mean(d$is_true[called] == 0) else NA,
+    power = sum(called & d$is_true == 1) / sum(d$is_true == 1)
+  )
 }
+run_synthetic_method <- function(scenario, params, scenario_index, replicate, method) {
+  spec <- SIM_METHODS[[method]]
+  simulated <- tryCatch(
+    sim_data(params$N, 1000 * scenario_index + replicate, params$wm, spec$pep),
+    error = function(e) NULL
+  )
+  if (is.null(simulated)) {
+    return(NULL)
+  }
+  facade <- tryCatch(
+    build_contrast_analysis(simulated$lfq, spec$f, CT_SIM, method = method),
+    error = function(e) NULL
+  )
+  if (is.null(facade)) {
+    return(NULL)
+  }
+  contrasts <- suppressMessages(raw_contrasts(facade))
+  metrics <- lapply(
+    names(BACKENDS),
+    function(backend) {
+      run_synthetic_backend(
+        contrasts,
+        simulated$truth,
+        scenario,
+        method,
+        backend
+      )
+    }
+  )
+  list(
+    metrics = Filter(Negate(is.null), metrics),
+    df = data.frame(
+      scenario = scenario,
+      method = method,
+      frac_df = mean(contrasts$df %% 1 != 0, na.rm = TRUE),
+      median_df = median(contrasts$df, na.rm = TRUE)
+    )
+  )
+}
+run_synthetic_scenario <- function(scenario, params, scenario_index) {
+  results <- unlist(
+    lapply(
+      seq_len(R),
+      function(replicate) {
+        lapply(
+          names(SIM_METHODS),
+          function(method) {
+            run_synthetic_method(
+              scenario,
+              params,
+              scenario_index,
+              replicate,
+              method
+            )
+          }
+        )
+      }
+    ),
+    recursive = FALSE
+  )
+  results <- Filter(Negate(is.null), results)
+  message("synthetic scenario done: ", scenario)
+  list(
+    metrics = unlist(lapply(results, `[[`, "metrics"), recursive = FALSE),
+    df = lapply(results, `[[`, "df")
+  )
+}
+synthetic_results <- Map(
+  run_synthetic_scenario,
+  names(SCEN),
+  SCEN,
+  seq_along(SCEN)
+)
+syn <- unlist(lapply(synthetic_results, `[[`, "metrics"), recursive = FALSE)
+syndf <- unlist(lapply(synthetic_results, `[[`, "df"), recursive = FALSE)
 syn <- do.call(rbind, syn)
 syndf <- do.call(rbind, syndf)
 syn_metrics <- syn |>

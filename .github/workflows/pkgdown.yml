@@ -3,6 +3,7 @@ name: pkgdown
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -29,10 +30,17 @@ jobs:
           needs: website
 
       - name: Build site
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
+        shell: Rscript {0}
+
+      - name: Build deployable site
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages

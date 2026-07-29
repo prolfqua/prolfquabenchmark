@@ -11,3 +11,11 @@
 ^inst/Benchresults$
 ^inst/MyArticle$
 ^inst/triqler$
+^\.githooks$
+^\.lintr$
+^air\.toml$
+^make$
+^.*\.BiocCheck$
+^AGENTS\.md$
+^docs$
+^vignettes/\.build\.timestamp$
