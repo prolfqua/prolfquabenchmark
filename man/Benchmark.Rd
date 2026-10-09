@@ -10,7 +10,8 @@ Benchmark R6 class
 }
 \examples{
 
-dd <- dplyr::filter(prolfqua::prolfqua_data('data_benchmarkExample'), !is.na(statistic))
+dd <- prolfqua::prolfqua_data('data_benchmarkExample', package = 'prolfquabenchmark')
+dd <- dplyr::filter(dd, !is.na(statistic))
 dd <- dd |> dplyr::mutate(avgInt = (c1 + c2)/2)
 ttd <- ionstar_bench_preprocess(dd)
 medpol_benchmark <- make_benchmark(ttd$data,

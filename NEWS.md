@@ -1,5 +1,8 @@
 # prolfquabenchmark 0.3.4
 
+- The example datasets `data_benchmarkExample` and `data_test_confusion_matrix_scores` now ship with prolfquabenchmark (they were removed from prolfqua 1.9.0); load them with `prolfqua::prolfqua_data(<name>, package = "prolfquabenchmark")`.
+- The vignettes `Benchmark_prolfqua`, `Benchmark_pipeline_demo` and `Benchmark_Model_IonStar_With2Factors` take `ContrastsMissing` and `ContrastsLMMissingFacade` from the new package prolfquatakeoutmissing (Suggests), since prolfqua 1.9.0 no longer has them.
+
 - New vignette `SqueezeVar_comparison` comparing variance moderation across `limma::squeezeVar()`, `msqrob2`, and
   `prolfqua::squeezeVarRob()`. It shows msqrob2 delegates to limma, and that `prolfqua::squeezeVarRob()` is limma's
   classic `fitFDist` plus a `min_df` filter — explaining why old MSqRob forked it (classic limma collapses to

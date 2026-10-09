@@ -32,7 +32,7 @@ TP_hits - true positives
 adds FDR, TPR and FDP to data.
 }
 \examples{
-dd <- prolfqua::prolfqua_data('data_test_confusion_matrix_scores')
+dd <- prolfqua::prolfqua_data('data_test_confusion_matrix_scores', package = 'prolfquabenchmark')
 xd <- ms_bench_add_scores(dd, arrangeby = "estimate")
 plot(xd$TPR,xd$PREC, type="l")
 plot(1- xd$PREC, xd$FDP)

@@ -189,7 +189,7 @@ write_contrast_results(
 ## Method: Imputation (missing value model)
 
 ```{r fitImputed}
-contrImp <- prolfqua::ContrastsMissing$new(protLFQ, relevantContrasts)
+contrImp <- prolfquatakeoutmissing::ContrastsMissing$new(protLFQ, relevantContrasts)
 contrast_data_imp <- contrImp$get_contrasts()
 ```
 

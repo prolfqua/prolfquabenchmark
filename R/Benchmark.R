@@ -62,7 +62,7 @@ ionstar_bench_preprocess <- function(data, idcol = "protein_Id") {
 #' TPR - true positive rate
 #' TP_hits - true positives
 #' @examples
-#' dd <- prolfqua::prolfqua_data('data_test_confusion_matrix_scores')
+#' dd <- prolfqua::prolfqua_data('data_test_confusion_matrix_scores', package = 'prolfquabenchmark')
 #' xd <- ms_bench_add_scores(dd, arrangeby = "estimate")
 #' plot(xd$TPR,xd$PREC, type="l")
 #' plot(1- xd$PREC, xd$FDP)
@@ -338,7 +338,7 @@ do_confusion_c <- function(
 #' @keywords internal
 #' @examples
 #'
-#' ttd <- ionstar_bench_preprocess(prolfqua::prolfqua_data('data_benchmarkExample'))
+#' ttd <- ionstar_bench_preprocess(prolfqua::prolfqua_data('data_benchmarkExample', package = 'prolfquabenchmark'))
 #' x <- .summarise_missing_contrasts(ttd$data)
 #' x2 <- tibble::as_tibble(x$summary)
 .summarise_missing_contrasts <- function(
@@ -407,7 +407,8 @@ do_confusion_c <- function(
 #' @family benchmarking
 #' @examples
 #'
-#' dd <- dplyr::filter(prolfqua::prolfqua_data('data_benchmarkExample'), !is.na(statistic))
+#' dd <- prolfqua::prolfqua_data('data_benchmarkExample', package = 'prolfquabenchmark')
+#' dd <- dplyr::filter(dd, !is.na(statistic))
 #' dd <- dd |> dplyr::mutate(avgInt = (c1 + c2)/2)
 #' ttd <- ionstar_bench_preprocess(dd)
 #' medpol_benchmark <- make_benchmark(ttd$data,

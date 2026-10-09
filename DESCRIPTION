@@ -43,6 +43,7 @@ Suggests:
     proDA,
     prolfquapp,
     prolfquadata,
+    prolfquatakeoutmissing,
     pROC,
     QFeatures,
     rcmdcheck,
@@ -55,6 +56,7 @@ Suggests:
 Remotes:
     fgcz/prolfqua@main,
     prolfqua/prolfquapp,
+    prolfqua/prolfquatakeoutmissing,
     git::https://gitlab.bfabric.org/wolski/prolfquadata.git
 RoxygenNote: 7.3.3
 Roxygen: list(r6 = TRUE)

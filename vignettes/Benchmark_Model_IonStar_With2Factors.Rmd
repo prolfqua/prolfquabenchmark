@@ -229,7 +229,7 @@ plotter$ma_plot()
 ```{r}
 lfqTrans$set_config_value("factor_depth", 2)
 # ContrastsMissing$debug("get_contrasts")
-contrSimple <- prolfqua::ContrastsMissing$new(lfqdata = lfqTrans,
+contrSimple <- prolfquatakeoutmissing::ContrastsMissing$new(lfqdata = lfqTrans,
                                                    Contrasts)
 contrdfSimple <- contrSimple$get_contrasts()
 # na.omit(contrdfSimple)

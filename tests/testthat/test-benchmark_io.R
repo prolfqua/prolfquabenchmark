@@ -83,7 +83,7 @@ test_that("benchmark_from_file creates a working Benchmark object", {
 
 test_that("to_summary_table works on existing Benchmark data", {
   dd <- dplyr::filter(
-    prolfqua::prolfqua_data("data_benchmarkExample"),
+    prolfqua::prolfqua_data("data_benchmarkExample", package = "prolfquabenchmark"),
     !is.na(statistic)
   )
   dd <- dd |> dplyr::mutate(avgInt = (c1 + c2) / 2)
@@ -140,7 +140,7 @@ test_that("write and read benchmark_results round-trips", {
 
 test_that("summary_metrics returns one row per score with valid values", {
   dd <- dplyr::filter(
-    prolfqua::prolfqua_data("data_benchmarkExample"),
+    prolfqua::prolfqua_data("data_benchmarkExample", package = "prolfquabenchmark"),
     !is.na(statistic)
   )
   dd <- dd |> dplyr::mutate(avgInt = (c1 + c2) / 2)
@@ -191,7 +191,7 @@ test_that("summary_metrics returns one row per score with valid values", {
 
 test_that("calibration_metrics returns per-contrast and average rows", {
   dd <- dplyr::filter(
-    prolfqua::prolfqua_data("data_benchmarkExample"),
+    prolfqua::prolfqua_data("data_benchmarkExample", package = "prolfquabenchmark"),
     !is.na(statistic)
   )
   dd <- dd |> dplyr::mutate(avgInt = (c1 + c2) / 2)

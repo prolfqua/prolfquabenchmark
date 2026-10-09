@@ -38,8 +38,8 @@ create_mq_peptide_config <- function() {
 
 # Setup
 
-We benchmark the prolfqua `ContrastsLMMissingFacade` (LM + missing-value
-merge + variance moderation) and `ContrastsLimmaFacade` (Limma empirical
+We benchmark the `ContrastsLMMissingFacade` from prolfquatakeoutmissing (LM + missing-value
+merge + variance moderation) and the prolfqua `ContrastsLimmaFacade` (Limma empirical
 Bayes) methods across four datasets.
 
 ```{r sharedSetup}
@@ -78,7 +78,7 @@ run_prolfqua_benchmark <- function(lfqdata_protein, formula_str, contrasts,
   results <- list()
 
   # LM + missing + moderation
-  fa_lm <- prolfqua::ContrastsLMMissingFacade$new(
+  fa_lm <- prolfquatakeoutmissing::ContrastsLMMissingFacade$new(
     lfqdata_protein, formula_str, contrasts)
   results$lm <- fa_lm$get_contrasts()
   write_contrast_results(
