@@ -59,7 +59,7 @@ The short answer, established below:
 - **This regime is live in `prolfqua`, not hypothetical.** `prolfqua` feeds its variance moderation the
   per-contrast residual df, and several of its estimators produce **fractional or low df**: `rlm` and
   `rfit` (df = sum of robust weights − rank), `lmer_nested` (Satterthwaite df on peptide-level mixed
-  models), and the imputation facades (`lm_impute` / `lm_missing`, with borrowed / low df). Only plain
+  models), and the imputation facades (`lm_impute` / `rfit_impute`, with borrowed / low df). Only plain
   `lm` gives integer df. So the behavioural difference between the classic-plus-`min_df` fork and
   modern limma **can change prolfqua results** on exactly those paths — it is not merely historical.
   (`firth` and `firth_nested` are *not* consumers — they use their own `ContrastsFirth` inference, not
@@ -271,7 +271,7 @@ if (all(is.infinite(squeezed_var$df.prior))) {
 
 The fallback on the second line is itself evidence: `prolfqua` already has to catch the
 `df.prior = Inf` **collapse** on real data. `moderated_p_limma()` is called by `ContrastsModerated`
-(the moderated-Wald path wrapping `lm`, `rlm`, `rfit`, the `lm_impute` / `lm_missing` / `rfit_impute`
+(the moderated-Wald path wrapping `lm`, `rlm`, `rfit`, the `lm_impute` / `rfit_impute`
 facades, and `lmer_nested`) and by the DEqMS small-group fallback.
 
 The `df` column fed in is the per-contrast residual df, and it is **not** integer for several
@@ -281,7 +281,7 @@ estimators:
   `(0, 1]`, so the df is **fractional**.
 - **`lmer_nested`** — the contrast df is the **Satterthwaite** denominator df from
   `lmerTest::contest()`, **fractional** and, on peptide-level nested models, often small.
-- **`lm_impute` / `lm_missing` / `rfit_impute`** — residual df can be **low or borrowed** when groups
+- **`lm_impute` / `rfit_impute`** — residual df can be **low or borrowed** when groups
   are (partly) imputed, where the `min_df = 1` filter changes which features enter the prior fit.
 - **`lm`** — integer residual df; the only path that stays in Regime 1.
 
