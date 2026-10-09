@@ -100,7 +100,7 @@ prolfqua</h1>
                         <h4 data-toc-skip class="author">Witold E
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-08-11</h4>
+            <h4 data-toc-skip class="date">2026-10-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/SqueezeVar_comparison.Rmd" class="external-link"><code>vignettes/SqueezeVar_comparison.Rmd</code></a></small>
       <div class="hidden name"><code>SqueezeVar_comparison.Rmd</code></div>
@@ -172,7 +172,7 @@ produce <strong>fractional or low df</strong>: <code>rlm</code> and
 <code>rfit</code> (df = sum of robust weights − rank),
 <code>lmer_nested</code> (Satterthwaite df on peptide-level mixed
 models), and the imputation facades (<code>lm_impute</code> /
-<code>lm_missing</code>, with borrowed / low df). Only plain
+<code>rfit_impute</code>, with borrowed / low df). Only plain
 <code>lm</code> gives integer df. So the behavioural difference between
 the classic-plus-<code>min_df</code> fork and modern limma <strong>can
 change prolfqua results</strong> on exactly those paths — it is not
@@ -482,9 +482,8 @@ justifies); it previously called the vendored
 <code><a href="https://wolski.github.io/prolfqua/reference/moderated_p_limma.html" class="external-link">moderated_p_limma()</a></code> is called by
 <code>ContrastsModerated</code> (the moderated-Wald path wrapping
 <code>lm</code>, <code>rlm</code>, <code>rfit</code>, the
-<code>lm_impute</code> / <code>lm_missing</code> /
-<code>rfit_impute</code> facades, and <code>lmer_nested</code>) and by
-the DEqMS small-group fallback.</p>
+<code>lm_impute</code> / <code>rfit_impute</code> facades, and
+<code>lmer_nested</code>) and by the DEqMS small-group fallback.</p>
 <p>The <code>df</code> column fed in is the per-contrast residual df,
 and it is <strong>not</strong> integer for several estimators:</p>
 <ul>
@@ -498,11 +497,10 @@ in <code>(0, 1]</code>, so the df is <strong>fractional</strong>.</li>
 <code><a href="https://rdrr.io/pkg/lmerTest/man/contest.html" class="external-link">lmerTest::contest()</a></code>, <strong>fractional</strong> and, on
 peptide-level nested models, often small.</li>
 <li>
-<strong><code>lm_impute</code> / <code>lm_missing</code> /
-<code>rfit_impute</code></strong> — residual df can be <strong>low or
-borrowed</strong> when groups are (partly) imputed, where the
-<code>min_df = 1</code> filter changes which features enter the prior
-fit.</li>
+<strong><code>lm_impute</code> / <code>rfit_impute</code></strong> —
+residual df can be <strong>low or borrowed</strong> when groups are
+(partly) imputed, where the <code>min_df = 1</code> filter changes which
+features enter the prior fit.</li>
 <li>
 <strong><code>lm</code></strong> — integer residual df; the only
 path that stays in Regime 1.</li>
@@ -988,7 +986,7 @@ evidence behind that decision.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.6.1 (2026-06-24)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 24.04.4 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.5 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -1007,32 +1005,32 @@ evidence behind that decision.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_4.0.3  prolfqua_1.7.0 limma_3.68.4  </span></span>
+<span><span class="co">## [1] ggplot2_4.0.3  prolfqua_1.9.0 limma_3.68.5  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             </span></span>
 <span><span class="co">##   [3] shape_1.4.6.1               MultiAssayExperiment_1.38.0</span></span>
 <span><span class="co">##   [5] magrittr_2.0.5              jomo_2.7-6                 </span></span>
 <span><span class="co">##   [7] farver_2.1.2                logistf_1.26.1             </span></span>
-<span><span class="co">##   [9] nloptr_2.2.1                rmarkdown_2.31             </span></span>
+<span><span class="co">##   [9] nloptr_2.2.1                rmarkdown_2.32             </span></span>
 <span><span class="co">##  [11] GlobalOptions_0.1.4         fs_2.1.0                   </span></span>
 <span><span class="co">##  [13] ragg_1.5.2                  vctrs_0.7.3                </span></span>
 <span><span class="co">##  [15] minqa_1.2.8                 htmltools_0.5.9            </span></span>
-<span><span class="co">##  [17] S4Arrays_1.12.0             forcats_1.0.1              </span></span>
-<span><span class="co">##  [19] broom_1.0.13                SparseArray_1.12.2         </span></span>
+<span><span class="co">##  [17] S4Arrays_1.12.1             forcats_1.0.1              </span></span>
+<span><span class="co">##  [19] broom_1.0.13                SparseArray_1.12.3         </span></span>
 <span><span class="co">##  [21] mitml_0.4-5                 sass_0.4.10                </span></span>
 <span><span class="co">##  [23] bslib_0.12.0                htmlwidgets_1.6.4          </span></span>
 <span><span class="co">##  [25] desc_1.4.3                  plyr_1.8.9                 </span></span>
 <span><span class="co">##  [27] plotly_4.12.1               cachem_1.1.0               </span></span>
-<span><span class="co">##  [29] igraph_2.3.3                lifecycle_1.0.5            </span></span>
+<span><span class="co">##  [29] igraph_2.3.4                lifecycle_1.0.5            </span></span>
 <span><span class="co">##  [31] iterators_1.0.14            pkgconfig_2.0.3            </span></span>
 <span><span class="co">##  [33] Matrix_1.7-5                R6_2.6.1                   </span></span>
 <span><span class="co">##  [35] fastmap_1.2.0               rbibutils_2.4.1            </span></span>
 <span><span class="co">##  [37] MatrixGenerics_1.24.0       clue_0.3-68                </span></span>
-<span><span class="co">##  [39] digest_0.6.39               colorspace_2.1-3           </span></span>
-<span><span class="co">##  [41] S4Vectors_0.50.1            textshaping_1.0.5          </span></span>
+<span><span class="co">##  [39] digest_0.6.39               colorspace_2.1-4           </span></span>
+<span><span class="co">##  [41] S4Vectors_0.50.3            textshaping_1.0.5          </span></span>
 <span><span class="co">##  [43] GenomicRanges_1.64.0        labeling_0.4.3             </span></span>
-<span><span class="co">##  [45] httr_1.4.8                  abind_1.4-8                </span></span>
+<span><span class="co">##  [45] httr_1.4.9                  abind_1.4-8                </span></span>
 <span><span class="co">##  [47] mgcv_1.9-4                  compiler_4.6.1             </span></span>
 <span><span class="co">##  [49] withr_3.0.3                 doParallel_1.0.17          </span></span>
 <span><span class="co">##  [51] S7_0.2.2                    backports_1.5.1            </span></span>
@@ -1046,18 +1044,18 @@ evidence behind that decision.</p>
 <span><span class="co">##  [67] reshape2_1.4.5              generics_0.1.4             </span></span>
 <span><span class="co">##  [69] operator.tools_1.6.3.1      gtable_0.3.6               </span></span>
 <span><span class="co">##  [71] formula.tools_1.7.1         tidyr_1.3.2                </span></span>
-<span><span class="co">##  [73] data.table_1.18.4           XVector_0.52.0             </span></span>
+<span><span class="co">##  [73] data.table_1.18.6.1         XVector_0.52.0             </span></span>
 <span><span class="co">##  [75] BiocGenerics_0.58.1         ggrepel_0.9.8              </span></span>
 <span><span class="co">##  [77] foreach_1.5.2               pillar_1.11.1              </span></span>
 <span><span class="co">##  [79] stringr_1.6.0               circlize_0.4.18            </span></span>
 <span><span class="co">##  [81] splines_4.6.1               dplyr_1.2.1                </span></span>
 <span><span class="co">##  [83] lattice_0.22-9              survival_3.8-6             </span></span>
 <span><span class="co">##  [85] tidyselect_1.2.1            ComplexHeatmap_2.28.0      </span></span>
-<span><span class="co">##  [87] knitr_1.51                  reformulas_0.4.4           </span></span>
+<span><span class="co">##  [87] knitr_1.52                  reformulas_0.4.4           </span></span>
 <span><span class="co">##  [89] gridExtra_2.3.1             IRanges_2.46.0             </span></span>
 <span><span class="co">##  [91] Seqinfo_1.2.0               ProtGenerics_1.44.0        </span></span>
 <span><span class="co">##  [93] SummarizedExperiment_1.42.0 stats4_4.6.1               </span></span>
-<span><span class="co">##  [95] xfun_0.60                   Biobase_2.72.0             </span></span>
+<span><span class="co">##  [95] xfun_0.61                   Biobase_2.72.0             </span></span>
 <span><span class="co">##  [97] statmod_1.5.2               matrixStats_1.5.0          </span></span>
 <span><span class="co">##  [99] stringi_1.8.9               lazyeval_0.2.3             </span></span>
 <span><span class="co">## [101] yaml_2.3.12                 boot_1.3-32                </span></span>
@@ -1069,7 +1067,7 @@ evidence behind that decision.</p>
 <span><span class="co">## [113] msqrob2_1.20.0              png_0.1-9                  </span></span>
 <span><span class="co">## [115] parallel_4.6.1              pkgdown_2.2.1              </span></span>
 <span><span class="co">## [117] assertthat_0.2.1            AnnotationFilter_1.36.0    </span></span>
-<span><span class="co">## [119] lme4_2.0-6                  glmnet_5.0                 </span></span>
+<span><span class="co">## [119] lme4_2.0-6                  glmnet_5.1                 </span></span>
 <span><span class="co">## [121] viridisLite_0.4.3           scales_1.4.0               </span></span>
 <span><span class="co">## [123] purrr_1.2.2                 crayon_1.5.3               </span></span>
 <span><span class="co">## [125] GetoptLong_1.1.1            rlang_1.3.0                </span></span>

@@ -100,7 +100,7 @@ Aggregate</h1>
                         <h4 data-toc-skip class="author">Witold
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-08-11</h4>
+            <h4 data-toc-skip class="date">2026-10-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_pipeline_demo.Rmd" class="external-link"><code>vignettes/Benchmark_pipeline_demo.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_pipeline_demo.Rmd</code></div>
@@ -250,7 +250,7 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <h3 id="method-imputation-missing-value-model">Method: Imputation (missing value model)<a class="anchor" aria-label="anchor" href="#method-imputation-missing-value-model"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">contrImp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/ContrastsMissing.html" class="external-link">ContrastsMissing</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">protLFQ</span>, <span class="va">relevantContrasts</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">contrImp</span> <span class="op">&lt;-</span> <span class="fu">prolfquatakeoutmissing</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfquatakeoutmissing/man/ContrastsMissing.html" class="external-link">ContrastsMissing</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">protLFQ</span>, <span class="va">relevantContrasts</span><span class="op">)</span></span>
 <span><span class="va">contrast_data_imp</span> <span class="op">&lt;-</span> <span class="va">contrImp</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
@@ -320,20 +320,22 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <table style="width:100%;" class="table">
 <caption>First 5 rows of ionstar_lm/contrasts.tsv</caption>
 <colgroup>
-<col width="5%">
-<col width="7%">
-<col width="19%">
-<col width="12%">
-<col width="5%">
-<col width="1%">
-<col width="5%">
-<col width="9%">
-<col width="5%">
+<col width="4%">
 <col width="6%">
+<col width="16%">
+<col width="10%">
+<col width="4%">
+<col width="1%">
+<col width="4%">
+<col width="7%">
+<col width="4%">
 <col width="5%">
-<col width="5%">
-<col width="5%">
-<col width="5%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="9%">
+<col width="6%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">modelName</th>
@@ -350,6 +352,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <th align="right">conf.low</th>
 <th align="right">conf.high</th>
 <th align="right">avgAbd</th>
+<th align="right">std.error.unmoderated</th>
+<th align="right">df.unmoderated</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -367,6 +371,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <td align="right">-3.0307396</td>
 <td align="right">3.8738750</td>
 <td align="right">-1.653570</td>
+<td align="right">0.2717025</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
 <td align="left">WaldTest</td>
@@ -383,6 +389,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <td align="right">-3.3973395</td>
 <td align="right">2.5822321</td>
 <td align="right">-1.660577</td>
+<td align="right">0.2353012</td>
+<td align="right">1</td>
 </tr>
 <tr class="odd">
 <td align="left">WaldTest</td>
@@ -399,6 +407,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <td align="right">-0.2561127</td>
 <td align="right">0.1509803</td>
 <td align="right">-1.349430</td>
+<td align="right">0.0954967</td>
+<td align="right">15</td>
 </tr>
 <tr class="even">
 <td align="left">WaldTest</td>
@@ -415,6 +425,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <td align="right">-0.2938035</td>
 <td align="right">0.1132895</td>
 <td align="right">-1.278018</td>
+<td align="right">0.0954967</td>
+<td align="right">15</td>
 </tr>
 <tr class="odd">
 <td align="left">WaldTest</td>
@@ -431,6 +443,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <td align="right">-0.2530257</td>
 <td align="right">0.1540672</td>
 <td align="right">-1.208150</td>
+<td align="right">0.0954967</td>
+<td align="right">15</td>
 </tr>
 </tbody>
 </table>
@@ -442,8 +456,8 @@ using <code><a href="../reference/write_contrast_results.html">write_contrast_re
 <span><span class="co">## input_file: MAXQuant_IonStar2018_PXD003881.zip/peptides.txt</span></span>
 <span><span class="co">## aggregation: median_polish</span></span>
 <span><span class="co">## normalization: robscale</span></span>
-<span><span class="co">## software_version: prolfqua 1.7.0</span></span>
-<span><span class="co">## date: '2026-08-11'</span></span>
+<span><span class="co">## software_version: prolfqua 1.9.0</span></span>
+<span><span class="co">## date: '2026-10-09'</span></span>
 <span><span class="co">## contrasts:</span></span>
 <span><span class="co">## - dilution_(9/7.5)_1.2</span></span>
 <span><span class="co">## - dilution_(7.5/6)_1.25</span></span>

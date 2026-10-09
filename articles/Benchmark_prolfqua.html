@@ -100,7 +100,7 @@ datasets</h1>
                         <h4 data-toc-skip class="author">Witold E
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-08-11</h4>
+            <h4 data-toc-skip class="date">2026-10-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_prolfqua.Rmd" class="external-link"><code>vignettes/Benchmark_prolfqua.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_prolfqua.Rmd</code></div>
@@ -112,10 +112,10 @@ Wolski</h4>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<p>We benchmark the prolfqua <code>ContrastsLMMissingFacade</code> (LM +
-missing-value merge + variance moderation) and
-<code>ContrastsLimmaFacade</code> (Limma empirical Bayes) methods across
-four datasets.</p>
+<p>We benchmark the <code>ContrastsLMMissingFacade</code> from
+prolfquatakeoutmissing (LM + missing-value merge + variance moderation)
+and the prolfqua <code>ContrastsLimmaFacade</code> (Limma empirical
+Bayes) methods across four datasets.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ionstar_ground_truth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  id_column <span class="op">=</span> <span class="st">"protein_id"</span>,</span>
@@ -150,7 +150,7 @@ four datasets.</p>
 <span>  <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># LM + missing + moderation</span></span>
-<span>  <span class="va">fa_lm</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/ContrastsLMMissingFacade.html" class="external-link">ContrastsLMMissingFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<span>  <span class="va">fa_lm</span> <span class="op">&lt;-</span> <span class="fu">prolfquatakeoutmissing</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/prolfquatakeoutmissing/man/ContrastsLMMissingFacade.html" class="external-link">ContrastsLMMissingFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
 <span>    <span class="va">lfqdata_protein</span>, <span class="va">formula_str</span>, <span class="va">contrasts</span><span class="op">)</span></span>
 <span>  <span class="va">results</span><span class="op">$</span><span class="va">lm</span> <span class="op">&lt;-</span> <span class="va">fa_lm</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
