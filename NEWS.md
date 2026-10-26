@@ -1,5 +1,6 @@
 # prolfquabenchmark 0.3.4
 
+- New vignette `Benchmark_hurdle` benchmarking prolfqua's hurdle contrasts (`ContrastsHurdleFacade`: `lm_impute` combined with `firth_nested`, `binomial_nested` or `binomial_firth_nested`) against `lm_impute` alone and msqrob2's hurdle model on the IonStar MaxQuant peptides. It also scores msqrob2's rule of combining the detection p-value for fully detected proteins too, and tabulates how often each detection model calls the unchanged human proteins significant, by number of peptides.
 - The example datasets `data_benchmarkExample` and `data_test_confusion_matrix_scores` now ship with prolfquabenchmark (they were removed from prolfqua 1.9.0); load them with `prolfqua::prolfqua_data(<name>, package = "prolfquabenchmark")`.
 - `SqueezeVar_comparison` no longer lists `lm_missing` among the prolfqua facades that feed variance moderation.
 - The vignettes `Benchmark_prolfqua`, `Benchmark_pipeline_demo` and `Benchmark_Model_IonStar_With2Factors` take `ContrastsMissing` and `ContrastsLMMissingFacade` from the new package prolfquatakeoutmissing (Suggests), since prolfqua 1.9.0 no longer has them.
