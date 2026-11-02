@@ -102,7 +102,7 @@
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-10-26</h4>
+            <h4 data-toc-skip class="date">2026-11-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_hurdle.Rmd" class="external-link"><code>vignettes/Benchmark_hurdle.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_hurdle.Rmd</code></div>
@@ -114,7 +114,7 @@ Wolski</h4>
 <div class="section level2">
 <h2 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
 </h2>
-<p><code><a href="https://wolski.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">prolfqua::ContrastsHurdleFacade</a></code> joins an intensity
+<p><code><a href="https://fgcz.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">prolfqua::ContrastsHurdleFacade</a></code> joins an intensity
 contrast and a detection contrast and combines their p-values with
 Fisher’s method, as msqrob2’s hurdle model does. We benchmark on the
 IonStar MaxQuant peptides:</p>
@@ -186,9 +186,9 @@ the human proteins, median polish to protein level.</p>
 <span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"dilution."</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"sample"</span></span>
 <span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">factors</span><span class="op">[[</span><span class="st">"run_Id"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"run_ID"</span></span>
 <span><span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">factor_depth</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">lfqdata_mq</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">lfqdata_mq</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://fgcz.github.io/prolfqua/reference/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">mqdata</span><span class="op">$</span><span class="va">data</span>, <span class="va">mqdata</span><span class="op">$</span><span class="va">config</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">set_data</span><span class="op">(</span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">data_long</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^REV__|^CON__"</span>, <span class="va">protein_Id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -209,15 +209,15 @@ the human proteins, median polish to protein level.</p>
 <p>The intensity model is fitted to the protein intensities; the
 detection models to the peptide-level detection pattern.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fa_lm_impute</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">fa_lm_impute</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
 <span>  <span class="va">lfqProt_mq</span>, <span class="st">"~ dilution."</span>, <span class="va">ionstar_contrasts</span>, method <span class="op">=</span> <span class="st">"lm_impute"</span><span class="op">)</span></span>
-<span><span class="va">fa_firth</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
+<span><span class="va">fa_firth</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
 <span>  <span class="va">lfqdataNorm_mq</span>, <span class="st">"~ dilution."</span>, <span class="va">ionstar_contrasts</span>, method <span class="op">=</span> <span class="st">"firth_nested"</span><span class="op">)</span></span>
-<span><span class="va">fa_binomial</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
+<span><span class="va">fa_binomial</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
 <span>  <span class="va">lfqdataNorm_mq</span>, <span class="st">"~ dilution."</span>, <span class="va">ionstar_contrasts</span>, method <span class="op">=</span> <span class="st">"binomial_nested"</span><span class="op">)</span></span>
-<span><span class="va">fa_binomial_firth</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
+<span><span class="va">fa_binomial_firth</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
 <span>  <span class="va">lfqdataNorm_mq</span>, <span class="st">"~ dilution."</span>, <span class="va">ionstar_contrasts</span>, method <span class="op">=</span> <span class="st">"binomial_firth_nested"</span><span class="op">)</span></span>
-<span><span class="va">fa_binomial_firth_unbound</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
+<span><span class="va">fa_binomial_firth_unbound</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/build_contrast_analysis.html" class="external-link">build_contrast_analysis</a></span><span class="op">(</span></span>
 <span>  <span class="va">lfqdataNorm_mq</span>, <span class="st">"~ dilution."</span>, <span class="va">ionstar_contrasts</span>, method <span class="op">=</span> <span class="st">"binomial_firth_nested"</span>,</span>
 <span>  binomial_bound <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -325,10 +325,10 @@ of peptides.</caption>
 <h2 id="hurdle-contrasts">Hurdle contrasts<a class="anchor" aria-label="anchor" href="#hurdle-contrasts"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hurdle_firth</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">ContrastsHurdleFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">fa_lm_impute</span>, <span class="va">fa_firth</span><span class="op">)</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">hurdle_binomial</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">ContrastsHurdleFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">fa_lm_impute</span>, <span class="va">fa_binomial</span><span class="op">)</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">hurdle_binomial_firth</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">ContrastsHurdleFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">fa_lm_impute</span>, <span class="va">fa_binomial_firth</span><span class="op">)</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">hurdle_binomial_firth_unbound</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://wolski.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">ContrastsHurdleFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">hurdle_firth</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://fgcz.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">ContrastsHurdleFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">fa_lm_impute</span>, <span class="va">fa_firth</span><span class="op">)</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">hurdle_binomial</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://fgcz.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">ContrastsHurdleFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">fa_lm_impute</span>, <span class="va">fa_binomial</span><span class="op">)</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">hurdle_binomial_firth</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://fgcz.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">ContrastsHurdleFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">fa_lm_impute</span>, <span class="va">fa_binomial_firth</span><span class="op">)</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">hurdle_binomial_firth_unbound</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://fgcz.github.io/prolfqua/reference/ContrastsHurdleFacade.html" class="external-link">ContrastsHurdleFacade</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
 <span>  <span class="va">fa_lm_impute</span>, <span class="va">fa_binomial_firth_unbound</span><span class="op">)</span><span class="op">$</span><span class="fu">get_contrasts</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hurdle_firth</span> <span class="op">|&gt;</span></span>
@@ -381,7 +381,7 @@ p-values of <code>hurdle_firth</code>.</p>
 <span>    <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html" class="external-link">pchisq</a></span><span class="op">(</span><span class="va">chisq</span>, <span class="fl">2</span> <span class="op">*</span> <span class="va">n_components</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
 <span>    <span class="cn">NA_real_</span></span>
 <span>  <span class="op">)</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/adjust_p_values.html" class="external-link">adjust_p_values</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/adjust_p_values.html" class="external-link">adjust_p_values</a></span><span class="op">(</span><span class="va">hurdle</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="va">hurdle_firth_df4</span> <span class="op">&lt;-</span> <span class="fu">fisher_always</span><span class="op">(</span><span class="va">hurdle_firth</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -412,7 +412,7 @@ and its BH adjustment.</p>
 <span>  parameterNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dilution.e"</span>, <span class="st">"dilution.d"</span>, <span class="st">"dilution.c"</span>, <span class="st">"dilution.b"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">contrast_map</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ionstar_contrasts</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"hurdle_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/LFQDataToSummarizedExperiment.html" class="external-link">LFQDataToSummarizedExperiment</a></span><span class="op">(</span>lfqdata <span class="op">=</span> <span class="va">lfqdataNorm_mq</span><span class="op">)</span></span>
+<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/LFQDataToSummarizedExperiment.html" class="external-link">LFQDataToSummarizedExperiment</a></span><span class="op">(</span>lfqdata <span class="op">=</span> <span class="va">lfqdataNorm_mq</span><span class="op">)</span></span>
 <span><span class="va">pe</span> <span class="op">&lt;-</span> <span class="fu">QFeatures</span><span class="fu">::</span><span class="fu"><a href="https://rformassspectrometry.github.io/QFeatures/reference/QFeatures-class.html" class="external-link">QFeatures</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>peptide <span class="op">=</span> <span class="va">se</span><span class="op">)</span>, colData <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">pe</span> <span class="op">&lt;-</span> <span class="fu">QFeatures</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">aggregateFeatures</a></span><span class="op">(</span></span>
 <span>  <span class="va">pe</span>, i <span class="op">=</span> <span class="st">"peptide"</span>, fcol <span class="op">=</span> <span class="st">"protein_Id"</span>, name <span class="op">=</span> <span class="st">"protein"</span>, fun <span class="op">=</span> <span class="va">my_medianPolish</span><span class="op">)</span></span></code></pre></div>
@@ -424,7 +424,7 @@ and its BH adjustment.</p>
 <span></span>
 <span><span class="va">row_data</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">pe</span><span class="op">[[</span><span class="st">"protein"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">msqrob2_hurdle</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">contrast_map</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">column</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://wolski.github.io/prolfqua/reference/matrix_to_tibble.html" class="external-link">matrix_to_tibble</a></span><span class="op">(</span><span class="va">row_data</span><span class="op">[[</span><span class="va">column</span><span class="op">]</span><span class="op">]</span>, preserve_row_names <span class="op">=</span> <span class="st">"protein_Id"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/matrix_to_tibble.html" class="external-link">matrix_to_tibble</a></span><span class="op">(</span><span class="va">row_data</span><span class="op">[[</span><span class="va">column</span><span class="op">]</span><span class="op">]</span>, preserve_row_names <span class="op">=</span> <span class="st">"protein_Id"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>contrast <span class="op">=</span> <span class="va">contrast_map</span><span class="op">[[</span><span class="va">column</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span></span>
@@ -502,10 +502,10 @@ precision for scaled.p_value.</caption>
 <tr class="odd">
 <td align="left">lm_impute</td>
 <td align="left">scaled.p_value</td>
-<td align="right">92.766</td>
+<td align="right">92.764</td>
 <td align="right">73.759</td>
 <td align="right">79.930</td>
-<td align="right">83.679</td>
+<td align="right">83.678</td>
 <td align="right">98.774</td>
 <td align="right">94.417</td>
 <td align="right">4178</td>
@@ -513,10 +513,10 @@ precision for scaled.p_value.</caption>
 <tr class="even">
 <td align="left">hurdle_firth</td>
 <td align="left">scaled.p_value</td>
-<td align="right">92.012</td>
+<td align="right">91.995</td>
 <td align="right">70.851</td>
-<td align="right">77.730</td>
-<td align="right">81.953</td>
+<td align="right">77.728</td>
+<td align="right">81.946</td>
 <td align="right">98.563</td>
 <td align="right">92.806</td>
 <td align="right">4178</td>
@@ -524,10 +524,10 @@ precision for scaled.p_value.</caption>
 <tr class="odd">
 <td align="left">hurdle_binomial</td>
 <td align="left">scaled.p_value</td>
-<td align="right">92.423</td>
+<td align="right">92.401</td>
 <td align="right">73.279</td>
-<td align="right">79.615</td>
-<td align="right">83.377</td>
+<td align="right">79.612</td>
+<td align="right">83.367</td>
 <td align="right">98.648</td>
 <td align="right">94.085</td>
 <td align="right">4178</td>
@@ -535,10 +535,10 @@ precision for scaled.p_value.</caption>
 <tr class="even">
 <td align="left">hurdle_binomial_firth</td>
 <td align="left">scaled.p_value</td>
-<td align="right">92.420</td>
+<td align="right">92.399</td>
 <td align="right">73.255</td>
-<td align="right">79.589</td>
-<td align="right">83.359</td>
+<td align="right">79.586</td>
+<td align="right">83.349</td>
 <td align="right">98.648</td>
 <td align="right">94.068</td>
 <td align="right">4178</td>
@@ -546,21 +546,21 @@ precision for scaled.p_value.</caption>
 <tr class="odd">
 <td align="left">hurdle_binomial_firth_unbound</td>
 <td align="left">scaled.p_value</td>
-<td align="right">92.018</td>
-<td align="right">71.406</td>
-<td align="right">78.178</td>
-<td align="right">82.268</td>
+<td align="right">91.994</td>
+<td align="right">71.412</td>
+<td align="right">78.176</td>
+<td align="right">82.259</td>
 <td align="right">98.592</td>
-<td align="right">93.106</td>
+<td align="right">93.109</td>
 <td align="right">4178</td>
 </tr>
 <tr class="even">
 <td align="left">hurdle_firth_df4</td>
 <td align="left">scaled.p_value</td>
-<td align="right">92.026</td>
+<td align="right">92.008</td>
 <td align="right">70.842</td>
-<td align="right">77.789</td>
-<td align="right">81.957</td>
+<td align="right">77.786</td>
+<td align="right">81.950</td>
 <td align="right">98.471</td>
 <td align="right">92.752</td>
 <td align="right">4178</td>
@@ -569,11 +569,11 @@ precision for scaled.p_value.</caption>
 <td align="left">msqrob2_hurdle</td>
 <td align="left">scaled.p_value</td>
 <td align="right">92.842</td>
-<td align="right">73.354</td>
+<td align="right">73.353</td>
 <td align="right">79.959</td>
 <td align="right">83.606</td>
 <td align="right">98.614</td>
-<td align="right">93.792</td>
+<td align="right">93.791</td>
 <td align="right">4178</td>
 </tr>
 </tbody>
