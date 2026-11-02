@@ -59,7 +59,5 @@ Remotes:
     prolfqua/prolfquatakeoutmissing,
     git::https://gitlab.bfabric.org/wolski/prolfquadata.git
 Roxygen: list(r6 = TRUE)
-Depends: 
-    R (>= 4.1)
 biocViews: MassSpectrometry, Proteomics, Metabolomics, ExperimentHubSoftware
 Config/roxygen2/version: 8.1.1
