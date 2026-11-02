@@ -16,7 +16,7 @@ Example scores with known truth, used by the examples of the confusion
 matrix and ROC functions. Moved here from prolfqua 1.9.0.
 }
 \seealso{
-Other data: 
+Other data:
 \code{\link{data_benchmarkExample}}
 }
 \concept{data}

@@ -16,19 +16,19 @@ ggplot object
 Creates grouped bar charts of AUC metrics by method and contrast.
 }
 \seealso{
-Other benchmarking: 
+Other benchmarking:
 \code{\link{Benchmark}},
-\code{\link{benchmark_from_file}()},
-\code{\link{benchmark_from_result}()},
-\code{\link{collect_benchmark_results}()},
-\code{\link{ionstar_bench_preprocess}()},
-\code{\link{make_benchmark}()},
-\code{\link{ms_bench_add_scores}()},
-\code{\link{ms_bench_ap}()},
-\code{\link{ms_bench_auc}()},
-\code{\link{read_benchmark_results}()},
-\code{\link{read_contrast_results}()},
-\code{\link{write_benchmark_results}()},
-\code{\link{write_contrast_results}()}
+\code{\link[=benchmark_from_file]{benchmark_from_file()}},
+\code{\link[=benchmark_from_result]{benchmark_from_result()}},
+\code{\link[=collect_benchmark_results]{collect_benchmark_results()}},
+\code{\link[=ionstar_bench_preprocess]{ionstar_bench_preprocess()}},
+\code{\link[=make_benchmark]{make_benchmark()}},
+\code{\link[=ms_bench_add_scores]{ms_bench_add_scores()}},
+\code{\link[=ms_bench_ap]{ms_bench_ap()}},
+\code{\link[=ms_bench_auc]{ms_bench_auc()}},
+\code{\link[=read_benchmark_results]{read_benchmark_results()}},
+\code{\link[=read_contrast_results]{read_contrast_results()}},
+\code{\link[=write_benchmark_results]{write_benchmark_results()}},
+\code{\link[=write_contrast_results]{write_contrast_results()}}
 }
 \concept{benchmarking}

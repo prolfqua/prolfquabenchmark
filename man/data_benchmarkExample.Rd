@@ -21,7 +21,7 @@ dilution series (PRIDE PXD003881), used by the examples and tests of the
 benchmark functions. Moved here from prolfqua 1.9.0.
 }
 \seealso{
-Other data: 
+Other data:
 \code{\link{data_test_confusion_matrix_scores}}
 }
 \concept{data}

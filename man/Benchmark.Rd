@@ -5,8 +5,6 @@
 \title{Benchmark R6 class}
 \description{
 Benchmark R6 class
-
-Benchmark R6 class
 }
 \examples{
 
@@ -77,89 +75,90 @@ stopifnot(nrow(benchmark$n_confusion_FDRvsFDP()) == 2 * (4 + 1))
 benchmark$pAUC()
 }
 \seealso{
-Other benchmarking: 
-\code{\link{benchmark_from_file}()},
-\code{\link{benchmark_from_result}()},
-\code{\link{collect_benchmark_results}()},
-\code{\link{ionstar_bench_preprocess}()},
-\code{\link{make_benchmark}()},
-\code{\link{ms_bench_add_scores}()},
-\code{\link{ms_bench_ap}()},
-\code{\link{ms_bench_auc}()},
-\code{\link{plot_benchmark_comparison}()},
-\code{\link{read_benchmark_results}()},
-\code{\link{read_contrast_results}()},
-\code{\link{write_benchmark_results}()},
-\code{\link{write_contrast_results}()}
+Other benchmarking:
+\code{\link[=benchmark_from_file]{benchmark_from_file()}},
+\code{\link[=benchmark_from_result]{benchmark_from_result()}},
+\code{\link[=collect_benchmark_results]{collect_benchmark_results()}},
+\code{\link[=ionstar_bench_preprocess]{ionstar_bench_preprocess()}},
+\code{\link[=make_benchmark]{make_benchmark()}},
+\code{\link[=ms_bench_add_scores]{ms_bench_add_scores()}},
+\code{\link[=ms_bench_ap]{ms_bench_ap()}},
+\code{\link[=ms_bench_auc]{ms_bench_auc()}},
+\code{\link[=plot_benchmark_comparison]{plot_benchmark_comparison()}},
+\code{\link[=read_benchmark_results]{read_benchmark_results()}},
+\code{\link[=read_contrast_results]{read_contrast_results()}},
+\code{\link[=write_benchmark_results]{write_benchmark_results()}},
+\code{\link[=write_contrast_results]{write_contrast_results()}}
 }
 \concept{benchmarking}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{.data}}{data.frame}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{.data}}{data.frame}
 
-\item{\code{is_complete}}{todo}
+    \item{\code{is_complete}}{todo}
 
-\item{\code{contrast}}{column name}
+    \item{\code{contrast}}{column name}
 
-\item{\code{toscale}}{which columns to scale}
+    \item{\code{toscale}}{which columns to scale}
 
-\item{\code{avgInt}}{average Intensity}
+    \item{\code{avgInt}}{average Intensity}
 
-\item{\code{fcestimate}}{estimate column}
+    \item{\code{fcestimate}}{estimate column}
 
-\item{\code{benchmark}}{todo}
+    \item{\code{benchmark}}{todo}
 
-\item{\code{model_description}}{describe model}
+    \item{\code{model_description}}{describe model}
 
-\item{\code{model_name}}{model description}
+    \item{\code{model_name}}{model description}
 
-\item{\code{hierarchy}}{todo}
+    \item{\code{hierarchy}}{todo}
 
-\item{\code{smc}}{summarize missing contrasts}
+    \item{\code{smc}}{summarize missing contrasts}
 
-\item{\code{summarizeNA}}{statistic to use for missigness summarization (e.g. statistic, or p-value)}
+    \item{\code{summarizeNA}}{statistic to use for missigness summarization (e.g. statistic, or p-value)}
 
-\item{\code{confusion}}{todo}
+    \item{\code{confusion}}{todo}
 
-\item{\code{species}}{todo}
+    \item{\code{species}}{todo}
 
-\item{\code{FDRvsFDP}}{todo}
-}
-\if{html}{\out{</div>}}
+    \item{\code{FDRvsFDP}}{todo}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Benchmark-new}{\code{Benchmark$new()}}
-\item \href{#method-Benchmark-data}{\code{Benchmark$data()}}
-\item \href{#method-Benchmark-missing_contrasts}{\code{Benchmark$missing_contrasts()}}
-\item \href{#method-Benchmark-complete}{\code{Benchmark$complete()}}
-\item \href{#method-Benchmark-.get_confusion}{\code{Benchmark$.get_confusion()}}
-\item \href{#method-Benchmark-get_confusion_benchmark}{\code{Benchmark$get_confusion_benchmark()}}
-\item \href{#method-Benchmark-n_confusion_benchmark}{\code{Benchmark$n_confusion_benchmark()}}
-\item \href{#method-Benchmark-plot_ROC}{\code{Benchmark$plot_ROC()}}
-\item \href{#method-Benchmark-pAUC_summaries}{\code{Benchmark$pAUC_summaries()}}
-\item \href{#method-Benchmark-pAUC}{\code{Benchmark$pAUC()}}
-\item \href{#method-Benchmark-summary_metrics}{\code{Benchmark$summary_metrics()}}
-\item \href{#method-Benchmark-get_confusion_FDRvsFDP}{\code{Benchmark$get_confusion_FDRvsFDP()}}
-\item \href{#method-Benchmark-n_confusion_FDRvsFDP}{\code{Benchmark$n_confusion_FDRvsFDP()}}
-\item \href{#method-Benchmark-calibration_metrics}{\code{Benchmark$calibration_metrics()}}
-\item \href{#method-Benchmark-plot_FDRvsFDP}{\code{Benchmark$plot_FDRvsFDP()}}
-\item \href{#method-Benchmark-plot_score_distribution}{\code{Benchmark$plot_score_distribution()}}
-\item \href{#method-Benchmark-plot_scatter}{\code{Benchmark$plot_scatter()}}
-\item \href{#method-Benchmark-plot_precision_recall}{\code{Benchmark$plot_precision_recall()}}
-\item \href{#method-Benchmark-to_summary_table}{\code{Benchmark$to_summary_table()}}
-\item \href{#method-Benchmark-clone}{\code{Benchmark$clone()}}
-}
+  \itemize{
+    \item \href{#method-Benchmark-initialize}{\code{Benchmark$new()}}
+    \item \href{#method-Benchmark-data}{\code{Benchmark$data()}}
+    \item \href{#method-Benchmark-missing_contrasts}{\code{Benchmark$missing_contrasts()}}
+    \item \href{#method-Benchmark-complete}{\code{Benchmark$complete()}}
+    \item \href{#method-Benchmark-.get_confusion}{\code{Benchmark$.get_confusion()}}
+    \item \href{#method-Benchmark-get_confusion_benchmark}{\code{Benchmark$get_confusion_benchmark()}}
+    \item \href{#method-Benchmark-n_confusion_benchmark}{\code{Benchmark$n_confusion_benchmark()}}
+    \item \href{#method-Benchmark-plot_ROC}{\code{Benchmark$plot_ROC()}}
+    \item \href{#method-Benchmark-pAUC_summaries}{\code{Benchmark$pAUC_summaries()}}
+    \item \href{#method-Benchmark-pAUC}{\code{Benchmark$pAUC()}}
+    \item \href{#method-Benchmark-summary_metrics}{\code{Benchmark$summary_metrics()}}
+    \item \href{#method-Benchmark-get_confusion_FDRvsFDP}{\code{Benchmark$get_confusion_FDRvsFDP()}}
+    \item \href{#method-Benchmark-n_confusion_FDRvsFDP}{\code{Benchmark$n_confusion_FDRvsFDP()}}
+    \item \href{#method-Benchmark-calibration_metrics}{\code{Benchmark$calibration_metrics()}}
+    \item \href{#method-Benchmark-plot_FDRvsFDP}{\code{Benchmark$plot_FDRvsFDP()}}
+    \item \href{#method-Benchmark-plot_score_distribution}{\code{Benchmark$plot_score_distribution()}}
+    \item \href{#method-Benchmark-plot_scatter}{\code{Benchmark$plot_scatter()}}
+    \item \href{#method-Benchmark-plot_precision_recall}{\code{Benchmark$plot_precision_recall()}}
+    \item \href{#method-Benchmark-to_summary_table}{\code{Benchmark$to_summary_table()}}
+    \item \href{#method-Benchmark-clone}{\code{Benchmark$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Benchmark-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Benchmark-new}{}}}
-\subsection{Method \code{new()}}{
-create Benchmark
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$new(
+\if{html}{\out{<a id="method-Benchmark-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Benchmark-initialize}{}}}
+\subsection{\code{Benchmark$new()}}{
+  create Benchmark
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$new(
   data,
   toscale = c("p.value"),
   fcestimate = "diff",
@@ -173,205 +172,218 @@ create Benchmark
   species = "species",
   hierarchy = c("protein_Id"),
   summarizeNA = "statistic"
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{data.frame}
+      \item{\code{toscale}}{columns ot scale}
+      \item{\code{fcestimate}}{column with fold change estimates}
+      \item{\code{avgInt}}{average protein/peptide/metabolite intensity}
+      \item{\code{benchmark}}{columns to benchmark}
+      \item{\code{FDRvsFDP}}{score for which to generate FDR vs FDP}
+      \item{\code{model_description}}{describe model}
+      \item{\code{model_name}}{model name}
+      \item{\code{contrast}}{contrast}
+      \item{\code{species}}{species (todo rename)}
+      \item{\code{hierarchy}}{e.g. protein_Id}
+      \item{\code{summarizeNA}}{examine this column to determine the proportion of missing values default statistic}
+      \item{\code{columns}}{to create FPR vs FDP analysis for}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{data.frame}
-
-\item{\code{toscale}}{columns ot scale}
-
-\item{\code{fcestimate}}{column with fold change estimates}
-
-\item{\code{avgInt}}{average protein/peptide/metabolite intensity}
-
-\item{\code{benchmark}}{columns to benchmark}
-
-\item{\code{FDRvsFDP}}{score for which to generate FDR vs FDP}
-
-\item{\code{model_description}}{describe model}
-
-\item{\code{model_name}}{model name}
-
-\item{\code{contrast}}{contrast}
-
-\item{\code{species}}{species (todo rename)}
-
-\item{\code{hierarchy}}{e.g. protein_Id}
-
-\item{\code{summarizeNA}}{examine this column to determine the proportion of missing values default statistic}
-
-\item{\code{columns}}{to create FPR vs FDP analysis for}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-data"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-data}{}}}
-\subsection{Method \code{data()}}{
-get data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$data()}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$data()}}{
+  get data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$data()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
 }
 
-\subsection{Returns}{
-data.frame
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-missing_contrasts"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-missing_contrasts}{}}}
-\subsection{Method \code{missing_contrasts()}}{
-summarize missing contrasts
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$missing_contrasts()}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$missing_contrasts()}}{
+  summarize missing contrasts
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$missing_contrasts()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
 }
 
-\subsection{Returns}{
-data.frame
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-complete"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-complete}{}}}
-\subsection{Method \code{complete()}}{
-set or get complete.
+\subsection{\code{Benchmark$complete()}}{
+  set or get complete.
 If true only proteins for which all contrasts are determinable are examined.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$complete(value)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$complete(value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{value}}{TRUE if data should be complete (no missing contrasts)}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{value}}{TRUE if data should be complete (no missing contrasts)}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-.get_confusion"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-.get_confusion}{}}}
-\subsection{Method \code{.get_confusion()}}{
-get confusion data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$.get_confusion(arrange)}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$.get_confusion()}}{
+  get confusion data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$.get_confusion(arrange)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{arrange}}{todo}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{arrange}}{todo}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-get_confusion_benchmark"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-get_confusion_benchmark}{}}}
-\subsection{Method \code{get_confusion_benchmark()}}{
-get FDR summaries
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$get_confusion_benchmark()}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$get_confusion_benchmark()}}{
+  get FDR summaries
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$get_confusion_benchmark()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-n_confusion_benchmark"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-n_confusion_benchmark}{}}}
-\subsection{Method \code{n_confusion_benchmark()}}{
-nr of elements used to determine ROC curve
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$n_confusion_benchmark()}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$n_confusion_benchmark()}}{
+  nr of elements used to determine ROC curve
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$n_confusion_benchmark()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-plot_ROC"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-plot_ROC}{}}}
-\subsection{Method \code{plot_ROC()}}{
-plot FDR summaries
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$plot_ROC(xlim = 0.5)}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$plot_ROC()}}{
+  plot FDR summaries
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$plot_ROC(xlim = 0.5)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{xlim}}{limit x axis}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    ggplot
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{xlim}}{limit x axis}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-ggplot
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-pAUC_summaries"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-pAUC_summaries}{}}}
-\subsection{Method \code{pAUC_summaries()}}{
-AUC summaries
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$pAUC_summaries()}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$pAUC_summaries()}}{
+  AUC summaries
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$pAUC_summaries()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-pAUC"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-pAUC}{}}}
-\subsection{Method \code{pAUC()}}{
-AUC summaries as table
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$pAUC()}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$pAUC()}}{
+  AUC summaries as table
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$pAUC()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-summary_metrics"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-summary_metrics}{}}}
-\subsection{Method \code{summary_metrics()}}{
-Summary metrics: geometric mean of per-contrast AUC/AP scores
+\subsection{\code{Benchmark$summary_metrics()}}{
+  Summary metrics: geometric mean of per-contrast AUC/AP scores
 
 Computes per-contrast metrics (excluding the pooled "all" row),
 then returns the geometric mean of each metric and arithmetic mean
 of n_total, one row per score.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$summary_metrics()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$summary_metrics()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame with columns: model_name, score, AUC, pAUC_10,
+  pAUC_20, AP, pAP_50, pAP_80, n_total
+  }
 }
 
-\subsection{Returns}{
-data.frame with columns: model_name, score, AUC, pAUC_10,
-  pAUC_20, AP, pAP_50, pAP_80, n_total
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-get_confusion_FDRvsFDP"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-get_confusion_FDRvsFDP}{}}}
-\subsection{Method \code{get_confusion_FDRvsFDP()}}{
-FDR vs FDP data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$get_confusion_FDRvsFDP()}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$get_confusion_FDRvsFDP()}}{
+  FDR vs FDP data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$get_confusion_FDRvsFDP()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-n_confusion_FDRvsFDP"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-n_confusion_FDRvsFDP}{}}}
-\subsection{Method \code{n_confusion_FDRvsFDP()}}{
-nr of elements used to determine ROC curve
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$n_confusion_FDRvsFDP()}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$n_confusion_FDRvsFDP()}}{
+  nr of elements used to determine ROC curve
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$n_confusion_FDRvsFDP()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-calibration_metrics"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-calibration_metrics}{}}}
-\subsection{Method \code{calibration_metrics()}}{
-FDR calibration metrics: measures how well the nominal FDR matches
+\subsection{\code{Benchmark$calibration_metrics()}}{
+  FDR calibration metrics: measures how well the nominal FDR matches
 the actual false discovery proportion (FDP).
 
 For each contrast and score, computes:
@@ -382,136 +394,149 @@ For each contrast and score, computes:
     (positive = anticonservative, negative = conservative)
 }
 Also returns an "average" row with arithmetic mean across contrasts.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$calibration_metrics(fdr_threshold = 0.2)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$calibration_metrics(fdr_threshold = 0.2)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{fdr_threshold}}{maximum nominal FDR to evaluate (default 0.2)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame with columns: model_name, contrast, score,
+  FDP_cal, FDP_bias
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{fdr_threshold}}{maximum nominal FDR to evaluate (default 0.2)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-data.frame with columns: model_name, contrast, score,
-  FDP_cal, FDP_bias
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-plot_FDRvsFDP"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-plot_FDRvsFDP}{}}}
-\subsection{Method \code{plot_FDRvsFDP()}}{
-plot FDR vs FDP data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$plot_FDRvsFDP()}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$plot_FDRvsFDP()}}{
+  plot FDR vs FDP data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$plot_FDRvsFDP()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    ggplot
+  }
 }
 
-\subsection{Returns}{
-ggplot
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-plot_score_distribution"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-plot_score_distribution}{}}}
-\subsection{Method \code{plot_score_distribution()}}{
-plot distributions of scores
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$plot_score_distribution(score)}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$plot_score_distribution()}}{
+  plot distributions of scores
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$plot_score_distribution(score)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{score}}{the distribution of which scores to plot (list)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    ggplot
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{score}}{the distribution of which scores to plot (list)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-ggplot
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-plot_scatter"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-plot_scatter}{}}}
-\subsection{Method \code{plot_scatter()}}{
-plot intensity vs scores
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$plot_scatter(score)}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$plot_scatter()}}{
+  plot intensity vs scores
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$plot_scatter(score)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{score}}{the distribution of which scores to plot (list)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    ggplot
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{score}}{the distribution of which scores to plot (list)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-ggplot
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-plot_precision_recall"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-plot_precision_recall}{}}}
-\subsection{Method \code{plot_precision_recall()}}{
-plot precision vs recall
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$plot_precision_recall(precision_lim = 0.7, recall_lim = 1)}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$plot_precision_recall()}}{
+  plot precision vs recall
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$plot_precision_recall(precision_lim = 0.7, recall_lim = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{precision_lim}}{limit shown precision from}
+      \item{\code{recall_lim}}{limit shown recall to}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    ggplot
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{precision_lim}}{limit shown precision from}
-
-\item{\code{recall_lim}}{limit shown recall to}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-ggplot
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-to_summary_table"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-to_summary_table}{}}}
-\subsection{Method \code{to_summary_table()}}{
-Export benchmark summary as a flat data.frame
+\subsection{\code{Benchmark$to_summary_table()}}{
+  Export benchmark summary as a flat data.frame
 
 Returns one row per contrast x score with AUC metrics and counts.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$to_summary_table(dataset = "unknown")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dataset}}{dataset identifier string (default "unknown")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-data.frame with columns: model_name, model_description, dataset,
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$to_summary_table(dataset = "unknown")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dataset}}{dataset identifier string (default "unknown")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame with columns: model_name, model_description, dataset,
   contrast, score, AUC, pAUC_10, pAUC_20, n_TP, n_TN, n_total,
   n_missing_contrasts
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Benchmark-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Benchmark-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Benchmark$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Benchmark$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Benchmark$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
