@@ -35,6 +35,8 @@ Suggests:
     knitr,
     limma,
     lintr,
+    lme4,
+    lmerTest,
     MSstats,
     msdata,
     msqrob2,
