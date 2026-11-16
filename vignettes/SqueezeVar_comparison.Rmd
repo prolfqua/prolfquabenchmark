@@ -62,7 +62,7 @@ The short answer, established below:
   models), and the imputation facades (`lm_impute` / `rfit_impute`, with borrowed / low df). Only plain
   `lm` gives integer df. So the behavioural difference between the classic-plus-`min_df` fork and
   modern limma **can change prolfqua results** on exactly those paths — it is not merely historical.
-  (`firth` and `firth_nested` are *not* consumers — they use their own `ContrastsFirth` inference, not
+  (`firth` is *not* a consumer — it uses its own `ContrastsFirth` inference, not
   `squeezeVarRob`.)
 
 ```{r libs}
@@ -285,7 +285,7 @@ estimators:
   are (partly) imputed, where the `min_df = 1` filter changes which features enter the prior fit.
 - **`lm`** — integer residual df; the only path that stays in Regime 1.
 
-(`firth` / `firth_nested` do **not** feed `squeezeVarRob` — they use their own `ContrastsFirth`
+(`firth` does **not** feed `squeezeVarRob` — it uses its own `ContrastsFirth`
 inference. Likewise `limma*` uses limma's own `eBayes`, and `limpa` its own moderation.)
 
 A quick check that `rlm` really produces fractional df:

@@ -45,13 +45,12 @@ contrast and combines their p-values with Fisher's method, as msqrob2's hurdle
 model does. We benchmark on the IonStar MaxQuant peptides:
 
 - `lm_impute`: intensity only
-- `hurdle_firth`: `lm_impute` + `firth_nested`
 - `hurdle_binomial`: `lm_impute` + `binomial_nested`
 - `hurdle_binomial_firth`: `lm_impute` + `binomial_firth_nested`
 - `hurdle_binomial_firth_unbound`: as `hurdle_binomial_firth`, without the
   lower bound of one on the posterior dispersion
-- `hurdle_firth_df4`: as `hurdle_firth`, but the detection p-value also enters
-  for fully detected proteins (msqrob2's rule)
+- `hurdle_binomial_firth_df4`: as `hurdle_binomial_firth`, but the detection
+  p-value also enters for fully detected proteins (msqrob2's rule)
 - `msqrob2_hurdle`: msqrob2 `msqrobHurdle()` + `hypothesisTestHurdle()`,
   Fisher p-value
 
@@ -124,8 +123,6 @@ to the peptide-level detection pattern.
 ```{r components}
 fa_lm_impute <- prolfqua::build_contrast_analysis(
   lfqProt_mq, "~ dilution.", ionstar_contrasts, method = "lm_impute")
-fa_firth <- prolfqua::build_contrast_analysis(
-  lfqdataNorm_mq, "~ dilution.", ionstar_contrasts, method = "firth_nested")
 fa_binomial <- prolfqua::build_contrast_analysis(
   lfqdataNorm_mq, "~ dilution.", ionstar_contrasts, method = "binomial_nested")
 fa_binomial_firth <- prolfqua::build_contrast_analysis(
@@ -139,9 +136,11 @@ fa_binomial_firth_unbound <- prolfqua::build_contrast_analysis(
 
 The human proteins do not change between dilutions, so about 5% of their
 detection p-values should fall below 0.05. Proteins detected in every sample
-are left out. `firth_nested` fits one 0/1 row per peptide and sample, so its
-information grows with the number of peptides. The count models sum the
-peptides per sample and estimate the dispersion from the samples.
+are left out. The count models sum the peptides per sample and estimate the
+dispersion from the samples, so the share should not depend on the number of
+peptides. `firth_nested`, which fitted one 0/1 row per peptide and sample and
+was removed in prolfqua 1.9.3, rose from 1.3% (2-3 peptides) to 7.7% (more
+than 20) on these data.
 
 ```{r detectionCalibration}
 completed <- lfqdataNorm_mq$get_copy()
@@ -154,7 +153,6 @@ n_peptides <- completed$data_long() |>
     .groups = "drop") |>
   dplyr::filter(missing)
 detection <- list(
-  firth_nested = fa_firth,
   binomial_nested = fa_binomial,
   binomial_firth_nested = fa_binomial_firth,
   binomial_firth_nested_unbound = fa_binomial_firth_unbound
@@ -176,22 +174,21 @@ dplyr::bind_rows(lapply(names(detection), function(name) {
 # Hurdle contrasts
 
 ```{r hurdle}
-hurdle_firth <- prolfqua::ContrastsHurdleFacade$new(fa_lm_impute, fa_firth)$get_contrasts()
 hurdle_binomial <- prolfqua::ContrastsHurdleFacade$new(fa_lm_impute, fa_binomial)$get_contrasts()
 hurdle_binomial_firth <- prolfqua::ContrastsHurdleFacade$new(fa_lm_impute, fa_binomial_firth)$get_contrasts()
 hurdle_binomial_firth_unbound <- prolfqua::ContrastsHurdleFacade$new(
   fa_lm_impute, fa_binomial_firth_unbound)$get_contrasts()
 
-hurdle_firth |>
+hurdle_binomial_firth |>
   dplyr::count(contrast, hurdle_components) |>
   tidyr::pivot_wider(names_from = "hurdle_components", values_from = "n") |>
-  knitr::kable(caption = "Rows per contrast by the p-values that were combined (hurdle_firth).")
+  knitr::kable(caption = "Rows per contrast by the p-values that were combined (hurdle_binomial_firth).")
 ```
 
 `intensity` rows are proteins detected in every sample, for which the
 detection p-value is left out, and proteins without a detection estimate.
-msqrob2 always combines both p-values when both exist. `hurdle_firth_df4`
-applies that rule to the component p-values of `hurdle_firth`.
+msqrob2 always combines both p-values when both exist. `hurdle_binomial_firth_df4`
+applies that rule to the component p-values of `hurdle_binomial_firth`.
 
 ```{r hurdleDf4}
 fisher_always <- function(hurdle) {
@@ -205,7 +202,7 @@ fisher_always <- function(hurdle) {
   )
   dplyr::ungroup(prolfqua::adjust_p_values(hurdle))
 }
-hurdle_firth_df4 <- fisher_always(hurdle_firth)
+hurdle_binomial_firth_df4 <- fisher_always(hurdle_binomial_firth)
 ```
 
 # msqrob2 hurdle
@@ -278,12 +275,12 @@ bench <- function(data, method, description) {
 
 benchmarks <- list(
   bench(fa_lm_impute$get_contrasts(), "lm_impute", "lm_impute, intensity only"),
-  bench(hurdle_firth, "hurdle_firth", "lm_impute + firth_nested, Fisher"),
   bench(hurdle_binomial, "hurdle_binomial", "lm_impute + binomial_nested, Fisher"),
   bench(hurdle_binomial_firth, "hurdle_binomial_firth", "lm_impute + binomial_firth_nested, Fisher"),
   bench(hurdle_binomial_firth_unbound, "hurdle_binomial_firth_unbound",
         "lm_impute + binomial_firth_nested without dispersion bound, Fisher"),
-  bench(hurdle_firth_df4, "hurdle_firth_df4", "lm_impute + firth_nested, Fisher, msqrob2 rule")
+  bench(hurdle_binomial_firth_df4, "hurdle_binomial_firth_df4",
+        "lm_impute + binomial_firth_nested, Fisher, msqrob2 rule")
 )
 if (evalMsqrob2) {
   benchmarks <- c(benchmarks, list(bench(msqrob2_hurdle, "msqrob2_hurdle", "msqrob2 hurdle, Fisher")))
