@@ -18,7 +18,7 @@ Imports:
     ggplot2,
     ggpubr,
     ggridges,
-    prolfqua,
+    prolfqua (>= 1.9.4),
     purrr,
     R6,
     rlang,
