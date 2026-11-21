@@ -102,7 +102,7 @@ mkcfg <- function(pep) {
 }
 sim_data <- function(N, seed, wm, pep) {
   set.seed(seed)
-  raw <- sim_lfq_data(Nprot = 300, N = N, PEPTIDE = pep, fc = FC, prop = PROP)
+  raw <- sim_lfq_data(n_proteins = 300, N = N, PEPTIDE = pep, fc = FC, prop = PROP)
   raw <- raw[raw$group %in% c("Ctrl", "A"), ]
   if (!pep) {
     raw$peptideID <- raw$proteinID

@@ -230,7 +230,7 @@ L <- makeContrast(
   parameterNames = c("dilution.e", "dilution.d", "dilution.c", "dilution.b"))
 contrast_map <- stats::setNames(names(ionstar_contrasts), paste0("hurdle_", colnames(L)))
 
-se <- prolfqua::LFQDataToSummarizedExperiment(lfqdata = lfqdataNorm_mq)
+se <- prolfqua::lfqdata_to_summarized_experiment(lfqdata = lfqdataNorm_mq)
 pe <- QFeatures::QFeatures(list(peptide = se), colData = colData(se))
 pe <- QFeatures::aggregateFeatures(
   pe, i = "peptide", fcol = "protein_Id", name = "protein", fun = my_medianPolish)

@@ -302,7 +302,7 @@ The code snippets in this section demonstrate how a DEA workflow can be implemen
 R.version.string; packageVersion("prolfqua")
 
 ## read MQ peptide.txt and annotation table
-startdata <- prolfqua::sim_lfq_data_peptide_config(Nprot = 100)
+startdata <- prolfqua::sim_lfq_data_peptide_config(n_proteins = 100)
 
 ## create R6 object
 lfqpep <- prolfqua::LFQData$new(startdata$data, startdata$config, setup = FALSE) 

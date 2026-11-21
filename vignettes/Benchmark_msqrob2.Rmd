@@ -119,7 +119,7 @@ run_msqrob2_hurdle <- function(lfqdataPeptideNorm, lfqdataProtein,
                                formula, L, contrast_map, abd_contrast_map,
                                factor_col) {
   # Create QFeatures and aggregate
-  se <- prolfqua::LFQDataToSummarizedExperiment(lfqdata = lfqdataPeptideNorm)
+  se <- prolfqua::lfqdata_to_summarized_experiment(lfqdata = lfqdataPeptideNorm)
   pe <- QFeatures::QFeatures(list(peptide = se), colData = colData(se))
   pe <- QFeatures::aggregateFeatures(
     pe, i = "peptide", fcol = "protein_Id",
@@ -407,7 +407,7 @@ L_cptac <- makeContrast(c("group.b=0"), parameterNames = c("group.b"))
 cptac_contrast_map <- c("hurdle_group.b" = "b_vs_a")
 cptac_abd_contrast_map <- c("avgAbd.b.a" = "b_vs_a")
 
-se <- prolfqua::LFQDataToSummarizedExperiment(lfqtransformed)
+se <- prolfqua::lfqdata_to_summarized_experiment(lfqtransformed)
 pe <- QFeatures::QFeatures(list(peptide = se), colData = colData(se))
 pe <- QFeatures::aggregateFeatures(
   pe, i = "peptide", fcol = "protein_Id",

@@ -97,7 +97,7 @@ simulate_correlated_peptides <- function(n_prot_per_count, peptide_counts, seed 
 }
 
 sim <- simulate_correlated_peptides(1000, c(2, 3, 5, 10, 20))
-sim_config <- prolfqua::sim_lfq_data_peptide_config(Nprot = 2)$config
+sim_config <- prolfqua::sim_lfq_data_peptide_config(n_proteins = 2)$config
 lfq_sim <- prolfqua::LFQData$new(
   sim[, c("sample", "sampleName", "group_", "isotopeLabel", "protein_Id", "peptide_Id",
           "abundance", "qValue", "nr_children")],

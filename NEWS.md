@@ -1,5 +1,6 @@
 # prolfquabenchmark 0.3.4
 
+- Requires prolfqua >= 1.9.5; the vignettes call its renamed functions and simulator arguments (`lfqdata_to_summarized_experiment()`, `n_proteins`).
 - New vignette `Benchmark_null_split`: splits the runs of each IonStar dilution at random into two pseudo-groups and tests them against each other with `lm`, `limma` and `lm_impute` after no normalization, `robscale()` or human-subset `robscale_subset()`. It reports the share of p < 0.05 and p < 0.01, FDR hits, KS distance and p-value histograms over 20 splits, plus a split along the two run blocks. Both normalizations are calibrated; without normalization single splits are far off; the run-block split gives about 100 FDR hits per 1000 proteins.
 
 - New vignette `Benchmark_ropeca` comparing prolfqua's `ropeca_nested` with the new `ropecaV2_nested`, `lmer_nested` and `limma`: on simulated proteins with correlated peptides and on the unchanged human proteins of IonStar it tabulates the share of p < 0.05 and p < 0.01 by number of peptides, and on IonStar it scores the E. coli vs human ranking (AUC, partial AUC, FDR vs FDP). Requires prolfqua >= 1.9.4.

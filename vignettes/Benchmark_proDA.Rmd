@@ -178,7 +178,7 @@ lfqtrans2 <- agg2$lfq_agg
 ```
 
 ```{r ds2Fit, eval = evalAll}
-se2 <- prolfqua::LFQDataToSummarizedExperiment(lfqtrans2)
+se2 <- prolfqua::lfqdata_to_summarized_experiment(lfqtrans2)
 fit2 <- proDA::proDA(se2, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
 bb2 <- ionstar_contrasts(fit2)
 ```
@@ -251,7 +251,7 @@ lfqtrans3 <- agg3$lfq_agg
 ```
 
 ```{r ds3Fit, eval = evalAll}
-se3 <- prolfqua::LFQDataToSummarizedExperiment(lfqtrans3)
+se3 <- prolfqua::lfqdata_to_summarized_experiment(lfqtrans3)
 fit3 <- proDA::proDA(se3, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
 bb3 <- ionstar_contrasts(fit3)
 ```
@@ -311,7 +311,7 @@ lfqNorm4 <- tr4$log2()$robscale_subset(lfqsubset = subset_h4)$lfq
 ```
 
 ```{r ds4Fit, eval = evalAll}
-se4 <- prolfqua::LFQDataToSummarizedExperiment(lfqNorm4)
+se4 <- prolfqua::lfqdata_to_summarized_experiment(lfqNorm4)
 fit4 <- proDA::proDA(se4, design = ~ dilution. - 1, data_is_log_transformed = TRUE)
 bb4 <- ionstar_contrasts(fit4)
 ```
@@ -367,7 +367,7 @@ lfqProt5 <- agg5$lfq_agg
 ```
 
 ```{r ds5Fit, eval = evalAll && requireNamespace("msdata", quietly = TRUE)}
-se5 <- prolfqua::LFQDataToSummarizedExperiment(lfqProt5)
+se5 <- prolfqua::lfqdata_to_summarized_experiment(lfqProt5)
 mm <- model.matrix(~ group., SummarizedExperiment::colData(se5))
 fit5 <- proDA::proDA(se5, design = mm, data_is_log_transformed = TRUE)
 res5 <- data.frame(

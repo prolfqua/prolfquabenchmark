@@ -472,7 +472,7 @@ lfqdata$data <- lfqdata$data |>
   dplyr::filter(dilution. == "a" | dilution. =="c")
 lfqdata$remove_small_intensities()
 bb <- lfqdata$get_Plotter()
-bb$missigness_histogram()
+bb$missingness_histogram()
 ```
 
 # Material S9: The probabilities produced by ROPECA are not p-values
@@ -503,7 +503,7 @@ testdata <- data.frame(contrast = "contrast1",
    p.value = p.value,
    avgAbd = avgAbd )
 
-xx30 <- prolfqua::summary_ROPECA_median_p_scaled(testdata,
+xx30 <- prolfqua::summary_ropeca_median_p_scaled(testdata,
                                      subject_Id = "protein_Id",
                                      estimate = "estimate",
                                      p.value = "p.value",
