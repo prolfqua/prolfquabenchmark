@@ -28,7 +28,6 @@ create_mq_peptide_config <- function() {
   config$hierarchy_depth <- 1
   config$ident_q_value <- "pep"
   config$set_response("peptide.intensity")
-  config$isotope_label <- "isotope"
   config$min_peptides_protein <- 2
   config
 }

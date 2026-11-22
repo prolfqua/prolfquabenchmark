@@ -114,7 +114,6 @@ sim_data <- function(N, seed, wm, pep) {
     raw$nr_children <- raw$nr_peptides
   }
   raw <- raw[raw$nr_peptides > 0, ]
-  raw$isotopeLabel <- "light"
   raw$qValue <- 0
   truth <- raw |>
     dplyr::filter(.data$group == "A") |>
@@ -273,7 +272,6 @@ config$hierarchy[["peptide_Id"]] <- "sequence"
 config$hierarchy_depth <- 1
 config$ident_q_value <- "pep"
 config$set_response("peptide.intensity")
-config$isotope_label <- "isotope"
 config$min_peptides_protein <- 2
 data_mq <- prolfquapp::tidyMQ_Peptides(file.path(
   dd,

@@ -30,7 +30,6 @@ create_mq_peptide_config <- function() {
   config$hierarchy_depth <- 1
   config$ident_q_value <- "pep"
   config$set_response("peptide.intensity")
-  config$isotope_label <- "isotope"
   config$min_peptides_protein <- 2
   config
 }
@@ -90,7 +89,6 @@ simulate_correlated_peptides <- function(n_prot_per_count, peptide_counts, seed 
     sqrt(1 - data$rho) * stats::rnorm(nrow(data))
   data$sample <- data$sampleName
   data$group_ <- sub("_V[0-9]$", "", data$sampleName)
-  data$isotopeLabel <- "light"
   data$qValue <- 0
   data$nr_children <- 1
   data
@@ -99,7 +97,7 @@ simulate_correlated_peptides <- function(n_prot_per_count, peptide_counts, seed 
 sim <- simulate_correlated_peptides(1000, c(2, 3, 5, 10, 20))
 sim_config <- prolfqua::sim_lfq_data_peptide_config(n_proteins = 2)$config
 lfq_sim <- prolfqua::LFQData$new(
-  sim[, c("sample", "sampleName", "group_", "isotopeLabel", "protein_Id", "peptide_Id",
+  sim[, c("sample", "sampleName", "group_", "protein_Id", "peptide_Id",
           "abundance", "qValue", "nr_children")],
   sim_config
 )
