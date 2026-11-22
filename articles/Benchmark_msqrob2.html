@@ -108,7 +108,7 @@ datasets</h1>
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-11-21</h4>
+            <h4 data-toc-skip class="date">2026-11-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_msqrob2.Rmd" class="external-link"><code>vignettes/Benchmark_msqrob2.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_msqrob2.Rmd</code></div>
@@ -288,10 +288,10 @@ intensity-based estimates are found.</p>
 <span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">##   isotope protein_Id peptide_Id</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> light         <span style="text-decoration: underline;">4</span>178      <span style="text-decoration: underline;">29</span>879</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
+<span><span class="co">##   protein_Id peptide_Id</span></span>
+<span><span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>       <span style="text-decoration: underline;">4</span>178      <span style="text-decoration: underline;">29</span>879</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">subset_h</span> <span class="op">&lt;-</span> <span class="va">lfqdata_mq</span><span class="op">$</span><span class="fu">get_copy</span><span class="op">(</span><span class="op">)</span></span>
@@ -381,10 +381,10 @@ intensity-based estimates are found.</p>
 <span><span class="va">adata_fp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/setup_analysis.html" class="external-link">setup_analysis</a></span><span class="op">(</span><span class="va">summedPep</span>, <span class="va">config_fp</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_fp</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://fgcz.github.io/prolfqua/reference/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">adata_fp</span>, <span class="va">config_fp</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">##   isotopeLabel protein_Id peptide_Id</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> light              <span style="text-decoration: underline;">5</span>122      <span style="text-decoration: underline;">31</span>107</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
+<span><span class="co">##   protein_Id peptide_Id</span></span>
+<span><span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>       <span style="text-decoration: underline;">5</span>122      <span style="text-decoration: underline;">31</span>107</span></span></code></pre>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqdata_fp</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span></span>
@@ -393,12 +393,10 @@ intensity-based estimates are found.</p>
 <table class="table">
 <caption>number of proteins and peptides.</caption>
 <thead><tr class="header">
-<th align="left">isotopeLabel</th>
 <th align="right">protein_Id</th>
 <th align="right">peptide_Id</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td align="left">light</td>
 <td align="right">3904</td>
 <td align="right">29889</td>
 </tr></tbody>
@@ -417,10 +415,10 @@ intensity-based estimates are found.</p>
 <span><span class="va">agg_fp</span><span class="op">$</span><span class="fu">aggregate</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqProt_fp</span> <span class="op">&lt;-</span> <span class="va">agg_fp</span><span class="op">$</span><span class="va">lfq_agg</span></span>
 <span><span class="va">lfqProt_fp</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
-<span><span class="co">##   isotopeLabel protein_Id</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> light              <span style="text-decoration: underline;">3</span>904</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 1</span></span></span>
+<span><span class="co">##   protein_Id</span></span>
+<span><span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>       <span style="text-decoration: underline;">3</span>904</span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bb_fp</span> <span class="op">&lt;-</span> <span class="fu">run_msqrob2_hurdle</span><span class="op">(</span></span>
 <span>  lfqdataPeptideNorm <span class="op">=</span> <span class="va">lfqdataNorm_fp</span>,</span>
@@ -492,10 +490,10 @@ intensity-based estimates are found.</p>
 <span><span class="va">lfqpeptides</span><span class="op">$</span><span class="fu">filter_proteins_by_peptide_count</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqpeptides</span><span class="op">$</span><span class="fu">remove_small_intensities</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">lfqpeptides</span><span class="op">$</span><span class="fu">hierarchy_counts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">##   isotope protein_Id peptide_Id</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> light         <span style="text-decoration: underline;">1</span>341       <span style="text-decoration: underline;">7</span>787</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
+<span><span class="co">##   protein_Id peptide_Id</span></span>
+<span><span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>       <span style="text-decoration: underline;">1</span>341       <span style="text-decoration: underline;">7</span>787</span></span></code></pre>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">lfqpeptides</span><span class="op">$</span><span class="fu">get_Transformer</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="va">tr</span><span class="op">$</span><span class="fu">intensity_matrix</span><span class="op">(</span><span class="fu">vsn</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/vsn/man/justvsn.html" class="external-link">justvsn</a></span><span class="op">)</span></span>

@@ -108,7 +108,7 @@ ropecaV2_nested</h1>
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-11-21</h4>
+            <h4 data-toc-skip class="date">2026-11-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_ropeca.Rmd" class="external-link"><code>vignettes/Benchmark_ropeca.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_ropeca.Rmd</code></div>
@@ -179,7 +179,6 @@ between proteins, drawn from Beta(2, 4) (mean 0.33).
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">data</span><span class="op">$</span><span class="va">rho</span><span class="op">)</span> <span class="op">*</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">data</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">sampleName</span></span>
 <span>  <span class="va">data</span><span class="op">$</span><span class="va">group_</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"_V[0-9]$"</span>, <span class="st">""</span>, <span class="va">data</span><span class="op">$</span><span class="va">sampleName</span><span class="op">)</span></span>
-<span>  <span class="va">data</span><span class="op">$</span><span class="va">isotopeLabel</span> <span class="op">&lt;-</span> <span class="st">"light"</span></span>
 <span>  <span class="va">data</span><span class="op">$</span><span class="va">qValue</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span>  <span class="va">data</span><span class="op">$</span><span class="va">nr_children</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span>  <span class="va">data</span></span>
@@ -188,7 +187,7 @@ between proteins, drawn from Beta(2, 4) (mean 0.33).
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">simulate_correlated_peptides</span><span class="op">(</span><span class="fl">1000</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sim_config</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="fu"><a href="https://fgcz.github.io/prolfqua/reference/sim_lfq_data_peptide_config.html" class="external-link">sim_lfq_data_peptide_config</a></span><span class="op">(</span>n_proteins <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">$</span><span class="va">config</span></span>
 <span><span class="va">lfq_sim</span> <span class="op">&lt;-</span> <span class="fu">prolfqua</span><span class="fu">::</span><span class="va"><a href="https://fgcz.github.io/prolfqua/reference/LFQData.html" class="external-link">LFQData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>  <span class="va">sim</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"sampleName"</span>, <span class="st">"group_"</span>, <span class="st">"isotopeLabel"</span>, <span class="st">"protein_Id"</span>, <span class="st">"peptide_Id"</span>,</span>
+<span>  <span class="va">sim</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"sampleName"</span>, <span class="st">"group_"</span>, <span class="st">"protein_Id"</span>, <span class="st">"peptide_Id"</span>,</span>
 <span>          <span class="st">"abundance"</span>, <span class="st">"qValue"</span>, <span class="st">"nr_children"</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>  <span class="va">sim_config</span></span>
 <span><span class="op">)</span></span>
@@ -494,7 +493,7 @@ all samples.</p>
 <td align="left">11-20</td>
 <td align="right">494</td>
 <td align="right">0.001</td>
-<td align="right">0.041</td>
+<td align="right">0.043</td>
 <td align="right">0.033</td>
 <td align="right">0.029</td>
 <td align="right">0.000</td>
@@ -506,11 +505,11 @@ all samples.</p>
 <td align="left">&gt;20</td>
 <td align="right">189</td>
 <td align="right">0.000</td>
-<td align="right">0.038</td>
+<td align="right">0.040</td>
 <td align="right">0.036</td>
 <td align="right">0.022</td>
 <td align="right">0.000</td>
-<td align="right">0.009</td>
+<td align="right">0.011</td>
 <td align="right">0.003</td>
 <td align="right">0.004</td>
 </tr>
@@ -591,12 +590,12 @@ precision for scaled.p_value.</caption>
 <tr class="even">
 <td align="left">ropecaV2_nested</td>
 <td align="left">scaled.p_value</td>
-<td align="right">93.697</td>
-<td align="right">77.835</td>
-<td align="right">83.237</td>
-<td align="right">86.206</td>
+<td align="right">93.696</td>
+<td align="right">77.826</td>
+<td align="right">83.231</td>
+<td align="right">86.201</td>
 <td align="right">99.159</td>
-<td align="right">96.191</td>
+<td align="right">96.188</td>
 <td align="right">4092.75</td>
 </tr>
 <tr class="odd">
@@ -677,7 +676,7 @@ mean absolute and mean signed deviation of FDP from FDR.</caption>
 <td align="left">ropecaV2_nested</td>
 <td align="left">average</td>
 <td align="left">p_value_adjusted</td>
-<td align="right">0.009</td>
+<td align="right">0.008</td>
 <td align="right">-0.008</td>
 </tr>
 <tr class="odd">
