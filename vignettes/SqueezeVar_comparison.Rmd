@@ -253,7 +253,7 @@ ggplot(dfp, aes(method, plot_val, fill = is.finite(df.prior))) +
 
 ## Where prolfqua feeds the squeeze
 
-There is a single call site in `prolfqua`: `moderated_p_limma()` (in `tidyMS_moderation.R`), which
+There is a single call site in `prolfqua`: the internal `.moderated_p_limma()` (in `tidyMS_moderation.R`), which
 squeezes the per-contrast residual variances. It now calls `limma::squeezeVar()` (the migration this
 vignette justifies); it previously called the vendored `squeezeVarRob()`:
 
@@ -270,7 +270,7 @@ if (all(is.infinite(squeezed_var$df.prior))) {
 ```
 
 The fallback on the second line is itself evidence: `prolfqua` already has to catch the
-`df.prior = Inf` **collapse** on real data. `moderated_p_limma()` is called by `ContrastsModerated`
+`df.prior = Inf` **collapse** on real data. `.moderated_p_limma()` is called by `ContrastsModerated`
 (the moderated-Wald path wrapping `lm`, `rlm`, `rfit`, the `lm_impute` / `rfit_impute`
 facades, and `lmer_nested`) and by the DEqMS small-group fallback.
 
@@ -318,7 +318,7 @@ Putting the pieces together:
   the `min_df` patch and applies it to `rlm` / `rfit` (fractional df), `lmer_nested` (fractional
   Satterthwaite df), and the imputation facades (low / borrowed df) — precisely the regime where
   classic limma collapses. The `min_df` filter is what keeps those paths from falling back to
-  unmoderated pooled variances (with a further explicit `Inf`-collapse guard in `moderated_p_limma()`).
+  unmoderated pooled variances (with a further explicit `Inf`-collapse guard in `.moderated_p_limma()`).
   It only leaves `lm` unaffected.
 
 ## Does it matter? Benchmark

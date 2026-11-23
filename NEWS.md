@@ -1,5 +1,6 @@
 # prolfquabenchmark 0.3.4
 
+- Uses no prolfqua function that prolfqua 1.9.5 deprecates: the msqrob2 and hurdle vignettes and `tolong()` convert result tables with `tibble::as_tibble(rownames = )` instead of `prolfqua::matrix_to_tibble()`, and the paper supplement applies ROPECA with `ContrastsROPECA` and shows contrast weights with `Contrasts$get_linfct()`.
 - The vignettes and the squeezeVar benchmark script no longer set an isotope label, which label-free prolfqua 1.9.5 removed.
 - Requires prolfqua >= 1.9.5; the vignettes call its renamed functions and simulator arguments (`lfqdata_to_summarized_experiment()`, `n_proteins`).
 - New vignette `Benchmark_null_split`: splits the runs of each IonStar dilution at random into two pseudo-groups and tests them against each other with `lm`, `limma` and `lm_impute` after no normalization, `robscale()` or human-subset `robscale_subset()`. It reports the share of p < 0.05 and p < 0.01, FDR hits, KS distance and p-value histograms over 20 splits, plus a split along the two run blocks. Both normalizations are calibrated; without normalization single splits are far off; the run-block split gives about 100 FDR hits per 1000 proteins.

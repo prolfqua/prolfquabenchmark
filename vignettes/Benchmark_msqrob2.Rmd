@@ -134,7 +134,7 @@ run_msqrob2_hurdle <- function(lfqdataPeptideNorm, lfqdataProtein,
   res <- list()
   for (i in names(hurdle)) {
     hurdle[[i]]$contrast <- i
-    res[[i]] <- prolfqua::matrix_to_tibble(hurdle[[i]], preserve_row_names = "name")
+    res[[i]] <- tibble::as_tibble(as.data.frame(hurdle[[i]]), rownames = "name")
   }
   hurdle <- dplyr::bind_rows(res)
 
@@ -420,7 +420,7 @@ hurdle <- xx[grepl("hurdle_", names(xx))]
 res <- list()
 for (i in names(hurdle)) {
   hurdle[[i]]$contrast <- i
-  res[[i]] <- prolfqua::matrix_to_tibble(hurdle[[i]], preserve_row_names = "name")
+  res[[i]] <- tibble::as_tibble(as.data.frame(hurdle[[i]]), rownames = "name")
 }
 hurdle <- dplyr::bind_rows(res)
 

@@ -4,8 +4,8 @@
 #' @importFrom rlang .data sym
 tolong <- function(assay, rowData, colData) {
   annot <- as_tibble(data.frame(colData))
-  hierarchy <- prolfqua::matrix_to_tibble(data.frame(rowData))
-  ll <- prolfqua::matrix_to_tibble(assay)
+  hierarchy <- as_tibble(data.frame(rowData), rownames = "row.names")
+  ll <- as_tibble(assay, rownames = "row.names")
   ll <- ll |>
     pivot_longer(
       cols = -all_of("row.names"),

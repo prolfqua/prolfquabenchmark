@@ -238,7 +238,7 @@ pe <- hypothesisTestHurdle(pe, i = "protein", L, overwrite = TRUE)
 
 row_data <- rowData(pe[["protein"]])
 msqrob2_hurdle <- dplyr::bind_rows(lapply(names(contrast_map), function(column) {
-  prolfqua::matrix_to_tibble(row_data[[column]], preserve_row_names = "protein_Id") |>
+  tibble::as_tibble(as.data.frame(row_data[[column]]), rownames = "protein_Id") |>
     dplyr::mutate(contrast = contrast_map[[column]])
 })) |>
   dplyr::transmute(

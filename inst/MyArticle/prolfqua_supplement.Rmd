@@ -498,21 +498,22 @@ protein_Id <- sample(1:800, size = nrPep,
 
 testdata <- data.frame(contrast = "contrast1",
    protein_Id = protein_Id,
-   estimate = estimate,
-   pseudo_estimate = estimate,
+   peptide_Id = seq_len(nrPep),
+   diff = estimate,
+   statistic = qnorm(p.value / 2, lower.tail = FALSE) * sign(estimate),
    p.value = p.value,
-   avgAbd = avgAbd )
+   avgAbd = avgAbd)
 
-xx30 <- prolfqua::summary_ropeca_median_p_scaled(testdata,
-                                     subject_Id = "protein_Id",
-                                     estimate = "estimate",
-                                     p.value = "p.value",
-                                     max.n = 30)
+# ContrastsTable holds the peptide-level contrasts; ContrastsROPECA summarizes them per protein
+ropeca <- prolfqua::ContrastsROPECA$new(
+  prolfqua::ContrastsTable$new(testdata, subject_id = c("protein_Id", "peptide_Id"))
+)
+ropeca_res <- ropeca$get_contrasts()
 
 par(mfrow = c(1,3))
 hist(testdata$p.value, breaks = 20, xlab = "p-value", main = "")
 plot(table(table(protein_Id)), xlab = "nr of peptides/protein", ylab = "# nr of proteins", main = "")
-hist(xx30$beta.based.significance, breaks = 20, xlab = "p-value(?) obtained with Ropeca.", main = "")
+hist(ropeca_res$beta.based.significance, breaks = 20, xlab = "p-value(?) obtained with Ropeca.", main = "")
 
 ```
 
@@ -540,9 +541,7 @@ Contrasts <- c(
   "`condition_Glucose:batch_p2691` - `condition_Ethanol:batch_p2691`",
 "diff_of_difference" = "diff_within_p2370 - diff_within_p2691")
 
-linfct <- prolfqua::linfct_from_model(mm$modelDF$linear_model[[1]],
-                                      as_list = FALSE)
-mC <- prolfqua::linfct_matrix_contrasts(linfct, Contrasts)
+mC <- prolfqua::Contrasts$new(mm, Contrasts)$get_linfct(avg = FALSE)
 ## see Table 3 for content of mC
 ```
 
