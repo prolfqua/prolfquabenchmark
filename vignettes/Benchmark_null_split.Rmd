@@ -187,6 +187,36 @@ per_split <- results |>
   dplyr::mutate(dilutions_along_block = along_block[split])
 ```
 
+The medians over the random splits and the run-block split are kept for the score history of prolfqua releases (vignette `Score_history`).
+
+```{r keepCalibration}
+calibration_metrics <- c("p_0.05", "p_0.01", "n_FDR_0.05", "KS_D")
+calibration <- dplyr::bind_rows(
+  per_split |>
+    dplyr::filter(split != "run_block") |>
+    dplyr::group_by(pipeline) |>
+    dplyr::summarise(dplyr::across(dplyr::all_of(calibration_metrics), stats::median), .groups = "drop") |>
+    dplyr::mutate(contrast = "random_median"),
+  per_split |>
+    dplyr::filter(split == "run_block") |>
+    dplyr::select(pipeline, dplyr::all_of(calibration_metrics)) |>
+    dplyr::mutate(contrast = "run_block")
+) |>
+  tidyr::pivot_longer(dplyr::all_of(calibration_metrics), names_to = "metric", values_to = "value") |>
+  dplyr::transmute(
+    dataset = "IonStar_MaxQuant_null_split",
+    method = pipeline,
+    tool_version = paste0("prolfqua ", packageVersion("prolfqua")),
+    contrast,
+    score = "p_value",
+    metric,
+    value
+  )
+dir.create("../inst/Benchresults/null_split", showWarnings = FALSE, recursive = TRUE)
+utils::write.table(calibration, "../inst/Benchresults/null_split/history_rows.tsv",
+                   sep = "\t", row.names = FALSE, quote = FALSE)
+```
+
 The median over the `r n_splits` random splits, with the range in brackets.
 
 ```{r summaryTable}

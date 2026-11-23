@@ -257,16 +257,16 @@ Each method is scored on its own protein × contrast rows; `n_total` gives
 their number.
 
 ```{r benchmark}
-bench <- function(data, method, description) {
+bench <- function(data, method, description, software_version = paste0("prolfqua ", packageVersion("prolfqua"))) {
   res <- write_contrast_results(
     data,
-    path = file.path(tempdir(), paste0("hurdle_IonStar_MQ_", method)),
+    path = file.path("../inst/Benchresults", paste0("hurdle_IonStar_MQ_", method)),
     metadata = list(
       dataset = "IonStar_MaxQuant",
       method = method,
       method_description = description,
       input_file = "MAXQuant_IonStar2018_PXD003881.zip/peptides.txt",
-      software_version = paste0("prolfqua ", packageVersion("prolfqua")),
+      software_version = software_version,
       date = as.character(Sys.Date()),
       ground_truth = ionstar_ground_truth))
   benchmark_from_result(res)
@@ -282,7 +282,8 @@ benchmarks <- list(
         "lm_impute + binomial_firth_nested, Fisher, msqrob2 rule")
 )
 if (evalMsqrob2) {
-  benchmarks <- c(benchmarks, list(bench(msqrob2_hurdle, "msqrob2_hurdle", "msqrob2 hurdle, Fisher")))
+  benchmarks <- c(benchmarks, list(bench(msqrob2_hurdle, "msqrob2_hurdle", "msqrob2 hurdle, Fisher",
+                                         paste0("msqrob2 ", packageVersion("msqrob2")))))
 }
 ```
 

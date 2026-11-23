@@ -252,7 +252,7 @@ Each method is scored on its own protein × contrast rows.
 bench <- function(data, method, description) {
   res <- write_contrast_results(
     data,
-    path = file.path(tempdir(), paste0("ropeca_IonStar_MQ_", method)),
+    path = file.path("../inst/Benchresults", paste0("ropeca_IonStar_MQ_", method)),
     metadata = list(
       dataset = "IonStar_MaxQuant",
       method = method,
