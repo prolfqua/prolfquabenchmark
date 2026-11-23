@@ -1,0 +1,177 @@
+# Benchmark pipeline of prolfquabenchmark: prepare each dataset once, fit every method to it, score the contrasts.
+# Run from the package root:
+#   uv run snakemake -s workflow/Snakefile --configfile config/config.yaml -j 4
+# The config names every dataset and method (config/config.yaml). The scripts in workflow/scripts use the installed
+# packages; each rule's `params` carry the version and build time of the packages it uses, so reinstalling a package
+# reruns only the jobs that depend on it.
+
+import subprocess
+
+DATASETS = config["datasets"]
+METHODS = config["methods"]
+CONFIG_FILE = "config/config.yaml"
+
+
+def installed_packages(packages):
+    """Version and build time of each package ('absent' if not installed), read once per run."""
+    code = (
+        "for (p in commandArgs(TRUE)) {"
+        " d <- suppressWarnings(utils::packageDescription(p));"
+        " cat(p, if (is.list(d)) paste(d$Version, d$Built) else 'absent', sep = '\\t'); cat('\\n') }"
+    )
+    out = subprocess.run(["Rscript", "-e", code, *packages], capture_output=True, text=True, check=True).stdout
+    return dict(line.split("\t", 1) for line in out.strip().splitlines())
+
+
+TOOL_PACKAGES = {"prolfqua": ["prolfqua"]}
+PACKAGES = installed_packages(
+    sorted({"prolfqua", "prolfquabenchmark"}
+           | {p for spec in METHODS.values() for p in spec.get("packages", [])}
+           | {p for spec in METHODS.values() for p in TOOL_PACKAGES.get(spec["tool"], [spec["tool"]])})
+)
+
+
+def method_packages(method):
+    spec = METHODS[method]
+    names = TOOL_PACKAGES.get(spec["tool"], [spec["tool"]]) + spec.get("packages", []) + ["prolfquabenchmark"]
+    return {name: PACKAGES[name] for name in names}
+
+
+JOBS = [(dataset, method) for method, spec in METHODS.items() for dataset in spec["datasets"]]
+SCORES = [f"results/scores/{dataset}/{method}.tsv" for dataset, method in JOBS]
+PROLFQUA_VERSION = PACKAGES["prolfqua"].split(" ")[0]
+
+wildcard_constraints:
+    dataset="|".join(DATASETS),
+    method="|".join(METHODS),
+
+
+rule all:
+    input:
+        SCORES,
+        "inst/extdata/benchmark_scores.tsv",
+
+
+rule prepare:
+    input:
+        script=lambda w: f"workflow/scripts/{DATASETS[w.dataset]['prepare']}",
+        common="workflow/scripts/common.R",
+    output:
+        directory("results/prepared/{dataset}"),
+    params:
+        packages=lambda w: {"prolfqua": PACKAGES["prolfqua"]},
+    log:
+        "logs/prepare_{dataset}.log",
+    shell:
+        "Rscript {input.script} results/prepared/{wildcards.dataset} > {log} 2>&1"
+
+
+def prepared_input(wildcards):
+    """The prepared dataset, for methods fitted to its peptides or proteins."""
+    named = METHODS[wildcards.method].get("input", "")
+    return f"results/prepared/{wildcards.dataset}" if "peptides" in named or "proteins" in named else []
+
+
+rule fit:
+    input:
+        script=lambda w: f"workflow/scripts/{METHODS[w.method]['script']}",
+        common="workflow/scripts/common.R",
+        config=CONFIG_FILE,
+        prepared=prepared_input,
+    output:
+        contrasts="results/contrasts/{dataset}/{method}/contrasts.tsv",
+        metadata="results/contrasts/{dataset}/{method}/metadata.yaml",
+    params:
+        packages=lambda w: method_packages(w.method),
+    benchmark:
+        "results/benchmarks/{dataset}/{method}.tsv"
+    log:
+        "logs/fit_{dataset}_{method}.log",
+    shell:
+        "Rscript {input.script} {input.config} {wildcards.dataset} {wildcards.method} "
+        "results/prepared/{wildcards.dataset} results/contrasts/{wildcards.dataset}/{wildcards.method} > {log} 2>&1"
+
+
+rule score:
+    input:
+        script="workflow/scripts/score.R",
+        common="workflow/scripts/common.R",
+        contrasts="results/contrasts/{dataset}/{method}/contrasts.tsv",
+        metadata="results/contrasts/{dataset}/{method}/metadata.yaml",
+    output:
+        scores="results/scores/{dataset}/{method}.tsv",
+        curves="results/curves/{dataset}/{method}.tsv",
+    params:
+        packages=lambda w: {"prolfquabenchmark": PACKAGES["prolfquabenchmark"]},
+    log:
+        "logs/score_{dataset}_{method}.log",
+    shell:
+        "Rscript {input.script} results/contrasts/{wildcards.dataset}/{wildcards.method} "
+        "{output.scores} {output.curves} > {log} 2>&1"
+
+
+rule export:
+    input:
+        script="workflow/scripts/export.R",
+        common="workflow/scripts/common.R",
+        config=CONFIG_FILE,
+        scores=SCORES,
+        curves=[f"results/curves/{dataset}/{method}.tsv" for dataset, method in JOBS],
+        metadata=[f"results/contrasts/{dataset}/{method}/metadata.yaml" for dataset, method in JOBS],
+        fit_times=[f"results/benchmarks/{dataset}/{method}.tsv" for dataset, method in JOBS],
+    output:
+        scores="inst/extdata/benchmark_scores.tsv",
+        curves="inst/extdata/benchmark_curves.tsv",
+        methods="inst/extdata/benchmark_methods.tsv",
+        datasets="inst/extdata/benchmark_datasets.tsv",
+    log:
+        "logs/export.log",
+    shell:
+        "Rscript {input.script} {input.config} inst/extdata > {log} 2>&1"
+
+
+rule timing_input:
+    input:
+        script="workflow/scripts/timing_input.R",
+    output:
+        "results/timing/input.rds",
+    log:
+        "logs/timing_input.log",
+    shell:
+        "Rscript {input.script} {output} > {log} 2>&1"
+
+
+# Runs alone (all cores reserved), so the step timings are not disturbed by other jobs
+rule time_steps:
+    input:
+        script="workflow/scripts/time_prolfqua_steps.R",
+        data="results/timing/input.rds",
+    output:
+        "results/timing/history_rows.tsv",
+    params:
+        packages=lambda w: {"prolfqua": PACKAGES["prolfqua"]},
+    threads: workflow.cores
+    log:
+        "logs/time_steps.log",
+    shell:
+        "Rscript {input.script} {input.data} results/timing > {log} 2>&1"
+
+
+# Appends the scores and step timings of the installed prolfqua to inst/extdata/score_history.tsv; refuses a
+# recorded version unless run with --config replace=true (make score-history REPLACE=1)
+rule score_history:
+    input:
+        script="workflow/scripts/update_score_history.R",
+        common="workflow/scripts/common.R",
+        config=CONFIG_FILE,
+        scores=SCORES,
+        timing="results/timing/history_rows.tsv",
+    output:
+        touch(f"results/history/prolfqua_{PROLFQUA_VERSION}.done"),
+    params:
+        replace=config.get("replace", False),
+    log:
+        "logs/score_history.log",
+    shell:
+        "Rscript {input.script} {input.config} inst/extdata/score_history.tsv {input.timing} {params.replace} "
+        "> {log} 2>&1"

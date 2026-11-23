@@ -1,12 +1,13 @@
-# Score history of the benchmark vignettes across prolfqua releases.
-# `make score-history` renders the benchmark vignettes, which write their results to inst/Benchresults, and
-# inst/scripts/update_score_history.R appends the scores to inst/extdata/score_history.tsv.
+# Score history of the benchmarks across prolfqua releases. The benchmark pipeline (workflow/Snakefile) scores
+# every dataset and method; its `score_history` rule appends the scores and the step timings of the installed
+# prolfqua to inst/extdata/score_history.tsv (workflow/scripts/update_score_history.R).
 
 .score_history_columns <- c(
   "prolfqua_version",
   "date",
   "dataset",
   "method",
+  "level",
   "tool_version",
   "contrast",
   "score",
@@ -30,68 +31,37 @@
 )
 
 
-#' Score one contrast result directory for the score history
-#' @param dir directory with contrasts.tsv and metadata.yaml, as written by [write_contrast_results()]
-#' @return data.frame, one row per contrast x score x metric
+#' Score history rows of one prolfqua version
+#'
+#' Reads the score tables of the pipeline (`Benchmark$to_summary_table()` plus `level` and `tool_version`, one per
+#' dataset and method) and tables already in the history format (step timings).
+#' @param score_files score tables written by workflow/scripts/score.R
+#' @param row_files tables with the history columns except `prolfqua_version`, `date` and `level`
+#' @param prolfqua_version prolfqua version recorded with the rows
+#' @param date date recorded with the rows: the day of the run, or the commit date of a rerun older version
+#' @return data.frame with the score history columns; values rounded to 6 significant digits
 #' @noRd
-.score_rows_from_dir <- function(dir) {
-  metadata <- yaml::read_yaml(file.path(dir, "metadata.yaml"))
-  benchmark_from_file(dir)$to_summary_table(dataset = metadata$dataset) |>
-    tidyr::pivot_longer(
-      dplyr::all_of(.summary_table_metrics),
-      names_to = "metric",
-      values_to = "value"
-    ) |>
+.score_history_rows <- function(score_files, row_files, prolfqua_version, date = format(Sys.Date())) {
+  read_table <- function(path, character_columns) {
+    utils::read.delim(
+      path,
+      stringsAsFactors = FALSE,
+      colClasses = stats::setNames(rep("character", length(character_columns)), character_columns)
+    )
+  }
+  scores <- dplyr::bind_rows(lapply(score_files, read_table, c("tool_version", "level"))) |>
+    tidyr::pivot_longer(dplyr::all_of(.summary_table_metrics), names_to = "metric", values_to = "value") |>
     dplyr::transmute(
       dataset = .data$dataset,
       method = .data$model_name,
-      tool_version = metadata$software_version,
+      level = .data$level,
+      tool_version = .data$tool_version,
       contrast = .data$contrast,
       score = .data$score,
       metric = .data$metric,
       value = as.numeric(.data$value)
     )
-}
-
-
-#' Score rows of one benchmark run
-#'
-#' Scores every contrast result directory (with metadata.yaml) in `results_dir` and reads every table already in
-#' the history format (history_rows.tsv: null-split calibration, step timings). Aborts if a result file is older
-#' than `since`: its vignette failed or skipped it, and the file holds scores of an earlier run.
-#' @param results_dir directory with one subdirectory per result, as written by the vignettes
-#' @param since time the run started
-#' @param prolfqua_version prolfqua version recorded with the rows
-#' @param date date recorded with the rows: the day of the run, or the commit date of a rerun older version
-#' @return data.frame with the score history columns; values rounded to 6 significant digits
-#' @noRd
-.score_history_rows <- function(
-  results_dir,
-  since,
-  prolfqua_version = as.character(utils::packageVersion("prolfqua")),
-  date = format(Sys.Date())
-) {
-  dirs <- list.dirs(results_dir, recursive = FALSE)
-  contrast_dirs <- dirs[file.exists(file.path(dirs, "metadata.yaml"))]
-  row_files <- file.path(dirs, "history_rows.tsv")
-  row_files <- row_files[file.exists(row_files)]
-  result_files <- c(file.path(contrast_dirs, "contrasts.tsv"), row_files)
-  if (length(result_files) == 0) {
-    stop("No benchmark results in ", results_dir)
-  }
-  written <- file.mtime(result_files)
-  stale <- is.na(written) | written < since
-  if (any(stale)) {
-    stop(
-      "Results not written in this run (render failed or skipped them); ",
-      "delete them to record the run without them:\n",
-      paste0("  ", result_files[stale], " (", format(written[stale], "%Y-%m-%d %H:%M"), ")", collapse = "\n")
-    )
-  }
-  rows <- dplyr::bind_rows(c(
-    lapply(contrast_dirs, .score_rows_from_dir),
-    lapply(row_files, utils::read.delim, stringsAsFactors = FALSE)
-  ))
+  rows <- dplyr::bind_rows(c(list(scores), lapply(row_files, read_table, "tool_version")))
   rows$prolfqua_version <- prolfqua_version
   rows$date <- date
   rows$value <- signif(rows$value, 6)
@@ -107,7 +77,7 @@
   utils::read.delim(
     path,
     stringsAsFactors = FALSE,
-    colClasses = c(prolfqua_version = "character", date = "character", tool_version = "character")
+    colClasses = c(prolfqua_version = "character", date = "character", tool_version = "character", level = "character")
   )
 }
 

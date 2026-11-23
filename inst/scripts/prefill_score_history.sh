@@ -8,6 +8,10 @@
 # benchmark vignettes of that time are rendered, the core prolfqua steps are timed with today's
 # time_prolfqua_steps.R, and the results are appended with that version and its commit date.
 #
+# Record of a run: it called inst/scripts/update_score_history.R, timing_input.R and time_prolfqua_steps.R as of
+# commit ae5316f (the last two now live in workflow/scripts, the first was replaced by the pipeline's score_history
+# rule); inst/scripts/migrate_score_history.R then relabelled its rows to the pipeline's names.
+#
 # Run from the prolfquabenchmark root, next to ../prolfqua, ../prolfquapp and ../prolfquatakeoutmissing:
 #   inst/scripts/prefill_score_history.sh render <work_dir>    # install and render; the machine may be busy
 #   inst/scripts/prefill_score_history.sh collect <work_dir>   # time the steps and append; needs a quiet machine

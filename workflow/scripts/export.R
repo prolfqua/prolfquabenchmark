@@ -1,0 +1,49 @@
+# Exports the current benchmark for the display vignettes (vignettes/Benchmark_results.Rmd): scores, curves, a
+# methods table (tool version, level, input, fit time) and a datasets table, as TSV files in <out_dir>.
+#   Rscript workflow/scripts/export.R <config> <out_dir>
+source("workflow/scripts/common.R")
+args <- script_args(c("config", "out_dir"))
+config <- yaml::read_yaml(args$config)
+
+jobs <- do.call(
+  rbind,
+  lapply(names(config$methods), function(method) {
+    data.frame(dataset = unlist(config$methods[[method]]$datasets), method = method)
+  })
+)
+job_file <- function(dir, extension) file.path("results", dir, jobs$dataset, paste0(jobs$method, extension))
+read_tables <- function(paths, colClasses = NA) {
+  dplyr::bind_rows(lapply(paths, utils::read.delim, stringsAsFactors = FALSE, colClasses = colClasses))
+}
+write_tsv <- function(data, name) {
+  utils::write.table(data, file.path(args$out_dir, name), sep = "\t", row.names = FALSE, quote = FALSE)
+}
+
+write_tsv(read_tables(job_file("scores", ".tsv"), c(tool_version = "character")), "benchmark_scores.tsv")
+write_tsv(read_tables(job_file("curves", ".tsv")), "benchmark_curves.tsv")
+
+methods <- dplyr::bind_rows(lapply(seq_len(nrow(jobs)), function(i) {
+  metadata <- yaml::read_yaml(file.path("results/contrasts", jobs$dataset[i], jobs$method[i], "metadata.yaml"))
+  fit <- utils::read.delim(file.path("results/benchmarks", jobs$dataset[i], paste0(jobs$method[i], ".tsv")))
+  data.frame(
+    dataset = jobs$dataset[i],
+    method = jobs$method[i],
+    tool = config$methods[[jobs$method[i]]]$tool,
+    tool_version = metadata$software_version,
+    level = metadata$level,
+    input = metadata$input,
+    description = metadata$method_description,
+    fit_seconds = round(fit$s, 1),
+    fit_max_rss_mb = round(fit$max_rss)
+  )
+}))
+write_tsv(methods, "benchmark_methods.tsv")
+
+write_tsv(
+  data.frame(
+    dataset = names(config$datasets),
+    input_file = vapply(config$datasets, function(d) d$input_file, ""),
+    description = vapply(config$datasets, function(d) d$description, "")
+  ),
+  "benchmark_datasets.tsv"
+)

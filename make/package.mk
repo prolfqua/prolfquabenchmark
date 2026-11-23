@@ -1,24 +1,30 @@
 INSTALL_BUILD_TARGET = build-install
 
-.PHONY: build-install score-history
+.PHONY: build-install benchmark benchmark-dry score-history
 
 build-install: document
 	Rscript -e "devtools::build(vignettes = FALSE)"
 
-SCORE_VIGNETTES = Benchmark_prolfqua Benchmark_MSStats Benchmark_proDA Benchmark_msqrob2 Benchmark_hurdle Benchmark_ropeca Benchmark_null_split
+# The benchmark pipeline (workflow/Snakefile, config/config.yaml) uses the installed packages: run `make install`
+# first. Python dependencies (snakemake) come from the uv environment of pyproject.toml.
+SNAKEMAKE = uv run snakemake -s workflow/Snakefile --configfile config/config.yaml
+J ?= 4
+
+benchmark:
+	$(SNAKEMAKE) -j $(J)
+
+benchmark-dry:
+	$(SNAKEMAKE) -n
 
 score-history:
-	touch inst/Benchresults/.score_run
-	for v in $(SCORE_VIGNETTES); do $(MAKE) vignette V=$$v || exit 1; done
-	Rscript inst/scripts/timing_input.R inst/Benchresults/timing_input.rds
-	Rscript inst/scripts/time_prolfqua_steps.R inst/Benchresults/timing_input.rds inst/Benchresults/timing
-	Rscript inst/scripts/update_score_history.R $(if $(REPLACE),--replace)
+	$(SNAKEMAKE) -j $(J) score_history $(if $(REPLACE),--forcerun score_history --config replace=true)
 
 help-package:
 	@echo ""
 	@echo "Package-specific:"
-	@echo "  make install builds without the long-running benchmark vignettes"
-	@echo "  make score-history          - render the benchmark vignettes (~18 min), time the core prolfqua steps"
-	@echo "                                and append scores and timings for the installed prolfqua to"
-	@echo "                                inst/extdata/score_history.tsv"
+	@echo "  make install builds without vignettes"
+	@echo "  make benchmark [J=4]         - run the benchmark pipeline and export inst/extdata/benchmark_*.tsv"
+	@echo "  make benchmark-dry           - list the jobs the pipeline would run"
+	@echo "  make score-history           - append scores and step timings of the installed prolfqua to"
+	@echo "                                 inst/extdata/score_history.tsv"
 	@echo "  make score-history REPLACE=1 - same, replacing the rows of a version already in the history"

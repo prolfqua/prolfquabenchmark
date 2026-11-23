@@ -11,15 +11,25 @@ itself.
 
 ## Purpose
 
-Benchmarking vignettes comparing MSstats, proDA, msqrob2, and prolfqua using IonStar and CPTAC datasets.
+Benchmark of the prolfqua models against MSstats, proDA and msqrob2 on the IonStar and CPTAC spike-in datasets. A
+Snakemake pipeline (`workflow/Snakefile`, `config/config.yaml`, scripts in `workflow/scripts`) runs the benchmark;
+the vignettes `Benchmark_results` and `Score_history` only read the tables it exports to `inst/extdata`.
 
 ## Build & Test
 
 ```bash
-make check-fast    # R CMD check without vignettes (quick)
-make check         # Full R CMD check including vignettes (~15 min)
-make vignette V=BenchmarkingIonstarData  # Build a single vignette
+make check-fast          # R CMD check without vignettes (quick)
+make install             # the pipeline loads the installed prolfquabenchmark
+make benchmark J=4       # run the pipeline, export inst/extdata/benchmark_*.tsv
+make benchmark-dry       # list the jobs
+make score-history       # append scores and step timings of the installed prolfqua (REPLACE=1 to rerun a version)
+make vignette V=Benchmark_results
 ```
+
+- Add a method: an entry under `methods` in `config/config.yaml`; a prolfqua facade needs no new script
+- Add a dataset: an entry under `datasets` and a `workflow/scripts/prepare_<dataset>.R` writing `proteins.rds` (and `peptides.rds` for peptide input)
+- One name per dataset and method, used in the results, the exported tables and the score history; never a second label for the same input
+- Python dependencies (snakemake) in the uv environment (`pyproject.toml`, `uv.lock`); R packages are the installed ones, declared in `DESCRIPTION`
 
 ## Dependency Management
 
@@ -33,6 +43,6 @@ Use the normal user / system R libraries for this workspace; `renv` autoload is 
 
 ## Key Notes
 
-- Vignettes are the main content — there is minimal R code outside of them
+- The analyses live in `workflow/scripts`; vignettes contain no analysis and render without data downloads
 - prolfqua is on the `main` branch (specified in Remotes)
 - The old `AnalysisTableAnnotation` class was merged into `AnalysisConfiguration` in prolfqua

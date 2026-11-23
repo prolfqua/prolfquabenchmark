@@ -7,7 +7,7 @@
 #   contrasts_lm  Contrasts + ContrastsModerated on that model
 #   facade_<m>    build_contrast_analysis() for lm, limma, lm_impute and rlm (prolfqua >= 1.6; 1.4 has no facades)
 # Runs with prolfqua 1.4.0 and later; only the setup differs before 1.6 (AnalysisTableAnnotation configuration).
-#   Rscript inst/scripts/time_prolfqua_steps.R <input.rds> <out_dir>
+#   Rscript workflow/scripts/time_prolfqua_steps.R <input.rds> <out_dir>
 # <input.rds> is written by timing_input.R; the rows go to <out_dir>/history_rows.tsv.
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -116,7 +116,7 @@ if (has_facades) {
 }
 
 rows <- data.frame(
-  dataset = "IonStar_MQ",
+  dataset = "IonStar_MaxQuant",
   method = names(timings),
   tool_version = paste0("R ", getRversion(), " ", R.version$platform),
   contrast = "all",

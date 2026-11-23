@@ -20,23 +20,21 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width = 9, fig.height = 6)
 ```
 
-`make score-history` renders the benchmark vignettes (`Benchmark_prolfqua`, `Benchmark_MSStats`, `Benchmark_proDA`, `Benchmark_msqrob2`, `Benchmark_hurdle`, `Benchmark_ropeca`, `Benchmark_null_split`) with the installed prolfqua and appends their scores to `inst/extdata/score_history.tsv`, one block of rows per prolfqua release. This vignette reads only that table.
+`make score-history` runs the benchmark pipeline (`workflow/Snakefile`) with the installed prolfqua and appends its scores and step timings to `inst/extdata/score_history.tsv`, one block of rows per prolfqua release. This vignette reads only that table; the current results with ROC curves are in the vignette `Benchmark_results`.
 
-- Scores: AUC, pAUC_10, pAUC_20, AP, pAP_50, pAP_80 on a 0–100 scale, computed with `benchmark_from_file()` from the contrasts each vignette writes, per contrast and for all contrasts pooled (`all`), for the rankings by `log_fc`, `t_statistic` and `scaled.p_value`
-- Null split: share of p < 0.05 and p < 0.01, FDR hits and KS distance; median over the random splits and the split along the run blocks
+- Scores: AUC, pAUC_10, pAUC_20, AP, pAP_50, pAP_80 on a 0–100 scale, computed with `benchmark_from_file()` from the contrasts of each fit, per contrast and for all contrasts pooled (`all`), for the rankings by `log_fc`, `t_statistic` and `scaled.p_value`
 - `tool_version`: the software that fitted the model. Rows of MSstats, proDA and msqrob2 carry their own version, so a change there can come from their release instead of prolfqua's
-- Timings: median elapsed seconds of the core prolfqua steps on the IonStar MaxQuant peptides (`inst/scripts/time_prolfqua_steps.R`)
-- prolfqua 1.4.0, 1.6.2 and 1.9.0 were rerun on 2026-11-23 with the benchmark vignettes of their time (`inst/scripts/prefill_score_history.sh`); their `date` is the date of the prolfqua commit. The vignettes changed and models were added between releases, so a method's cells stay empty for the releases before its vignette ran it
+- Timings: median elapsed seconds of the core prolfqua steps on the IonStar MaxQuant peptides (`workflow/scripts/time_prolfqua_steps.R`)
+- prolfqua 1.4.0, 1.6.2 and 1.9.0 were rerun on 2026-11-23 with the benchmark vignettes of their time (`inst/scripts/prefill_score_history.sh`); their `date` is the date of the prolfqua commit, and their dataset and method names were relabelled to the pipeline's (`inst/scripts/migrate_score_history.R`). The vignettes changed and models were added between releases, so a method's cells stay empty for the releases before its vignette ran it
 
 ```{r readHistory}
 history <- utils::read.delim(
   "../inst/extdata/score_history.tsv",
   stringsAsFactors = FALSE,
-  colClasses = c(prolfqua_version = "character", date = "character", tool_version = "character")
+  colClasses = c(prolfqua_version = "character", date = "character", tool_version = "character", level = "character")
 )
 releases <- as.character(sort(unique(package_version(history$prolfqua_version))))
 history$prolfqua_version <- factor(history$prolfqua_version, levels = releases)
-null_split <- history$dataset == "IonStar_MaxQuant_null_split"
 # MSstats, proDA and msqrob2 (also msqrob2's hurdle model): only their current performance is shown
 history$external <- grepl("^(MSstats|msqrob2|proDA)", history$method)
 options(knitr.kable.NA = "")
@@ -90,14 +88,11 @@ history |>
 
 # Changes between releases
 
-Changes of the prolfqua models from the previous recorded release of the same dataset, method, contrast, score and metric: at least 0.5 points for AUC, pAUC and AP, at least 0.005 for the null-split shares and KS distance, any change for counts.
+Changes of the prolfqua models from the previous recorded release of the same dataset, method, contrast, score and metric: at least 0.5 points for AUC, pAUC and AP, any change for counts.
 `r if (length(releases) < 2) paste0("Only prolfqua ", releases, " is recorded so far; changes appear from the second release on.")`
 
 ```{r changes}
-thresholds <- c(
-  AUC = 0.5, pAUC_10 = 0.5, pAUC_20 = 0.5, AP = 0.5, pAP_50 = 0.5, pAP_80 = 0.5,
-  p_0.05 = 0.005, p_0.01 = 0.005, KS_D = 0.005
-)
+thresholds <- c(AUC = 0.5, pAUC_10 = 0.5, pAUC_20 = 0.5, AP = 0.5, pAP_50 = 0.5, pAP_80 = 0.5)
 changes <- history |>
   dplyr::filter(!external, metric != "elapsed_s") |>
   dplyr::arrange(prolfqua_version) |>
@@ -128,7 +123,7 @@ One table per dataset: one row per model and prolfqua release, columns metric / 
 
 ```{r ranking, results = "asis", fig.height = 4}
 ranking <- history |>
-  dplyr::filter(!null_split, contrast == "all", metric %in% c("pAUC_10", "AUC")) |>
+  dplyr::filter(contrast == "all", metric %in% c("pAUC_10", "AUC")) |>
   dplyr::group_by(dataset, method) |>
   dplyr::filter(!external | as.integer(prolfqua_version) == max(as.integer(prolfqua_version))) |>
   dplyr::ungroup() |>
@@ -142,7 +137,7 @@ for (dataset_name in sort(unique(ranking$dataset))) {
   scores <- dplyr::filter(ranking, dataset == dataset_name)
   scores |>
     tidyr::unite("column", metric, score, sep = " / ") |>
-    dplyr::select(external, model, release = prolfqua_version, column, value) |>
+    dplyr::select(external, model, level, release = prolfqua_version, column, value) |>
     tidyr::pivot_wider(names_from = "column", values_from = "value", names_sort = TRUE) |>
     dplyr::arrange(external, model, release) |>
     dplyr::select(-external) |>
@@ -151,19 +146,6 @@ for (dataset_name in sort(unique(ranking$dataset))) {
   if (nrow(prolfqua_scores) > 0) {
     print(release_plot(prolfqua_scores, "pAUC_10, all contrasts") + ggplot2::facet_wrap(~score))
   }
-}
-```
-
-# Null-split calibration
-
-Expected under the null: share of p < 0.05 near 0.05, KS distance near 0. Columns: normalization / model / split (median over the random splits, or the split along the run blocks).
-
-```{r nullSplit, results = "asis"}
-for (metric_name in c("p_0.05", "KS_D")) {
-  history |>
-    dplyr::filter(null_split, metric == metric_name) |>
-    by_release(c("method", "contrast")) |>
-    wide_table(caption = paste0("Null split: ", metric_name, " by release."), digits = 3)
 }
 ```
 

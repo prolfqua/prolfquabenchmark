@@ -19,3 +19,11 @@
 ^AGENTS\.md$
 ^docs$
 ^vignettes/\.build\.timestamp$
+^workflow$
+^config$
+^results$
+^logs$
+^\.snakemake$
+^\.venv$
+^pyproject\.toml$
+^uv\.lock$

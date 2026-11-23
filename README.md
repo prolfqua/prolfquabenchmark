@@ -2,36 +2,34 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18775961.svg)](https://doi.org/10.5281/zenodo.18775961)
 
-Benchmarking vignettes comparing differential expression analysis methods — **prolfqua**, **MSstats**, **proDA**, **msqrob2**, **limma**, and **DEqMS** — using the IonStar and CPTAC gold-standard datasets.
+Benchmark of differential expression methods for label-free proteomics — the **prolfqua** models and **MSstats**, **proDA** and **msqrob2** — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.4.0.
 
-Full documentation and rendered vignettes: **https://prolfqua.github.io/prolfquabenchmark/**
+Rendered results: **https://prolfqua.github.io/prolfquabenchmark/**
 
-## Vignettes
+- [Benchmark results](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_results.html): current scores, ROC and FDP-vs-FDR curves per dataset and method
+- [Benchmark scores across prolfqua releases](https://prolfqua.github.io/prolfquabenchmark/articles/Score_history.html): AUC, pAUC and step timings per release
 
-| Dataset | Vignette |
-|---------|----------|
-| IonStar / MaxQuant | [Benchmarking normalization, aggregation and models](https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html) |
-| IonStar / MaxQuant | [MSstats](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html) |
-| IonStar / MaxQuant | [proDA (LFQ intensities)](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_proDA_fromMQlfq.html) |
-| IonStar / MaxQuant | [proDA (peptides)](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html) |
-| IonStar / MaxQuant | [msqrob2](https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkMSqRob2.html) |
-| IonStar / MaxQuant | [Robust linear model](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_rlm.html) |
-| IonStar / MaxQuant | [Two-factor model](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_Model_IonStar_With2Factors.html) |
-| IonStar / FragPipe | [combined_protein.tsv](https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkFragPipeProteinIonStar.html) |
-| IonStar / FragPipe | [MSstats.tsv](https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkFragPipeMSStats.html) |
-| CPTAC / MaxQuant | [peptide.txt](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_cptac.html) |
+## The benchmark pipeline
+
+A Snakemake pipeline in this repository runs the benchmark; the vignettes only show its results.
+
+- `config/config.yaml`: the datasets (input file, preprocessing, contrasts, ground truth) and the methods (tool, input, level, datasets)
+- `workflow/Snakefile`, `workflow/scripts/`: prepare each dataset once, fit every method, score, export to `inst/extdata`
+- Uses the installed R packages (prolfqua, prolfquapp, prolfquadata and the Suggests of `DESCRIPTION`); Snakemake comes from the uv environment of `pyproject.toml`
+
+```bash
+make install            # the pipeline loads the installed prolfquabenchmark
+make benchmark J=4      # run the pipeline, export inst/extdata/benchmark_*.tsv
+make benchmark-dry      # list the jobs
+make score-history      # append the scores and step timings of the installed prolfqua to the history
+```
+
+A method is added in `config/config.yaml` (a prolfqua facade needs no new code); a dataset needs a `prepare_<dataset>.R` script in `workflow/scripts`.
 
 The `inst/MyArticle/` directory contains the source for the prolfqua manuscript (`paper.Rmd`) and its supplement (`prolfqua_supplement.Rmd`), buildable via `make` from that directory.
 
 ## Installation
 
 ```r
-remotes::install_github("wolski/prolfquabenchmark", dependencies = TRUE)
-```
-
-## Building vignettes
-
-```bash
-make vignette V=BenchmarkingIonstarData   # single vignette
-make check                                 # all vignettes + R CMD check
+remotes::install_github("prolfqua/prolfquabenchmark", dependencies = TRUE)
 ```

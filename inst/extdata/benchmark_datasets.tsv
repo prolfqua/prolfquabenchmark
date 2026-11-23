@@ -1,0 +1,5 @@
+dataset	input_file	description
+IonStar_MaxQuant	MAXQuant_IonStar2018_PXD003881.zip/peptides.txt	IonStar, MaxQuant peptides.txt; log2, robust scaling on the human proteins, median polish to proteins
+IonStar_FragPipe_MSstats	MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/MSstats.csv	IonStar, FragPipe MSstats.csv; precursors summed to peptides, log2, robust scaling on the human proteins, median polish to proteins
+IonStar_FragPipe_protein	MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/combined_protein.tsv	IonStar, FragPipe combined_protein.tsv (protein level); razor intensities, log2, robust scaling on the human proteins
+CPTAC_MaxQuant	msdata::quant() peptides.txt	CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor msdata); vsn, median polish to proteins
