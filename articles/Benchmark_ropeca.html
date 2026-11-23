@@ -75,6 +75,9 @@
       <a href="../articles/Benchmark_ropeca.html">Benchmarking ROPECA p-values: ropeca_nested and ropecaV2_nested</a>
     </li>
     <li>
+      <a href="../articles/Score_history.html">Benchmark scores across prolfqua releases</a>
+    </li>
+    <li>
       <a href="../articles/SqueezeVar_comparison.html">Comparing squeezeVar: limma, msqrob2, and prolfqua</a>
     </li>
   </ul>
@@ -529,7 +532,7 @@ share is close to that of <code>limma</code> on the same proteins.</p>
 <code class="sourceCode R"><span><span class="va">bench</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">method</span>, <span class="va">description</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/write_contrast_results.html">write_contrast_results</a></span><span class="op">(</span></span>
 <span>    <span class="va">data</span>,</span>
-<span>    path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"ropeca_IonStar_MQ_"</span>, <span class="va">method</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"../inst/Benchresults"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"ropeca_IonStar_MQ_"</span>, <span class="va">method</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      dataset <span class="op">=</span> <span class="st">"IonStar_MaxQuant"</span>,</span>
 <span>      method <span class="op">=</span> <span class="va">method</span>,</span>

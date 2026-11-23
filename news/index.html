@@ -59,6 +59,9 @@
       <a href="../articles/Benchmark_ropeca.html">Benchmarking ROPECA p-values: ropeca_nested and ropecaV2_nested</a>
     </li>
     <li>
+      <a href="../articles/Score_history.html">Benchmark scores across prolfqua releases</a>
+    </li>
+    <li>
       <a href="../articles/SqueezeVar_comparison.html">Comparing squeezeVar: limma, msqrob2, and prolfqua</a>
     </li>
   </ul></li>
@@ -86,7 +89,9 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.4" id="prolfquabenchmark-034">prolfquabenchmark 0.3.4<a class="anchor" aria-label="anchor" href="#prolfquabenchmark-034"></a></h2>
-<ul><li><p>Uses no prolfqua function that prolfqua 1.9.5 deprecates: the msqrob2 and hurdle vignettes and <code>tolong()</code> convert result tables with <code>tibble::as_tibble(rownames = )</code> instead of <code><a href="https://fgcz.github.io/prolfqua/reference/matrix_to_tibble.html" class="external-link">prolfqua::matrix_to_tibble()</a></code>, and the paper supplement applies ROPECA with <code>ContrastsROPECA</code> and shows contrast weights with <code>Contrasts$get_linfct()</code>.</p></li>
+<ul><li><p>New vignette <code>Score_history</code> with the benchmark scores and step timings of each recorded prolfqua release: pAUC_10 and AUC of each prolfqua model, one row per release, the changes between consecutive releases above set thresholds (0.5 points for AUC, pAUC and AP; 0.005 for null-split shares; any change in counts), the latest scores of MSstats, proDA and msqrob2, the null-split calibration, and the elapsed time of transform, aggregate, lm fit, contrasts and the lm, limma, lm_impute and rlm facades on the IonStar MaxQuant peptides. <code>make score-history</code> renders the benchmark vignettes with the installed prolfqua, times the steps and appends both to <code>inst/extdata/score_history.tsv</code>; <code>REPLACE=1</code> reruns a version already recorded. The history starts with prolfqua 1.4.0, 1.6.2 and 1.9.0, rerun with the benchmark vignettes of their time (<code>inst/scripts/prefill_score_history.sh</code>).</p></li>
+<li><p><code>Benchmark_hurdle</code> and <code>Benchmark_ropeca</code> keep their contrast results in <code>inst/Benchresults</code> like the other benchmark vignettes, and <code>Benchmark_null_split</code> keeps its calibration summary there. <code>Benchmark_hurdle</code> records msqrob2’s version, not prolfqua’s, for the msqrob2 hurdle results.</p></li>
+<li><p>Uses no prolfqua function that prolfqua 1.9.5 deprecates: the msqrob2 and hurdle vignettes and <code>tolong()</code> convert result tables with <code>tibble::as_tibble(rownames = )</code> instead of <code><a href="https://fgcz.github.io/prolfqua/reference/matrix_to_tibble.html" class="external-link">prolfqua::matrix_to_tibble()</a></code>, and the paper supplement applies ROPECA with <code>ContrastsROPECA</code> and shows contrast weights with <code>Contrasts$get_linfct()</code>.</p></li>
 <li><p>The vignettes and the squeezeVar benchmark script no longer set an isotope label, which label-free prolfqua 1.9.5 removed.</p></li>
 <li><p>Requires prolfqua &gt;= 1.9.5; the vignettes call its renamed functions and simulator arguments (<code><a href="https://fgcz.github.io/prolfqua/reference/lfqdata_to_summarized_experiment.html" class="external-link">lfqdata_to_summarized_experiment()</a></code>, <code>n_proteins</code>).</p></li>
 <li><p>New vignette <code>Benchmark_null_split</code>: splits the runs of each IonStar dilution at random into two pseudo-groups and tests them against each other with <code>lm</code>, <code>limma</code> and <code>lm_impute</code> after no normalization, <code>robscale()</code> or human-subset <code>robscale_subset()</code>. It reports the share of p &lt; 0.05 and p &lt; 0.01, FDR hits, KS distance and p-value histograms over 20 splits, plus a split along the two run blocks. Both normalizations are calibrated; without normalization single splits are far off; the run-block split gives about 100 FDR hits per 1000 proteins.</p></li>
