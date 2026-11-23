@@ -108,7 +108,7 @@ prolfqua</h1>
                         <h4 data-toc-skip class="author">Witold E
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-11-22</h4>
+            <h4 data-toc-skip class="date">2026-11-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/SqueezeVar_comparison.Rmd" class="external-link"><code>vignettes/SqueezeVar_comparison.Rmd</code></a></small>
       <div class="hidden name"><code>SqueezeVar_comparison.Rmd</code></div>
@@ -468,8 +468,8 @@ Inf; the min_df patch and modern limma both recover a finite value.
 <div class="section level2">
 <h2 id="where-prolfqua-feeds-the-squeeze">Where prolfqua feeds the squeeze<a class="anchor" aria-label="anchor" href="#where-prolfqua-feeds-the-squeeze"></a>
 </h2>
-<p>There is a single call site in <code>prolfqua</code>:
-<code><a href="https://fgcz.github.io/prolfqua/reference/moderated_p_limma.html" class="external-link">moderated_p_limma()</a></code> (in <code>tidyMS_moderation.R</code>),
+<p>There is a single call site in <code>prolfqua</code>: the internal
+<code>.moderated_p_limma()</code> (in <code>tidyMS_moderation.R</code>),
 which squeezes the per-contrast residual variances. It now calls
 <code><a href="https://rdrr.io/pkg/limma/man/squeezeVar.html" class="external-link">limma::squeezeVar()</a></code> (the migration this vignette
 justifies); it previously called the vendored
@@ -487,7 +487,7 @@ justifies); it previously called the vendored
 <p>The fallback on the second line is itself evidence:
 <code>prolfqua</code> already has to catch the
 <code>df.prior = Inf</code> <strong>collapse</strong> on real data.
-<code><a href="https://fgcz.github.io/prolfqua/reference/moderated_p_limma.html" class="external-link">moderated_p_limma()</a></code> is called by
+<code>.moderated_p_limma()</code> is called by
 <code>ContrastsModerated</code> (the moderated-Wald path wrapping
 <code>lm</code>, <code>rlm</code>, <code>rfit</code>, the
 <code>lm_impute</code> / <code>rfit_impute</code> facades, and
@@ -563,8 +563,8 @@ Satterthwaite df), and the imputation facades (low / borrowed df) —
 precisely the regime where classic limma collapses. The
 <code>min_df</code> filter is what keeps those paths from falling back
 to unmoderated pooled variances (with a further explicit
-<code>Inf</code>-collapse guard in <code><a href="https://fgcz.github.io/prolfqua/reference/moderated_p_limma.html" class="external-link">moderated_p_limma()</a></code>). It
-only leaves <code>lm</code> unaffected.</li>
+<code>Inf</code>-collapse guard in <code>.moderated_p_limma()</code>).
+It only leaves <code>lm</code> unaffected.</li>
 </ul>
 </div>
 <div class="section level2">
