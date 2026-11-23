@@ -49,37 +49,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/Benchmark_hurdle.html">Benchmarking hurdle contrasts on IonStar</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_Model_IonStar_With2Factors.html">Modelling with Interactions</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_msqrob2.html">Benchmarking msqrob2 across multiple datasets</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_MSStats.html">Benchmarking MSstats DEA using the IonStar Dataset</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_null_split.html">Null-split calibration of normalization and model</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_pipeline_demo.html">Pipeline Demo: Fit → Write → Score → Aggregate</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_proDA.html">Benchmarking proDA across multiple datasets</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_prolfqua.html">Benchmarking prolfqua across multiple datasets</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_ropeca.html">Benchmarking ROPECA p-values: ropeca_nested and ropecaV2_nested</a>
+      <a href="articles/Benchmark_results.html">Benchmark results</a>
     </li>
     <li>
       <a href="articles/Score_history.html">Benchmark scores across prolfqua releases</a>
-    </li>
-    <li>
-      <a href="articles/SqueezeVar_comparison.html">Comparing squeezeVar: limma, msqrob2, and prolfqua</a>
     </li>
   </ul>
 </li>
@@ -110,76 +83,39 @@
 <div class="page-header"><h1 id="prolfquabenchmark">prolfquabenchmark<a class="anchor" aria-label="anchor" href="#prolfquabenchmark"></a>
 </h1></div>
 <p><a href="https://doi.org/10.5281/zenodo.18775961" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.18775961.svg" alt="DOI"></a></p>
-<p>Benchmarking vignettes comparing differential expression analysis methods — <strong>prolfqua</strong>, <strong>MSstats</strong>, <strong>proDA</strong>, <strong>msqrob2</strong>, <strong>limma</strong>, and <strong>DEqMS</strong> — using the IonStar and CPTAC gold-standard datasets.</p>
-<p>Full documentation and rendered vignettes: <strong><a href="https://prolfqua.github.io/prolfquabenchmark/" class="external-link uri">https://prolfqua.github.io/prolfquabenchmark/</a></strong></p>
+<p>Benchmark of differential expression methods for label-free proteomics — the <strong>prolfqua</strong> models and <strong>MSstats</strong>, <strong>proDA</strong> and <strong>msqrob2</strong> — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.4.0.</p>
+<p>Rendered results: <strong><a href="https://prolfqua.github.io/prolfquabenchmark/" class="external-link uri">https://prolfqua.github.io/prolfquabenchmark/</a></strong></p>
+<ul>
+<li>
+<a href="https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_results.html" class="external-link">Benchmark results</a>: current scores, ROC and FDP-vs-FDR curves per dataset and method</li>
+<li>
+<a href="https://prolfqua.github.io/prolfquabenchmark/articles/Score_history.html" class="external-link">Benchmark scores across prolfqua releases</a>: AUC, pAUC and step timings per release</li>
+</ul>
 <div class="section level2">
-<h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
+<h2 id="the-benchmark-pipeline">The benchmark pipeline<a class="anchor" aria-label="anchor" href="#the-benchmark-pipeline"></a>
 </h2>
-<table class="table">
-<colgroup>
-<col width="47%">
-<col width="52%">
-</colgroup>
-<thead><tr>
-<th>Dataset</th>
-<th>Vignette</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>IonStar / MaxQuant</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkingIonstarData.html" class="external-link">Benchmarking normalization, aggregation and models</a></td>
-</tr>
-<tr>
-<td>IonStar / MaxQuant</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_MSStats.html" class="external-link">MSstats</a></td>
-</tr>
-<tr>
-<td>IonStar / MaxQuant</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_proDA_fromMQlfq.html" class="external-link">proDA (LFQ intensities)</a></td>
-</tr>
-<tr>
-<td>IonStar / MaxQuant</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_proDA_medpolish.html" class="external-link">proDA (peptides)</a></td>
-</tr>
-<tr>
-<td>IonStar / MaxQuant</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkMSqRob2.html" class="external-link">msqrob2</a></td>
-</tr>
-<tr>
-<td>IonStar / MaxQuant</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_rlm.html" class="external-link">Robust linear model</a></td>
-</tr>
-<tr>
-<td>IonStar / MaxQuant</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_Model_IonStar_With2Factors.html" class="external-link">Two-factor model</a></td>
-</tr>
-<tr>
-<td>IonStar / FragPipe</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkFragPipeProteinIonStar.html" class="external-link">combined_protein.tsv</a></td>
-</tr>
-<tr>
-<td>IonStar / FragPipe</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/BenchmarkFragPipeMSStats.html" class="external-link">MSstats.tsv</a></td>
-</tr>
-<tr>
-<td>CPTAC / MaxQuant</td>
-<td><a href="https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_cptac.html" class="external-link">peptide.txt</a></td>
-</tr>
-</tbody>
-</table>
+<p>A Snakemake pipeline in this repository runs the benchmark; the vignettes only show its results.</p>
+<ul>
+<li>
+<code>config/config.yaml</code>: the datasets (input file, preprocessing, contrasts, ground truth) and the methods (tool, input, level, datasets)</li>
+<li>
+<code>workflow/Snakefile</code>, <code>workflow/scripts/</code>: prepare each dataset once, fit every method, score, export to <code>inst/extdata</code>
+</li>
+<li>Uses the installed R packages (prolfqua, prolfquapp, prolfquadata and the Suggests of <code>DESCRIPTION</code>); Snakemake comes from the uv environment of <code>pyproject.toml</code>
+</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">make</span> install            <span class="co"># the pipeline loads the installed prolfquabenchmark</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">make</span> benchmark J=4      <span class="co"># run the pipeline, export inst/extdata/benchmark_*.tsv</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">make</span> benchmark-dry      <span class="co"># list the jobs</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">make</span> score-history      <span class="co"># append the scores and step timings of the installed prolfqua to the history</span></span></code></pre></div>
+<p>A method is added in <code>config/config.yaml</code> (a prolfqua facade needs no new code); a dataset needs a <code>prepare_&lt;dataset&gt;.R</code> script in <code>workflow/scripts</code>.</p>
 <p>The <code>inst/MyArticle/</code> directory contains the source for the prolfqua manuscript (<code>paper.Rmd</code>) and its supplement (<code>prolfqua_supplement.Rmd</code>), buildable via <code>make</code> from that directory.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"wolski/prolfquabenchmark"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="building-vignettes">Building vignettes<a class="anchor" aria-label="anchor" href="#building-vignettes"></a>
-</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">make</span> vignette V=BenchmarkingIonstarData   <span class="co"># single vignette</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">make</span> check                                 <span class="co"># all vignettes + R CMD check</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"prolfqua/prolfquabenchmark"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </div>

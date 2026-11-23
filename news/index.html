@@ -32,37 +32,10 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/Benchmark_hurdle.html">Benchmarking hurdle contrasts on IonStar</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_Model_IonStar_With2Factors.html">Modelling with Interactions</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_msqrob2.html">Benchmarking msqrob2 across multiple datasets</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_MSStats.html">Benchmarking MSstats DEA using the IonStar Dataset</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_null_split.html">Null-split calibration of normalization and model</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_pipeline_demo.html">Pipeline Demo: Fit → Write → Score → Aggregate</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_proDA.html">Benchmarking proDA across multiple datasets</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_prolfqua.html">Benchmarking prolfqua across multiple datasets</a>
-    </li>
-    <li>
-      <a href="../articles/Benchmark_ropeca.html">Benchmarking ROPECA p-values: ropeca_nested and ropecaV2_nested</a>
+      <a href="../articles/Benchmark_results.html">Benchmark results</a>
     </li>
     <li>
       <a href="../articles/Score_history.html">Benchmark scores across prolfqua releases</a>
-    </li>
-    <li>
-      <a href="../articles/SqueezeVar_comparison.html">Comparing squeezeVar: limma, msqrob2, and prolfqua</a>
     </li>
   </ul></li>
 <li>
@@ -89,11 +62,15 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.4" id="prolfquabenchmark-034">prolfquabenchmark 0.3.4<a class="anchor" aria-label="anchor" href="#prolfquabenchmark-034"></a></h2>
-<ul><li><p>New vignette <code>Score_history</code> with the benchmark scores and step timings of each recorded prolfqua release: pAUC_10 and AUC of each prolfqua model, one row per release, the changes between consecutive releases above set thresholds (0.5 points for AUC, pAUC and AP; 0.005 for null-split shares; any change in counts), the latest scores of MSstats, proDA and msqrob2, the null-split calibration, and the elapsed time of transform, aggregate, lm fit, contrasts and the lm, limma, lm_impute and rlm facades on the IonStar MaxQuant peptides. <code>make score-history</code> renders the benchmark vignettes with the installed prolfqua, times the steps and appends both to <code>inst/extdata/score_history.tsv</code>; <code>REPLACE=1</code> reruns a version already recorded. The history starts with prolfqua 1.4.0, 1.6.2 and 1.9.0, rerun with the benchmark vignettes of their time (<code>inst/scripts/prefill_score_history.sh</code>).</p></li>
-<li><p><code>Benchmark_hurdle</code> and <code>Benchmark_ropeca</code> keep their contrast results in <code>inst/Benchresults</code> like the other benchmark vignettes, and <code>Benchmark_null_split</code> keeps its calibration summary there. <code>Benchmark_hurdle</code> records msqrob2’s version, not prolfqua’s, for the msqrob2 hurdle results.</p></li>
+<ul><li><p>The benchmarks run in a Snakemake pipeline (<code>workflow/Snakefile</code>, <code>config/config.yaml</code>; <code>make benchmark</code>) instead of in the vignettes. Each dataset (IonStar MaxQuant peptides, IonStar FragPipe MSstats.csv and combined_protein.tsv, CPTAC study 6) is prepared once, every method (prolfqua facades and hurdle models, MSstats, proDA, msqrob2) is fitted and scored, and the results are exported to <code>inst/extdata</code>. Snakemake comes from a uv environment (<code>pyproject.toml</code>).</p></li>
+<li><p>New vignette <code>Benchmark_results</code>: per dataset the scores of every method, ROC curves and the false discovery proportion against the nominal FDR. The analysis vignettes <code>Benchmark_prolfqua</code>, <code>Benchmark_MSStats</code>, <code>Benchmark_proDA</code>, <code>Benchmark_msqrob2</code>, <code>Benchmark_hurdle</code> and <code>Benchmark_ropeca</code> and the studies <code>Benchmark_null_split</code>, <code>Benchmark_pipeline_demo</code>, <code>Benchmark_Model_IonStar_With2Factors</code> and <code>SqueezeVar_comparison</code> are removed.</p></li>
+<li><p>New vignette <code>Score_history</code> with the scores and step timings of each recorded prolfqua release: one table per dataset with a row per model and release, MSstats, proDA and msqrob2 with their latest scores only, the changes between consecutive releases above 0.5 points (AUC, pAUC, AP) or in counts, and the elapsed time of transform, aggregate, lm fit, contrasts and the lm, limma, lm_impute and rlm facades. <code>make score-history</code> appends the pipeline’s scores and timings for the installed prolfqua (<code>REPLACE=1</code> reruns a recorded version). The history starts with prolfqua 1.4.0, 1.6.2 and 1.9.0, rerun with the benchmark vignettes of their time (<code>inst/scripts/prefill_score_history.sh</code>), and was relabelled to the pipeline’s dataset and method names with the model level (<code>inst/scripts/migrate_score_history.R</code>).</p></li>
+<li><p>Each dataset and method has one name: the MaxQuant results formerly under <code>IonStar_MQ</code>, <code>IonStar_MQ_LFQ</code> and <code>IonStar_MQ_medpolish</code> are <code>IonStar_MaxQuant</code> (proDA on LFQ intensities is <code>proDA_LFQ</code>), and the duplicate <code>limma</code> of the ROPECA benchmark is dropped (same model as <code>prolfqua_limma</code>).</p></li>
+<li><p>CPTAC is benchmarked again; its MaxQuant peptides come from Bioconductor <code>MsDataHub</code> (<code>cptac_a_b_peptides.txt()</code>, the file <code><a href="https://rdrr.io/pkg/msdata/man/proteomics.html" class="external-link">msdata::quant()</a></code> provided before its deprecation).</p></li>
+<li><p>proDA results are reproducible: its fit draws random numbers, so it is now seeded; two unseeded fits of the same data differed by up to 1.3 in log fold change. msqrob2 results carry each protein’s average intensity instead of one value per contrast, proDA results their average abundance, and CPTAC uses <code>_YEAST</code> as the negative pattern for every tool.</p></li>
 <li><p>Uses no prolfqua function that prolfqua 1.9.5 deprecates: the msqrob2 and hurdle vignettes and <code>tolong()</code> convert result tables with <code>tibble::as_tibble(rownames = )</code> instead of <code><a href="https://fgcz.github.io/prolfqua/reference/matrix_to_tibble.html" class="external-link">prolfqua::matrix_to_tibble()</a></code>, and the paper supplement applies ROPECA with <code>ContrastsROPECA</code> and shows contrast weights with <code>Contrasts$get_linfct()</code>.</p></li>
 <li><p>The vignettes and the squeezeVar benchmark script no longer set an isotope label, which label-free prolfqua 1.9.5 removed.</p></li>
-<li><p>Requires prolfqua &gt;= 1.9.5; the vignettes call its renamed functions and simulator arguments (<code><a href="https://fgcz.github.io/prolfqua/reference/lfqdata_to_summarized_experiment.html" class="external-link">lfqdata_to_summarized_experiment()</a></code>, <code>n_proteins</code>).</p></li>
+<li><p>Requires prolfqua &gt;= 1.9.5; the vignettes call its renamed functions and simulator arguments (<code>lfqdata_to_summarized_experiment()</code>, <code>n_proteins</code>).</p></li>
 <li><p>New vignette <code>Benchmark_null_split</code>: splits the runs of each IonStar dilution at random into two pseudo-groups and tests them against each other with <code>lm</code>, <code>limma</code> and <code>lm_impute</code> after no normalization, <code>robscale()</code> or human-subset <code>robscale_subset()</code>. It reports the share of p &lt; 0.05 and p &lt; 0.01, FDR hits, KS distance and p-value histograms over 20 splits, plus a split along the two run blocks. Both normalizations are calibrated; without normalization single splits are far off; the run-block split gives about 100 FDR hits per 1000 proteins.</p></li>
 <li><p>New vignette <code>Benchmark_ropeca</code> comparing prolfqua’s <code>ropeca_nested</code> with the new <code>ropecaV2_nested</code>, <code>lmer_nested</code> and <code>limma</code>: on simulated proteins with correlated peptides and on the unchanged human proteins of IonStar it tabulates the share of p &lt; 0.05 and p &lt; 0.01 by number of peptides, and on IonStar it scores the E. coli vs human ranking (AUC, partial AUC, FDR vs FDP). Requires prolfqua &gt;= 1.9.4.</p></li>
 <li><p><code>Benchmark_hurdle</code> drops <code>firth_nested</code>, which prolfqua 1.9.3 removed, and its hurdle variants; the msqrob2-rule variant now combines <code>lm_impute</code> with <code>binomial_firth_nested</code> (<code>hurdle_binomial_firth_df4</code>). The calibration text keeps the <code>firth_nested</code> result: the share of unchanged proteins with detection p &lt; 0.05 rose from 1.3% to 7.7% with the number of peptides.</p></li>

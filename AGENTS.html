@@ -32,37 +32,10 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="articles/Benchmark_hurdle.html">Benchmarking hurdle contrasts on IonStar</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_Model_IonStar_With2Factors.html">Modelling with Interactions</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_msqrob2.html">Benchmarking msqrob2 across multiple datasets</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_MSStats.html">Benchmarking MSstats DEA using the IonStar Dataset</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_null_split.html">Null-split calibration of normalization and model</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_pipeline_demo.html">Pipeline Demo: Fit → Write → Score → Aggregate</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_proDA.html">Benchmarking proDA across multiple datasets</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_prolfqua.html">Benchmarking prolfqua across multiple datasets</a>
-    </li>
-    <li>
-      <a href="articles/Benchmark_ropeca.html">Benchmarking ROPECA p-values: ropeca_nested and ropecaV2_nested</a>
+      <a href="articles/Benchmark_results.html">Benchmark results</a>
     </li>
     <li>
       <a href="articles/Score_history.html">Benchmark scores across prolfqua releases</a>
-    </li>
-    <li>
-      <a href="articles/SqueezeVar_comparison.html">Comparing squeezeVar: limma, msqrob2, and prolfqua</a>
     </li>
   </ul></li>
 <li>
@@ -94,14 +67,22 @@
 </div>
 <div class="section level2">
 <h2 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a></h2>
-<p>Benchmarking vignettes comparing MSstats, proDA, msqrob2, and prolfqua using IonStar and CPTAC datasets.</p>
+<p>Benchmark of the prolfqua models against MSstats, proDA and msqrob2 on the IonStar and CPTAC spike-in datasets. A Snakemake pipeline (<code>workflow/Snakefile</code>, <code>config/config.yaml</code>, scripts in <code>workflow/scripts</code>) runs the benchmark; the vignettes <code>Benchmark_results</code> and <code>Score_history</code> only read the tables it exports to <code>inst/extdata</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="build--test">Build &amp; Test<a class="anchor" aria-label="anchor" href="#build--test"></a></h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">make</span> check-fast    <span class="co"># R CMD check without vignettes (quick)</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">make</span> check         <span class="co"># Full R CMD check including vignettes (~15 min)</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">make</span> vignette V=BenchmarkingIonstarData  <span class="co"># Build a single vignette</span></span></code></pre></div>
-</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">make</span> check-fast          <span class="co"># R CMD check without vignettes (quick)</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">make</span> install             <span class="co"># the pipeline loads the installed prolfquabenchmark</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">make</span> benchmark J=4       <span class="co"># run the pipeline, export inst/extdata/benchmark_*.tsv</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">make</span> benchmark-dry       <span class="co"># list the jobs</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">make</span> score-history       <span class="co"># append scores and step timings of the installed prolfqua (REPLACE=1 to rerun a version)</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">make</span> vignette V=Benchmark_results</span></code></pre></div>
+<ul><li>Add a method: an entry under <code>methods</code> in <code>config/config.yaml</code>; a prolfqua facade needs no new script</li>
+<li>Add a dataset: an entry under <code>datasets</code> and a <code>workflow/scripts/prepare_&lt;dataset&gt;.R</code> writing <code>proteins.rds</code> (and <code>peptides.rds</code> for peptide input)</li>
+<li>One name per dataset and method, used in the results, the exported tables and the score history; never a second label for the same input</li>
+<li>Python dependencies (snakemake) in the uv environment (<code>pyproject.toml</code>, <code>uv.lock</code>); R packages are the installed ones, declared in <code>DESCRIPTION</code>
+</li>
+</ul></div>
 <div class="section level2">
 <h2 id="dependency-management">Dependency Management<a class="anchor" aria-label="anchor" href="#dependency-management"></a></h2>
 <p>DESCRIPTION is the single source of truth for all dependencies. If a package is missing, add it to <code>DESCRIPTION</code> in the appropriate field instead of relying on ad hoc local installs.</p>
@@ -115,7 +96,7 @@
 </div>
 <div class="section level2">
 <h2 id="key-notes">Key Notes<a class="anchor" aria-label="anchor" href="#key-notes"></a></h2>
-<ul><li>Vignettes are the main content — there is minimal R code outside of them</li>
+<ul><li>The analyses live in <code>workflow/scripts</code>; vignettes contain no analysis and render without data downloads</li>
 <li>prolfqua is on the <code>main</code> branch (specified in Remotes)</li>
 <li>The old <code>AnalysisTableAnnotation</code> class was merged into <code>AnalysisConfiguration</code> in prolfqua</li>
 </ul></div>

@@ -2,15 +2,6 @@ pandoc: 3.7.0.2
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
-  Benchmark_hurdle: Benchmark_hurdle.html
-  Benchmark_Model_IonStar_With2Factors: Benchmark_Model_IonStar_With2Factors.html
-  Benchmark_msqrob2: Benchmark_msqrob2.html
-  Benchmark_MSStats: Benchmark_MSStats.html
-  Benchmark_null_split: Benchmark_null_split.html
-  Benchmark_pipeline_demo: Benchmark_pipeline_demo.html
-  Benchmark_proDA: Benchmark_proDA.html
-  Benchmark_prolfqua: Benchmark_prolfqua.html
-  Benchmark_ropeca: Benchmark_ropeca.html
+  Benchmark_results: Benchmark_results.html
   Score_history: Score_history.html
-  SqueezeVar_comparison: SqueezeVar_comparison.html
-last_built: 2026-11-23T19:57Z
+last_built: 2026-11-23T21:35Z
