@@ -38,7 +38,7 @@ Suggests:
     lme4,
     lmerTest,
     MSstats,
-    msdata,
+    MsDataHub,
     msqrob2,
     pkgdown,
     plotly,

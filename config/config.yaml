@@ -43,8 +43,8 @@ datasets:
       negative: {label: HUMAN, pattern: HUMAN}
   CPTAC_MaxQuant:
     prepare: prepare_cptac_maxquant.R
-    input_file: msdata::quant() peptides.txt
-    description: "CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor msdata); vsn, median polish to proteins"
+    input_file: MsDataHub::cptac_a_b_peptides.txt()
+    description: "CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor MsDataHub); vsn, median polish to proteins"
     formula: "~ group."
     contrasts: cptac
     ground_truth:
