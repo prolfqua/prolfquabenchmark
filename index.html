@@ -83,7 +83,7 @@
 <div class="page-header"><h1 id="prolfquabenchmark">prolfquabenchmark<a class="anchor" aria-label="anchor" href="#prolfquabenchmark"></a>
 </h1></div>
 <p><a href="https://doi.org/10.5281/zenodo.18775961" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.18775961.svg" alt="DOI"></a></p>
-<p>Benchmark of differential expression methods for label-free proteomics — the <strong>prolfqua</strong> models and <strong>MSstats</strong>, <strong>proDA</strong> and <strong>msqrob2</strong> — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.6.2.</p>
+<p>Benchmark of differential expression methods for label-free proteomics — the <strong>prolfqua</strong> models and <strong>MSstats</strong>, <strong>proDA</strong> and <strong>msqrob2</strong> — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.9.0.</p>
 <p>Rendered results: <strong><a href="https://prolfqua.github.io/prolfquabenchmark/" class="external-link uri">https://prolfqua.github.io/prolfquabenchmark/</a></strong></p>
 <ul>
 <li>
@@ -107,7 +107,8 @@
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">make</span> install            <span class="co"># the pipeline loads the installed prolfquabenchmark</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">make</span> benchmark J=4      <span class="co"># run the pipeline, export inst/extdata/benchmark_*.tsv</span></span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">make</span> benchmark-dry      <span class="co"># list the jobs</span></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">make</span> score-history      <span class="co"># append the scores and step timings of the installed prolfqua to the history</span></span></code></pre></div>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">make</span> score-history      <span class="co"># append the scores and step timings of the installed prolfqua to the history</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">make</span> score-history-release V=1.9.0 PROLFQUA=f4dfb7f3 PROLFQUAPP=18914707  <span class="co"># the same for an earlier release</span></span></code></pre></div>
 <p>A method is added in <code>config/config.yaml</code> (a prolfqua facade needs no new code); a dataset needs a <code>prepare_&lt;dataset&gt;.R</code> script in <code>workflow/scripts</code>.</p>
 <p>The <code>inst/MyArticle/</code> directory contains the source for the prolfqua manuscript (<code>paper.Rmd</code>) and its supplement (<code>prolfqua_supplement.Rmd</code>), buildable via <code>make</code> from that directory.</p>
 </div>
