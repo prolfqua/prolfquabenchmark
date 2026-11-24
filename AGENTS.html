@@ -80,7 +80,7 @@
 <ul><li>Add a method: an entry under <code>methods</code> in <code>config/config.yaml</code> with the <code>input</code> it needs; it runs on every dataset whose <code>inputs</code> contain all of them; a prolfqua facade needs no new script; prolfqua methods are named <code>prolfqua_&lt;facade&gt;</code>
 </li>
 <li>External tools take only their own input (feature table, peptides, the search software’s <code>protein_table</code>), never the <code>proteins</code> prolfqua aggregated</li>
-<li>Add a dataset: an entry under <code>datasets</code> with its <code>inputs</code> and a <code>workflow/scripts/prepare_&lt;dataset&gt;.R</code> writing <code>proteins.rds</code> (and <code>peptides.rds</code> if it provides peptides, <code>protein_table.rds</code> if the search software reports proteins)</li>
+<li>Add a dataset: one input file; an entry under <code>datasets</code> with its <code>inputs</code> and a <code>workflow/scripts/prepare_&lt;dataset&gt;.R</code> writing <code>proteins.rds</code> (and <code>peptides.rds</code> if it provides peptides, <code>protein_table.rds</code> if the search software reports proteins)</li>
 <li>One name per dataset and method, used in the results, the exported tables and the score history; never a second label for the same input</li>
 <li>Python dependencies (snakemake) in the uv environment (<code>pyproject.toml</code>, <code>uv.lock</code>); R packages are the installed ones, declared in <code>DESCRIPTION</code>
 </li>
