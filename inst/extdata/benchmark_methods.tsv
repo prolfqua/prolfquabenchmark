@@ -1,50 +1,52 @@
 dataset	method	tool	tool_version	level	input	description	fit_seconds	fit_max_rss_mb
-IonStar_MaxQuant	lm	prolfqua	prolfqua 1.9.5	protein	proteins	lm with variance moderation; no contrast where a group has no observations	5.2	NA
-IonStar_FragPipe_MSstats	lm	prolfqua	prolfqua 1.9.5	protein	proteins	lm with variance moderation; no contrast where a group has no observations	5.2	NA
-IonStar_FragPipe_protein	lm	prolfqua	prolfqua 1.9.5	protein	proteins	lm with variance moderation; no contrast where a group has no observations	6	NA
-CPTAC_MaxQuant	lm	prolfqua	prolfqua 1.9.5	protein	proteins	lm with variance moderation; no contrast where a group has no observations	2	NA
+IonStar_MaxQuant	prolfqua_lm	prolfqua	prolfqua 1.9.5	protein	proteins	lm with variance moderation; no contrast where a group has no observations	5.7	NA
+IonStar_FragPipe_MSstats	prolfqua_lm	prolfqua	prolfqua 1.9.5	protein	proteins	lm with variance moderation; no contrast where a group has no observations	4.9	NA
+IonStar_FragPipe_protein	prolfqua_lm	prolfqua	prolfqua 1.9.5	protein	proteins	lm with variance moderation; no contrast where a group has no observations	6.8	NA
+CPTAC_MaxQuant	prolfqua_lm	prolfqua	prolfqua 1.9.5	protein	proteins	lm with variance moderation; no contrast where a group has no observations	2.1	NA
+IonStar_MaxQuant	prolfqua_lm_impute	prolfqua	prolfqua 1.9.5	protein	proteins	lm with imputed group means where a group has no observations	5.6	NA
+IonStar_FragPipe_MSstats	prolfqua_lm_impute	prolfqua	prolfqua 1.9.5	protein	proteins	lm with imputed group means where a group has no observations	5	NA
+IonStar_FragPipe_protein	prolfqua_lm_impute	prolfqua	prolfqua 1.9.5	protein	proteins	lm with imputed group means where a group has no observations	5.7	NA
+CPTAC_MaxQuant	prolfqua_lm_impute	prolfqua	prolfqua 1.9.5	protein	proteins	lm with imputed group means where a group has no observations	2.3	NA
 IonStar_MaxQuant	prolfqua_limma	prolfqua	prolfqua 1.9.5	protein	proteins	limma empirical Bayes	1.1	NA
 IonStar_FragPipe_MSstats	prolfqua_limma	prolfqua	prolfqua 1.9.5	protein	proteins	limma empirical Bayes	1	NA
-IonStar_FragPipe_protein	prolfqua_limma	prolfqua	prolfqua 1.9.5	protein	proteins	limma empirical Bayes	1	NA
+IonStar_FragPipe_protein	prolfqua_limma	prolfqua	prolfqua 1.9.5	protein	proteins	limma empirical Bayes	1.1	NA
 CPTAC_MaxQuant	prolfqua_limma	prolfqua	prolfqua 1.9.5	protein	proteins	limma empirical Bayes	0.8	NA
-IonStar_MaxQuant	lm_impute	prolfqua	prolfqua 1.9.5	protein	proteins	lm with imputed group means where a group has no observations (lm_impute)	5.3	NA
-IonStar_FragPipe_MSstats	lm_impute	prolfqua	prolfqua 1.9.5	protein	proteins	lm with imputed group means where a group has no observations (lm_impute)	5	NA
-IonStar_FragPipe_protein	lm_impute	prolfqua	prolfqua 1.9.5	protein	proteins	lm with imputed group means where a group has no observations (lm_impute)	5.2	NA
-CPTAC_MaxQuant	lm_impute	prolfqua	prolfqua 1.9.5	protein	proteins	lm with imputed group means where a group has no observations (lm_impute)	2.2	NA
-IonStar_MaxQuant	deqms	prolfqua	prolfqua 1.9.5	protein	proteins	lm with DEqMS moderation (variance prior by number of peptides)	5.5	NA
-IonStar_FragPipe_MSstats	deqms	prolfqua	prolfqua 1.9.5	protein	proteins	lm with DEqMS moderation (variance prior by number of peptides)	5.3	NA
-IonStar_FragPipe_protein	deqms	prolfqua	prolfqua 1.9.5	protein	proteins	lm with DEqMS moderation (variance prior by number of peptides)	6.3	NA
-CPTAC_MaxQuant	deqms	prolfqua	prolfqua 1.9.5	protein	proteins	lm with DEqMS moderation (variance prior by number of peptides)	2	NA
-IonStar_MaxQuant	deqms_voom	prolfqua	prolfqua 1.9.5	protein	proteins	limma with vooma precision weights and DEqMS moderation	1.5	NA
-IonStar_FragPipe_MSstats	deqms_voom	prolfqua	prolfqua 1.9.5	protein	proteins	limma with vooma precision weights and DEqMS moderation	1.4	NA
-IonStar_FragPipe_protein	deqms_voom	prolfqua	prolfqua 1.9.5	protein	proteins	limma with vooma precision weights and DEqMS moderation	1.3	NA
-CPTAC_MaxQuant	deqms_voom	prolfqua	prolfqua 1.9.5	protein	proteins	limma with vooma precision weights and DEqMS moderation	0.8	NA
-IonStar_MaxQuant	lmer_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	mixed model, peptide and sample random effects	87.6	NA
-IonStar_FragPipe_MSstats	lmer_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	mixed model, peptide and sample random effects	84.3	NA
-CPTAC_MaxQuant	lmer_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	mixed model, peptide and sample random effects	22.6	NA
-IonStar_MaxQuant	ropeca_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, beta null of the median signed p-value	45.2	NA
-IonStar_FragPipe_MSstats	ropeca_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, beta null of the median signed p-value	46.7	NA
-CPTAC_MaxQuant	ropeca_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, beta null of the median signed p-value	7.4	NA
-IonStar_MaxQuant	ropecaV2_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, correlation-aware null of the median z-score	49.8	NA
-IonStar_FragPipe_MSstats	ropecaV2_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, correlation-aware null of the median z-score	53.7	NA
-CPTAC_MaxQuant	ropecaV2_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, correlation-aware null of the median z-score	11.1	NA
-IonStar_MaxQuant	hurdle_nested	prolfqua	prolfqua 1.9.5	protein + peptide	peptides	hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher	25.1	NA
-IonStar_FragPipe_MSstats	hurdle_nested	prolfqua	prolfqua 1.9.5	protein + peptide	peptides	hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher	23.4	NA
-CPTAC_MaxQuant	hurdle_nested	prolfqua	prolfqua 1.9.5	protein + peptide	peptides	hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher	7	NA
-IonStar_MaxQuant	MSstats	MSstats	MSstats 4.20.0	protein	msstats_features	MSstats dataProcess (feature summarization) and groupComparison	91.7	NA
-IonStar_FragPipe_MSstats	MSstats	MSstats	MSstats 4.20.0	protein	msstats_features	MSstats dataProcess (feature summarization) and groupComparison	73.2	NA
-IonStar_MaxQuant	proDA	proDA	proDA 1.26.0	protein	proteins	proDA on the prepared proteins	59	NA
-IonStar_FragPipe_MSstats	proDA	proDA	proDA 1.26.0	protein	proteins	proDA on the prepared proteins	38.1	NA
-IonStar_FragPipe_protein	proDA	proDA	proDA 1.26.0	protein	proteins	proDA on the prepared proteins	42.2	NA
-CPTAC_MaxQuant	proDA	proDA	proDA 1.26.0	protein	proteins	proDA on the prepared proteins	11.2	NA
-IonStar_MaxQuant	proDA_LFQ	proDA	proDA 1.26.0	protein	lfq_proteins	proDA on the MaxQuant LFQ protein intensities (proteinGroups.txt)	100.3	NA
-IonStar_MaxQuant	msqrob2	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; intensity estimate where it exists, else the detection estimate	12.8	NA
+IonStar_MaxQuant	prolfqua_deqms	prolfqua	prolfqua 1.9.5	protein	proteins	lm with DEqMS moderation (variance prior by number of peptides)	5.8	NA
+IonStar_FragPipe_MSstats	prolfqua_deqms	prolfqua	prolfqua 1.9.5	protein	proteins	lm with DEqMS moderation (variance prior by number of peptides)	5.3	NA
+IonStar_FragPipe_protein	prolfqua_deqms	prolfqua	prolfqua 1.9.5	protein	proteins	lm with DEqMS moderation (variance prior by number of peptides)	6.8	NA
+CPTAC_MaxQuant	prolfqua_deqms	prolfqua	prolfqua 1.9.5	protein	proteins	lm with DEqMS moderation (variance prior by number of peptides)	2.1	NA
+IonStar_MaxQuant	prolfqua_deqms_voom	prolfqua	prolfqua 1.9.5	protein	proteins	limma with vooma precision weights and DEqMS moderation	1.5	NA
+IonStar_FragPipe_MSstats	prolfqua_deqms_voom	prolfqua	prolfqua 1.9.5	protein	proteins	limma with vooma precision weights and DEqMS moderation	1.5	NA
+IonStar_FragPipe_protein	prolfqua_deqms_voom	prolfqua	prolfqua 1.9.5	protein	proteins	limma with vooma precision weights and DEqMS moderation	1.4	NA
+CPTAC_MaxQuant	prolfqua_deqms_voom	prolfqua	prolfqua 1.9.5	protein	proteins	limma with vooma precision weights and DEqMS moderation	0.9	NA
+IonStar_MaxQuant	prolfqua_limpa	prolfqua	prolfqua 1.9.5	protein	proteins	limpa vooma fit with imputation-aware degrees of freedom on the proteins	1.1	NA
+IonStar_FragPipe_MSstats	prolfqua_limpa	prolfqua	prolfqua 1.9.5	protein	proteins	limpa vooma fit with imputation-aware degrees of freedom on the proteins	1.1	NA
+IonStar_FragPipe_protein	prolfqua_limpa	prolfqua	prolfqua 1.9.5	protein	proteins	limpa vooma fit with imputation-aware degrees of freedom on the proteins	1.1	NA
+CPTAC_MaxQuant	prolfqua_limpa	prolfqua	prolfqua 1.9.5	protein	proteins	limpa vooma fit with imputation-aware degrees of freedom on the proteins	0.9	NA
+IonStar_MaxQuant	prolfqua_lmer_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	mixed model, peptide and sample random effects	89.6	NA
+IonStar_FragPipe_MSstats	prolfqua_lmer_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	mixed model, peptide and sample random effects	88.3	NA
+CPTAC_MaxQuant	prolfqua_lmer_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	mixed model, peptide and sample random effects	23	NA
+IonStar_MaxQuant	prolfqua_ropeca_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, beta null of the median signed p-value	45.2	NA
+IonStar_FragPipe_MSstats	prolfqua_ropeca_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, beta null of the median signed p-value	51.2	NA
+CPTAC_MaxQuant	prolfqua_ropeca_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, beta null of the median signed p-value	7.9	NA
+IonStar_MaxQuant	prolfqua_ropecaV2_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, correlation-aware null of the median z-score	53.3	NA
+IonStar_FragPipe_MSstats	prolfqua_ropecaV2_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, correlation-aware null of the median z-score	55.6	NA
+CPTAC_MaxQuant	prolfqua_ropecaV2_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	ROPECA, correlation-aware null of the median z-score	11.6	NA
+IonStar_MaxQuant	prolfqua_limpa_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	limpa: DPC quantification of the peptides to proteins, vooma fit	14.8	NA
+IonStar_FragPipe_MSstats	prolfqua_limpa_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	limpa: DPC quantification of the peptides to proteins, vooma fit	14.4	NA
+CPTAC_MaxQuant	prolfqua_limpa_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	limpa: DPC quantification of the peptides to proteins, vooma fit	3	NA
+IonStar_MaxQuant	prolfqua_hurdle_nested	prolfqua	prolfqua 1.9.5	protein + peptide	peptides	hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher	25.9	NA
+IonStar_FragPipe_MSstats	prolfqua_hurdle_nested	prolfqua	prolfqua 1.9.5	protein + peptide	peptides	hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher	23.6	NA
+CPTAC_MaxQuant	prolfqua_hurdle_nested	prolfqua	prolfqua 1.9.5	protein + peptide	peptides	hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher	7.2	NA
+IonStar_MaxQuant	MSstats	MSstats	MSstats 4.20.0	protein	msstats_features	MSstats dataProcess (feature summarization) and groupComparison	98.6	NA
+IonStar_FragPipe_MSstats	MSstats	MSstats	MSstats 4.20.0	protein	msstats_features	MSstats dataProcess (feature summarization) and groupComparison	75.1	NA
+IonStar_MaxQuant	proDA	proDA	proDA 1.26.0	protein	protein_table	proDA on the protein table of the search software	99.5	NA
+IonStar_FragPipe_protein	proDA	proDA	proDA 1.26.0	protein	protein_table	proDA on the protein table of the search software	42.3	NA
+IonStar_MaxQuant	msqrob2	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; intensity estimate where it exists, else the detection estimate	13	NA
 IonStar_FragPipe_MSstats	msqrob2	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; intensity estimate where it exists, else the detection estimate	12.5	NA
-CPTAC_MaxQuant	msqrob2	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; intensity estimate where it exists, else the detection estimate	5.3	NA
-IonStar_MaxQuant	msqrob2_hurdle	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; Fisher combination of the intensity and detection p-values	12.9	NA
-IonStar_FragPipe_MSstats	msqrob2_hurdle	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; Fisher combination of the intensity and detection p-values	12.4	NA
-CPTAC_MaxQuant	msqrob2_hurdle	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; Fisher combination of the intensity and detection p-values	5.3	NA
-IonStar_MaxQuant	msqrob2_protein	msqrob2	msqrob2 1.20.0	protein	proteins	msqrob2 msqrob on the prepared proteins, no detection model	6.1	NA
-IonStar_FragPipe_MSstats	msqrob2_protein	msqrob2	msqrob2 1.20.0	protein	proteins	msqrob2 msqrob on the prepared proteins, no detection model	5.8	NA
-IonStar_FragPipe_protein	msqrob2_protein	msqrob2	msqrob2 1.20.0	protein	proteins	msqrob2 msqrob on the prepared proteins, no detection model	5.7	NA
-CPTAC_MaxQuant	msqrob2_protein	msqrob2	msqrob2 1.20.0	protein	proteins	msqrob2 msqrob on the prepared proteins, no detection model	3.9	NA
+CPTAC_MaxQuant	msqrob2	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; intensity estimate where it exists, else the detection estimate	5.6	NA
+IonStar_MaxQuant	msqrob2_hurdle	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; Fisher combination of the intensity and detection p-values	12.8	NA
+IonStar_FragPipe_MSstats	msqrob2_hurdle	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; Fisher combination of the intensity and detection p-values	12.5	NA
+CPTAC_MaxQuant	msqrob2_hurdle	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; Fisher combination of the intensity and detection p-values	5.5	NA
+IonStar_MaxQuant	msqrob2_protein	msqrob2	msqrob2 1.20.0	protein	protein_table	msqrob2 msqrob on the protein table of the search software, no detection model	6	NA
+IonStar_FragPipe_protein	msqrob2_protein	msqrob2	msqrob2 1.20.0	protein	protein_table	msqrob2 msqrob on the protein table of the search software, no detection model	6	NA

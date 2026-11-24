@@ -1,5 +1,6 @@
 # IonStar, FragPipe combined_protein.tsv (protein level): proteins with at least 2 peptides, razor intensities, log2
 # and robust scaling on the human proteins; the number of unique peptides is the child count (fit weights, DEqMS).
+# The proteins are the search software's protein table, so they are saved as both proteins and protein_table.
 #   Rscript workflow/scripts/prepare_ionstar_fragpipe_protein.R <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args("out_dir")
@@ -27,4 +28,5 @@ config$factor_depth <- 1
 
 lfq <- prolfqua::LFQData$new(prolfqua::setup_analysis(protein, config), config)
 lfq$remove_small_intensities()
-save_prepared(args$out_dir, proteins = normalize_on_human(lfq))
+proteins <- normalize_on_human(lfq)
+save_prepared(args$out_dir, proteins = proteins, protein_table = proteins)

@@ -4,8 +4,9 @@
 # null-split rows (study removed) and the `limma` rows of the ROPECA vignette (the same model as `prolfqua_limma`).
 # Second step (2026-11-24): drops prolfqua 1.4.0 and the hurdle variants no longer benchmarked, and names
 # `hurdle_binomial_firth` after prolfqua's `hurdle_nested` facade, which fits the same model. Third step (2026-11-24):
-# drops `prolfqua_lm` (lm_missing, now in prolfquatakeoutmissing, which the benchmark no longer uses). Rerunning is
-# safe.
+# drops `prolfqua_lm` (lm_missing, now in prolfquatakeoutmissing, which the benchmark no longer uses), names the
+# prolfqua models `prolfqua_<facade>`, and keeps proDA and msqrob2_protein only on the search software's protein
+# table. Rerunning is safe.
 #   Rscript inst/scripts/migrate_score_history.R inst/extdata/score_history.tsv
 
 path <- commandArgs(trailingOnly = TRUE)[[1]]
@@ -66,8 +67,27 @@ dropped <- c(
 history <- history[!history$method %in% dropped, ]
 history$method[history$method == "hurdle_binomial_firth"] <- "hurdle_nested"
 
-# 2026-11-24: lm_missing (prolfqua_lm) left prolfqua for prolfquatakeoutmissing; the benchmark covers prolfqua only
-history <- history[history$method != "prolfqua_lm", ]
+# 2026-11-24, while the prolfqua ids still lack the prefix: lm_missing (prolfqua_lm) left prolfqua for
+# prolfquatakeoutmissing; proDA on the MaxQuant LFQ intensities (proDA_LFQ) is proDA, proDA and msqrob2_protein on
+# proteins aggregated by prolfqua are dropped; the prolfqua models are named prolfqua_<facade>
+if ("lm_impute" %in% history$method) {
+  history <- history[history$method != "prolfqua_lm", ]
+  aggregated <- c("IonStar_MaxQuant", "IonStar_FragPipe_MSstats", "CPTAC_MaxQuant")
+  history <- history[!(history$method %in% c("proDA", "msqrob2_protein") & history$dataset %in% aggregated), ]
+  history$method[history$method == "proDA_LFQ"] <- "proDA"
+  facades <- c(
+    "lm",
+    "lm_impute",
+    "deqms",
+    "deqms_voom",
+    "lmer_nested",
+    "ropeca_nested",
+    "ropecaV2_nested",
+    "hurdle_nested"
+  )
+  renamed <- history$method %in% facades
+  history$method[renamed] <- paste0("prolfqua_", history$method[renamed])
+}
 
 keys <- c("prolfqua_version", "dataset", "method", "contrast", "score", "metric")
 stopifnot(!anyDuplicated(history[, keys]))

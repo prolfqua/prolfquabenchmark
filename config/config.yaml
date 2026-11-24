@@ -10,15 +10,16 @@ contrasts:
   cptac:
     b_vs_a: "group.b - group.a"
 
-# inputs: what the dataset provides. peptides and proteins: the prepared LFQData (results/prepared/<dataset>);
-# msstats_features: the feature table MSstats reads (MaxQuant evidence.txt, FragPipe MSstats.csv);
-# lfq_proteins: the MaxQuant LFQ protein intensities (proteinGroups.txt)
+# inputs: what the dataset provides. peptides and proteins: the prepared LFQData (results/prepared/<dataset>), proteins
+# aggregated by prolfqua where the dataset has peptides; protein_table: the protein quantification of the search
+# software (MaxQuant proteinGroups.txt LFQ intensities, FragPipe combined_protein.tsv), prepared as protein_table.rds;
+# msstats_features: the feature table MSstats reads (MaxQuant evidence.txt, FragPipe MSstats.csv)
 datasets:
   IonStar_MaxQuant:
     prepare: prepare_ionstar_maxquant.R
-    inputs: [peptides, proteins, msstats_features, lfq_proteins]
+    inputs: [peptides, proteins, protein_table, msstats_features]
     input_file: MAXQuant_IonStar2018_PXD003881.zip/peptides.txt
-    description: "IonStar, MaxQuant peptides.txt; log2, robust scaling on the human proteins, median polish to proteins"
+    description: "IonStar, MaxQuant peptides.txt; log2, robust scaling on the human proteins, median polish to proteins. Protein table: proteinGroups.txt LFQ intensities, log2, robust scaling on the human proteins"
     formula: "~ dilution."
     contrasts: ionstar
     ground_truth:
@@ -38,7 +39,7 @@ datasets:
       negative: {label: HUMAN, pattern: HUMAN}
   IonStar_FragPipe_protein:
     prepare: prepare_ionstar_fragpipe_protein.R
-    inputs: [proteins]
+    inputs: [proteins, protein_table]
     input_file: MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/combined_protein.tsv
     description: "IonStar, FragPipe combined_protein.tsv (protein level); razor intensities, log2, robust scaling on the human proteins"
     formula: "~ dilution."
@@ -61,16 +62,24 @@ datasets:
 
 # Every method runs on every dataset that provides all of its inputs.
 # tool: prolfqua (fitted with build_contrast_analysis(), method = facade) or an external tool
-# input: the dataset inputs the method needs
+# input: the dataset inputs the method needs; the external tools take only their own input (MSstats its feature
+# table, msqrob2 the peptides, proDA and msqrob2_protein the protein table), never the proteins prolfqua aggregated
 # level: protein, peptide (peptide models, one result per protein), or protein + peptide (hurdle)
 methods:
-  lm:
+  prolfqua_lm:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: lm
     input: [proteins]
     level: protein
     description: "lm with variance moderation; no contrast where a group has no observations"
+  prolfqua_lm_impute:
+    tool: prolfqua
+    script: fit_prolfqua.R
+    facade: lm_impute
+    input: [proteins]
+    level: protein
+    description: "lm with imputed group means where a group has no observations"
   prolfqua_limma:
     tool: prolfqua
     script: fit_prolfqua.R
@@ -78,28 +87,28 @@ methods:
     input: [proteins]
     level: protein
     description: "limma empirical Bayes"
-  lm_impute:
-    tool: prolfqua
-    script: fit_prolfqua.R
-    facade: lm_impute
-    input: [proteins]
-    level: protein
-    description: "lm with imputed group means where a group has no observations (lm_impute)"
-  deqms:
+  prolfqua_deqms:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: deqms
     input: [proteins]
     level: protein
     description: "lm with DEqMS moderation (variance prior by number of peptides)"
-  deqms_voom:
+  prolfqua_deqms_voom:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: deqms_voom
     input: [proteins]
     level: protein
     description: "limma with vooma precision weights and DEqMS moderation"
-  lmer_nested:
+  prolfqua_limpa:
+    tool: prolfqua
+    script: fit_prolfqua.R
+    facade: limpa
+    input: [proteins]
+    level: protein
+    description: "limpa vooma fit with imputation-aware degrees of freedom on the proteins"
+  prolfqua_lmer_nested:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: lmer_nested
@@ -107,21 +116,28 @@ methods:
     input: [peptides]
     level: peptide
     description: "mixed model, peptide and sample random effects"
-  ropeca_nested:
+  prolfqua_ropeca_nested:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: ropeca_nested
     input: [peptides]
     level: peptide
     description: "ROPECA, beta null of the median signed p-value"
-  ropecaV2_nested:
+  prolfqua_ropecaV2_nested:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: ropecaV2_nested
     input: [peptides]
     level: peptide
     description: "ROPECA, correlation-aware null of the median z-score"
-  hurdle_nested:
+  prolfqua_limpa_nested:
+    tool: prolfqua
+    script: fit_prolfqua.R
+    facade: limpa_nested
+    input: [peptides]
+    level: peptide
+    description: "limpa: DPC quantification of the peptides to proteins, vooma fit"
+  prolfqua_hurdle_nested:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: hurdle_nested
@@ -137,15 +153,9 @@ methods:
   proDA:
     tool: proDA
     script: fit_proda.R
-    input: [proteins]
+    input: [protein_table]
     level: protein
-    description: "proDA on the prepared proteins"
-  proDA_LFQ:
-    tool: proDA
-    script: fit_proda.R
-    input: [lfq_proteins]
-    level: protein
-    description: "proDA on the MaxQuant LFQ protein intensities (proteinGroups.txt)"
+    description: "proDA on the protein table of the search software"
   msqrob2:
     tool: msqrob2
     script: fit_msqrob2.R
@@ -163,6 +173,6 @@ methods:
   msqrob2_protein:
     tool: msqrob2
     script: fit_msqrob2.R
-    input: [proteins]
+    input: [protein_table]
     level: protein
-    description: "msqrob2 msqrob on the prepared proteins, no detection model"
+    description: "msqrob2 msqrob on the protein table of the search software, no detection model"

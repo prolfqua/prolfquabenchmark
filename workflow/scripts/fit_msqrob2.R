@@ -2,7 +2,8 @@
 # (QFeatures::aggregateFeatures), msqrobHurdle, hypothesisTestHurdle, reported in one of two ways (method `combine`):
 #   intensity_first  the intensity estimate where it exists, else the detection (count) estimate; BH per contrast
 #   fisher           msqrob2's Fisher combination of both p-values (fisherPval, fisherAdjPval)
-# With input proteins only: msqrob and hypothesisTest on the prepared proteins (no detection model).
+# With input protein_table: msqrob and hypothesisTest on the protein table of the search software (no detection
+# model).
 #   Rscript workflow/scripts/fit_msqrob2.R <config> <dataset> <method> <prepared_dir> <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args(c("config", "dataset", "method", "prepared_dir", "out_dir"))
@@ -12,7 +13,8 @@ suppressMessages({
   library(msqrob2)
 })
 
-proteins <- readRDS(file.path(args$prepared_dir, "proteins.rds"))
+hurdle <- "peptides" %in% spec$method$input
+proteins <- readRDS(file.path(args$prepared_dir, if (hurdle) "proteins.rds" else "protein_table.rds"))
 factor_col <- all.vars(stats::as.formula(spec$dataset$formula))
 levels <- sort(unique(as.character(proteins$data_long()[[factor_col]])))
 
@@ -29,7 +31,7 @@ test_tables <- function(row_data, columns) {
   }))
 }
 
-if ("peptides" %in% spec$method$input) {
+if (hurdle) {
   median_polish <- function(x, verbose = FALSE, ...) {
     fit <- stats::medpolish(x, na.rm = TRUE, trace.iter = verbose, maxiter = 10)
     fit$overall + fit$col

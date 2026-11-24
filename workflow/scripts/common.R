@@ -65,12 +65,16 @@ normalize_on_human <- function(lfq) {
   lfq$get_Transformer()$log2()$robscale_subset(lfqsubset = human)$lfq
 }
 
-# Saves the prepared data of a dataset: proteins, and peptides unless the input is protein level
-save_prepared <- function(out_dir, proteins, peptides = NULL) {
+# Saves the prepared data of a dataset: proteins; peptides unless the input is protein level; the protein table of
+# the search software if the dataset has one
+save_prepared <- function(out_dir, proteins, peptides = NULL, protein_table = NULL) {
   dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
   saveRDS(proteins, file.path(out_dir, "proteins.rds"))
   if (!is.null(peptides)) {
     saveRDS(peptides, file.path(out_dir, "peptides.rds"))
+  }
+  if (!is.null(protein_table)) {
+    saveRDS(protein_table, file.path(out_dir, "protein_table.rds"))
   }
 }
 

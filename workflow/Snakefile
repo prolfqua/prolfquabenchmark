@@ -72,8 +72,8 @@ rule prepare:
 
 
 def prepared_input(wildcards):
-    """The prepared dataset, for methods fitted to its peptides or proteins."""
-    needs_prepared = {"peptides", "proteins"} & set(METHODS[wildcards.method]["input"])
+    """The prepared dataset, for methods fitted to its peptides, proteins or protein table."""
+    needs_prepared = {"peptides", "proteins", "protein_table"} & set(METHODS[wildcards.method]["input"])
     return f"results/prepared/{wildcards.dataset}" if needs_prepared else []
 
 
