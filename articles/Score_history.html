@@ -83,7 +83,7 @@
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-11-23</h4>
+            <h4 data-toc-skip class="date">2026-11-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Score_history.Rmd" class="external-link"><code>vignettes/Score_history.Rmd</code></a></small>
       <div class="hidden name"><code>Score_history.Rmd</code></div>
@@ -113,14 +113,15 @@ can come from their release instead of prolfqua’s</li>
 <li>Timings: median elapsed seconds of the core prolfqua steps on the
 IonStar MaxQuant peptides
 (<code>workflow/scripts/time_prolfqua_steps.R</code>)</li>
-<li>prolfqua 1.4.0, 1.6.2 and 1.9.0 were rerun on 2026-11-23 with the
-benchmark vignettes of their time
+<li>prolfqua 1.6.2 and 1.9.0 were rerun on 2026-11-23 with the benchmark
+vignettes of their time
 (<code>inst/scripts/prefill_score_history.sh</code>); their
 <code>date</code> is the date of the prolfqua commit, and their dataset
 and method names were relabelled to the pipeline’s
 (<code>inst/scripts/migrate_score_history.R</code>). The vignettes
 changed and models were added between releases, so a method’s cells stay
-empty for the releases before its vignette ran it</li>
+empty for the releases before its vignette ran it. From 1.9.5 on, the
+pipeline runs every method on every dataset that provides its input</li>
 </ul>
 <div class="section level2">
 <h2 id="releases">Releases<a class="anchor" aria-label="anchor" href="#releases"></a>
@@ -136,32 +137,25 @@ empty for the releases before its vignette ran it</li>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">1.4.0</td>
-<td align="left">2025-11-09</td>
-<td align="right">2</td>
-<td align="right">12</td>
-<td align="right">1204</td>
-</tr>
-<tr class="even">
 <td align="left">1.6.2</td>
 <td align="left">2026-05-28</td>
 <td align="right">3</td>
 <td align="right">14</td>
 <td align="right">908</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">1.9.0</td>
 <td align="left">2026-11-02</td>
 <td align="right">3</td>
-<td align="right">21</td>
-<td align="right">1958</td>
+<td align="right">17</td>
+<td align="right">1358</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">1.9.5</td>
-<td align="left">2026-11-23</td>
+<td align="left">2026-11-24</td>
 <td align="right">4</td>
-<td align="right">35</td>
-<td align="right">3698</td>
+<td align="right">49</td>
+<td align="right">5168</td>
 </tr>
 </tbody>
 </table>
@@ -172,21 +166,21 @@ empty for the releases before its vignette ran it</li>
 <p>Changes of the prolfqua models from the previous recorded release of
 the same dataset, method, contrast, score and metric: at least 0.5
 points for AUC, pAUC and AP, any change for counts.</p>
-<table style="width:100%;" class="table">
-<caption>60 changes above the thresholds.</caption>
+<table class="table">
+<caption>0 changes above the thresholds.</caption>
 <colgroup>
-<col width="4%">
-<col width="10%">
+<col width="7%">
 <col width="15%">
 <col width="7%">
-<col width="14%">
-<col width="9%">
-<col width="4%">
+<col width="6%">
+<col width="8%">
 <col width="5%">
-<col width="4%">
-<col width="4%">
-<col width="9%">
-<col width="9%">
+<col width="6%">
+<col width="8%">
+<col width="5%">
+<col width="5%">
+<col width="12%">
+<col width="11%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">release</th>
@@ -202,848 +196,7 @@ points for AUC, pAUC and AP, any change for counts.</p>
 <th align="left">previous_tool</th>
 <th align="left">tool_version</th>
 </tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">86.523</td>
-<td align="right">85.762</td>
-<td align="right">-0.761</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">80.478</td>
-<td align="right">79.661</td>
-<td align="right">-0.817</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">85.303</td>
-<td align="right">84.102</td>
-<td align="right">-1.201</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">96.355</td>
-<td align="right">94.997</td>
-<td align="right">-1.358</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">95.740</td>
-<td align="right">94.180</td>
-<td align="right">-1.561</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_50</td>
-<td align="right">97.687</td>
-<td align="right">98.278</td>
-<td align="right">0.591</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">92.643</td>
-<td align="right">90.213</td>
-<td align="right">-2.430</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">95.668</td>
-<td align="right">94.918</td>
-<td align="right">-0.751</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">92.832</td>
-<td align="right">91.811</td>
-<td align="right">-1.021</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">92.800</td>
-<td align="right">91.377</td>
-<td align="right">-1.423</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">82.785</td>
-<td align="right">83.632</td>
-<td align="right">0.847</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">82.080</td>
-<td align="right">82.986</td>
-<td align="right">0.906</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">85.499</td>
-<td align="right">84.575</td>
-<td align="right">-0.924</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">84.715</td>
-<td align="right">83.289</td>
-<td align="right">-1.426</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">log_fc</td>
-<td align="left">AP</td>
-<td align="right">71.128</td>
-<td align="right">71.994</td>
-<td align="right">0.865</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">82.727</td>
-<td align="right">83.492</td>
-<td align="right">0.765</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">79.527</td>
-<td align="right">80.847</td>
-<td align="right">1.320</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">78.876</td>
-<td align="right">80.548</td>
-<td align="right">1.671</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">82.037</td>
-<td align="right">84.708</td>
-<td align="right">2.671</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">80.755</td>
-<td align="right">83.845</td>
-<td align="right">3.090</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AUC</td>
-<td align="right">93.695</td>
-<td align="right">94.295</td>
-<td align="right">0.601</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">t_statistic</td>
-<td align="left">AUC</td>
-<td align="right">93.669</td>
-<td align="right">94.275</td>
-<td align="right">0.606</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">97.998</td>
-<td align="right">97.083</td>
-<td align="right">-0.915</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">log_fc</td>
-<td align="left">pAP_50</td>
-<td align="right">73.927</td>
-<td align="right">74.925</td>
-<td align="right">0.998</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">96.532</td>
-<td align="right">97.374</td>
-<td align="right">0.841</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_50</td>
-<td align="right">97.850</td>
-<td align="right">98.644</td>
-<td align="right">0.794</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">95.353</td>
-<td align="right">97.068</td>
-<td align="right">1.714</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">93.810</td>
-<td align="right">94.620</td>
-<td align="right">0.810</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">92.911</td>
-<td align="right">93.790</td>
-<td align="right">0.879</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">97.608</td>
-<td align="right">96.908</td>
-<td align="right">-0.701</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">96.618</td>
-<td align="right">95.293</td>
-<td align="right">-1.326</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">log_fc</td>
-<td align="left">pAP_80</td>
-<td align="right">77.083</td>
-<td align="right">77.958</td>
-<td align="right">0.875</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">93.739</td>
-<td align="right">94.479</td>
-<td align="right">0.740</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">90.205</td>
-<td align="right">91.574</td>
-<td align="right">1.369</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">89.384</td>
-<td align="right">91.186</td>
-<td align="right">1.803</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">91.246</td>
-<td align="right">93.762</td>
-<td align="right">2.517</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">89.605</td>
-<td align="right">92.633</td>
-<td align="right">3.028</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">72.270</td>
-<td align="right">73.642</td>
-<td align="right">1.371</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_10</td>
-<td align="right">72.019</td>
-<td align="right">73.407</td>
-<td align="right">1.388</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">78.384</td>
-<td align="right">76.395</td>
-<td align="right">-1.989</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_10</td>
-<td align="right">78.176</td>
-<td align="right">76.018</td>
-<td align="right">-2.158</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">log_fc</td>
-<td align="left">pAUC_10</td>
-<td align="right">68.476</td>
-<td align="right">69.432</td>
-<td align="right">0.957</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">73.214</td>
-<td align="right">73.979</td>
-<td align="right">0.764</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_10</td>
-<td align="right">72.930</td>
-<td align="right">73.909</td>
-<td align="right">0.979</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">log_fc</td>
-<td align="left">pAUC_10</td>
-<td align="right">58.018</td>
-<td align="right">57.358</td>
-<td align="right">-0.660</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">67.613</td>
-<td align="right">69.381</td>
-<td align="right">1.768</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_10</td>
-<td align="right">67.423</td>
-<td align="right">69.235</td>
-<td align="right">1.812</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">69.605</td>
-<td align="right">74.314</td>
-<td align="right">4.709</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_10</td>
-<td align="right">69.275</td>
-<td align="right">73.946</td>
-<td align="right">4.671</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_20</td>
-<td align="right">78.663</td>
-<td align="right">79.709</td>
-<td align="right">1.046</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_20</td>
-<td align="right">78.555</td>
-<td align="right">79.624</td>
-<td align="right">1.069</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_20</td>
-<td align="right">81.467</td>
-<td align="right">80.181</td>
-<td align="right">-1.285</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(4.5/3)_1.5</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_20</td>
-<td align="right">81.366</td>
-<td align="right">80.001</td>
-<td align="right">-1.365</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">log_fc</td>
-<td align="left">pAUC_20</td>
-<td align="right">79.331</td>
-<td align="right">79.868</td>
-<td align="right">0.537</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_20</td>
-<td align="right">79.188</td>
-<td align="right">79.980</td>
-<td align="right">0.792</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(6/4.5)_1.3(3)</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_20</td>
-<td align="right">79.058</td>
-<td align="right">79.984</td>
-<td align="right">0.925</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_20</td>
-<td align="right">75.421</td>
-<td align="right">76.822</td>
-<td align="right">1.401</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(7.5/6)_1.25</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_20</td>
-<td align="right">75.340</td>
-<td align="right">76.758</td>
-<td align="right">1.418</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_20</td>
-<td align="right">78.737</td>
-<td align="right">81.787</td>
-<td align="right">3.049</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-<tr class="even">
-<td align="left">1.6.2</td>
-<td align="left">1.4.0</td>
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">dilution_(9/7.5)_1.2</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_20</td>
-<td align="right">78.623</td>
-<td align="right">81.686</td>
-<td align="right">3.064</td>
-<td align="left">prolfqua 1.4.0</td>
-<td align="left">prolfqua 1.6.2</td>
-</tr>
-</tbody>
+<tbody></tbody>
 </table>
 </div>
 <div class="section level2">
@@ -1095,6 +248,93 @@ pAUC_10 / t_statistic
 </th>
 </tr></thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+hurdle_nested
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+86.5
+</td>
+<td style="text-align:right;">
+84.6
+</td>
+<td style="text-align:right;">
+85.3
+</td>
+<td style="text-align:right;">
+72.5
+</td>
+<td style="text-align:right;">
+73.2
+</td>
+<td style="text-align:right;">
+67.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lm_impute
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+86.5
+</td>
+<td style="text-align:right;">
+85.3
+</td>
+<td style="text-align:right;">
+85.3
+</td>
+<td style="text-align:right;">
+72.5
+</td>
+<td style="text-align:right;">
+67.3
+</td>
+<td style="text-align:right;">
+67.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lmer_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+93.9
+</td>
+<td style="text-align:right;">
+90.8
+</td>
+<td style="text-align:right;">
+90.8
+</td>
+<td style="text-align:right;">
+91.6
+</td>
+<td style="text-align:right;">
+77.8
+</td>
+<td style="text-align:right;">
+77.8
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 prolfqua_limma
@@ -1155,6 +395,64 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
+ropecaV2_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+96.5
+</td>
+<td style="text-align:right;">
+96.4
+</td>
+<td style="text-align:right;">
+96.4
+</td>
+<td style="text-align:right;">
+92.8
+</td>
+<td style="text-align:right;">
+91.0
+</td>
+<td style="text-align:right;">
+91.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+91.8
+</td>
+<td style="text-align:right;">
+93.0
+</td>
+<td style="text-align:right;">
+95.1
+</td>
+<td style="text-align:right;">
+88.6
+</td>
+<td style="text-align:right;">
+82.6
+</td>
+<td style="text-align:right;">
+80.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 msqrob2 1.20.0
 </td>
 <td style="text-align:left;">
@@ -1180,6 +478,64 @@ protein + peptide
 </td>
 <td style="text-align:right;">
 66.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle (msqrob2 1.20.0)
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+91.2
+</td>
+<td style="text-align:right;">
+90.0
+</td>
+<td style="text-align:right;">
+88.8
+</td>
+<td style="text-align:right;">
+72.5
+</td>
+<td style="text-align:right;">
+74.0
+</td>
+<td style="text-align:right;">
+66.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_protein (msqrob2 1.20.0)
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+92.4
+</td>
+<td style="text-align:right;">
+92.5
+</td>
+<td style="text-align:right;">
+92.4
+</td>
+<td style="text-align:right;">
+86.4
+</td>
+<td style="text-align:right;">
+86.6
 </td>
 </tr>
 <tr>
@@ -1256,6 +612,93 @@ pAUC_10 / t_statistic
 <tbody>
 <tr>
 <td style="text-align:left;">
+hurdle_nested
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+95.1
+</td>
+<td style="text-align:right;">
+95.9
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+75.3
+</td>
+<td style="text-align:right;">
+83.9
+</td>
+<td style="text-align:right;">
+84.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lm_impute
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+95.1
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+75.3
+</td>
+<td style="text-align:right;">
+84.1
+</td>
+<td style="text-align:right;">
+84.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lmer_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+95.5
+</td>
+<td style="text-align:right;">
+96.0
+</td>
+<td style="text-align:right;">
+96.0
+</td>
+<td style="text-align:right;">
+74.5
+</td>
+<td style="text-align:right;">
+80.6
+</td>
+<td style="text-align:right;">
+80.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 prolfqua_limma
 </td>
 <td style="text-align:left;">
@@ -1426,6 +869,64 @@ protein
 </td>
 <td style="text-align:right;">
 83.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ropecaV2_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+96.0
+</td>
+<td style="text-align:right;">
+97.6
+</td>
+<td style="text-align:right;">
+98.3
+</td>
+<td style="text-align:right;">
+76.5
+</td>
+<td style="text-align:right;">
+91.6
+</td>
+<td style="text-align:right;">
+92.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+95.8
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+98.1
+</td>
+<td style="text-align:right;">
+75.4
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+90.0
 </td>
 </tr>
 <tr>
@@ -1484,6 +985,64 @@ protein + peptide
 </td>
 <td style="text-align:right;">
 83.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle (msqrob2 1.20.0)
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+95.3
+</td>
+<td style="text-align:right;">
+96.0
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+77.3
+</td>
+<td style="text-align:right;">
+83.9
+</td>
+<td style="text-align:right;">
+83.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_protein (msqrob2 1.20.0)
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+96.7
+</td>
+<td style="text-align:right;">
+97.6
+</td>
+<td style="text-align:right;">
+97.6
+</td>
+<td style="text-align:right;">
+81.2
+</td>
+<td style="text-align:right;">
+89.2
+</td>
+<td style="text-align:right;">
+89.2
 </td>
 </tr>
 <tr>
@@ -1560,65 +1119,7 @@ pAUC_10 / t_statistic
 <tbody>
 <tr>
 <td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.6.2
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-93.9
-</td>
-<td style="text-align:right;">
-93.8
-</td>
-<td style="text-align:right;">
-76.9
-</td>
-<td style="text-align:right;">
-87.1
-</td>
-<td style="text-align:right;">
-85.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-93.9
-</td>
-<td style="text-align:right;">
-93.8
-</td>
-<td style="text-align:right;">
-76.9
-</td>
-<td style="text-align:right;">
-87.1
-</td>
-<td style="text-align:right;">
-85.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
+lm_impute
 </td>
 <td style="text-align:left;">
 protein
@@ -1627,51 +1128,109 @@ protein
 1.9.5
 </td>
 <td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-93.9
-</td>
-<td style="text-align:right;">
-93.8
-</td>
-<td style="text-align:right;">
-76.9
-</td>
-<td style="text-align:right;">
-87.1
-</td>
-<td style="text-align:right;">
-85.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.4.0
+93.0
 </td>
 <td style="text-align:right;">
 94.0
 </td>
 <td style="text-align:right;">
-95.1
+93.8
 </td>
 <td style="text-align:right;">
-95.0
+70.8
 </td>
 <td style="text-align:right;">
-72.0
+80.6
 </td>
 <td style="text-align:right;">
-81.9
+78.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:left;">
+1.6.2
 </td>
 <td style="text-align:right;">
-80.9
+92.8
+</td>
+<td style="text-align:right;">
+93.9
+</td>
+<td style="text-align:right;">
+93.8
+</td>
+<td style="text-align:right;">
+76.9
+</td>
+<td style="text-align:right;">
+87.1
+</td>
+<td style="text-align:right;">
+85.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:left;">
+1.9.0
+</td>
+<td style="text-align:right;">
+92.8
+</td>
+<td style="text-align:right;">
+93.9
+</td>
+<td style="text-align:right;">
+93.8
+</td>
+<td style="text-align:right;">
+76.9
+</td>
+<td style="text-align:right;">
+87.1
+</td>
+<td style="text-align:right;">
+85.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+92.8
+</td>
+<td style="text-align:right;">
+93.9
+</td>
+<td style="text-align:right;">
+93.8
+</td>
+<td style="text-align:right;">
+76.9
+</td>
+<td style="text-align:right;">
+87.1
+</td>
+<td style="text-align:right;">
+85.9
 </td>
 </tr>
 <tr>
@@ -1759,6 +1318,35 @@ protein
 </td>
 <td style="text-align:right;">
 80.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_protein (msqrob2 1.20.0)
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+98.2
+</td>
+<td style="text-align:right;">
+99.2
+</td>
+<td style="text-align:right;">
+99.2
+</td>
+<td style="text-align:right;">
+86.6
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+95.8
 </td>
 </tr>
 <tr>
@@ -1835,7 +1423,7 @@ pAUC_10 / t_statistic
 <tbody>
 <tr>
 <td style="text-align:left;">
-hurdle_binomial
+hurdle_nested
 </td>
 <td style="text-align:left;">
 protein + peptide
@@ -1864,7 +1452,7 @@ protein + peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-hurdle_binomial
+hurdle_nested
 </td>
 <td style="text-align:left;">
 protein + peptide
@@ -1886,209 +1474,6 @@ protein + peptide
 </td>
 <td style="text-align:right;">
 73.4
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hurdle_binomial_firth
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-73.4
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hurdle_binomial_firth
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-73.4
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hurdle_binomial_firth_df4
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-73.5
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hurdle_binomial_firth_unbound
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.1
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-71.6
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hurdle_binomial_firth_unbound
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.1
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-71.6
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hurdle_firth
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.1
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-71.0
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hurdle_firth_df4
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.1
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-71.0
 </td>
 <td style="text-align:right;">
 73.9
@@ -2183,64 +1568,6 @@ peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-prolfqua_Prot
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.4.0
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-67.0
-</td>
-<td style="text-align:right;">
-72.9
-</td>
-<td style="text-align:right;">
-72.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ProtModerated
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.4.0
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-93.3
-</td>
-<td style="text-align:right;">
-93.3
-</td>
-<td style="text-align:right;">
-67.0
-</td>
-<td style="text-align:right;">
-74.3
-</td>
-<td style="text-align:right;">
-74.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 prolfqua_limma
 </td>
 <td style="text-align:left;">
@@ -2324,35 +1651,6 @@ protein
 </td>
 <td style="text-align:right;">
 70.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.4.0
-</td>
-<td style="text-align:right;">
-92.0
-</td>
-<td style="text-align:right;">
-92.4
-</td>
-<td style="text-align:right;">
-92.4
-</td>
-<td style="text-align:right;">
-65.7
-</td>
-<td style="text-align:right;">
-72.3
-</td>
-<td style="text-align:right;">
-72.0
 </td>
 </tr>
 <tr>
@@ -2440,122 +1738,6 @@ protein
 </td>
 <td style="text-align:right;">
 73.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_missing
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.4.0
-</td>
-<td style="text-align:right;">
-92.1
-</td>
-<td style="text-align:right;">
-91.9
-</td>
-<td style="text-align:right;">
-91.9
-</td>
-<td style="text-align:right;">
-67.7
-</td>
-<td style="text-align:right;">
-70.0
-</td>
-<td style="text-align:right;">
-69.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_mixed
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.4.0
-</td>
-<td style="text-align:right;">
-92.6
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-93.2
-</td>
-<td style="text-align:right;">
-66.3
-</td>
-<td style="text-align:right;">
-73.3
-</td>
-<td style="text-align:right;">
-73.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_mixedModerated
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.4.0
-</td>
-<td style="text-align:right;">
-92.6
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-66.3
-</td>
-<td style="text-align:right;">
-73.4
-</td>
-<td style="text-align:right;">
-73.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropeca
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.4.0
-</td>
-<td style="text-align:right;">
-91.8
-</td>
-<td style="text-align:right;">
-93.7
-</td>
-<td style="text-align:right;">
-94.0
-</td>
-<td style="text-align:right;">
-63.0
-</td>
-<td style="text-align:right;">
-77.5
-</td>
-<td style="text-align:right;">
-76.6
 </td>
 </tr>
 <tr>
@@ -2705,6 +1887,35 @@ protein + peptide
 </tr>
 <tr>
 <td style="text-align:left;">
+msqrob2_protein (msqrob2 1.20.0)
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:right;">
+94.4
+</td>
+<td style="text-align:right;">
+94.9
+</td>
+<td style="text-align:right;">
+94.9
+</td>
+<td style="text-align:right;">
+71.8
+</td>
+<td style="text-align:right;">
+78.8
+</td>
+<td style="text-align:right;">
+78.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 proDA 1.26.0
 </td>
 <td style="text-align:left;">
@@ -2776,9 +1987,8 @@ robust scaling on the human proteins; <code>aggregate</code>: median
 polish to proteins; <code>fit_lm</code>: one lm per protein;
 <code>contrasts_lm</code>: Wald contrasts with variance moderation;
 <code>facade_&lt;method&gt;</code>:
-<code>build_contrast_analysis()</code>, fit and contrasts (prolfqua 1.6
-and later). Timings compare only within one machine: R 4.6.2
-aarch64-apple-darwin23.</p>
+<code>build_contrast_analysis()</code>, fit and contrasts. Timings
+compare only within one machine: R 4.6.2 aarch64-apple-darwin23.</p>
 <div style="overflow-x: auto;">
 <table class="table table table-condensed">
 <caption>
@@ -2814,31 +2024,6 @@ transform
 </th>
 </tr></thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-1.4.0
-</td>
-<td style="text-align:right;">
-18.72
-</td>
-<td style="text-align:right;">
-8.86
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-1.52
-</td>
-<td style="text-align:right;">
-3.40
-</td>
-</tr>
 <tr>
 <td style="text-align:left;">
 1.6.2

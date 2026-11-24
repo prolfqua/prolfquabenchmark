@@ -83,7 +83,7 @@
 <div class="page-header"><h1 id="prolfquabenchmark">prolfquabenchmark<a class="anchor" aria-label="anchor" href="#prolfquabenchmark"></a>
 </h1></div>
 <p><a href="https://doi.org/10.5281/zenodo.18775961" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.18775961.svg" alt="DOI"></a></p>
-<p>Benchmark of differential expression methods for label-free proteomics — the <strong>prolfqua</strong> models and <strong>MSstats</strong>, <strong>proDA</strong> and <strong>msqrob2</strong> — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.4.0.</p>
+<p>Benchmark of differential expression methods for label-free proteomics — the <strong>prolfqua</strong> models and <strong>MSstats</strong>, <strong>proDA</strong> and <strong>msqrob2</strong> — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.6.2.</p>
 <p>Rendered results: <strong><a href="https://prolfqua.github.io/prolfquabenchmark/" class="external-link uri">https://prolfqua.github.io/prolfquabenchmark/</a></strong></p>
 <ul>
 <li>
@@ -97,7 +97,7 @@
 <p>A Snakemake pipeline in this repository runs the benchmark; the vignettes only show its results.</p>
 <ul>
 <li>
-<code>config/config.yaml</code>: the datasets (input file, preprocessing, contrasts, ground truth) and the methods (tool, input, level, datasets)</li>
+<code>config/config.yaml</code>: the datasets (input file, the inputs they provide, preprocessing, contrasts, ground truth) and the methods (tool, the inputs they need, level); every method runs on every dataset that provides its inputs</li>
 <li>
 <code>workflow/Snakefile</code>, <code>workflow/scripts/</code>: prepare each dataset once, fit every method, score, export to <code>inst/extdata</code>
 </li>
