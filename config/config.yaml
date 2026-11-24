@@ -63,16 +63,14 @@ datasets:
 # tool: prolfqua (fitted with build_contrast_analysis(), method = facade) or an external tool
 # input: the dataset inputs the method needs
 # level: protein, peptide (peptide models, one result per protein), or protein + peptide (hurdle)
-# packages: loaded before fitting (prolfquatakeoutmissing registers the lm_missing facade)
 methods:
-  prolfqua_lm:
+  lm:
     tool: prolfqua
     script: fit_prolfqua.R
-    facade: lm_missing
-    packages: [prolfquatakeoutmissing]
+    facade: lm
     input: [proteins]
     level: protein
-    description: "lm with missing-value merge and variance moderation (lm_missing, prolfquatakeoutmissing)"
+    description: "lm with variance moderation; no contrast where a group has no observations"
   prolfqua_limma:
     tool: prolfqua
     script: fit_prolfqua.R
@@ -87,6 +85,20 @@ methods:
     input: [proteins]
     level: protein
     description: "lm with imputed group means where a group has no observations (lm_impute)"
+  deqms:
+    tool: prolfqua
+    script: fit_prolfqua.R
+    facade: deqms
+    input: [proteins]
+    level: protein
+    description: "lm with DEqMS moderation (variance prior by number of peptides)"
+  deqms_voom:
+    tool: prolfqua
+    script: fit_prolfqua.R
+    facade: deqms_voom
+    input: [proteins]
+    level: protein
+    description: "limma with vooma precision weights and DEqMS moderation"
   lmer_nested:
     tool: prolfqua
     script: fit_prolfqua.R

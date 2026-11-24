@@ -3,7 +3,9 @@
 # of the benchmark pipeline (config/config.yaml) and adds the column `level`. Values are unchanged. Drops the
 # null-split rows (study removed) and the `limma` rows of the ROPECA vignette (the same model as `prolfqua_limma`).
 # Second step (2026-11-24): drops prolfqua 1.4.0 and the hurdle variants no longer benchmarked, and names
-# `hurdle_binomial_firth` after prolfqua's `hurdle_nested` facade, which fits the same model. Rerunning is safe.
+# `hurdle_binomial_firth` after prolfqua's `hurdle_nested` facade, which fits the same model. Third step (2026-11-24):
+# drops `prolfqua_lm` (lm_missing, now in prolfquatakeoutmissing, which the benchmark no longer uses). Rerunning is
+# safe.
 #   Rscript inst/scripts/migrate_score_history.R inst/extdata/score_history.tsv
 
 path <- commandArgs(trailingOnly = TRUE)[[1]]
@@ -63,6 +65,9 @@ dropped <- c(
 )
 history <- history[!history$method %in% dropped, ]
 history$method[history$method == "hurdle_binomial_firth"] <- "hurdle_nested"
+
+# 2026-11-24: lm_missing (prolfqua_lm) left prolfqua for prolfquatakeoutmissing; the benchmark covers prolfqua only
+history <- history[history$method != "prolfqua_lm", ]
 
 keys <- c("prolfqua_version", "dataset", "method", "contrast", "score", "metric")
 stopifnot(!anyDuplicated(history[, keys]))

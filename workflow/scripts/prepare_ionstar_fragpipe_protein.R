@@ -1,5 +1,5 @@
 # IonStar, FragPipe combined_protein.tsv (protein level): proteins with at least 2 peptides, razor intensities, log2
-# and robust scaling on the human proteins.
+# and robust scaling on the human proteins; the number of unique peptides is the child count (fit weights, DEqMS).
 #   Rscript workflow/scripts/prepare_ionstar_fragpipe_protein.R <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args("out_dir")
@@ -20,6 +20,7 @@ config$file_name <- "raw.file"
 config$hierarchy[["protein_Id"]] <- "protein"
 config$hierarchy_depth <- 1
 config$set_response("razor.intensity")
+config$nr_children <- "unique.stripped.peptides"
 config$factors[["dilution."]] <- "sample"
 config$factors[["run"]] <- "run_ID"
 config$factor_depth <- 1

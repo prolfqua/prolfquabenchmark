@@ -45,7 +45,6 @@ Suggests:
     proDA,
     prolfquapp,
     prolfquadata,
-    prolfquatakeoutmissing,
     pROC,
     QFeatures,
     rcmdcheck,
@@ -58,7 +57,6 @@ Suggests:
 Remotes:
     fgcz/prolfqua@main,
     prolfqua/prolfquapp,
-    prolfqua/prolfquatakeoutmissing,
     git::https://gitlab.bfabric.org/wolski/prolfquadata.git
 Roxygen: list(r6 = TRUE)
 biocViews: MassSpectrometry, Proteomics, Metabolomics, ExperimentHubSoftware

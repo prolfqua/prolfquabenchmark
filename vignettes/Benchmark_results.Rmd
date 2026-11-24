@@ -27,7 +27,7 @@ The benchmark pipeline (`make benchmark`, `workflow/Snakefile`, `config/config.y
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; on the diagonal the FDR is calibrated
 - Proteins tested vs pAUC_5 (as in ProteoBench): each method scores only the proteins it tests, so the plot shows the number of proteins tested per contrast against the partial AUC up to a false positive rate of 0.05; best is top right
-- Line type and point shape: solid lines and circles for the prolfqua models, dashed lines and triangles for the external tools; a method has the same colour in every plot
+- Line type and point shape: solid lines and circles for the prolfqua protein models, long dashes and squares for the prolfqua peptide models (nested and hurdle), short dashes and triangles for the external tools; a method has the same colour in every plot
 
 ```{r read}
 extdata <- function(name) {
@@ -40,18 +40,24 @@ datasets <- utils::read.delim("../inst/extdata/benchmark_datasets.tsv", stringsA
 ```
 
 ```{r method-style}
-# One colour per method within its group, in config order; the prolfqua models and the external tools reuse the
-# colours and differ by line type and point shape
+# One colour per method within its group, in config order; the groups reuse the colours and differ by line type and
+# point shape
 series_colours <- c("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6")
+style_groups <- data.frame(
+  group = c("prolfqua protein", "prolfqua peptide", "external"),
+  linetype = c("solid", "longdash", "22"),
+  shape = c(16, 15, 17)
+)
 method_style <- methods |>
-  dplyr::distinct(.data$method, .data$tool) |>
-  dplyr::mutate(group = ifelse(.data$tool == "prolfqua", "prolfqua", "external")) |>
+  dplyr::distinct(.data$method, .data$tool, .data$level) |>
+  dplyr::mutate(group = dplyr::case_when(
+    .data$tool != "prolfqua" ~ "external",
+    .data$level == "protein" ~ "prolfqua protein",
+    .default = "prolfqua peptide"
+  )) |>
   dplyr::mutate(colour = series_colours[dplyr::row_number()], .by = "group") |>
-  dplyr::arrange(.data$group != "prolfqua") |>
-  dplyr::mutate(
-    linetype = ifelse(.data$group == "prolfqua", "solid", "22"),
-    shape = ifelse(.data$group == "prolfqua", 16, 17)
-  )
+  dplyr::left_join(style_groups, by = "group") |>
+  dplyr::arrange(match(.data$group, style_groups$group))
 by_method <- function(column) stats::setNames(method_style[[column]], method_style$method)
 as_method <- function(x) factor(x, levels = method_style$method)
 method_scales <- list(

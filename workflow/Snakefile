@@ -26,14 +26,13 @@ def installed_packages(packages):
 TOOL_PACKAGES = {"prolfqua": ["prolfqua"]}
 PACKAGES = installed_packages(
     sorted({"prolfqua", "prolfquabenchmark"}
-           | {p for spec in METHODS.values() for p in spec.get("packages", [])}
            | {p for spec in METHODS.values() for p in TOOL_PACKAGES.get(spec["tool"], [spec["tool"]])})
 )
 
 
 def method_packages(method):
     spec = METHODS[method]
-    names = TOOL_PACKAGES.get(spec["tool"], [spec["tool"]]) + spec.get("packages", []) + ["prolfquabenchmark"]
+    names = TOOL_PACKAGES.get(spec["tool"], [spec["tool"]]) + ["prolfquabenchmark"]
     return {name: PACKAGES[name] for name in names}
 
 
