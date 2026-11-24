@@ -1,5 +1,5 @@
-# Fits MSstats (dataProcess, groupComparison) to its own input of one dataset: MaxQuant evidence.txt and
-# proteinGroups.txt for IonStar_MaxQuant_evidence, FragPipe MSstats.csv for IonStar_FragPipe_MSstats.
+# Fits MSstats (dataProcess, groupComparison) to its own input of one dataset: FragPipe MSstats.csv for
+# IonStar_FragPipe_MSstats.
 #   Rscript workflow/scripts/fit_msstats.R <config> <dataset> <method> <prepared_dir> <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args(c("config", "dataset", "method", "prepared_dir", "out_dir"))
@@ -8,33 +8,6 @@ annotation <- readxl::read_xlsx(quantdata_file("annotation_Ionstar2018_PXD003881
 
 msstats_input <- switch(
   args$dataset,
-  IonStar_MaxQuant_evidence = {
-    zip <- quantdata_file("MAXQuant_IonStar2018_PXD003881.zip")
-    protein_groups <- utils::read.table(unz(zip, "proteinGroups.txt"), sep = "\t", header = TRUE)
-    evidence <- utils::read.table(unz(zip, "evidence.txt"), sep = "\t", header = TRUE)
-    msstats_annotation <- dplyr::select(annotation, "raw.file", Condition = "sample", BioReplicate = "run_ID")
-    msstats_annotation$IsotopeLabelType <- "L"
-    msstats_annotation <- tidyr::unite(
-      msstats_annotation,
-      "Experiment",
-      "Condition",
-      "BioReplicate",
-      sep = "_",
-      remove = FALSE
-    )
-    raw_files <- data.frame(Raw.file = unique(evidence$Raw.file), raw.file = tolower(unique(evidence$Raw.file)))
-    msstats_annotation <- dplyr::inner_join(raw_files, msstats_annotation, by = "raw.file")
-    msstats_annotation$raw.file <- NULL
-    raw <- MSstats::MaxQtoMSstatsFormat(
-      evidence = evidence,
-      annotation = msstats_annotation,
-      proteinGroups = protein_groups,
-      removeProtein_with1Peptide = TRUE,
-      use_log_file = FALSE,
-      verbose = FALSE
-    )
-    raw[!grepl("REV__|CON__", raw$ProteinName), ]
-  },
   IonStar_FragPipe_MSstats = {
     fragpipe <- utils::read.csv(
       unz(quantdata_file("MSFragger_IonStar2018_PXD003881.zip"), "IonstarWithMSFragger/MSstats.csv"),
