@@ -4,12 +4,28 @@
 # The config names every dataset and method (config/config.yaml). The scripts in workflow/scripts use the installed
 # packages; each rule's `params` carry the version and build time of the packages it uses, so reinstalling a package
 # reruns only the jobs that depend on it.
+# With --config release=<version> (make score-history-release), prepare, the prolfqua fits and the step timings use
+# the prolfqua and prolfquapp in results/releases/<version>/lib (inst/scripts/install_release.sh): only the prolfqua
+# methods whose facade that release has, results and logs under releases/<version>, no export.
 
+import os
 import subprocess
 
 DATASETS = config["datasets"]
 METHODS = config["methods"]
 CONFIG_FILE = "config/config.yaml"
+RELEASE = config.get("release")
+RESULTS = f"results/releases/{RELEASE}" if RELEASE else "results"
+LOGS = f"logs/releases/{RELEASE}" if RELEASE else "logs"
+RELEASE_LIB = os.path.abspath(f"{RESULTS}/lib")
+# Prefix of the shell commands that run with the release's prolfqua
+R_LIBS = f"R_LIBS={RELEASE_LIB} " if RELEASE else ""
+
+
+def run_r(code, *args):
+    """Output of an R expression, with the release's library first when RELEASE is set."""
+    env = {**os.environ, "R_LIBS": RELEASE_LIB} if RELEASE else None
+    return subprocess.run(["Rscript", "-e", code, *args], capture_output=True, text=True, check=True, env=env).stdout
 
 
 def installed_packages(packages):
@@ -19,8 +35,13 @@ def installed_packages(packages):
         " d <- suppressWarnings(utils::packageDescription(p));"
         " cat(p, if (is.list(d)) paste(d$Version, d$Built) else 'absent', sep = '\\t'); cat('\\n') }"
     )
-    out = subprocess.run(["Rscript", "-e", code, *packages], capture_output=True, text=True, check=True).stdout
+    out = run_r(code, *packages)
     return dict(line.split("\t", 1) for line in out.strip().splitlines())
+
+
+if RELEASE:
+    FACADES = set(run_r("cat(names(prolfqua::list_facades()), sep = '\\n')").split())
+    METHODS = {m: s for m, s in METHODS.items() if s["tool"] == "prolfqua" and s["facade"] in FACADES}
 
 
 TOOL_PACKAGES = {"prolfqua": ["prolfqua"]}
@@ -43,7 +64,7 @@ JOBS = [
     for dataset, dataset_spec in DATASETS.items()
     if set(spec["input"]) <= set(dataset_spec["inputs"])
 ]
-SCORES = [f"results/scores/{dataset}/{method}.tsv" for dataset, method in JOBS]
+SCORES = [f"{RESULTS}/scores/{dataset}/{method}.tsv" for dataset, method in JOBS]
 PROLFQUA_VERSION = PACKAGES["prolfqua"].split(" ")[0]
 
 wildcard_constraints:
@@ -54,7 +75,7 @@ wildcard_constraints:
 rule all:
     input:
         SCORES,
-        "inst/extdata/benchmark_scores.tsv",
+        [] if RELEASE else "inst/extdata/benchmark_scores.tsv",
 
 
 rule prepare:
@@ -62,19 +83,19 @@ rule prepare:
         script=lambda w: f"workflow/scripts/{DATASETS[w.dataset]['prepare']}",
         common="workflow/scripts/common.R",
     output:
-        directory("results/prepared/{dataset}"),
+        directory(f"{RESULTS}/prepared/{{dataset}}"),
     params:
         packages=lambda w: {"prolfqua": PACKAGES["prolfqua"]},
     log:
-        "logs/prepare_{dataset}.log",
+        f"{LOGS}/prepare_{{dataset}}.log",
     shell:
-        "Rscript {input.script} results/prepared/{wildcards.dataset} > {log} 2>&1"
+        f"{R_LIBS}Rscript {{input.script}} {RESULTS}/prepared/{{wildcards.dataset}} > {{log}} 2>&1"
 
 
 def prepared_input(wildcards):
     """The prepared dataset, for methods fitted to its peptides, proteins or protein table."""
     needs_prepared = {"peptides", "proteins", "protein_table"} & set(METHODS[wildcards.method]["input"])
-    return f"results/prepared/{wildcards.dataset}" if needs_prepared else []
+    return f"{RESULTS}/prepared/{wildcards.dataset}" if needs_prepared else []
 
 
 rule fit:
@@ -84,34 +105,35 @@ rule fit:
         config=CONFIG_FILE,
         prepared=prepared_input,
     output:
-        contrasts="results/contrasts/{dataset}/{method}/contrasts.tsv",
-        metadata="results/contrasts/{dataset}/{method}/metadata.yaml",
+        contrasts=f"{RESULTS}/contrasts/{{dataset}}/{{method}}/contrasts.tsv",
+        metadata=f"{RESULTS}/contrasts/{{dataset}}/{{method}}/metadata.yaml",
     params:
         packages=lambda w: method_packages(w.method),
     benchmark:
-        "results/benchmarks/{dataset}/{method}.tsv"
+        f"{RESULTS}/benchmarks/{{dataset}}/{{method}}.tsv"
     log:
-        "logs/fit_{dataset}_{method}.log",
+        f"{LOGS}/fit_{{dataset}}_{{method}}.log",
     shell:
-        "Rscript {input.script} {input.config} {wildcards.dataset} {wildcards.method} "
-        "results/prepared/{wildcards.dataset} results/contrasts/{wildcards.dataset}/{wildcards.method} > {log} 2>&1"
+        f"{R_LIBS}Rscript {{input.script}} {{input.config}} {{wildcards.dataset}} {{wildcards.method}} "
+        f"{RESULTS}/prepared/{{wildcards.dataset}} {RESULTS}/contrasts/{{wildcards.dataset}}/{{wildcards.method}} "
+        "> {log} 2>&1"
 
 
 rule score:
     input:
         script="workflow/scripts/score.R",
         common="workflow/scripts/common.R",
-        contrasts="results/contrasts/{dataset}/{method}/contrasts.tsv",
-        metadata="results/contrasts/{dataset}/{method}/metadata.yaml",
+        contrasts=f"{RESULTS}/contrasts/{{dataset}}/{{method}}/contrasts.tsv",
+        metadata=f"{RESULTS}/contrasts/{{dataset}}/{{method}}/metadata.yaml",
     output:
-        scores="results/scores/{dataset}/{method}.tsv",
-        curves="results/curves/{dataset}/{method}.tsv",
+        scores=f"{RESULTS}/scores/{{dataset}}/{{method}}.tsv",
+        curves=f"{RESULTS}/curves/{{dataset}}/{{method}}.tsv",
     params:
         packages=lambda w: {"prolfquabenchmark": PACKAGES["prolfquabenchmark"]},
     log:
-        "logs/score_{dataset}_{method}.log",
+        f"{LOGS}/score_{{dataset}}_{{method}}.log",
     shell:
-        "Rscript {input.script} results/contrasts/{wildcards.dataset}/{wildcards.method} "
+        f"Rscript {{input.script}} {RESULTS}/contrasts/{{wildcards.dataset}}/{{wildcards.method}} "
         "{output.scores} {output.curves} > {log} 2>&1"
 
 
@@ -121,9 +143,9 @@ rule export:
         common="workflow/scripts/common.R",
         config=CONFIG_FILE,
         scores=SCORES,
-        curves=[f"results/curves/{dataset}/{method}.tsv" for dataset, method in JOBS],
-        metadata=[f"results/contrasts/{dataset}/{method}/metadata.yaml" for dataset, method in JOBS],
-        fit_times=[f"results/benchmarks/{dataset}/{method}.tsv" for dataset, method in JOBS],
+        curves=[f"{RESULTS}/curves/{dataset}/{method}.tsv" for dataset, method in JOBS],
+        metadata=[f"{RESULTS}/contrasts/{dataset}/{method}/metadata.yaml" for dataset, method in JOBS],
+        fit_times=[f"{RESULTS}/benchmarks/{dataset}/{method}.tsv" for dataset, method in JOBS],
     output:
         scores="inst/extdata/benchmark_scores.tsv",
         curves="inst/extdata/benchmark_curves.tsv",
@@ -140,9 +162,9 @@ rule timing_input:
     input:
         script="workflow/scripts/timing_input.R",
     output:
-        "results/timing/input.rds",
+        f"{RESULTS}/timing/input.rds",
     log:
-        "logs/timing_input.log",
+        f"{LOGS}/timing_input.log",
     shell:
         "Rscript {input.script} {output} > {log} 2>&1"
 
@@ -151,32 +173,35 @@ rule timing_input:
 rule time_steps:
     input:
         script="workflow/scripts/time_prolfqua_steps.R",
-        data="results/timing/input.rds",
+        data=f"{RESULTS}/timing/input.rds",
     output:
-        "results/timing/history_rows.tsv",
+        f"{RESULTS}/timing/history_rows.tsv",
     params:
         packages=lambda w: {"prolfqua": PACKAGES["prolfqua"]},
     threads: workflow.cores
     log:
-        "logs/time_steps.log",
+        f"{LOGS}/time_steps.log",
     shell:
-        "Rscript {input.script} {input.data} results/timing > {log} 2>&1"
+        f"{R_LIBS}Rscript {{input.script}} {{input.data}} {RESULTS}/timing > {{log}} 2>&1"
 
 
-# Appends the scores and step timings of the installed prolfqua to inst/extdata/score_history.tsv; refuses a
-# recorded version unless run with --config replace=true (make score-history REPLACE=1)
+# Appends the scores and step timings of the prolfqua the fits used to inst/extdata/score_history.tsv, dated today
+# or, for a release, with --config release_date=<commit date>; refuses a recorded version unless run with
+# --config replace=true (make score-history REPLACE=1)
 rule score_history:
     input:
         script="workflow/scripts/update_score_history.R",
         common="workflow/scripts/common.R",
         scores=SCORES,
-        timing="results/timing/history_rows.tsv",
+        timing=f"{RESULTS}/timing/history_rows.tsv",
     output:
-        touch(f"results/history/prolfqua_{PROLFQUA_VERSION}.done"),
+        touch(f"{RESULTS}/history/prolfqua_{PROLFQUA_VERSION}.done"),
     params:
         replace=config.get("replace", False),
+        version=PROLFQUA_VERSION,
+        date=config.get("release_date", "today"),
     log:
-        "logs/score_history.log",
+        f"{LOGS}/score_history.log",
     shell:
-        "Rscript {input.script} inst/extdata/score_history.tsv {input.timing} {params.replace} {input.scores} "
-        "> {log} 2>&1"
+        "Rscript {input.script} inst/extdata/score_history.tsv {input.timing} {params.replace} {params.version} "
+        "{params.date} {input.scores} > {log} 2>&1"

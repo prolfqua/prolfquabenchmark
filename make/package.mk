@@ -1,6 +1,6 @@
 INSTALL_BUILD_TARGET = build-install
 
-.PHONY: build-install benchmark benchmark-dry score-history
+.PHONY: build-install benchmark benchmark-dry score-history score-history-release
 
 build-install: document
 	Rscript -e "devtools::build(vignettes = FALSE)"
@@ -19,6 +19,15 @@ benchmark-dry:
 score-history:
 	$(SNAKEMAKE) -j $(J) score_history $(if $(REPLACE),--forcerun score_history --config replace=true)
 
+# An earlier prolfqua release: installs it with the prolfquapp of its time into results/releases/$(V)/lib and appends
+# its scores and step timings, dated with its prolfqua commit. PROLFQUA defaults to the tag $(V).
+#   make score-history-release V=1.9.0 PROLFQUA=f4dfb7f3 PROLFQUAPP=18914707 [REPLACE=1]
+PROLFQUA ?= $(V)
+score-history-release:
+	inst/scripts/install_release.sh $(V) $(PROLFQUA) $(PROLFQUAPP)
+	$(SNAKEMAKE) -j $(J) score_history $(if $(REPLACE),--forcerun score_history) --config release=$(V) \
+	  release_date=$$(git -C ../prolfqua log -1 --format=%ad --date=short $(PROLFQUA)) $(if $(REPLACE),replace=true)
+
 help-package:
 	@echo ""
 	@echo "Package-specific:"
@@ -28,3 +37,5 @@ help-package:
 	@echo "  make score-history           - append scores and step timings of the installed prolfqua to"
 	@echo "                                 inst/extdata/score_history.tsv"
 	@echo "  make score-history REPLACE=1 - same, replacing the rows of a version already in the history"
+	@echo "  make score-history-release V=<version> [PROLFQUA=<commit>] PROLFQUAPP=<commit> [REPLACE=1]"
+	@echo "                               - same for an earlier release, installed into results/releases/<version>"

@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width 
 - Scores: AUC, pAUC_10, pAUC_20, AP, pAP_50, pAP_80 on a 0–100 scale, computed with `benchmark_from_file()` from the contrasts of each fit, per contrast and for all contrasts pooled (`all`), for the rankings by `log_fc`, `t_statistic` and `scaled.p_value`
 - `tool_version`: the software that fitted the model. Rows of MSstats, proDA and msqrob2 carry their own version, so a change there can come from their release instead of prolfqua's
 - Timings: median elapsed seconds of the core prolfqua steps on the IonStar MaxQuant peptides (`workflow/scripts/time_prolfqua_steps.R`)
-- prolfqua 1.6.2 and 1.9.0 were rerun on 2026-11-23 with the benchmark vignettes of their time (`inst/scripts/prefill_score_history.sh`); their `date` is the date of the prolfqua commit, and their dataset and method names were relabelled to the pipeline's (`inst/scripts/migrate_score_history.R`). The vignettes changed and models were added between releases, so a method's cells stay empty for the releases before its vignette ran it. From 1.9.5 on, the pipeline runs every method on every dataset that provides its input
+- The history starts with prolfqua 1.9.0 (commit `f4dfb7f3`, 2026-11-02, before the rOpenSci self-review), rerun with the pipeline from a library holding that release and the prolfquapp of its time (`make score-history-release V=1.9.0 PROLFQUA=f4dfb7f3 PROLFQUAPP=18914707`); its `date` is the date of the prolfqua commit. Each tagged prolfqua release adds a block: install it, then `make score-history`. A release runs every prolfqua method whose facade it has, on every dataset that provides the method's input
 
 ```{r readHistory}
 history <- utils::read.delim(
@@ -119,7 +119,7 @@ knitr::kable(changes, digits = 3, caption = paste0(nrow(changes), " changes abov
 
 # Ranking of E. coli against human proteins
 
-One table per dataset: one row per model and prolfqua release, columns metric / ranking score (`log_fc`, `t_statistic`, `scaled.p_value`), all contrasts pooled. A model has no row for a release whose vignettes did not run it. MSstats, proDA and msqrob2 follow at the end of the table, labelled with their version, with their latest recorded scores only: they change with their own releases, not with prolfqua's. The plots show the prolfqua models.
+One table per dataset: one row per model and prolfqua release, columns metric / ranking score (`log_fc`, `t_statistic`, `scaled.p_value`), all contrasts pooled. A model has no row for a release without its facade (`prolfqua_ropecaV2_nested` came with prolfqua 1.9.4). MSstats, proDA and msqrob2 follow at the end of the table, labelled with their version, with their latest recorded scores only: they change with their own releases, not with prolfqua's. The plots show the prolfqua models.
 
 ```{r ranking, results = "asis", fig.height = 4}
 ranking <- history |>

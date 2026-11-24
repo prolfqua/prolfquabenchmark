@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18775961.svg)](https://doi.org/10.5281/zenodo.18775961)
 
-Benchmark of differential expression methods for label-free proteomics — the **prolfqua** models and **MSstats**, **proDA** and **msqrob2** — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.6.2.
+Benchmark of differential expression methods for label-free proteomics — the **prolfqua** models and **MSstats**, **proDA** and **msqrob2** — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.9.0.
 
 Rendered results: **https://prolfqua.github.io/prolfquabenchmark/**
 
@@ -22,6 +22,7 @@ make install            # the pipeline loads the installed prolfquabenchmark
 make benchmark J=4      # run the pipeline, export inst/extdata/benchmark_*.tsv
 make benchmark-dry      # list the jobs
 make score-history      # append the scores and step timings of the installed prolfqua to the history
+make score-history-release V=1.9.0 PROLFQUA=f4dfb7f3 PROLFQUAPP=18914707  # the same for an earlier release
 ```
 
 A method is added in `config/config.yaml` (a prolfqua facade needs no new code); a dataset needs a `prepare_<dataset>.R` script in `workflow/scripts`.

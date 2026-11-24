@@ -23,12 +23,14 @@ make install             # the pipeline loads the installed prolfquabenchmark
 make benchmark J=4       # run the pipeline, export inst/extdata/benchmark_*.tsv
 make benchmark-dry       # list the jobs
 make score-history       # append scores and step timings of the installed prolfqua (REPLACE=1 to rerun a version)
+make score-history-release V=1.9.0 PROLFQUA=f4dfb7f3 PROLFQUAPP=18914707   # an earlier release, own library
 make vignette V=Benchmark_results
 ```
 
 - Add a method: an entry under `methods` in `config/config.yaml` with the `input` it needs; it runs on every dataset whose `inputs` contain all of them; a prolfqua facade needs no new script; prolfqua methods are named `prolfqua_<facade>`
 - External tools take only their own input (feature table, peptides, the search software's `protein_table`), never the `proteins` prolfqua aggregated
 - Add a dataset: one input file; an entry under `datasets` with its `inputs` and a `workflow/scripts/prepare_<dataset>.R` writing `proteins.rds` (and `peptides.rds` if it provides peptides, `protein_table.rds` if the search software reports proteins)
+- Score history: starts at prolfqua 1.9.0; after each prolfqua tag, install it and run `make score-history`; an earlier release runs from `results/releases/<version>/lib` (fit and prepare scripts must not load prolfquabenchmark, which needs today's prolfqua)
 - One name per dataset and method, used in the results, the exported tables and the score history; never a second label for the same input
 - Python dependencies (snakemake) in the uv environment (`pyproject.toml`, `uv.lock`); R packages are the installed ones, declared in `DESCRIPTION`
 

@@ -24,13 +24,25 @@ read_spec <- function(config_file, dataset, method) {
   )
 }
 
-# Writes the contrasts of one dataset and method as a result directory (contrasts.tsv, metadata.yaml); `data` has
-# prolfqua's column names (diff, statistic, p.value, FDR, avgInt, protein_Id) or the standard ones
+# Writes the contrasts of one dataset and method as a result directory (contrasts.tsv, metadata.yaml), the format
+# prolfquabenchmark::read_contrast_results() reads; `data` has prolfqua's column names (diff, statistic, p.value, FDR,
+# avgInt, protein_Id) or the standard ones. Does not load prolfquabenchmark, which needs today's prolfqua: the fits of
+# a release (make score-history-release) run with that release's prolfqua
 write_result <- function(data, out_dir, spec, dataset, method, software_version) {
-  prolfquabenchmark::write_contrast_results(
-    data,
-    out_dir,
-    metadata = list(
+  standard <- c(
+    diff = "log_fc",
+    statistic = "t_statistic",
+    p.value = "p_value",
+    FDR = "p_value_adjusted",
+    avgInt = "avg_intensity",
+    protein_Id = "protein_id"
+  )
+  renamed <- names(data) %in% names(standard)
+  names(data)[renamed] <- standard[names(data)[renamed]]
+  dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+  utils::write.table(data, file.path(out_dir, "contrasts.tsv"), sep = "\t", row.names = FALSE, quote = FALSE)
+  yaml::write_yaml(
+    list(
       dataset = dataset,
       method = method,
       method_description = spec$method$description,
@@ -40,7 +52,8 @@ write_result <- function(data, out_dir, spec, dataset, method, software_version)
       software_version = software_version,
       date = format(Sys.Date()),
       ground_truth = spec$dataset$ground_truth
-    )
+    ),
+    file.path(out_dir, "metadata.yaml")
   )
 }
 
