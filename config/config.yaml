@@ -14,12 +14,20 @@ contrasts:
 # aggregated by prolfqua where the dataset has peptides; protein_table: the protein quantification of the search
 # software (MaxQuant proteinGroups.txt LFQ intensities, FragPipe combined_protein.tsv), prepared as protein_table.rds;
 # msstats_features: the feature table MSstats reads (FragPipe MSstats.csv)
+# preprocessing: the steps from the input file to what the methods fit, shown in vignettes/Benchmark_results.Rmd
 datasets:
   IonStar_MaxQuant:
     prepare: prepare_ionstar_maxquant.R
     inputs: [peptides, proteins]
     input_file: MAXQuant_IonStar2018_PXD003881.zip/peptides.txt
-    description: "IonStar, MaxQuant peptides.txt; log2, robust scaling on the human proteins, median polish to proteins"
+    description: "IonStar, MaxQuant peptides.txt"
+    preprocessing:
+      - "Contaminants and decoys (CON__, REV__) removed"
+      - "Proteins with at least 2 peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "log2, robust scaling on the human proteins"
+      - "prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides"
+      - "prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)"
     formula: "~ dilution."
     contrasts: ionstar
     ground_truth:
@@ -30,7 +38,14 @@ datasets:
     prepare: prepare_ionstar_maxquant_protein.R
     inputs: [proteins, protein_table]
     input_file: MAXQuant_IonStar2018_PXD003881.zip/proteinGroups.txt
-    description: "IonStar, MaxQuant proteinGroups.txt (protein level); LFQ intensities, log2, robust scaling on the human proteins"
+    description: "IonStar, MaxQuant proteinGroups.txt (protein level)"
+    preprocessing:
+      - "LFQ intensities"
+      - "Contaminants and decoys (CON__, REV__) removed"
+      - "Proteins with at least 2 peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "log2, robust scaling on the human proteins"
+      - "Every method fits this protein table; the number of peptides weights the prolfqua fits and is the DEqMS count"
     formula: "~ dilution."
     contrasts: ionstar
     ground_truth:
@@ -41,7 +56,15 @@ datasets:
     prepare: prepare_ionstar_fragpipe_msstats.R
     inputs: [peptides, proteins, msstats_features]
     input_file: MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/MSstats.csv
-    description: "IonStar, FragPipe MSstats.csv; precursors summed to peptides, log2, robust scaling on the human proteins, median polish to proteins"
+    description: "IonStar, FragPipe MSstats.csv"
+    preprocessing:
+      - "Precursor intensities summed to peptides"
+      - "Proteins with at least 2 peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "log2, robust scaling on the human proteins"
+      - "prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides"
+      - "prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)"
+      - "MSstats: the precursors of MSstats.csv, proteins with at least 2 peptides, its own dataProcess (log2, median equalization, Tukey median polish, imputation of censored values)"
     formula: "~ dilution."
     contrasts: ionstar
     ground_truth:
@@ -52,7 +75,13 @@ datasets:
     prepare: prepare_ionstar_fragpipe_protein.R
     inputs: [proteins, protein_table]
     input_file: MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/combined_protein.tsv
-    description: "IonStar, FragPipe combined_protein.tsv (protein level); razor intensities, log2, robust scaling on the human proteins"
+    description: "IonStar, FragPipe combined_protein.tsv (protein level)"
+    preprocessing:
+      - "Razor intensities"
+      - "Proteins with at least 2 unique peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "log2, robust scaling on the human proteins"
+      - "Every method fits this protein table; the number of unique peptides weights the prolfqua fits and is the DEqMS count"
     formula: "~ dilution."
     contrasts: ionstar
     ground_truth:
@@ -63,7 +92,13 @@ datasets:
     prepare: prepare_cptac_maxquant.R
     inputs: [peptides, proteins]
     input_file: MsDataHub::cptac_a_b_peptides.txt()
-    description: "CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor MsDataHub); vsn, median polish to proteins"
+    description: "CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor MsDataHub)"
+    preprocessing:
+      - "Proteins with at least 2 peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "vsn (variance-stabilizing transformation)"
+      - "prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides"
+      - "prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)"
     formula: "~ group."
     contrasts: cptac
     ground_truth:

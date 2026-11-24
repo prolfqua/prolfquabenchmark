@@ -37,6 +37,7 @@ scores <- extdata("benchmark_scores.tsv")
 curves <- utils::read.delim("../inst/extdata/benchmark_curves.tsv", stringsAsFactors = FALSE)
 methods <- extdata("benchmark_methods.tsv")
 datasets <- utils::read.delim("../inst/extdata/benchmark_datasets.tsv", stringsAsFactors = FALSE)
+preprocessing <- utils::read.delim("../inst/extdata/benchmark_preprocessing.tsv", stringsAsFactors = FALSE)
 ```
 
 ```{r method-style}
@@ -89,6 +90,7 @@ methods |>
 ```{r datasets, results = "asis", fig.height = 4.5}
 for (dataset_name in datasets$dataset) {
   cat("\n\n# ", dataset_name, "\n\n", datasets$description[datasets$dataset == dataset_name], "\n\n", sep = "")
+  cat(paste0("- ", preprocessing$step[preprocessing$dataset == dataset_name], "\n"), "\n", sep = "")
   scores |>
     dplyr::filter(.data$dataset == dataset_name, .data$contrast == "all") |>
     tidyr::pivot_longer(c("AUC", "pAUC_10"), names_to = "metric", values_to = "value") |>

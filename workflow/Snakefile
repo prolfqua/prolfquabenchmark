@@ -129,6 +129,7 @@ rule export:
         curves="inst/extdata/benchmark_curves.tsv",
         methods="inst/extdata/benchmark_methods.tsv",
         datasets="inst/extdata/benchmark_datasets.tsv",
+        preprocessing="inst/extdata/benchmark_preprocessing.tsv",
     log:
         "logs/export.log",
     shell:
