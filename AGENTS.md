@@ -26,8 +26,8 @@ make score-history       # append scores and step timings of the installed prolf
 make vignette V=Benchmark_results
 ```
 
-- Add a method: an entry under `methods` in `config/config.yaml`; a prolfqua facade needs no new script
-- Add a dataset: an entry under `datasets` and a `workflow/scripts/prepare_<dataset>.R` writing `proteins.rds` (and `peptides.rds` for peptide input)
+- Add a method: an entry under `methods` in `config/config.yaml` with the `input` it needs; it runs on every dataset whose `inputs` contain all of them; a prolfqua facade needs no new script
+- Add a dataset: an entry under `datasets` with its `inputs` and a `workflow/scripts/prepare_<dataset>.R` writing `proteins.rds` (and `peptides.rds` if it provides peptides)
 - One name per dataset and method, used in the results, the exported tables and the score history; never a second label for the same input
 - Python dependencies (snakemake) in the uv environment (`pyproject.toml`, `uv.lock`); R packages are the installed ones, declared in `DESCRIPTION`
 

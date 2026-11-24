@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width 
 - Scores: AUC, pAUC_10, pAUC_20, AP, pAP_50, pAP_80 on a 0–100 scale, computed with `benchmark_from_file()` from the contrasts of each fit, per contrast and for all contrasts pooled (`all`), for the rankings by `log_fc`, `t_statistic` and `scaled.p_value`
 - `tool_version`: the software that fitted the model. Rows of MSstats, proDA and msqrob2 carry their own version, so a change there can come from their release instead of prolfqua's
 - Timings: median elapsed seconds of the core prolfqua steps on the IonStar MaxQuant peptides (`workflow/scripts/time_prolfqua_steps.R`)
-- prolfqua 1.4.0, 1.6.2 and 1.9.0 were rerun on 2026-11-23 with the benchmark vignettes of their time (`inst/scripts/prefill_score_history.sh`); their `date` is the date of the prolfqua commit, and their dataset and method names were relabelled to the pipeline's (`inst/scripts/migrate_score_history.R`). The vignettes changed and models were added between releases, so a method's cells stay empty for the releases before its vignette ran it
+- prolfqua 1.6.2 and 1.9.0 were rerun on 2026-11-23 with the benchmark vignettes of their time (`inst/scripts/prefill_score_history.sh`); their `date` is the date of the prolfqua commit, and their dataset and method names were relabelled to the pipeline's (`inst/scripts/migrate_score_history.R`). The vignettes changed and models were added between releases, so a method's cells stay empty for the releases before its vignette ran it. From 1.9.5 on, the pipeline runs every method on every dataset that provides its input
 
 ```{r readHistory}
 history <- utils::read.delim(
@@ -151,7 +151,7 @@ for (dataset_name in sort(unique(ranking$dataset))) {
 
 # Timings
 
-Median elapsed seconds over 3 repetitions, IonStar MaxQuant peptides, all proteins with at least 2 peptides. `transform`: log2 and robust scaling on the human proteins; `aggregate`: median polish to proteins; `fit_lm`: one lm per protein; `contrasts_lm`: Wald contrasts with variance moderation; `facade_<method>`: `build_contrast_analysis()`, fit and contrasts (prolfqua 1.6 and later). Timings compare only within one machine: `r paste(unique(history$tool_version[history$metric == "elapsed_s"]), collapse = ", ")`.
+Median elapsed seconds over 3 repetitions, IonStar MaxQuant peptides, all proteins with at least 2 peptides. `transform`: log2 and robust scaling on the human proteins; `aggregate`: median polish to proteins; `fit_lm`: one lm per protein; `contrasts_lm`: Wald contrasts with variance moderation; `facade_<method>`: `build_contrast_analysis()`, fit and contrasts. Timings compare only within one machine: `r paste(unique(history$tool_version[history$metric == "elapsed_s"]), collapse = ", ")`.
 
 ```{r timings, results = "asis"}
 timings <- dplyr::filter(history, metric == "elapsed_s")

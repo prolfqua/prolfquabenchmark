@@ -1,15 +1,14 @@
 # Exports the current benchmark for the display vignettes (vignettes/Benchmark_results.Rmd): scores, curves, a
-# methods table (tool version, level, input, fit time) and a datasets table, as TSV files in <out_dir>.
-#   Rscript workflow/scripts/export.R <config> <out_dir>
+# methods table (tool version, level, input, fit time) and a datasets table, as TSV files in <out_dir>. The score
+# files (results/scores/<dataset>/<method>.tsv) name the jobs; the Snakefile passes them.
+#   Rscript workflow/scripts/export.R <config> <out_dir> <score files...>
 source("workflow/scripts/common.R")
-args <- script_args(c("config", "out_dir"))
+args <- script_args(c("config", "out_dir"), rest = "score_files")
 config <- yaml::read_yaml(args$config)
 
-jobs <- do.call(
-  rbind,
-  lapply(names(config$methods), function(method) {
-    data.frame(dataset = unlist(config$methods[[method]]$datasets), method = method)
-  })
+jobs <- data.frame(
+  dataset = basename(dirname(args$score_files)),
+  method = sub("\\.tsv$", "", basename(args$score_files))
 )
 job_file <- function(dir, extension) file.path("results", dir, jobs$dataset, paste0(jobs$method, extension))
 read_tables <- function(paths, colClasses = NA) {

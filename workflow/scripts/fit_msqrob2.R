@@ -1,7 +1,8 @@
-# Fits msqrob2's hurdle model to the prepared peptides of one dataset: peptides median-polished to proteins
-# (QFeatures::aggregateFeatures), msqrobHurdle, hypothesisTestHurdle. Two ways to report it (method `combine`):
+# Fits msqrob2 to one prepared dataset. With input peptides: peptides median-polished to proteins
+# (QFeatures::aggregateFeatures), msqrobHurdle, hypothesisTestHurdle, reported in one of two ways (method `combine`):
 #   intensity_first  the intensity estimate where it exists, else the detection (count) estimate; BH per contrast
 #   fisher           msqrob2's Fisher combination of both p-values (fisherPval, fisherAdjPval)
+# With input proteins only: msqrob and hypothesisTest on the prepared proteins (no detection model).
 #   Rscript workflow/scripts/fit_msqrob2.R <config> <dataset> <method> <prepared_dir> <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args(c("config", "dataset", "method", "prepared_dir", "out_dir"))
@@ -11,58 +12,79 @@ suppressMessages({
   library(msqrob2)
 })
 
-peptides <- readRDS(file.path(args$prepared_dir, "peptides.rds"))
 proteins <- readRDS(file.path(args$prepared_dir, "proteins.rds"))
 factor_col <- all.vars(stats::as.formula(spec$dataset$formula))
-levels <- sort(unique(as.character(peptides$data_long()[[factor_col]])))
+levels <- sort(unique(as.character(proteins$data_long()[[factor_col]])))
 
 # msqrob2 tests model parameters; with treatment coding a difference to the first level is that level's parameter
 reference <- paste0(factor_col, levels[1])
 hypotheses <- paste0(gsub(" ", "", sub(paste0(" - ", reference), "", spec$contrasts, fixed = TRUE)), "=0")
 L <- makeContrast(hypotheses, parameterNames = paste0(factor_col, levels[-1]))
-contrast_names <- stats::setNames(names(spec$contrasts), paste0("hurdle_", colnames(L)))
 
-median_polish <- function(x, verbose = FALSE, ...) {
-  fit <- stats::medpolish(x, na.rm = TRUE, trace.iter = verbose, maxiter = 10)
-  fit$overall + fit$col
+# One row per protein and contrast from the test tables msqrob2 stores in the rowData, one column per contrast
+test_tables <- function(row_data, columns) {
+  dplyr::bind_rows(lapply(names(columns), function(column) {
+    tibble::as_tibble(as.data.frame(row_data[[column]]), rownames = "protein_Id") |>
+      dplyr::mutate(contrast = columns[[column]])
+  }))
 }
-experiment <- prolfqua::lfqdata_to_summarized_experiment(lfqdata = peptides)
-pe <- QFeatures::QFeatures(list(peptide = experiment), colData = colData(experiment))
-pe <- QFeatures::aggregateFeatures(pe, i = "peptide", fcol = "protein_Id", name = "protein", fun = median_polish)
-pe <- msqrobHurdle(pe, i = "protein", formula = stats::as.formula(spec$dataset$formula), overwrite = TRUE)
-pe <- hypothesisTestHurdle(pe, i = "protein", L, overwrite = TRUE)
 
-row_data <- rowData(pe[["protein"]])
-tests <- dplyr::bind_rows(lapply(names(contrast_names), function(column) {
-  tibble::as_tibble(as.data.frame(row_data[[column]]), rownames = "protein_Id") |>
-    dplyr::mutate(contrast = contrast_names[[column]])
-}))
-
-result <- switch(
-  spec$method$combine,
-  intensity_first = {
-    intensity <- !is.na(tests$logFCt)
-    combined <- dplyr::transmute(
+if ("peptides" %in% spec$method$input) {
+  median_polish <- function(x, verbose = FALSE, ...) {
+    fit <- stats::medpolish(x, na.rm = TRUE, trace.iter = verbose, maxiter = 10)
+    fit$overall + fit$col
+  }
+  peptides <- readRDS(file.path(args$prepared_dir, "peptides.rds"))
+  experiment <- prolfqua::lfqdata_to_summarized_experiment(lfqdata = peptides)
+  pe <- QFeatures::QFeatures(list(peptide = experiment), colData = colData(experiment))
+  pe <- QFeatures::aggregateFeatures(pe, i = "peptide", fcol = "protein_Id", name = "protein", fun = median_polish)
+  pe <- msqrobHurdle(pe, i = "protein", formula = stats::as.formula(spec$dataset$formula), overwrite = TRUE)
+  pe <- hypothesisTestHurdle(pe, i = "protein", L, overwrite = TRUE)
+  tests <- test_tables(
+    rowData(pe[["protein"]]),
+    stats::setNames(names(spec$contrasts), paste0("hurdle_", colnames(L)))
+  )
+  result <- switch(
+    spec$method$combine,
+    intensity_first = {
+      intensity <- !is.na(tests$logFCt)
+      combined <- dplyr::transmute(
+        tests,
+        protein_Id = .data$protein_Id,
+        contrast = .data$contrast,
+        diff = ifelse(intensity, .data$logFC, .data$logOR),
+        statistic = ifelse(intensity, .data$logFCt, .data$logORt),
+        p.value = ifelse(intensity, .data$logFCpval, .data$logORpval)
+      )
+      dplyr::ungroup(prolfqua::adjust_p_values(combined, column = "p.value", group_by_col = "contrast"))
+    },
+    fisher = dplyr::transmute(
       tests,
       protein_Id = .data$protein_Id,
       contrast = .data$contrast,
-      diff = ifelse(intensity, .data$logFC, .data$logOR),
-      statistic = ifelse(intensity, .data$logFCt, .data$logORt),
-      p.value = ifelse(intensity, .data$logFCpval, .data$logORpval)
-    )
-    dplyr::ungroup(prolfqua::adjust_p_values(combined, column = "p.value", group_by_col = "contrast"))
-  },
-  fisher = dplyr::transmute(
+      diff = dplyr::coalesce(.data$logFC, .data$logOR),
+      statistic = dplyr::coalesce(.data$logFCt, .data$logORt),
+      p.value = .data$fisherPval,
+      FDR = .data$fisherAdjPval
+    ),
+    stop("unknown combine ", spec$method$combine)
+  )
+} else {
+  experiment <- prolfqua::lfqdata_to_summarized_experiment(lfqdata = proteins)
+  pe <- QFeatures::QFeatures(list(protein = experiment), colData = colData(experiment))
+  pe <- msqrob(pe, i = "protein", formula = stats::as.formula(spec$dataset$formula), overwrite = TRUE)
+  pe <- hypothesisTest(pe, i = "protein", L, overwrite = TRUE)
+  tests <- test_tables(rowData(pe[["protein"]]), stats::setNames(names(spec$contrasts), colnames(L)))
+  result <- dplyr::transmute(
     tests,
     protein_Id = .data$protein_Id,
     contrast = .data$contrast,
-    diff = dplyr::coalesce(.data$logFC, .data$logOR),
-    statistic = dplyr::coalesce(.data$logFCt, .data$logORt),
-    p.value = .data$fisherPval,
-    FDR = .data$fisherAdjPval
-  ),
-  stop("unknown combine ", spec$method$combine)
-)
+    diff = .data$logFC,
+    statistic = .data$t,
+    p.value = .data$pval,
+    FDR = .data$adjPval
+  )
+}
 
 # Average intensity per protein and contrast: the mean of the protein means of the groups in the contrast
 group_means <- proteins$get_Stats()$stats()

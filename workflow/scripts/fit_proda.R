@@ -1,5 +1,5 @@
 # Fits proDA to the prepared proteins of one dataset (input: proteins), or to the MaxQuant LFQ protein intensities
-# of proteinGroups.txt (input: proteinGroups LFQ), with the same normalization as the prepared datasets.
+# of proteinGroups.txt (input: lfq_proteins), with the same normalization as the prepared datasets.
 #   Rscript workflow/scripts/fit_proda.R <config> <dataset> <method> <prepared_dir> <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args(c("config", "dataset", "method", "prepared_dir", "out_dir"))
@@ -32,7 +32,7 @@ mq_lfq_experiment <- function() {
 experiment <- switch(
   spec$method$input,
   proteins = prolfqua::lfqdata_to_summarized_experiment(readRDS(file.path(args$prepared_dir, "proteins.rds"))),
-  "proteinGroups LFQ" = mq_lfq_experiment(),
+  lfq_proteins = mq_lfq_experiment(),
   stop("proDA has no input ", spec$method$input)
 )
 # proDA's fit draws random numbers (two unseeded fits of the same data differ by up to 1.3 in log fold change)

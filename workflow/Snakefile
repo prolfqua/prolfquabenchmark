@@ -37,7 +37,13 @@ def method_packages(method):
     return {name: PACKAGES[name] for name in names}
 
 
-JOBS = [(dataset, method) for method, spec in METHODS.items() for dataset in spec["datasets"]]
+# Every method on every dataset that provides all of its inputs
+JOBS = [
+    (dataset, method)
+    for method, spec in METHODS.items()
+    for dataset, dataset_spec in DATASETS.items()
+    if set(spec["input"]) <= set(dataset_spec["inputs"])
+]
 SCORES = [f"results/scores/{dataset}/{method}.tsv" for dataset, method in JOBS]
 PROLFQUA_VERSION = PACKAGES["prolfqua"].split(" ")[0]
 
@@ -68,8 +74,8 @@ rule prepare:
 
 def prepared_input(wildcards):
     """The prepared dataset, for methods fitted to its peptides or proteins."""
-    named = METHODS[wildcards.method].get("input", "")
-    return f"results/prepared/{wildcards.dataset}" if "peptides" in named or "proteins" in named else []
+    needs_prepared = {"peptides", "proteins"} & set(METHODS[wildcards.method]["input"])
+    return f"results/prepared/{wildcards.dataset}" if needs_prepared else []
 
 
 rule fit:
@@ -127,7 +133,7 @@ rule export:
     log:
         "logs/export.log",
     shell:
-        "Rscript {input.script} {input.config} inst/extdata > {log} 2>&1"
+        "Rscript {input.script} {input.config} inst/extdata {input.scores} > {log} 2>&1"
 
 
 rule timing_input:
@@ -163,7 +169,6 @@ rule score_history:
     input:
         script="workflow/scripts/update_score_history.R",
         common="workflow/scripts/common.R",
-        config=CONFIG_FILE,
         scores=SCORES,
         timing="results/timing/history_rows.tsv",
     output:
@@ -173,5 +178,5 @@ rule score_history:
     log:
         "logs/score_history.log",
     shell:
-        "Rscript {input.script} {input.config} inst/extdata/score_history.tsv {input.timing} {params.replace} "
+        "Rscript {input.script} inst/extdata/score_history.tsv {input.timing} {params.replace} {input.scores} "
         "> {log} 2>&1"

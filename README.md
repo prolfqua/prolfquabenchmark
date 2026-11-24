@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18775961.svg)](https://doi.org/10.5281/zenodo.18775961)
 
-Benchmark of differential expression methods for label-free proteomics — the **prolfqua** models and **MSstats**, **proDA** and **msqrob2** — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.4.0.
+Benchmark of differential expression methods for label-free proteomics — the **prolfqua** models and **MSstats**, **proDA** and **msqrob2** — on the IonStar (E. coli in human) and CPTAC (UPS1 in yeast) spike-in datasets, with the scores of every prolfqua release since 1.6.2.
 
 Rendered results: **https://prolfqua.github.io/prolfquabenchmark/**
 
@@ -13,7 +13,7 @@ Rendered results: **https://prolfqua.github.io/prolfquabenchmark/**
 
 A Snakemake pipeline in this repository runs the benchmark; the vignettes only show its results.
 
-- `config/config.yaml`: the datasets (input file, preprocessing, contrasts, ground truth) and the methods (tool, input, level, datasets)
+- `config/config.yaml`: the datasets (input file, the inputs they provide, preprocessing, contrasts, ground truth) and the methods (tool, the inputs they need, level); every method runs on every dataset that provides its inputs
 - `workflow/Snakefile`, `workflow/scripts/`: prepare each dataset once, fit every method, score, export to `inst/extdata`
 - Uses the installed R packages (prolfqua, prolfquapp, prolfquadata and the Suggests of `DESCRIPTION`); Snakemake comes from the uv environment of `pyproject.toml`
 

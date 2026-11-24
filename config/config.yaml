@@ -10,9 +10,13 @@ contrasts:
   cptac:
     b_vs_a: "group.b - group.a"
 
+# inputs: what the dataset provides. peptides and proteins: the prepared LFQData (results/prepared/<dataset>);
+# msstats_features: the feature table MSstats reads (MaxQuant evidence.txt, FragPipe MSstats.csv);
+# lfq_proteins: the MaxQuant LFQ protein intensities (proteinGroups.txt)
 datasets:
   IonStar_MaxQuant:
     prepare: prepare_ionstar_maxquant.R
+    inputs: [peptides, proteins, msstats_features, lfq_proteins]
     input_file: MAXQuant_IonStar2018_PXD003881.zip/peptides.txt
     description: "IonStar, MaxQuant peptides.txt; log2, robust scaling on the human proteins, median polish to proteins"
     formula: "~ dilution."
@@ -23,6 +27,7 @@ datasets:
       negative: {label: HUMAN, pattern: HUMAN}
   IonStar_FragPipe_MSstats:
     prepare: prepare_ionstar_fragpipe_msstats.R
+    inputs: [peptides, proteins, msstats_features]
     input_file: MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/MSstats.csv
     description: "IonStar, FragPipe MSstats.csv; precursors summed to peptides, log2, robust scaling on the human proteins, median polish to proteins"
     formula: "~ dilution."
@@ -33,6 +38,7 @@ datasets:
       negative: {label: HUMAN, pattern: HUMAN}
   IonStar_FragPipe_protein:
     prepare: prepare_ionstar_fragpipe_protein.R
+    inputs: [proteins]
     input_file: MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/combined_protein.tsv
     description: "IonStar, FragPipe combined_protein.tsv (protein level); razor intensities, log2, robust scaling on the human proteins"
     formula: "~ dilution."
@@ -43,6 +49,7 @@ datasets:
       negative: {label: HUMAN, pattern: HUMAN}
   CPTAC_MaxQuant:
     prepare: prepare_cptac_maxquant.R
+    inputs: [peptides, proteins]
     input_file: MsDataHub::cptac_a_b_peptides.txt()
     description: "CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor MsDataHub); vsn, median polish to proteins"
     formula: "~ group."
@@ -52,8 +59,9 @@ datasets:
       positive: {label: UPS, pattern: _UPS}
       negative: {label: YEAST, pattern: _YEAST}
 
+# Every method runs on every dataset that provides all of its inputs.
 # tool: prolfqua (fitted with build_contrast_analysis(), method = facade) or an external tool
-# input: peptides or proteins, the prepared data the method is fitted to
+# input: the dataset inputs the method needs
 # level: protein, peptide (peptide models, one result per protein), or protein + peptide (hurdle)
 # packages: loaded before fitting (prolfquatakeoutmissing registers the lm_missing facade)
 methods:
@@ -62,122 +70,87 @@ methods:
     script: fit_prolfqua.R
     facade: lm_missing
     packages: [prolfquatakeoutmissing]
-    input: proteins
+    input: [proteins]
     level: protein
     description: "lm with missing-value merge and variance moderation (lm_missing, prolfquatakeoutmissing)"
-    datasets: [IonStar_MaxQuant, IonStar_FragPipe_MSstats, IonStar_FragPipe_protein, CPTAC_MaxQuant]
   prolfqua_limma:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: limma
-    input: proteins
+    input: [proteins]
     level: protein
     description: "limma empirical Bayes"
-    datasets: [IonStar_MaxQuant, IonStar_FragPipe_MSstats, IonStar_FragPipe_protein, CPTAC_MaxQuant]
   lm_impute:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: lm_impute
-    input: proteins
+    input: [proteins]
     level: protein
     description: "lm with imputed group means where a group has no observations (lm_impute)"
-    datasets: [IonStar_MaxQuant]
   lmer_nested:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: lmer_nested
     formula_terms: "+ (1 | peptide_Id) + (1 | sampleName)"
-    input: peptides
+    input: [peptides]
     level: peptide
     description: "mixed model, peptide and sample random effects"
-    datasets: [IonStar_MaxQuant]
   ropeca_nested:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: ropeca_nested
-    input: peptides
+    input: [peptides]
     level: peptide
     description: "ROPECA, beta null of the median signed p-value"
-    datasets: [IonStar_MaxQuant]
   ropecaV2_nested:
     tool: prolfqua
     script: fit_prolfqua.R
     facade: ropecaV2_nested
-    input: peptides
+    input: [peptides]
     level: peptide
     description: "ROPECA, correlation-aware null of the median z-score"
-    datasets: [IonStar_MaxQuant]
-  hurdle_binomial:
+  hurdle_nested:
     tool: prolfqua
-    script: fit_hurdle.R
-    intensity: {facade: lm_impute, input: proteins}
-    detection: {facade: binomial_nested, input: peptides}
-    input: proteins + peptides
+    script: fit_prolfqua.R
+    facade: hurdle_nested
+    input: [peptides]
     level: protein + peptide
-    description: "lm_impute + binomial_nested, Fisher"
-    datasets: [IonStar_MaxQuant]
-  hurdle_binomial_firth:
-    tool: prolfqua
-    script: fit_hurdle.R
-    intensity: {facade: lm_impute, input: proteins}
-    detection: {facade: binomial_firth_nested, input: peptides}
-    input: proteins + peptides
-    level: protein + peptide
-    description: "lm_impute + binomial_firth_nested, Fisher"
-    datasets: [IonStar_MaxQuant]
-  hurdle_binomial_firth_unbound:
-    tool: prolfqua
-    script: fit_hurdle.R
-    intensity: {facade: lm_impute, input: proteins}
-    detection: {facade: binomial_firth_nested, input: peptides, args: {binomial_bound: false}}
-    input: proteins + peptides
-    level: protein + peptide
-    description: "lm_impute + binomial_firth_nested without dispersion bound, Fisher"
-    datasets: [IonStar_MaxQuant]
-  hurdle_binomial_firth_df4:
-    tool: prolfqua
-    script: fit_hurdle.R
-    intensity: {facade: lm_impute, input: proteins}
-    detection: {facade: binomial_firth_nested, input: peptides}
-    combine: fisher_always
-    input: proteins + peptides
-    level: protein + peptide
-    description: "lm_impute + binomial_firth_nested, Fisher whenever both p-values exist (msqrob2 rule)"
-    datasets: [IonStar_MaxQuant]
+    description: "hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher"
   MSstats:
     tool: MSstats
     script: fit_msstats.R
-    input: MaxQuant evidence.txt or FragPipe MSstats.csv
+    input: [msstats_features]
     level: protein
     description: "MSstats dataProcess (feature summarization) and groupComparison"
-    datasets: [IonStar_MaxQuant, IonStar_FragPipe_MSstats]
   proDA:
     tool: proDA
     script: fit_proda.R
-    input: proteins
+    input: [proteins]
     level: protein
     description: "proDA on the prepared proteins"
-    datasets: [IonStar_MaxQuant, IonStar_FragPipe_MSstats, IonStar_FragPipe_protein, CPTAC_MaxQuant]
   proDA_LFQ:
     tool: proDA
     script: fit_proda.R
-    input: proteinGroups LFQ
+    input: [lfq_proteins]
     level: protein
     description: "proDA on the MaxQuant LFQ protein intensities (proteinGroups.txt)"
-    datasets: [IonStar_MaxQuant]
   msqrob2:
     tool: msqrob2
     script: fit_msqrob2.R
     combine: intensity_first
-    input: peptides + proteins
+    input: [peptides, proteins]
     level: protein + peptide
     description: "msqrob2 hurdle; intensity estimate where it exists, else the detection estimate"
-    datasets: [IonStar_MaxQuant, IonStar_FragPipe_MSstats, CPTAC_MaxQuant]
   msqrob2_hurdle:
     tool: msqrob2
     script: fit_msqrob2.R
     combine: fisher
-    input: peptides + proteins
+    input: [peptides, proteins]
     level: protein + peptide
     description: "msqrob2 hurdle; Fisher combination of the intensity and detection p-values"
-    datasets: [IonStar_MaxQuant]
+  msqrob2_protein:
+    tool: msqrob2
+    script: fit_msqrob2.R
+    input: [proteins]
+    level: protein
+    description: "msqrob2 msqrob on the prepared proteins, no detection model"

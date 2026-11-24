@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Prefills inst/extdata/score_history.tsv with three older prolfqua versions (done once, 2026-11-23):
-#   1.4.0  2025-11-09  before the AI-assisted work
+# Prefills inst/extdata/score_history.tsv with older prolfqua versions (done once, 2026-11-23):
 #   1.6.2  2026-05-28  after the first AI-assisted wave
 #   1.9.0  2026-11-02  before the rOpenSci self-review
 # Each version is installed into its own library together with the prolfquapp, prolfquatakeoutmissing and
@@ -10,7 +9,9 @@
 #
 # Record of a run: it called inst/scripts/update_score_history.R, timing_input.R and time_prolfqua_steps.R as of
 # commit ae5316f (the last two now live in workflow/scripts, the first was replaced by the pipeline's score_history
-# rule); inst/scripts/migrate_score_history.R then relabelled its rows to the pipeline's names.
+# rule); inst/scripts/migrate_score_history.R then relabelled its rows to the pipeline's names. The run also reran
+# prolfqua 1.4.0 (2025-11-09, with render_harvest.R); its rows were dropped on 2026-11-24 because its models and
+# vignettes share too little with today's.
 #
 # Run from the prolfquabenchmark root, next to ../prolfqua, ../prolfquapp and ../prolfquatakeoutmissing:
 #   inst/scripts/prefill_score_history.sh render <work_dir>    # install and render; the machine may be busy
@@ -25,7 +26,6 @@ SCRIPTS=$ROOT/inst/scripts
 
 # name prolfqua prolfquapp prolfquatakeoutmissing(- if none) prolfquabenchmark
 POINTS=(
-  "1.4.0 e85cfe4c 776a5c38 - 280cb57"
   "1.6.2 f4dfb793 2972ef65 - 09c3cd2"
   "1.9.0 f4dfb7f3 18914707 7811e5a 9f3665e"
 )
@@ -41,9 +41,6 @@ render_point() {
   [ "$missing" != "-" ] && extract prolfquatakeoutmissing "$missing"
   extract prolfquabenchmark "$bench"
   local packages="prolfqua prolfquapp prolfquatakeoutmissing prolfquabenchmark"
-  # the 1.4.0-era vignettes do not load prolfquabenchmark (it then held only cptac_bench_preprocess() and imports
-  # msdata, which the normal library lacks)
-  [ "$name" = "1.4.0" ] && packages="prolfqua prolfquapp"
   for package in $packages; do
     if [ -d "$dir/$package" ]; then
       R_LIBS=$lib R CMD INSTALL -l "$lib" "$dir/$package" > "$dir/install_$package.log" 2>&1
@@ -54,14 +51,6 @@ render_point() {
   touch "$results/.score_run"
   cd "$dir/prolfquabenchmark/vignettes"
   case $name in
-    1.4.0)
-      R_LIBS=$lib Rscript "$SCRIPTS/render_harvest.R" BenchmarkingIonstarData.Rmd IonStar_MQ "$results"
-      # 280cb57 already adapted this vignette to the AnalysisConfiguration refactor of 2026-02-20 (after 1.4.0);
-      # take its version from before that change
-      git -C "$ROOT" show 79885b3:vignettes/BenchmarkFragPipeProteinIonStar.Rmd > BenchmarkFragPipeProteinIonStar.Rmd
-      R_LIBS=$lib Rscript "$SCRIPTS/render_harvest.R" BenchmarkFragPipeProteinIonStar.Rmd \
-        IonStar_FragPipe_combined_protein "$results"
-      ;;
     1.6.2)
       R_LIBS=$lib Rscript -e "rmarkdown::render('Benchmark_prolfqua.Rmd', quiet = TRUE)"
       ;;

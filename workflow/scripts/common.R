@@ -1,12 +1,16 @@
 # Helpers shared by the pipeline scripts; each script sources this file. Scripts run from the package root.
 
-# Positional command-line arguments, named
-script_args <- function(names) {
+# Positional command-line arguments, named; with `rest`, the remaining arguments (at least one) as one element
+script_args <- function(names, rest = NULL) {
   args <- commandArgs(trailingOnly = TRUE)
-  if (length(args) != length(names)) {
-    stop("expected arguments: ", paste(names, collapse = " "), "; got ", length(args))
+  n <- length(names)
+  complete <- if (is.null(rest)) length(args) == n else length(args) > n
+  if (!complete) {
+    expected <- paste(c(names, if (!is.null(rest)) paste0(rest, "...")), collapse = " ")
+    stop("expected arguments: ", expected, "; got ", length(args))
   }
-  stats::setNames(as.list(args), names)
+  named <- stats::setNames(as.list(args[seq_len(n)]), names)
+  if (is.null(rest)) named else c(named, stats::setNames(list(args[-seq_len(n)]), rest))
 }
 
 # The config entries of one dataset and one method, and the dataset's contrasts as a named character vector
@@ -31,7 +35,7 @@ write_result <- function(data, out_dir, spec, dataset, method, software_version)
       method = method,
       method_description = spec$method$description,
       input_file = spec$dataset$input_file,
-      input = spec$method$input,
+      input = paste(spec$method$input, collapse = " + "),
       level = spec$method$level,
       software_version = software_version,
       date = format(Sys.Date()),
