@@ -26,7 +26,7 @@ The benchmark pipeline (`make benchmark`, `workflow/Snakefile`, `config/config.y
 - Scores: AUC, partial AUC up to a false positive rate of 0.1 (pAUC_10) on a 0–100 scale, all contrasts pooled, for the rankings by fold change (`log_fc`), t statistic (`t_statistic`) and p-value with the sign of the fold change (`scaled.p_value`)
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; on the diagonal the FDR is calibrated
-- Proteins tested vs pAUC_5 (as in ProteoBench): each method scores only the proteins it tests, so the plot shows the partial AUC up to a false positive rate of 0.05 (x) against the number of proteins tested per contrast (y); best is top right, and the grey staircase is the Pareto front: the methods no other method beats in both
+- Proteins tested vs pAUC_5 (as in ProteoBench): each method scores only the proteins it tests, so the plot shows the partial AUC up to a false positive rate of 0.05 (x) against the number of proteins tested per contrast (y); best is top right, and the red staircase is the Pareto front: the methods no other method beats in both
 - Line type and point shape: solid lines and circles for the prolfqua protein models, long dashes and squares for the prolfqua peptide models (nested and hurdle), short dashes and triangles for the external tools; a method has the same colour in every plot
 
 ```{r read}
@@ -110,7 +110,7 @@ for (dataset_name in datasets$dataset) {
   print_with_height(
     ggplot2::ggplot(pauc_5, ggplot2::aes(x = pAUC_5, y = proteins, colour = method, shape = method)) +
       ggplot2::geom_step(data = front, ggplot2::aes(x = pAUC_5, y = proteins), direction = "vh",
-                         colour = "grey50", inherit.aes = FALSE) +
+                         colour = "#e34948", linewidth = 1, inherit.aes = FALSE) +
       ggplot2::geom_point(size = 3) +
       ggrepel::geom_text_repel(
         ggplot2::aes(label = method),
@@ -128,7 +128,7 @@ for (dataset_name in datasets$dataset) {
       ggplot2::facet_wrap(~score, ncol = 1) +
       ggplot2::labs(x = "pAUC_5 (all contrasts pooled)", y = "proteins tested per contrast",
                     title = paste(dataset_name, "pAUC_5 vs proteins tested"),
-                    caption = "grey staircase: Pareto front") +
+                    caption = "red staircase: Pareto front") +
       method_scales,
     height = 11
   )
