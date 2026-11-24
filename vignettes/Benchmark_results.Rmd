@@ -26,7 +26,7 @@ The benchmark pipeline (`make benchmark`, `workflow/Snakefile`, `config/config.y
 - Scores: AUC, partial AUC up to a false positive rate of 0.1 (pAUC_10) on a 0–100 scale, all contrasts pooled, for the rankings by fold change (`log_fc`), t statistic (`t_statistic`) and p-value with the sign of the fold change (`scaled.p_value`)
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; on the diagonal the FDR is calibrated
-- Proteins tested vs pAUC_5 (as in ProteoBench): each method scores only the proteins it tests, so the plot shows the partial AUC up to a false positive rate of 0.05 (x) against the number of proteins tested per contrast (y); best is top right
+- Proteins tested vs pAUC_5 (as in ProteoBench): each method scores only the proteins it tests, so the plot shows the partial AUC up to a false positive rate of 0.05 (x) against the number of proteins tested per contrast (y); best is top right, and the grey staircase is the Pareto front: the methods no other method beats in both
 - Line type and point shape: solid lines and circles for the prolfqua protein models, long dashes and squares for the prolfqua peptide models (nested and hurdle), short dashes and triangles for the external tools; a method has the same colour in every plot
 
 ```{r read}
@@ -68,7 +68,11 @@ method_scales <- list(
   ggplot2::theme_bw(),
   ggplot2::theme(legend.key.width = grid::unit(2.5, "lines"))
 )
-# Prints a plot from inside the results = "asis" loop with its own figure height
+# TRUE for the points no other point beats in both x and y (higher or equal in both, higher in one)
+pareto_optimal <- function(x, y) {
+  vapply(seq_along(x), function(i) !any(x >= x[i] & y >= y[i] & (x > x[i] | y > y[i])), logical(1))
+}
+# Prints a plot from inside the results = "asis" loop, in order with the text, with its own figure height
 print_with_height <- function(plot, height) {
   cat(knitr::knit_child(
     text = c(paste0("```{r, fig.height = ", height, "}"), "print(plot)", "```"),
@@ -87,31 +91,10 @@ methods |>
   knitr::kable(caption = "Fitted methods; fit_seconds: wall time of the fit job (jobs ran in parallel).")
 ```
 
-```{r datasets, results = "asis", fig.height = 4.5}
+```{r datasets, results = "asis"}
 for (dataset_name in datasets$dataset) {
   cat("\n\n# ", dataset_name, "\n\n", datasets$description[datasets$dataset == dataset_name], "\n\n", sep = "")
   cat(paste0("- ", preprocessing$step[preprocessing$dataset == dataset_name], "\n"), "\n", sep = "")
-  scores |>
-    dplyr::filter(.data$dataset == dataset_name, .data$contrast == "all") |>
-    tidyr::pivot_longer(c("AUC", "pAUC_10"), names_to = "metric", values_to = "value") |>
-    tidyr::unite("column", "metric", "score", sep = " / ") |>
-    dplyr::select(model = "model_name", "level", "column", "value") |>
-    tidyr::pivot_wider(names_from = "column", values_from = "value", names_sort = TRUE) |>
-    dplyr::arrange(dplyr::desc(.data$`pAUC_10 / scaled.p_value`)) |>
-    knitr::kable(digits = 1, format = "html", table.attr = "class=\"table table-condensed\"",
-                 caption = paste0(dataset_name, ": all contrasts pooled, sorted by pAUC_10 of scaled.p_value.")) |>
-    cat()
-  dataset_curves <- dplyr::filter(curves, .data$dataset == dataset_name) |>
-    dplyr::mutate(method = as_method(.data$method))
-  print(
-    ggplot2::ggplot(dplyr::filter(dataset_curves, .data$curve == "ROC"),
-                    ggplot2::aes(x = x, y = y, colour = method, linetype = method)) +
-      ggplot2::geom_step() +
-      ggplot2::coord_cartesian(xlim = c(0, 0.2)) +
-      ggplot2::facet_wrap(~score) +
-      ggplot2::labs(x = "false positive rate", y = "true positive rate", title = paste(dataset_name, "ROC")) +
-      method_scales
-  )
   dataset_scores <- dplyr::filter(scores, .data$dataset == dataset_name)
   tested <- dataset_scores |>
     dplyr::filter(.data$contrast != "all") |>
@@ -121,8 +104,13 @@ for (dataset_name in datasets$dataset) {
     dplyr::select("model_name", "score", "pAUC_5") |>
     dplyr::left_join(tested, by = c("model_name", "score")) |>
     dplyr::mutate(method = as_method(.data$model_name))
+  front <- pauc_5 |>
+    dplyr::filter(pareto_optimal(.data$pAUC_5, .data$proteins), .by = "score") |>
+    dplyr::arrange(.data$score, .data$pAUC_5)
   print_with_height(
     ggplot2::ggplot(pauc_5, ggplot2::aes(x = pAUC_5, y = proteins, colour = method, shape = method)) +
+      ggplot2::geom_step(data = front, ggplot2::aes(x = pAUC_5, y = proteins), direction = "vh",
+                         colour = "grey50", inherit.aes = FALSE) +
       ggplot2::geom_point(size = 3) +
       ggrepel::geom_text_repel(
         ggplot2::aes(label = method),
@@ -139,17 +127,53 @@ for (dataset_name in datasets$dataset) {
       ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.15, 0.4))) +
       ggplot2::facet_wrap(~score, ncol = 1) +
       ggplot2::labs(x = "pAUC_5 (all contrasts pooled)", y = "proteins tested per contrast",
-                    title = paste(dataset_name, "pAUC_5 vs proteins tested")) +
+                    title = paste(dataset_name, "pAUC_5 vs proteins tested"),
+                    caption = "grey staircase: Pareto front") +
       method_scales,
     height = 11
   )
-  print(
+  computed <- dataset_scores |>
+    dplyr::filter(.data$contrast == "all", .data$score == "scaled.p_value") |>
+    dplyr::select(model = "model_name", `contrasts computed` = "n_total")
+  dataset_scores |>
+    dplyr::filter(.data$contrast == "all") |>
+    tidyr::pivot_longer(c("AUC", "pAUC_10"), names_to = "metric", values_to = "value") |>
+    tidyr::unite("column", "metric", "score", sep = " / ") |>
+    dplyr::select(model = "model_name", "level", "column", "value") |>
+    tidyr::pivot_wider(names_from = "column", values_from = "value", names_sort = TRUE) |>
+    dplyr::left_join(computed, by = "model") |>
+    dplyr::relocate("contrasts computed", .after = "level") |>
+    dplyr::arrange(dplyr::desc(.data$`pAUC_10 / scaled.p_value`)) |>
+    knitr::kable(
+      digits = 1,
+      format = "html",
+      table.attr = "class=\"table table-condensed\"",
+      caption = paste0(
+        dataset_name, ": all contrasts pooled, sorted by pAUC_10 of scaled.p_value; contrasts computed: ",
+        "protein and contrast pairs with a p-value."
+      )
+    ) |>
+    cat()
+  dataset_curves <- dplyr::filter(curves, .data$dataset == dataset_name) |>
+    dplyr::mutate(method = as_method(.data$method))
+  print_with_height(
+    ggplot2::ggplot(dplyr::filter(dataset_curves, .data$curve == "ROC"),
+                    ggplot2::aes(x = x, y = y, colour = method, linetype = method)) +
+      ggplot2::geom_step() +
+      ggplot2::coord_cartesian(xlim = c(0, 0.2)) +
+      ggplot2::facet_wrap(~score) +
+      ggplot2::labs(x = "false positive rate", y = "true positive rate", title = paste(dataset_name, "ROC")) +
+      method_scales,
+    height = 4.5
+  )
+  print_with_height(
     ggplot2::ggplot(dplyr::filter(dataset_curves, .data$curve == "FDP"),
                     ggplot2::aes(x = x, y = y, colour = method, linetype = method)) +
       ggplot2::geom_abline(colour = "grey60") +
       ggplot2::geom_step() +
       ggplot2::labs(x = "nominal FDR", y = "false discovery proportion", title = paste(dataset_name, "FDP vs FDR")) +
-      method_scales
+      method_scales,
+    height = 4.5
   )
 }
 ```
