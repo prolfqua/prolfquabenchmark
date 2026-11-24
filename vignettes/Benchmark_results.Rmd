@@ -26,6 +26,8 @@ The benchmark pipeline (`make benchmark`, `workflow/Snakefile`, `config/config.y
 - Scores: AUC, partial AUC up to a false positive rate of 0.1 (pAUC_10) on a 0–100 scale, all contrasts pooled, for the rankings by fold change (`log_fc`), t statistic (`t_statistic`) and p-value with the sign of the fold change (`scaled.p_value`)
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; on the diagonal the FDR is calibrated
+- Proteins tested vs pAUC_5 (as in ProteoBench): each method scores only the proteins it tests, so the plot shows the number of proteins tested per contrast against the partial AUC up to a false positive rate of 0.05; best is top right
+- Line type and point shape: solid lines and circles for the prolfqua models, dashed lines and triangles for the external tools; a method has the same colour in every plot
 
 ```{r read}
 extdata <- function(name) {
@@ -35,6 +37,30 @@ scores <- extdata("benchmark_scores.tsv")
 curves <- utils::read.delim("../inst/extdata/benchmark_curves.tsv", stringsAsFactors = FALSE)
 methods <- extdata("benchmark_methods.tsv")
 datasets <- utils::read.delim("../inst/extdata/benchmark_datasets.tsv", stringsAsFactors = FALSE)
+```
+
+```{r method-style}
+# One colour per method within its group, in config order; the prolfqua models and the external tools reuse the
+# colours and differ by line type and point shape
+series_colours <- c("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6")
+method_style <- methods |>
+  dplyr::distinct(.data$method, .data$tool) |>
+  dplyr::mutate(group = ifelse(.data$tool == "prolfqua", "prolfqua", "external")) |>
+  dplyr::mutate(colour = series_colours[dplyr::row_number()], .by = "group") |>
+  dplyr::arrange(.data$group != "prolfqua") |>
+  dplyr::mutate(
+    linetype = ifelse(.data$group == "prolfqua", "solid", "22"),
+    shape = ifelse(.data$group == "prolfqua", 16, 17)
+  )
+by_method <- function(column) stats::setNames(method_style[[column]], method_style$method)
+as_method <- function(x) factor(x, levels = method_style$method)
+method_scales <- list(
+  ggplot2::scale_colour_manual(values = by_method("colour")),
+  ggplot2::scale_linetype_manual(values = by_method("linetype")),
+  ggplot2::scale_shape_manual(values = by_method("shape")),
+  ggplot2::theme_bw(),
+  ggplot2::theme(legend.key.width = grid::unit(2.5, "lines"))
+)
 ```
 
 # Methods
@@ -59,23 +85,41 @@ for (dataset_name in datasets$dataset) {
     knitr::kable(digits = 1, format = "html", table.attr = "class=\"table table-condensed\"",
                  caption = paste0(dataset_name, ": all contrasts pooled, sorted by pAUC_10 of scaled.p_value.")) |>
     cat()
-  dataset_curves <- dplyr::filter(curves, .data$dataset == dataset_name)
+  dataset_curves <- dplyr::filter(curves, .data$dataset == dataset_name) |>
+    dplyr::mutate(method = as_method(.data$method))
   print(
     ggplot2::ggplot(dplyr::filter(dataset_curves, .data$curve == "ROC"),
-                    ggplot2::aes(x = x, y = y, colour = method)) +
+                    ggplot2::aes(x = x, y = y, colour = method, linetype = method)) +
       ggplot2::geom_step() +
       ggplot2::coord_cartesian(xlim = c(0, 0.2)) +
       ggplot2::facet_wrap(~score) +
       ggplot2::labs(x = "false positive rate", y = "true positive rate", title = paste(dataset_name, "ROC")) +
-      ggplot2::theme_bw()
+      method_scales
+  )
+  dataset_scores <- dplyr::filter(scores, .data$dataset == dataset_name)
+  tested <- dataset_scores |>
+    dplyr::filter(.data$contrast != "all") |>
+    dplyr::summarize(proteins = mean(.data$n_total), .by = c("model_name", "score"))
+  pauc_5 <- dataset_scores |>
+    dplyr::filter(.data$contrast == "all") |>
+    dplyr::select("model_name", "score", "pAUC_5") |>
+    dplyr::left_join(tested, by = c("model_name", "score")) |>
+    dplyr::mutate(method = as_method(.data$model_name))
+  print(
+    ggplot2::ggplot(pauc_5, ggplot2::aes(x = proteins, y = pAUC_5, colour = method, shape = method)) +
+      ggplot2::geom_point(size = 3) +
+      ggplot2::facet_wrap(~score) +
+      ggplot2::labs(x = "proteins tested per contrast", y = "pAUC_5 (all contrasts pooled)",
+                    title = paste(dataset_name, "proteins tested vs pAUC_5")) +
+      method_scales
   )
   print(
     ggplot2::ggplot(dplyr::filter(dataset_curves, .data$curve == "FDP"),
-                    ggplot2::aes(x = x, y = y, colour = method)) +
-      ggplot2::geom_abline(linetype = "dashed") +
+                    ggplot2::aes(x = x, y = y, colour = method, linetype = method)) +
+      ggplot2::geom_abline(colour = "grey60") +
       ggplot2::geom_step() +
       ggplot2::labs(x = "nominal FDR", y = "false discovery proportion", title = paste(dataset_name, "FDP vs FDR")) +
-      ggplot2::theme_bw()
+      method_scales
   )
 }
 ```
