@@ -163,7 +163,7 @@ else the detection estimate</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; Fisher combination of the intensity and
 detection p-values</td>
-<td align="right">5.5</td>
+<td align="right">5.4</td>
 </tr>
 <tr class="odd">
 <td align="left">CPTAC_MaxQuant</td>
@@ -173,7 +173,7 @@ detection p-values</td>
 <td align="left">proteins</td>
 <td align="left">lm with DEqMS moderation (variance prior by number of
 peptides)</td>
-<td align="right">2.0</td>
+<td align="right">2.3</td>
 </tr>
 <tr class="even">
 <td align="left">CPTAC_MaxQuant</td>
@@ -193,7 +193,7 @@ moderation</td>
 <td align="left">peptides</td>
 <td align="left">hurdle: lm_impute on median-polished proteins and
 binomial_firth_nested on peptide detection, Fisher</td>
-<td align="right">7.1</td>
+<td align="right">7.3</td>
 </tr>
 <tr class="even">
 <td align="left">CPTAC_MaxQuant</td>
@@ -202,7 +202,7 @@ binomial_firth_nested on peptide detection, Fisher</td>
 <td align="left">protein</td>
 <td align="left">proteins</td>
 <td align="left">limma empirical Bayes</td>
-<td align="right">0.9</td>
+<td align="right">0.8</td>
 </tr>
 <tr class="odd">
 <td align="left">CPTAC_MaxQuant</td>
@@ -212,7 +212,7 @@ binomial_firth_nested on peptide detection, Fisher</td>
 <td align="left">proteins</td>
 <td align="left">limpa vooma fit with imputation-aware degrees of
 freedom on the proteins</td>
-<td align="right">0.8</td>
+<td align="right">0.9</td>
 </tr>
 <tr class="even">
 <td align="left">CPTAC_MaxQuant</td>
@@ -232,7 +232,7 @@ vooma fit</td>
 <td align="left">proteins</td>
 <td align="left">lm with variance moderation; no contrast where a group
 has no observations</td>
-<td align="right">2.0</td>
+<td align="right">2.1</td>
 </tr>
 <tr class="even">
 <td align="left">CPTAC_MaxQuant</td>
@@ -242,7 +242,7 @@ has no observations</td>
 <td align="left">proteins</td>
 <td align="left">lm with imputed group means where a group has no
 observations</td>
-<td align="right">2.2</td>
+<td align="right">2.3</td>
 </tr>
 <tr class="odd">
 <td align="left">CPTAC_MaxQuant</td>
@@ -251,7 +251,7 @@ observations</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">mixed model, peptide and sample random effects</td>
-<td align="right">23.0</td>
+<td align="right">22.7</td>
 </tr>
 <tr class="even">
 <td align="left">CPTAC_MaxQuant</td>
@@ -261,7 +261,7 @@ observations</td>
 <td align="left">peptides</td>
 <td align="left">ROPECA, correlation-aware null of the median
 z-score</td>
-<td align="right">11.4</td>
+<td align="right">12.3</td>
 </tr>
 <tr class="odd">
 <td align="left">CPTAC_MaxQuant</td>
@@ -270,7 +270,7 @@ z-score</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">ROPECA, beta null of the median signed p-value</td>
-<td align="right">7.6</td>
+<td align="right">8.0</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -280,7 +280,7 @@ z-score</td>
 <td align="left">msstats_features</td>
 <td align="left">MSstats dataProcess (feature summarization) and
 groupComparison</td>
-<td align="right">61.2</td>
+<td align="right">63.9</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -290,7 +290,7 @@ groupComparison</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; intensity estimate where it exists,
 else the detection estimate</td>
-<td align="right">12.5</td>
+<td align="right">12.8</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -300,7 +300,7 @@ else the detection estimate</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; Fisher combination of the intensity and
 detection p-values</td>
-<td align="right">12.4</td>
+<td align="right">13.5</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -310,7 +310,7 @@ detection p-values</td>
 <td align="left">proteins</td>
 <td align="left">lm with DEqMS moderation (variance prior by number of
 peptides)</td>
-<td align="right">5.7</td>
+<td align="right">5.5</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -320,7 +320,7 @@ peptides)</td>
 <td align="left">proteins</td>
 <td align="left">limma with vooma precision weights and DEqMS
 moderation</td>
-<td align="right">1.4</td>
+<td align="right">1.5</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -330,7 +330,7 @@ moderation</td>
 <td align="left">peptides</td>
 <td align="left">hurdle: lm_impute on median-polished proteins and
 binomial_firth_nested on peptide detection, Fisher</td>
-<td align="right">24.4</td>
+<td align="right">24.5</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -359,7 +359,7 @@ freedom on the proteins</td>
 <td align="left">peptides</td>
 <td align="left">limpa: DPC quantification of the peptides to proteins,
 vooma fit</td>
-<td align="right">14.7</td>
+<td align="right">15.1</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -369,7 +369,7 @@ vooma fit</td>
 <td align="left">proteins</td>
 <td align="left">lm with variance moderation; no contrast where a group
 has no observations</td>
-<td align="right">5.0</td>
+<td align="right">5.7</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -379,7 +379,7 @@ has no observations</td>
 <td align="left">proteins</td>
 <td align="left">lm with imputed group means where a group has no
 observations</td>
-<td align="right">5.0</td>
+<td align="right">5.1</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -388,7 +388,7 @@ observations</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">mixed model, peptide and sample random effects</td>
-<td align="right">88.2</td>
+<td align="right">88.0</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -398,7 +398,7 @@ observations</td>
 <td align="left">peptides</td>
 <td align="left">ROPECA, correlation-aware null of the median
 z-score</td>
-<td align="right">56.6</td>
+<td align="right">60.2</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -407,7 +407,7 @@ z-score</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">ROPECA, beta null of the median signed p-value</td>
-<td align="right">48.8</td>
+<td align="right">47.7</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_FragPipe_protein</td>
@@ -417,7 +417,7 @@ z-score</td>
 <td align="left">protein_table</td>
 <td align="left">msqrob2 msqrob on the protein table of the search
 software, no detection model</td>
-<td align="right">5.9</td>
+<td align="right">6.0</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_protein</td>
@@ -426,7 +426,7 @@ software, no detection model</td>
 <td align="left">protein</td>
 <td align="left">protein_table</td>
 <td align="left">proDA on the protein table of the search software</td>
-<td align="right">43.1</td>
+<td align="right">42.2</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_FragPipe_protein</td>
@@ -436,7 +436,7 @@ software, no detection model</td>
 <td align="left">proteins</td>
 <td align="left">lm with DEqMS moderation (variance prior by number of
 peptides)</td>
-<td align="right">6.4</td>
+<td align="right">6.7</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_protein</td>
@@ -455,7 +455,7 @@ moderation</td>
 <td align="left">protein</td>
 <td align="left">proteins</td>
 <td align="left">limma empirical Bayes</td>
-<td align="right">1.1</td>
+<td align="right">1.0</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_protein</td>
@@ -495,7 +495,7 @@ observations</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; intensity estimate where it exists,
 else the detection estimate</td>
-<td align="right">12.8</td>
+<td align="right">13.0</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_MaxQuant</td>
@@ -505,7 +505,7 @@ else the detection estimate</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; Fisher combination of the intensity and
 detection p-values</td>
-<td align="right">12.8</td>
+<td align="right">13.1</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant</td>
@@ -515,7 +515,7 @@ detection p-values</td>
 <td align="left">proteins</td>
 <td align="left">lm with DEqMS moderation (variance prior by number of
 peptides)</td>
-<td align="right">5.9</td>
+<td align="right">5.7</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_MaxQuant</td>
@@ -525,7 +525,7 @@ peptides)</td>
 <td align="left">proteins</td>
 <td align="left">limma with vooma precision weights and DEqMS
 moderation</td>
-<td align="right">1.6</td>
+<td align="right">1.8</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant</td>
@@ -535,7 +535,7 @@ moderation</td>
 <td align="left">peptides</td>
 <td align="left">hurdle: lm_impute on median-polished proteins and
 binomial_firth_nested on peptide detection, Fisher</td>
-<td align="right">25.2</td>
+<td align="right">25.4</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_MaxQuant</td>
@@ -544,7 +544,7 @@ binomial_firth_nested on peptide detection, Fisher</td>
 <td align="left">protein</td>
 <td align="left">proteins</td>
 <td align="left">limma empirical Bayes</td>
-<td align="right">1.1</td>
+<td align="right">1.4</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant</td>
@@ -564,7 +564,7 @@ freedom on the proteins</td>
 <td align="left">peptides</td>
 <td align="left">limpa: DPC quantification of the peptides to proteins,
 vooma fit</td>
-<td align="right">14.8</td>
+<td align="right">14.7</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant</td>
@@ -574,7 +574,7 @@ vooma fit</td>
 <td align="left">proteins</td>
 <td align="left">lm with variance moderation; no contrast where a group
 has no observations</td>
-<td align="right">5.3</td>
+<td align="right">6.2</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_MaxQuant</td>
@@ -593,7 +593,7 @@ observations</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">mixed model, peptide and sample random effects</td>
-<td align="right">90.3</td>
+<td align="right">88.5</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_MaxQuant</td>
@@ -603,7 +603,7 @@ observations</td>
 <td align="left">peptides</td>
 <td align="left">ROPECA, correlation-aware null of the median
 z-score</td>
-<td align="right">52.6</td>
+<td align="right">56.2</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant</td>
@@ -612,7 +612,7 @@ z-score</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">ROPECA, beta null of the median signed p-value</td>
-<td align="right">47.0</td>
+<td align="right">49.9</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_MaxQuant_protein</td>
@@ -622,7 +622,7 @@ z-score</td>
 <td align="left">protein_table</td>
 <td align="left">msqrob2 msqrob on the protein table of the search
 software, no detection model</td>
-<td align="right">6.2</td>
+<td align="right">7.7</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant_protein</td>
@@ -631,7 +631,7 @@ software, no detection model</td>
 <td align="left">protein</td>
 <td align="left">protein_table</td>
 <td align="left">proDA on the protein table of the search software</td>
-<td align="right">99.6</td>
+<td align="right">97.4</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_MaxQuant_protein</td>
@@ -641,7 +641,7 @@ software, no detection model</td>
 <td align="left">proteins</td>
 <td align="left">lm with DEqMS moderation (variance prior by number of
 peptides)</td>
-<td align="right">6.2</td>
+<td align="right">6.6</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant_protein</td>
@@ -651,7 +651,7 @@ peptides)</td>
 <td align="left">proteins</td>
 <td align="left">limma with vooma precision weights and DEqMS
 moderation</td>
-<td align="right">1.3</td>
+<td align="right">1.4</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_MaxQuant_protein</td>
@@ -680,7 +680,7 @@ freedom on the proteins</td>
 <td align="left">proteins</td>
 <td align="left">lm with variance moderation; no contrast where a group
 has no observations</td>
-<td align="right">5.9</td>
+<td align="right">6.3</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant_protein</td>
@@ -690,7 +690,7 @@ has no observations</td>
 <td align="left">proteins</td>
 <td align="left">lm with imputed group means where a group has no
 observations</td>
-<td align="right">6.6</td>
+<td align="right">6.4</td>
 </tr>
 </tbody>
 </table>
@@ -698,8 +698,17 @@ observations</td>
 <div class="section level2">
 <h2 id="ionstar_maxquant">IonStar_MaxQuant<a class="anchor" aria-label="anchor" href="#ionstar_maxquant"></a>
 </h2>
-<p>IonStar, MaxQuant peptides.txt; log2, robust scaling on the human
-proteins, median polish to proteins</p>
+<p>IonStar, MaxQuant peptides.txt</p>
+<ul>
+<li>Contaminants and decoys (CON__, REV__) removed</li>
+<li>Proteins with at least 2 peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>log2, robust scaling on the human proteins</li>
+<li>prolfqua protein models: peptides median-polished to proteins,
+weighted by the number of peptides</li>
+<li>prolfqua peptide models and msqrob2: the normalized peptides
+(msqrob2 median-polishes them itself)</li>
+</ul>
 <table class="table table table-condensed">
 <caption>
 IonStar_MaxQuant: all contrasts pooled, sorted by pAUC_10 of
@@ -1077,8 +1086,16 @@ protein
 <div class="section level2">
 <h2 id="ionstar_maxquant_protein">IonStar_MaxQuant_protein<a class="anchor" aria-label="anchor" href="#ionstar_maxquant_protein"></a>
 </h2>
-<p>IonStar, MaxQuant proteinGroups.txt (protein level); LFQ intensities,
-log2, robust scaling on the human proteins</p>
+<p>IonStar, MaxQuant proteinGroups.txt (protein level)</p>
+<ul>
+<li>LFQ intensities</li>
+<li>Contaminants and decoys (CON__, REV__) removed</li>
+<li>Proteins with at least 2 peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>log2, robust scaling on the human proteins</li>
+<li>Every method fits this protein table; the number of peptides weights
+the prolfqua fits and is the DEqMS count</li>
+</ul>
 <table class="table table table-condensed">
 <caption>
 IonStar_MaxQuant_protein: all contrasts pooled, sorted by pAUC_10 of
@@ -1326,8 +1343,20 @@ protein
 <div class="section level2">
 <h2 id="ionstar_fragpipe_msstats">IonStar_FragPipe_MSstats<a class="anchor" aria-label="anchor" href="#ionstar_fragpipe_msstats"></a>
 </h2>
-<p>IonStar, FragPipe MSstats.csv; precursors summed to peptides, log2,
-robust scaling on the human proteins, median polish to proteins</p>
+<p>IonStar, FragPipe MSstats.csv</p>
+<ul>
+<li>Precursor intensities summed to peptides</li>
+<li>Proteins with at least 2 peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>log2, robust scaling on the human proteins</li>
+<li>prolfqua protein models: peptides median-polished to proteins,
+weighted by the number of peptides</li>
+<li>prolfqua peptide models and msqrob2: the normalized peptides
+(msqrob2 median-polishes them itself)</li>
+<li>MSstats: the precursors of MSstats.csv, proteins with at least 2
+peptides, its own dataProcess (log2, median equalization, Tukey median
+polish, imputation of censored values)</li>
+</ul>
 <table class="table table table-condensed">
 <caption>
 IonStar_FragPipe_MSstats: all contrasts pooled, sorted by pAUC_10 of
@@ -1731,8 +1760,15 @@ peptide
 <div class="section level2">
 <h2 id="ionstar_fragpipe_protein">IonStar_FragPipe_protein<a class="anchor" aria-label="anchor" href="#ionstar_fragpipe_protein"></a>
 </h2>
-<p>IonStar, FragPipe combined_protein.tsv (protein level); razor
-intensities, log2, robust scaling on the human proteins</p>
+<p>IonStar, FragPipe combined_protein.tsv (protein level)</p>
+<ul>
+<li>Razor intensities</li>
+<li>Proteins with at least 2 unique peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>log2, robust scaling on the human proteins</li>
+<li>Every method fits this protein table; the number of unique peptides
+weights the prolfqua fits and is the DEqMS count</li>
+</ul>
 <table class="table table table-condensed">
 <caption>
 IonStar_FragPipe_protein: all contrasts pooled, sorted by pAUC_10 of
@@ -1981,7 +2017,16 @@ protein
 <h2 id="cptac_maxquant">CPTAC_MaxQuant<a class="anchor" aria-label="anchor" href="#cptac_maxquant"></a>
 </h2>
 <p>CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor
-MsDataHub); vsn, median polish to proteins</p>
+MsDataHub)</p>
+<ul>
+<li>Proteins with at least 2 peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>vsn (variance-stabilizing transformation)</li>
+<li>prolfqua protein models: peptides median-polished to proteins,
+weighted by the number of peptides</li>
+<li>prolfqua peptide models and msqrob2: the normalized peptides
+(msqrob2 median-polishes them itself)</li>
+</ul>
 <table class="table table table-condensed">
 <caption>
 CPTAC_MaxQuant: all contrasts pooled, sorted by pAUC_10 of
