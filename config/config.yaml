@@ -1,5 +1,6 @@
-# What the benchmark runs, and on what. Each dataset is one input table, each method one analysis; the names are the
-# ids in the results, the exported tables and the score history.
+# What the benchmark runs, and on what. Each dataset is one input file, each method one analysis; the names are the
+# ids in the results, the exported tables and the score history. A dataset without `prepare` serves only the tools
+# that read its file themselves (MSstats).
 
 contrasts:
   ionstar:
@@ -17,9 +18,30 @@ contrasts:
 datasets:
   IonStar_MaxQuant:
     prepare: prepare_ionstar_maxquant.R
-    inputs: [peptides, proteins, protein_table, msstats_features]
+    inputs: [peptides, proteins]
     input_file: MAXQuant_IonStar2018_PXD003881.zip/peptides.txt
-    description: "IonStar, MaxQuant peptides.txt; log2, robust scaling on the human proteins, median polish to proteins. Protein table: proteinGroups.txt LFQ intensities, log2, robust scaling on the human proteins"
+    description: "IonStar, MaxQuant peptides.txt; log2, robust scaling on the human proteins, median polish to proteins"
+    formula: "~ dilution."
+    contrasts: ionstar
+    ground_truth:
+      id_column: protein_id
+      positive: {label: ECOLI, pattern: ECOLI}
+      negative: {label: HUMAN, pattern: HUMAN}
+  IonStar_MaxQuant_protein:
+    prepare: prepare_ionstar_maxquant_protein.R
+    inputs: [proteins, protein_table]
+    input_file: MAXQuant_IonStar2018_PXD003881.zip/proteinGroups.txt
+    description: "IonStar, MaxQuant proteinGroups.txt (protein level); LFQ intensities, log2, robust scaling on the human proteins"
+    formula: "~ dilution."
+    contrasts: ionstar
+    ground_truth:
+      id_column: protein_id
+      positive: {label: ECOLI, pattern: ECOLI}
+      negative: {label: HUMAN, pattern: HUMAN}
+  IonStar_MaxQuant_evidence:
+    inputs: [msstats_features]
+    input_file: MAXQuant_IonStar2018_PXD003881.zip/evidence.txt
+    description: "IonStar, MaxQuant evidence.txt (feature level, protein groups from proteinGroups.txt); MSstats preprocessing"
     formula: "~ dilution."
     contrasts: ionstar
     ground_truth:

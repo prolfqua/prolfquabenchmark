@@ -1,5 +1,5 @@
 # Fits MSstats (dataProcess, groupComparison) to its own input of one dataset: MaxQuant evidence.txt and
-# proteinGroups.txt for IonStar_MaxQuant, FragPipe MSstats.csv for IonStar_FragPipe_MSstats.
+# proteinGroups.txt for IonStar_MaxQuant_evidence, FragPipe MSstats.csv for IonStar_FragPipe_MSstats.
 #   Rscript workflow/scripts/fit_msstats.R <config> <dataset> <method> <prepared_dir> <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args(c("config", "dataset", "method", "prepared_dir", "out_dir"))
@@ -8,7 +8,7 @@ annotation <- readxl::read_xlsx(quantdata_file("annotation_Ionstar2018_PXD003881
 
 msstats_input <- switch(
   args$dataset,
-  IonStar_MaxQuant = {
+  IonStar_MaxQuant_evidence = {
     zip <- quantdata_file("MAXQuant_IonStar2018_PXD003881.zip")
     protein_groups <- utils::read.table(unz(zip, "proteinGroups.txt"), sep = "\t", header = TRUE)
     evidence <- utils::read.table(unz(zip, "evidence.txt"), sep = "\t", header = TRUE)

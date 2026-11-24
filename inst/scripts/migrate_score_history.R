@@ -6,7 +6,8 @@
 # `hurdle_binomial_firth` after prolfqua's `hurdle_nested` facade, which fits the same model. Third step (2026-11-24):
 # drops `prolfqua_lm` (lm_missing, now in prolfquatakeoutmissing, which the benchmark no longer uses), names the
 # prolfqua models `prolfqua_<facade>`, and keeps proDA and msqrob2_protein only on the search software's protein
-# table. Rerunning is safe.
+# table. Fourth step (2026-11-24): one input file per dataset; MSstats on IonStar_MaxQuant moves to
+# IonStar_MaxQuant_evidence, proDA and msqrob2_protein to IonStar_MaxQuant_protein. Rerunning is safe.
 #   Rscript inst/scripts/migrate_score_history.R inst/extdata/score_history.tsv
 
 path <- commandArgs(trailingOnly = TRUE)[[1]]
@@ -88,6 +89,11 @@ if ("lm_impute" %in% history$method) {
   renamed <- history$method %in% facades
   history$method[renamed] <- paste0("prolfqua_", history$method[renamed])
 }
+
+# 2026-11-24: one input file per dataset; MaxQuant's evidence.txt and proteinGroups.txt are datasets of their own
+maxquant <- history$dataset == "IonStar_MaxQuant"
+history$dataset[maxquant & history$method == "MSstats"] <- "IonStar_MaxQuant_evidence"
+history$dataset[maxquant & history$method %in% c("proDA", "msqrob2_protein")] <- "IonStar_MaxQuant_protein"
 
 keys <- c("prolfqua_version", "dataset", "method", "contrast", "score", "metric")
 stopifnot(!anyDuplicated(history[, keys]))

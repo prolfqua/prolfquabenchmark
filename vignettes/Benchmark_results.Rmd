@@ -26,7 +26,7 @@ The benchmark pipeline (`make benchmark`, `workflow/Snakefile`, `config/config.y
 - Scores: AUC, partial AUC up to a false positive rate of 0.1 (pAUC_10) on a 0–100 scale, all contrasts pooled, for the rankings by fold change (`log_fc`), t statistic (`t_statistic`) and p-value with the sign of the fold change (`scaled.p_value`)
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; on the diagonal the FDR is calibrated
-- Proteins tested vs pAUC_5 (as in ProteoBench): each method scores only the proteins it tests, so the plot shows the number of proteins tested per contrast against the partial AUC up to a false positive rate of 0.05; best is top right
+- Proteins tested vs pAUC_5 (as in ProteoBench): each method scores only the proteins it tests, so the plot shows the partial AUC up to a false positive rate of 0.05 (x) against the number of proteins tested per contrast (y); best is top right
 - Line type and point shape: solid lines and circles for the prolfqua protein models, long dashes and squares for the prolfqua peptide models (nested and hurdle), short dashes and triangles for the external tools; a method has the same colour in every plot
 
 ```{r read}
@@ -112,11 +112,11 @@ for (dataset_name in datasets$dataset) {
     dplyr::left_join(tested, by = c("model_name", "score")) |>
     dplyr::mutate(method = as_method(.data$model_name))
   print(
-    ggplot2::ggplot(pauc_5, ggplot2::aes(x = proteins, y = pAUC_5, colour = method, shape = method)) +
+    ggplot2::ggplot(pauc_5, ggplot2::aes(x = pAUC_5, y = proteins, colour = method, shape = method)) +
       ggplot2::geom_point(size = 3) +
       ggplot2::facet_wrap(~score) +
-      ggplot2::labs(x = "proteins tested per contrast", y = "pAUC_5 (all contrasts pooled)",
-                    title = paste(dataset_name, "proteins tested vs pAUC_5")) +
+      ggplot2::labs(x = "pAUC_5 (all contrasts pooled)", y = "proteins tested per contrast",
+                    title = paste(dataset_name, "pAUC_5 vs proteins tested")) +
       method_scales
   )
   print(

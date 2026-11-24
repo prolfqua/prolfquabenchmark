@@ -28,7 +28,7 @@ make vignette V=Benchmark_results
 
 - Add a method: an entry under `methods` in `config/config.yaml` with the `input` it needs; it runs on every dataset whose `inputs` contain all of them; a prolfqua facade needs no new script; prolfqua methods are named `prolfqua_<facade>`
 - External tools take only their own input (feature table, peptides, the search software's `protein_table`), never the `proteins` prolfqua aggregated
-- Add a dataset: an entry under `datasets` with its `inputs` and a `workflow/scripts/prepare_<dataset>.R` writing `proteins.rds` (and `peptides.rds` if it provides peptides, `protein_table.rds` if the search software reports proteins)
+- Add a dataset: one input file; an entry under `datasets` with its `inputs` and a `workflow/scripts/prepare_<dataset>.R` writing `proteins.rds` (and `peptides.rds` if it provides peptides, `protein_table.rds` if the search software reports proteins)
 - One name per dataset and method, used in the results, the exported tables and the score history; never a second label for the same input
 - Python dependencies (snakemake) in the uv environment (`pyproject.toml`, `uv.lock`); R packages are the installed ones, declared in `DESCRIPTION`
 
