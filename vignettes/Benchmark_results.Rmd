@@ -67,6 +67,14 @@ method_scales <- list(
   ggplot2::theme_bw(),
   ggplot2::theme(legend.key.width = grid::unit(2.5, "lines"))
 )
+# Prints a plot from inside the results = "asis" loop with its own figure height
+print_with_height <- function(plot, height) {
+  cat(knitr::knit_child(
+    text = c(paste0("```{r, fig.height = ", height, "}"), "print(plot)", "```"),
+    envir = environment(),
+    quiet = TRUE
+  ))
+}
 ```
 
 # Methods
@@ -111,13 +119,27 @@ for (dataset_name in datasets$dataset) {
     dplyr::select("model_name", "score", "pAUC_5") |>
     dplyr::left_join(tested, by = c("model_name", "score")) |>
     dplyr::mutate(method = as_method(.data$model_name))
-  print(
+  print_with_height(
     ggplot2::ggplot(pauc_5, ggplot2::aes(x = pAUC_5, y = proteins, colour = method, shape = method)) +
       ggplot2::geom_point(size = 3) +
-      ggplot2::facet_wrap(~score) +
+      ggrepel::geom_text_repel(
+        ggplot2::aes(label = method),
+        colour = "grey20",
+        size = 3,
+        segment.colour = "grey60",
+        min.segment.length = 0,
+        box.padding = 0.6,
+        force = 6,
+        max.overlaps = Inf,
+        show.legend = FALSE,
+        seed = 1
+      ) +
+      ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.15, 0.4))) +
+      ggplot2::facet_wrap(~score, ncol = 1) +
       ggplot2::labs(x = "pAUC_5 (all contrasts pooled)", y = "proteins tested per contrast",
                     title = paste(dataset_name, "pAUC_5 vs proteins tested")) +
-      method_scales
+      method_scales,
+    height = 11
   )
   print(
     ggplot2::ggplot(dplyr::filter(dataset_curves, .data$curve == "FDP"),
