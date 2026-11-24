@@ -1,6 +1,6 @@
 # Exports the current benchmark for the display vignettes (vignettes/Benchmark_results.Rmd): scores, curves, a
-# methods table (tool version, level, input, fit time), a datasets table and their preprocessing steps, as TSV files
-# in <out_dir>. The score
+# methods table (tool version, level, input, fit time), a datasets table (with the labels of the changed and unchanged
+# proteins) and their preprocessing steps, as TSV files in <out_dir>. The score
 # files (results/scores/<dataset>/<method>.tsv) name the jobs; the Snakefile passes them.
 #   Rscript workflow/scripts/export.R <config> <out_dir> <score files...>
 source("workflow/scripts/common.R")
@@ -43,7 +43,9 @@ write_tsv(
   data.frame(
     dataset = names(config$datasets),
     input_file = vapply(config$datasets, function(d) d$input_file, ""),
-    description = vapply(config$datasets, function(d) d$description, "")
+    description = vapply(config$datasets, function(d) d$description, ""),
+    positive = vapply(config$datasets, function(d) d$ground_truth$positive$label, ""),
+    negative = vapply(config$datasets, function(d) d$ground_truth$negative$label, "")
   ),
   "benchmark_datasets.tsv"
 )

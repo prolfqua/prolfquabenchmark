@@ -1,6 +1,6 @@
-dataset	input_file	description
-IonStar_MaxQuant	MAXQuant_IonStar2018_PXD003881.zip/peptides.txt	IonStar, MaxQuant peptides.txt
-IonStar_MaxQuant_protein	MAXQuant_IonStar2018_PXD003881.zip/proteinGroups.txt	IonStar, MaxQuant proteinGroups.txt (protein level)
-IonStar_FragPipe_MSstats	MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/MSstats.csv	IonStar, FragPipe MSstats.csv
-IonStar_FragPipe_protein	MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/combined_protein.tsv	IonStar, FragPipe combined_protein.tsv (protein level)
-CPTAC_MaxQuant	MsDataHub::cptac_a_b_peptides.txt()	CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor MsDataHub)
+dataset	input_file	description	positive	negative
+IonStar_MaxQuant	MAXQuant_IonStar2018_PXD003881.zip/peptides.txt	IonStar, MaxQuant peptides.txt	ECOLI	HUMAN
+IonStar_MaxQuant_protein	MAXQuant_IonStar2018_PXD003881.zip/proteinGroups.txt	IonStar, MaxQuant proteinGroups.txt (protein level)	ECOLI	HUMAN
+IonStar_FragPipe_MSstats	MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/MSstats.csv	IonStar, FragPipe MSstats.csv	ECOLI	HUMAN
+IonStar_FragPipe_protein	MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/combined_protein.tsv	IonStar, FragPipe combined_protein.tsv (protein level)	ECOLI	HUMAN
+CPTAC_MaxQuant	MsDataHub::cptac_a_b_peptides.txt()	CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor MsDataHub)	UPS	YEAST
