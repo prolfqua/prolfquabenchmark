@@ -44,7 +44,7 @@ CPTAC_MaxQuant	prolfqua_limpa_nested	prolfqua	prolfqua 1.9.5	peptide	peptides	li
 IonStar_MaxQuant	prolfqua_hurdle_nested	prolfqua	prolfqua 1.9.5	protein + peptide	peptides	hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher	25.2	NA
 IonStar_FragPipe_MSstats	prolfqua_hurdle_nested	prolfqua	prolfqua 1.9.5	protein + peptide	peptides	hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher	24.4	NA
 CPTAC_MaxQuant	prolfqua_hurdle_nested	prolfqua	prolfqua 1.9.5	protein + peptide	peptides	hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher	7.1	NA
-IonStar_FragPipe_MSstats	MSstats	MSstats	MSstats 4.20.0	protein	msstats_features	MSstats dataProcess (feature summarization) and groupComparison	75	NA
+IonStar_FragPipe_MSstats	MSstats	MSstats	MSstats 4.20.0	protein	msstats_features	MSstats dataProcess (feature summarization) and groupComparison	61.2	NA
 IonStar_MaxQuant_protein	proDA	proDA	proDA 1.26.0	protein	protein_table	proDA on the protein table of the search software	99.6	NA
 IonStar_FragPipe_protein	proDA	proDA	proDA 1.26.0	protein	protein_table	proDA on the protein table of the search software	43.1	NA
 IonStar_MaxQuant	msqrob2	msqrob2	msqrob2 1.20.0	protein + peptide	peptides + proteins	msqrob2 hurdle; intensity estimate where it exists, else the detection estimate	12.8	NA
