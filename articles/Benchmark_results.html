@@ -127,12 +127,12 @@ a method has the same colour in every plot</li>
 <caption>Fitted methods; fit_seconds: wall time of the fit job (jobs ran
 in parallel).</caption>
 <colgroup>
-<col width="12%">
-<col width="7%">
-<col width="7%">
+<col width="11%">
+<col width="11%">
+<col width="6%">
 <col width="8%">
 <col width="9%">
-<col width="48%">
+<col width="46%">
 <col width="5%">
 </colgroup>
 <thead><tr class="header">
@@ -147,72 +147,13 @@ in parallel).</caption>
 <tbody>
 <tr class="odd">
 <td align="left">CPTAC_MaxQuant</td>
-<td align="left">deqms</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">lm with DEqMS moderation (variance prior by number of
-peptides)</td>
-<td align="right">2.0</td>
-</tr>
-<tr class="even">
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">deqms_voom</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">limma with vooma precision weights and DEqMS
-moderation</td>
-<td align="right">0.8</td>
-</tr>
-<tr class="odd">
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">hurdle_nested</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein + peptide</td>
-<td align="left">peptides</td>
-<td align="left">hurdle: lm_impute on median-polished proteins and
-binomial_firth_nested on peptide detection, Fisher</td>
-<td align="right">7.0</td>
-</tr>
-<tr class="even">
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">lm</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">lm with variance moderation; no contrast where a group
-has no observations</td>
-<td align="right">2.0</td>
-</tr>
-<tr class="odd">
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">lm_impute</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">lm with imputed group means where a group has no
-observations (lm_impute)</td>
-<td align="right">2.2</td>
-</tr>
-<tr class="even">
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">lmer_nested</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">peptide</td>
-<td align="left">peptides</td>
-<td align="left">mixed model, peptide and sample random effects</td>
-<td align="right">22.6</td>
-</tr>
-<tr class="odd">
-<td align="left">CPTAC_MaxQuant</td>
 <td align="left">msqrob2</td>
 <td align="left">msqrob2 1.20.0</td>
 <td align="left">protein + peptide</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; intensity estimate where it exists,
 else the detection estimate</td>
-<td align="right">5.3</td>
+<td align="right">5.6</td>
 </tr>
 <tr class="even">
 <td align="left">CPTAC_MaxQuant</td>
@@ -222,28 +163,39 @@ else the detection estimate</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; Fisher combination of the intensity and
 detection p-values</td>
-<td align="right">5.3</td>
+<td align="right">5.5</td>
 </tr>
 <tr class="odd">
 <td align="left">CPTAC_MaxQuant</td>
-<td align="left">msqrob2_protein</td>
-<td align="left">msqrob2 1.20.0</td>
+<td align="left">prolfqua_deqms</td>
+<td align="left">prolfqua 1.9.5</td>
 <td align="left">protein</td>
 <td align="left">proteins</td>
-<td align="left">msqrob2 msqrob on the prepared proteins, no detection
-model</td>
-<td align="right">3.9</td>
+<td align="left">lm with DEqMS moderation (variance prior by number of
+peptides)</td>
+<td align="right">2.1</td>
 </tr>
 <tr class="even">
 <td align="left">CPTAC_MaxQuant</td>
-<td align="left">proDA</td>
-<td align="left">proDA 1.26.0</td>
+<td align="left">prolfqua_deqms_voom</td>
+<td align="left">prolfqua 1.9.5</td>
 <td align="left">protein</td>
 <td align="left">proteins</td>
-<td align="left">proDA on the prepared proteins</td>
-<td align="right">11.2</td>
+<td align="left">limma with vooma precision weights and DEqMS
+moderation</td>
+<td align="right">0.9</td>
 </tr>
 <tr class="odd">
+<td align="left">CPTAC_MaxQuant</td>
+<td align="left">prolfqua_hurdle_nested</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein + peptide</td>
+<td align="left">peptides</td>
+<td align="left">hurdle: lm_impute on median-polished proteins and
+binomial_firth_nested on peptide detection, Fisher</td>
+<td align="right">7.2</td>
+</tr>
+<tr class="even">
 <td align="left">CPTAC_MaxQuant</td>
 <td align="left">prolfqua_limma</td>
 <td align="left">prolfqua 1.9.5</td>
@@ -252,24 +204,73 @@ model</td>
 <td align="left">limma empirical Bayes</td>
 <td align="right">0.8</td>
 </tr>
+<tr class="odd">
+<td align="left">CPTAC_MaxQuant</td>
+<td align="left">prolfqua_limpa</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">limpa vooma fit with imputation-aware degrees of
+freedom on the proteins</td>
+<td align="right">0.9</td>
+</tr>
 <tr class="even">
 <td align="left">CPTAC_MaxQuant</td>
-<td align="left">ropecaV2_nested</td>
+<td align="left">prolfqua_limpa_nested</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">peptide</td>
+<td align="left">peptides</td>
+<td align="left">limpa: DPC quantification of the peptides to proteins,
+vooma fit</td>
+<td align="right">3.0</td>
+</tr>
+<tr class="odd">
+<td align="left">CPTAC_MaxQuant</td>
+<td align="left">prolfqua_lm</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">lm with variance moderation; no contrast where a group
+has no observations</td>
+<td align="right">2.1</td>
+</tr>
+<tr class="even">
+<td align="left">CPTAC_MaxQuant</td>
+<td align="left">prolfqua_lm_impute</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">lm with imputed group means where a group has no
+observations</td>
+<td align="right">2.3</td>
+</tr>
+<tr class="odd">
+<td align="left">CPTAC_MaxQuant</td>
+<td align="left">prolfqua_lmer_nested</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">peptide</td>
+<td align="left">peptides</td>
+<td align="left">mixed model, peptide and sample random effects</td>
+<td align="right">23.0</td>
+</tr>
+<tr class="even">
+<td align="left">CPTAC_MaxQuant</td>
+<td align="left">prolfqua_ropecaV2_nested</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">ROPECA, correlation-aware null of the median
 z-score</td>
-<td align="right">11.1</td>
+<td align="right">11.6</td>
 </tr>
 <tr class="odd">
 <td align="left">CPTAC_MaxQuant</td>
-<td align="left">ropeca_nested</td>
+<td align="left">prolfqua_ropeca_nested</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">ROPECA, beta null of the median signed p-value</td>
-<td align="right">7.4</td>
+<td align="right">7.9</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -279,66 +280,7 @@ z-score</td>
 <td align="left">msstats_features</td>
 <td align="left">MSstats dataProcess (feature summarization) and
 groupComparison</td>
-<td align="right">73.2</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">deqms</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">lm with DEqMS moderation (variance prior by number of
-peptides)</td>
-<td align="right">5.3</td>
-</tr>
-<tr class="even">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">deqms_voom</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">limma with vooma precision weights and DEqMS
-moderation</td>
-<td align="right">1.4</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">hurdle_nested</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein + peptide</td>
-<td align="left">peptides</td>
-<td align="left">hurdle: lm_impute on median-polished proteins and
-binomial_firth_nested on peptide detection, Fisher</td>
-<td align="right">23.4</td>
-</tr>
-<tr class="even">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">lm</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">lm with variance moderation; no contrast where a group
-has no observations</td>
-<td align="right">5.2</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">lm_impute</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">lm with imputed group means where a group has no
-observations (lm_impute)</td>
-<td align="right">5.0</td>
-</tr>
-<tr class="even">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">lmer_nested</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">peptide</td>
-<td align="left">peptides</td>
-<td align="left">mixed model, peptide and sample random effects</td>
-<td align="right">84.3</td>
+<td align="right">75.1</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_MSstats</td>
@@ -358,146 +300,21 @@ else the detection estimate</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; Fisher combination of the intensity and
 detection p-values</td>
-<td align="right">12.4</td>
+<td align="right">12.5</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">msqrob2_protein</td>
-<td align="left">msqrob2 1.20.0</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">msqrob2 msqrob on the prepared proteins, no detection
-model</td>
-<td align="right">5.8</td>
-</tr>
-<tr class="even">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">proDA</td>
-<td align="left">proDA 1.26.0</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">proDA on the prepared proteins</td>
-<td align="right">38.1</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">limma empirical Bayes</td>
-<td align="right">1.0</td>
-</tr>
-<tr class="even">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">ropecaV2_nested</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">peptide</td>
-<td align="left">peptides</td>
-<td align="left">ROPECA, correlation-aware null of the median
-z-score</td>
-<td align="right">53.7</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_FragPipe_MSstats</td>
-<td align="left">ropeca_nested</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">peptide</td>
-<td align="left">peptides</td>
-<td align="left">ROPECA, beta null of the median signed p-value</td>
-<td align="right">46.7</td>
-</tr>
-<tr class="even">
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">deqms</td>
+<td align="left">prolfqua_deqms</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">protein</td>
 <td align="left">proteins</td>
 <td align="left">lm with DEqMS moderation (variance prior by number of
 peptides)</td>
-<td align="right">6.3</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">deqms_voom</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">limma with vooma precision weights and DEqMS
-moderation</td>
-<td align="right">1.3</td>
+<td align="right">5.3</td>
 </tr>
 <tr class="even">
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">lm</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">lm with variance moderation; no contrast where a group
-has no observations</td>
-<td align="right">6.0</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">lm_impute</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">lm with imputed group means where a group has no
-observations (lm_impute)</td>
-<td align="right">5.2</td>
-</tr>
-<tr class="even">
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">msqrob2_protein</td>
-<td align="left">msqrob2 1.20.0</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">msqrob2 msqrob on the prepared proteins, no detection
-model</td>
-<td align="right">5.7</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">proDA</td>
-<td align="left">proDA 1.26.0</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">proDA on the prepared proteins</td>
-<td align="right">42.2</td>
-</tr>
-<tr class="even">
-<td align="left">IonStar_FragPipe_protein</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">limma empirical Bayes</td>
-<td align="right">1.0</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">MSstats</td>
-<td align="left">MSstats 4.20.0</td>
-<td align="left">protein</td>
-<td align="left">msstats_features</td>
-<td align="left">MSstats dataProcess (feature summarization) and
-groupComparison</td>
-<td align="right">91.7</td>
-</tr>
-<tr class="even">
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">deqms</td>
-<td align="left">prolfqua 1.9.5</td>
-<td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">lm with DEqMS moderation (variance prior by number of
-peptides)</td>
-<td align="right">5.5</td>
-</tr>
-<tr class="odd">
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">deqms_voom</td>
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_deqms_voom</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">protein</td>
 <td align="left">proteins</td>
@@ -505,46 +322,182 @@ peptides)</td>
 moderation</td>
 <td align="right">1.5</td>
 </tr>
-<tr class="even">
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">hurdle_nested</td>
+<tr class="odd">
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_hurdle_nested</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">protein + peptide</td>
 <td align="left">peptides</td>
 <td align="left">hurdle: lm_impute on median-polished proteins and
 binomial_firth_nested on peptide detection, Fisher</td>
-<td align="right">25.1</td>
+<td align="right">23.6</td>
+</tr>
+<tr class="even">
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_limma</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">limma empirical Bayes</td>
+<td align="right">1.0</td>
 </tr>
 <tr class="odd">
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">lm</td>
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_limpa</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">limpa vooma fit with imputation-aware degrees of
+freedom on the proteins</td>
+<td align="right">1.1</td>
+</tr>
+<tr class="even">
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_limpa_nested</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">peptide</td>
+<td align="left">peptides</td>
+<td align="left">limpa: DPC quantification of the peptides to proteins,
+vooma fit</td>
+<td align="right">14.4</td>
+</tr>
+<tr class="odd">
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_lm</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">protein</td>
 <td align="left">proteins</td>
 <td align="left">lm with variance moderation; no contrast where a group
 has no observations</td>
-<td align="right">5.2</td>
+<td align="right">4.9</td>
 </tr>
 <tr class="even">
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">lm_impute</td>
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_lm_impute</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">protein</td>
 <td align="left">proteins</td>
 <td align="left">lm with imputed group means where a group has no
-observations (lm_impute)</td>
-<td align="right">5.3</td>
+observations</td>
+<td align="right">5.0</td>
 </tr>
 <tr class="odd">
-<td align="left">IonStar_MaxQuant</td>
-<td align="left">lmer_nested</td>
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_lmer_nested</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">mixed model, peptide and sample random effects</td>
-<td align="right">87.6</td>
+<td align="right">88.3</td>
 </tr>
 <tr class="even">
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_ropecaV2_nested</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">peptide</td>
+<td align="left">peptides</td>
+<td align="left">ROPECA, correlation-aware null of the median
+z-score</td>
+<td align="right">55.6</td>
+</tr>
+<tr class="odd">
+<td align="left">IonStar_FragPipe_MSstats</td>
+<td align="left">prolfqua_ropeca_nested</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">peptide</td>
+<td align="left">peptides</td>
+<td align="left">ROPECA, beta null of the median signed p-value</td>
+<td align="right">51.2</td>
+</tr>
+<tr class="even">
+<td align="left">IonStar_FragPipe_protein</td>
+<td align="left">msqrob2_protein</td>
+<td align="left">msqrob2 1.20.0</td>
+<td align="left">protein</td>
+<td align="left">protein_table</td>
+<td align="left">msqrob2 msqrob on the protein table of the search
+software, no detection model</td>
+<td align="right">6.0</td>
+</tr>
+<tr class="odd">
+<td align="left">IonStar_FragPipe_protein</td>
+<td align="left">proDA</td>
+<td align="left">proDA 1.26.0</td>
+<td align="left">protein</td>
+<td align="left">protein_table</td>
+<td align="left">proDA on the protein table of the search software</td>
+<td align="right">42.3</td>
+</tr>
+<tr class="even">
+<td align="left">IonStar_FragPipe_protein</td>
+<td align="left">prolfqua_deqms</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">lm with DEqMS moderation (variance prior by number of
+peptides)</td>
+<td align="right">6.8</td>
+</tr>
+<tr class="odd">
+<td align="left">IonStar_FragPipe_protein</td>
+<td align="left">prolfqua_deqms_voom</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">limma with vooma precision weights and DEqMS
+moderation</td>
+<td align="right">1.4</td>
+</tr>
+<tr class="even">
+<td align="left">IonStar_FragPipe_protein</td>
+<td align="left">prolfqua_limma</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">limma empirical Bayes</td>
+<td align="right">1.1</td>
+</tr>
+<tr class="odd">
+<td align="left">IonStar_FragPipe_protein</td>
+<td align="left">prolfqua_limpa</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">limpa vooma fit with imputation-aware degrees of
+freedom on the proteins</td>
+<td align="right">1.1</td>
+</tr>
+<tr class="even">
+<td align="left">IonStar_FragPipe_protein</td>
+<td align="left">prolfqua_lm</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">lm with variance moderation; no contrast where a group
+has no observations</td>
+<td align="right">6.8</td>
+</tr>
+<tr class="odd">
+<td align="left">IonStar_FragPipe_protein</td>
+<td align="left">prolfqua_lm_impute</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">lm with imputed group means where a group has no
+observations</td>
+<td align="right">5.7</td>
+</tr>
+<tr class="even">
+<td align="left">IonStar_MaxQuant</td>
+<td align="left">MSstats</td>
+<td align="left">MSstats 4.20.0</td>
+<td align="left">protein</td>
+<td align="left">msstats_features</td>
+<td align="left">MSstats dataProcess (feature summarization) and
+groupComparison</td>
+<td align="right">98.6</td>
+</tr>
+<tr class="odd">
 <td align="left">IonStar_MaxQuant</td>
 <td align="left">msqrob2</td>
 <td align="left">msqrob2 1.20.0</td>
@@ -552,9 +505,9 @@ observations (lm_impute)</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; intensity estimate where it exists,
 else the detection estimate</td>
-<td align="right">12.8</td>
+<td align="right">13.0</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">IonStar_MaxQuant</td>
 <td align="left">msqrob2_hurdle</td>
 <td align="left">msqrob2 1.20.0</td>
@@ -562,38 +515,58 @@ else the detection estimate</td>
 <td align="left">peptides + proteins</td>
 <td align="left">msqrob2 hurdle; Fisher combination of the intensity and
 detection p-values</td>
-<td align="right">12.9</td>
+<td align="right">12.8</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">IonStar_MaxQuant</td>
 <td align="left">msqrob2_protein</td>
 <td align="left">msqrob2 1.20.0</td>
 <td align="left">protein</td>
-<td align="left">proteins</td>
-<td align="left">msqrob2 msqrob on the prepared proteins, no detection
-model</td>
-<td align="right">6.1</td>
+<td align="left">protein_table</td>
+<td align="left">msqrob2 msqrob on the protein table of the search
+software, no detection model</td>
+<td align="right">6.0</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">IonStar_MaxQuant</td>
 <td align="left">proDA</td>
 <td align="left">proDA 1.26.0</td>
 <td align="left">protein</td>
+<td align="left">protein_table</td>
+<td align="left">proDA on the protein table of the search software</td>
+<td align="right">99.5</td>
+</tr>
+<tr class="odd">
+<td align="left">IonStar_MaxQuant</td>
+<td align="left">prolfqua_deqms</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
 <td align="left">proteins</td>
-<td align="left">proDA on the prepared proteins</td>
-<td align="right">59.0</td>
+<td align="left">lm with DEqMS moderation (variance prior by number of
+peptides)</td>
+<td align="right">5.8</td>
 </tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant</td>
-<td align="left">proDA_LFQ</td>
-<td align="left">proDA 1.26.0</td>
+<td align="left">prolfqua_deqms_voom</td>
+<td align="left">prolfqua 1.9.5</td>
 <td align="left">protein</td>
-<td align="left">lfq_proteins</td>
-<td align="left">proDA on the MaxQuant LFQ protein intensities
-(proteinGroups.txt)</td>
-<td align="right">100.3</td>
+<td align="left">proteins</td>
+<td align="left">limma with vooma precision weights and DEqMS
+moderation</td>
+<td align="right">1.5</td>
 </tr>
 <tr class="odd">
+<td align="left">IonStar_MaxQuant</td>
+<td align="left">prolfqua_hurdle_nested</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein + peptide</td>
+<td align="left">peptides</td>
+<td align="left">hurdle: lm_impute on median-polished proteins and
+binomial_firth_nested on peptide detection, Fisher</td>
+<td align="right">25.9</td>
+</tr>
+<tr class="even">
 <td align="left">IonStar_MaxQuant</td>
 <td align="left">prolfqua_limma</td>
 <td align="left">prolfqua 1.9.5</td>
@@ -602,19 +575,68 @@ model</td>
 <td align="left">limma empirical Bayes</td>
 <td align="right">1.1</td>
 </tr>
+<tr class="odd">
+<td align="left">IonStar_MaxQuant</td>
+<td align="left">prolfqua_limpa</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">limpa vooma fit with imputation-aware degrees of
+freedom on the proteins</td>
+<td align="right">1.1</td>
+</tr>
 <tr class="even">
 <td align="left">IonStar_MaxQuant</td>
-<td align="left">ropecaV2_nested</td>
+<td align="left">prolfqua_limpa_nested</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">peptide</td>
+<td align="left">peptides</td>
+<td align="left">limpa: DPC quantification of the peptides to proteins,
+vooma fit</td>
+<td align="right">14.8</td>
+</tr>
+<tr class="odd">
+<td align="left">IonStar_MaxQuant</td>
+<td align="left">prolfqua_lm</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">lm with variance moderation; no contrast where a group
+has no observations</td>
+<td align="right">5.7</td>
+</tr>
+<tr class="even">
+<td align="left">IonStar_MaxQuant</td>
+<td align="left">prolfqua_lm_impute</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">protein</td>
+<td align="left">proteins</td>
+<td align="left">lm with imputed group means where a group has no
+observations</td>
+<td align="right">5.6</td>
+</tr>
+<tr class="odd">
+<td align="left">IonStar_MaxQuant</td>
+<td align="left">prolfqua_lmer_nested</td>
+<td align="left">prolfqua 1.9.5</td>
+<td align="left">peptide</td>
+<td align="left">peptides</td>
+<td align="left">mixed model, peptide and sample random effects</td>
+<td align="right">89.6</td>
+</tr>
+<tr class="even">
+<td align="left">IonStar_MaxQuant</td>
+<td align="left">prolfqua_ropecaV2_nested</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
 <td align="left">ROPECA, correlation-aware null of the median
 z-score</td>
-<td align="right">49.8</td>
+<td align="right">53.3</td>
 </tr>
 <tr class="odd">
 <td align="left">IonStar_MaxQuant</td>
-<td align="left">ropeca_nested</td>
+<td align="left">prolfqua_ropeca_nested</td>
 <td align="left">prolfqua 1.9.5</td>
 <td align="left">peptide</td>
 <td align="left">peptides</td>
@@ -628,7 +650,8 @@ z-score</td>
 <h2 id="ionstar_maxquant">IonStar_MaxQuant<a class="anchor" aria-label="anchor" href="#ionstar_maxquant"></a>
 </h2>
 <p>IonStar, MaxQuant peptides.txt; log2, robust scaling on the human
-proteins, median polish to proteins</p>
+proteins, median polish to proteins. Protein table: proteinGroups.txt
+LFQ intensities, log2, robust scaling on the human proteins</p>
 <table class="table table table-condensed">
 <caption>
 IonStar_MaxQuant: all contrasts pooled, sorted by pAUC_10 of
@@ -669,27 +692,27 @@ msqrob2_protein
 protein
 </td>
 <td style="text-align:right;">
-94.4
+97.1
 </td>
 <td style="text-align:right;">
-94.9
+97.2
 </td>
 <td style="text-align:right;">
-94.9
+97.2
 </td>
 <td style="text-align:right;">
-71.8
+86.9
 </td>
 <td style="text-align:right;">
-78.8
+88.0
 </td>
 <td style="text-align:right;">
-78.7
+87.9
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ropecaV2_nested
+prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
 peptide
@@ -715,7 +738,7 @@ peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-ropeca_nested
+prolfqua_ropeca_nested
 </td>
 <td style="text-align:left;">
 peptide
@@ -741,7 +764,7 @@ peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-lm
+prolfqua_lm
 </td>
 <td style="text-align:left;">
 protein
@@ -767,7 +790,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-deqms
+prolfqua_deqms
 </td>
 <td style="text-align:left;">
 protein
@@ -793,7 +816,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-lm_impute
+prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
 protein
@@ -845,7 +868,7 @@ protein + peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-hurdle_nested
+prolfqua_hurdle_nested
 </td>
 <td style="text-align:left;">
 protein + peptide
@@ -897,7 +920,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-lmer_nested
+prolfqua_lmer_nested
 </td>
 <td style="text-align:left;">
 peptide
@@ -949,32 +972,6 @@ protein + peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-proDA
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-92.9
-</td>
-<td style="text-align:right;">
-93.0
-</td>
-<td style="text-align:right;">
-93.0
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-72.6
-</td>
-<td style="text-align:right;">
-72.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 prolfqua_limma
 </td>
 <td style="text-align:left;">
@@ -1001,7 +998,59 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-deqms_voom
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+91.7
+</td>
+<td style="text-align:right;">
+91.2
+</td>
+<td style="text-align:right;">
+91.2
+</td>
+<td style="text-align:right;">
+69.3
+</td>
+<td style="text-align:right;">
+67.4
+</td>
+<td style="text-align:right;">
+67.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+92.6
+</td>
+<td style="text-align:right;">
+92.1
+</td>
+<td style="text-align:right;">
+92.1
+</td>
+<td style="text-align:right;">
+63.4
+</td>
+<td style="text-align:right;">
+66.4
+</td>
+<td style="text-align:right;">
+66.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
 protein
@@ -1027,7 +1076,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-proDA_LFQ
+proDA
 </td>
 <td style="text-align:left;">
 protein
@@ -1094,7 +1143,7 @@ pAUC_10 / t_statistic
 <tbody>
 <tr>
 <td style="text-align:left;">
-ropecaV2_nested
+prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
 peptide
@@ -1120,7 +1169,7 @@ peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-ropeca_nested
+prolfqua_ropeca_nested
 </td>
 <td style="text-align:left;">
 peptide
@@ -1146,33 +1195,7 @@ peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-msqrob2_protein
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-96.7
-</td>
-<td style="text-align:right;">
-97.6
-</td>
-<td style="text-align:right;">
-97.6
-</td>
-<td style="text-align:right;">
-81.2
-</td>
-<td style="text-align:right;">
-89.2
-</td>
-<td style="text-align:right;">
-89.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-lm
+prolfqua_lm
 </td>
 <td style="text-align:left;">
 protein
@@ -1198,7 +1221,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-deqms
+prolfqua_deqms
 </td>
 <td style="text-align:left;">
 protein
@@ -1224,7 +1247,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-deqms_voom
+prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
 protein
@@ -1250,7 +1273,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-lm_impute
+prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
 protein
@@ -1302,7 +1325,7 @@ protein + peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-hurdle_nested
+prolfqua_hurdle_nested
 </td>
 <td style="text-align:left;">
 protein + peptide
@@ -1380,7 +1403,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-lmer_nested
+prolfqua_lmer_nested
 </td>
 <td style="text-align:left;">
 peptide
@@ -1406,28 +1429,28 @@ peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-proDA
+prolfqua_limpa
 </td>
 <td style="text-align:left;">
 protein
 </td>
 <td style="text-align:right;">
-94.9
+94.0
 </td>
 <td style="text-align:right;">
-95.1
+94.6
 </td>
 <td style="text-align:right;">
-95.1
+94.6
 </td>
 <td style="text-align:right;">
-75.9
+77.6
 </td>
 <td style="text-align:right;">
-80.0
+78.6
 </td>
 <td style="text-align:right;">
-80.0
+78.6
 </td>
 </tr>
 <tr>
@@ -1454,6 +1477,32 @@ protein
 </td>
 <td style="text-align:right;">
 75.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+95.2
+</td>
+<td style="text-align:right;">
+94.6
+</td>
+<td style="text-align:right;">
+94.6
+</td>
+<td style="text-align:right;">
+75.2
+</td>
+<td style="text-align:right;">
+72.9
+</td>
+<td style="text-align:right;">
+72.9
 </td>
 </tr>
 </tbody>
@@ -1525,7 +1574,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-lm
+prolfqua_lm
 </td>
 <td style="text-align:left;">
 protein
@@ -1551,7 +1600,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-deqms
+prolfqua_deqms
 </td>
 <td style="text-align:left;">
 protein
@@ -1577,7 +1626,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-deqms_voom
+prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
 protein
@@ -1629,7 +1678,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-lm_impute
+prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
 protein
@@ -1679,6 +1728,32 @@ protein
 80.0
 </td>
 </tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+90.9
+</td>
+<td style="text-align:right;">
+91.6
+</td>
+<td style="text-align:right;">
+91.6
+</td>
+<td style="text-align:right;">
+75.6
+</td>
+<td style="text-align:right;">
+74.4
+</td>
+<td style="text-align:right;">
+74.4
+</td>
+</tr>
 </tbody>
 </table>
 <p><img src="Benchmark_results_files/figure-html/datasets-7.png" class="r-plt" alt="" width="864"><img src="Benchmark_results_files/figure-html/datasets-8.png" class="r-plt" alt="" width="864"><img src="Benchmark_results_files/figure-html/datasets-9.png" class="r-plt" alt="" width="864"></p>
@@ -1722,7 +1797,7 @@ pAUC_10 / t_statistic
 <tbody>
 <tr>
 <td style="text-align:left;">
-ropecaV2_nested
+prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
 peptide
@@ -1744,32 +1819,6 @@ peptide
 </td>
 <td style="text-align:right;">
 91.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2_protein
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-93.3
-</td>
-<td style="text-align:right;">
-92.4
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-92.4
-</td>
-<td style="text-align:right;">
-86.4
-</td>
-<td style="text-align:right;">
-86.6
 </td>
 </tr>
 <tr>
@@ -1800,7 +1849,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-lm
+prolfqua_lm
 </td>
 <td style="text-align:left;">
 protein
@@ -1826,7 +1875,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-deqms
+prolfqua_deqms
 </td>
 <td style="text-align:left;">
 protein
@@ -1852,7 +1901,7 @@ protein
 </tr>
 <tr>
 <td style="text-align:left;">
-ropeca_nested
+prolfqua_ropeca_nested
 </td>
 <td style="text-align:left;">
 peptide
@@ -1878,7 +1927,33 @@ peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-lmer_nested
+prolfqua_limpa_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+97.6
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+86.8
+</td>
+<td style="text-align:right;">
+81.2
+</td>
+<td style="text-align:right;">
+81.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lmer_nested
 </td>
 <td style="text-align:left;">
 peptide
@@ -1904,7 +1979,7 @@ peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-deqms_voom
+prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
 protein
@@ -1926,32 +2001,6 @@ protein
 </td>
 <td style="text-align:right;">
 76.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-proDA
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-90.0
-</td>
-<td style="text-align:right;">
-89.6
-</td>
-<td style="text-align:right;">
-89.6
-</td>
-<td style="text-align:right;">
-81.0
-</td>
-<td style="text-align:right;">
-74.9
-</td>
-<td style="text-align:right;">
-74.9
 </td>
 </tr>
 <tr>
@@ -1982,7 +2031,7 @@ protein + peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-hurdle_nested
+prolfqua_hurdle_nested
 </td>
 <td style="text-align:left;">
 protein + peptide
@@ -2004,6 +2053,32 @@ protein + peptide
 </td>
 <td style="text-align:right;">
 67.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+91.5
+</td>
+<td style="text-align:right;">
+89.3
+</td>
+<td style="text-align:right;">
+89.3
+</td>
+<td style="text-align:right;">
+79.5
+</td>
+<td style="text-align:right;">
+69.4
+</td>
+<td style="text-align:right;">
+69.3
 </td>
 </tr>
 <tr>
@@ -2034,7 +2109,7 @@ protein + peptide
 </tr>
 <tr>
 <td style="text-align:left;">
-lm_impute
+prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
 protein
