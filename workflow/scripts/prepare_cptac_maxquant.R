@@ -7,7 +7,7 @@ args <- script_args("out_dir")
 peptides <- prolfquapp::tidyMQ_Peptides(utils::read.csv(MsDataHub::cptac_a_b_peptides.txt(), sep = "\t"))
 annotation <- data.frame(raw.file = unique(peptides$raw.file))
 annotation$group <- gsub("_[0-9]$", "", gsub("^6", "", annotation$raw.file))
-peptides <- dplyr::inner_join(annotation, peptides)
+peptides <- mq_identification_confidence(dplyr::inner_join(annotation, peptides))
 
 config <- create_mq_peptide_config()
 config$factors["group."] <- "group"

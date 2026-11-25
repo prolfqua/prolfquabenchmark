@@ -57,17 +57,23 @@ write_result <- function(data, out_dir, spec, dataset, method, software_version)
   )
 }
 
-# MaxQuant peptides.txt configuration shared by the MaxQuant datasets
+# MaxQuant peptides.txt configuration shared by the MaxQuant datasets; the data needs identification_confidence,
+# see mq_identification_confidence()
 create_mq_peptide_config <- function() {
   config <- prolfqua::AnalysisConfiguration$new()
   config$file_name <- "raw.file"
   config$hierarchy[["protein_Id"]] <- "leading.razor.protein"
   config$hierarchy[["peptide_Id"]] <- "sequence"
   config$hierarchy_depth <- 1
-  config$ident_q_value <- "pep"
   config$set_response("peptide.intensity")
   config$min_peptides_protein <- 2
   config
+}
+
+# MaxQuant peptides.txt has one PEP per peptide; its identification confidence is 1 - PEP, as in prolfquapp's reader
+mq_identification_confidence <- function(peptides) {
+  peptides$identification_confidence <- 1 - peptides$pep
+  peptides
 }
 
 # log2, then robust scaling on the human proteins

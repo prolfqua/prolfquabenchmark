@@ -6,7 +6,7 @@ args <- script_args("out_dir")
 
 peptides <- prolfquapp::tidyMQ_Peptides(quantdata_file("MAXQuant_IonStar2018_PXD003881.zip"))
 annotation <- readxl::read_xlsx(quantdata_file("annotation_Ionstar2018_PXD003881.xlsx"))
-data <- dplyr::inner_join(peptides, annotation, by = "raw.file")
+data <- mq_identification_confidence(dplyr::inner_join(peptides, annotation, by = "raw.file"))
 
 config <- create_mq_peptide_config()
 config$factors[["dilution."]] <- "sample"

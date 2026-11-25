@@ -39,7 +39,12 @@ if (has_facades) {
   config$hierarchy[["protein_Id"]] <- "leading.razor.protein"
   config$hierarchy[["peptide_Id"]] <- "sequence"
   config$hierarchy_depth <- 1
-  config$ident_q_value <- "pep"
+  # prolfqua 1.9.11 replaced ident_q_value (the PEP column) by identification_confidence (1 - PEP)
+  if ("identification_confidence" %in% names(config)) {
+    input$identification_confidence <- 1 - input$pep
+  } else {
+    config$ident_q_value <- "pep"
+  }
   config$set_response("peptide.intensity")
   config$min_peptides_protein <- 2
   if ("isotope_label" %in% names(config)) {

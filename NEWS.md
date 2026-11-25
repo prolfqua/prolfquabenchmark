@@ -1,5 +1,6 @@
 # prolfquabenchmark 0.3.4
 
+- The MaxQuant datasets (IonStar, CPTAC) hand prolfqua the identification confidence 1 - PEP, which prolfqua 1.9.11 uses as model weight, as prolfquapp's MaxQuant reader does; they set `ident_q_value`, which prolfqua 1.9.11 removed. The step timings still run with earlier prolfqua releases.
 - `prolfqua_ropeca_impute_nested` and `prolfqua_ropecaV2_impute_nested` are out again: they ranked last or next to last on all three peptide datasets, and prolfqua 1.9.10 removed them. Their 1.9.9 scores stay in `score_history.tsv`; `Score_history` shows only the models of the latest release. prolfquabenchmark now requires prolfqua 1.9.10.
 - New benchmark methods `prolfqua_rlm`, `prolfqua_ropeca_impute_nested` and `prolfqua_ropecaV2_impute_nested` (ROPECA on peptide models refit at the limit of detection, prolfqua 1.9.9); prolfquabenchmark now requires prolfqua 1.9.9.
 - `Benchmark_results` plots pAUC_5 against the number of contrasts computed (protein and contrast pairs with a result, all contrasts together) instead of the proteins tested averaged over the contrasts; the Pareto front is the same. The same-pairs panels and `benchmark_same_pairs.tsv` give the front method's contrasts computed (column `contrasts`).
