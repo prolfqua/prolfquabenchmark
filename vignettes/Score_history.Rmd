@@ -18,14 +18,8 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width = 9, fig.height = 6)
+options(knitr.kable.NA = "")
 ```
-
-`make score-history` runs the benchmark pipeline (`workflow/Snakefile`) with the installed prolfqua and appends its scores and step timings to `inst/extdata/score_history.tsv`, one block of rows per prolfqua release. This vignette reads only that table; the current results with ROC curves are in the vignette `Benchmark_results`.
-
-- Scores: AUC, pAUC_10, pAUC_20, AP, pAP_50, pAP_80 on a 0–100 scale, computed with `benchmark_from_file()` from the contrasts of each fit, per contrast and for all contrasts pooled (`all`), for the rankings by `log_fc`, `t_statistic` and `scaled.p_value`
-- `tool_version`: the software that fitted the model. Rows of MSstats, proDA and msqrob2 carry their own version, so a change there can come from their release instead of prolfqua's
-- Timings: median elapsed seconds of the core prolfqua steps on the IonStar MaxQuant peptides (`workflow/scripts/time_prolfqua_steps.R`)
-- The history starts with prolfqua 1.9.0 (commit `f4dfb7f3`, 2026-11-02, before the rOpenSci self-review), rerun with the pipeline from a library holding that release and the prolfquapp of its time (`make score-history-release V=1.9.0 PROLFQUA=f4dfb7f3 PROLFQUAPP=18914707`); its `date` is the date of the prolfqua commit. Each tagged prolfqua release adds a block: install it, then `make score-history`. A release runs every prolfqua method whose facade it has, on every dataset that provides the method's input
 
 ```{r readHistory}
 history <- utils::read.delim(
@@ -33,21 +27,15 @@ history <- utils::read.delim(
   stringsAsFactors = FALSE,
   colClasses = c(prolfqua_version = "character", date = "character", tool_version = "character", level = "character")
 )
+datasets <- utils::read.delim("../inst/extdata/benchmark_datasets.tsv", stringsAsFactors = FALSE)
+history_url <- "https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv"
 releases <- as.character(sort(unique(package_version(history$prolfqua_version))))
 history$prolfqua_version <- factor(history$prolfqua_version, levels = releases)
+release_dates <- history |>
+  dplyr::summarise(date = max(date), .by = "prolfqua_version") |>
+  dplyr::arrange(prolfqua_version)
 # MSstats, proDA and msqrob2 (also msqrob2's hurdle model): only their current performance is shown
 history$external <- grepl("^(MSstats|msqrob2|proDA)", history$method)
-options(knitr.kable.NA = "")
-
-# One row per release, one column per combination of `columns`; a release without that column stays empty
-by_release <- function(data, columns) {
-  data |>
-    tidyr::unite("column", dplyr::all_of(columns), sep = " / ") |>
-    dplyr::select(release = prolfqua_version, column, value) |>
-    tidyr::pivot_wider(names_from = "column", values_from = "value", names_sort = TRUE) |>
-    tidyr::complete(release) |>
-    dplyr::arrange(release)
-}
 
 # HTML table that scrolls sideways when it has many columns
 wide_table <- function(table, caption, digits) {
@@ -57,73 +45,45 @@ wide_table <- function(table, caption, digits) {
     digits = digits,
     format.args = list(nsmall = digits),
     caption = caption,
+    escape = FALSE,
     table.attr = "class=\"table table-condensed\""
   )
   cat("\n<div style=\"overflow-x: auto;\">\n", html, "\n</div>\n\n", sep = "")
 }
 
 release_plot <- function(data, y) {
-  ggplot2::ggplot(data, ggplot2::aes(x = prolfqua_version, y = value, colour = method, group = method)) +
-    ggplot2::geom_point() +
+  ggplot2::ggplot(data, ggplot2::aes(x = prolfqua_version, y = value, colour = method, shape = method, group = method)) +
     ggplot2::geom_line() +
+    ggplot2::geom_point(size = 2.5) +
     ggplot2::scale_x_discrete(drop = FALSE) +
     ggplot2::labs(x = "prolfqua release", y = y) +
     ggplot2::theme_bw()
 }
+
+# Prints a plot from inside a results = "asis" loop, in order with the text, with its own height and caption
+print_with_height <- function(plot, height, caption) {
+  header <- paste0(
+    "```{r, fig.height = ", height, ", fig.cap = ", paste(deparse(caption, width.cutoff = 500L), collapse = ""), "}"
+  )
+  cat(knitr::knit_child(text = c(header, "print(plot)", "```"), envir = environment(), quiet = TRUE))
+}
 ```
 
-# Releases
+`make score-history` runs the benchmark pipeline (`workflow/Snakefile`) with the installed prolfqua and appends its scores and step timings to [`inst/extdata/score_history.tsv`](`r history_url`), one block of rows per prolfqua release. This page shows the partial AUC pAUC_10 per release; the file holds every score (AUC, pAUC_10, pAUC_20, AP, pAP_50, pAP_80), per contrast and for all contrasts pooled. The current results with ROC curves are in the vignette `Benchmark_results`.
 
-```{r releases}
-history |>
-  dplyr::group_by(prolfqua_version) |>
-  dplyr::summarise(
-    date = max(date),
-    datasets = dplyr::n_distinct(dataset),
-    methods = dplyr::n_distinct(paste(dataset, method)),
-    rows = dplyr::n()
-  ) |>
-  knitr::kable(caption = "Recorded prolfqua releases.")
-```
+- Releases: `r paste0(release_dates$prolfqua_version, " (", release_dates$date, ")", collapse = ", ")`
+- pAUC_10: partial area under the ROC curve up to a false positive rate of 0.1, on a 0 to 100 scale, all contrasts of a dataset pooled; ranking by fold change (`log_fc`), by p-value signed by the fold change (`scaled.p_value`) and by t statistic (`t_statistic`)
+- Encoding: colour is the model family of the [prolfqua factory figure](https://github.com/fgcz/prolfqua#readme), point shape the model within its family; MSstats, proDA and msqrob2 are dark grey with open shapes. A model looks the same here and in `Benchmark_results`
+- `tool_version` in the data: the software that fitted the model; MSstats, proDA and msqrob2 carry their own version, so their scores change with their releases, not with prolfqua's
+- History starts with prolfqua 1.9.0 (commit `f4dfb7f3`, 2026-11-02, before the rOpenSci self-review), rerun with the pipeline (`make score-history-release V=1.9.0 PROLFQUA=f4dfb7f3 PROLFQUAPP=18914707`); each tagged release adds a block: install it, then `make score-history`
 
-# Changes between releases
+# pAUC_10 across releases
 
-Changes of the prolfqua models from the previous recorded release of the same dataset, method, contrast, score and metric: at least 0.5 points for AUC, pAUC and AP, any change for counts.
-`r if (length(releases) < 2) paste0("Only prolfqua ", releases, " is recorded so far; changes appear from the second release on.")`
+One figure and one table per dataset; the numbers of every release are in [`score_history.tsv`](`r history_url`). Lines join the releases of a prolfqua model; a model has no point at a release without its facade (`prolfqua_ropecaV2_nested` came with prolfqua 1.9.4). MSstats, proDA and msqrob2 are shown at their latest recorded run only.
 
-```{r changes}
-thresholds <- c(AUC = 0.5, pAUC_10 = 0.5, pAUC_20 = 0.5, AP = 0.5, pAP_50 = 0.5, pAP_80 = 0.5)
-changes <- history |>
-  dplyr::filter(!external, metric != "elapsed_s") |>
-  dplyr::arrange(prolfqua_version) |>
-  dplyr::group_by(dataset, method, contrast, score, metric) |>
-  dplyr::mutate(
-    previous_release = dplyr::lag(as.character(prolfqua_version)),
-    previous_tool = dplyr::lag(tool_version),
-    previous = dplyr::lag(value)
-  ) |>
-  dplyr::ungroup() |>
-  dplyr::filter(!is.na(previous_release)) |>
-  dplyr::mutate(
-    delta = value - previous,
-    threshold = dplyr::coalesce(unname(thresholds[metric]), 0)
-  ) |>
-  dplyr::filter(delta != 0, abs(delta) >= threshold) |>
-  dplyr::select(
-    release = prolfqua_version, previous_release, dataset, method, contrast, score, metric,
-    previous, value, delta, previous_tool, tool_version
-  ) |>
-  dplyr::arrange(release, dataset, method, metric, contrast, score)
-knitr::kable(changes, digits = 3, caption = paste0(nrow(changes), " changes above the thresholds."))
-```
-
-# Ranking of E. coli against human proteins
-
-One table per dataset: one row per model and prolfqua release, columns metric / ranking score (`log_fc`, `t_statistic`, `scaled.p_value`), all contrasts pooled. A model has no row for a release without its facade (`prolfqua_ropecaV2_nested` came with prolfqua 1.9.4). MSstats, proDA and msqrob2 follow at the end of the table, labelled with their version, with their latest recorded scores only: they change with their own releases, not with prolfqua's. The plots show the prolfqua models.
-
-```{r ranking, results = "asis", fig.height = 4}
-ranking <- history |>
-  dplyr::filter(contrast == "all", metric %in% c("pAUC_10", "AUC")) |>
+```{r pauc, results = "asis"}
+pauc <- history |>
+  dplyr::filter(contrast == "all", metric == "pAUC_10") |>
   dplyr::group_by(dataset, method) |>
   dplyr::filter(!external | as.integer(prolfqua_version) == max(as.integer(prolfqua_version))) |>
   dplyr::ungroup() |>
@@ -132,34 +92,76 @@ ranking <- history |>
     startsWith(tool_version, paste0(method, " ")) ~ tool_version,
     .default = paste0(method, " (", tool_version, ")")
   ))
-for (dataset_name in sort(unique(ranking$dataset))) {
+for (dataset_name in sort(unique(pauc$dataset))) {
   cat("\n\n## ", dataset_name, "\n\n", sep = "")
-  scores <- dplyr::filter(ranking, dataset == dataset_name)
-  scores |>
-    tidyr::unite("column", metric, score, sep = " / ") |>
-    dplyr::select(external, model, level, release = prolfqua_version, column, value) |>
-    tidyr::pivot_wider(names_from = "column", values_from = "value", names_sort = TRUE) |>
-    dplyr::arrange(external, model, release) |>
-    dplyr::select(-external) |>
-    wide_table(caption = paste0(dataset_name, ": all contrasts pooled."), digits = 1)
-  prolfqua_scores <- dplyr::filter(scores, !external, metric == "pAUC_10")
-  if (nrow(prolfqua_scores) > 0) {
-    print(release_plot(prolfqua_scores, "pAUC_10, all contrasts") + ggplot2::facet_wrap(~score))
-  }
+  scores <- dplyr::filter(pauc, dataset == dataset_name)
+  positive <- datasets$positive[datasets$dataset == dataset_name]
+  negative <- datasets$negative[datasets$dataset == dataset_name]
+  print_with_height(
+    release_plot(scores, "pAUC_10, all contrasts pooled") +
+      ggplot2::facet_wrap(~score) +
+      prolfquabenchmark::method_scales(scores$method),
+    height = 5,
+    caption = paste0(
+      "pAUC_10 on ", dataset_name, " per prolfqua release: partial area under the ROC curve up to a false ",
+      "positive rate of 0.1 (0 to 100), all contrasts pooled, separating ", positive, " proteins (changed) from ",
+      negative, " proteins (unchanged). Panels rank proteins by fold change (log_fc), by p-value signed by the ",
+      "fold change (scaled.p_value) and by t statistic. Lines join the releases of a prolfqua model. Colour: model ",
+      "family as in the prolfqua factory figure; shape: model within its family; grey open shapes: MSstats, proDA ",
+      "and msqrob2 at their latest recorded run."
+    )
+  )
+  latest <- scores |>
+    dplyr::arrange(prolfqua_version) |>
+    dplyr::mutate(change = round(value - dplyr::lag(value), 1), .by = c("method", "score")) |>
+    dplyr::filter(prolfqua_version == dplyr::last(prolfqua_version), .by = "method")
+  ranked <- latest |>
+    dplyr::filter(score == "scaled.p_value") |>
+    dplyr::arrange(dplyr::desc(value))
+  latest |>
+    dplyr::mutate(value = dplyr::if_else(
+      is.na(change) | change == 0,
+      sprintf("%.1f", value),
+      sprintf("%.1f (%+.1f)", value, change)
+    )) |>
+    dplyr::select(model, release = prolfqua_version, score, value) |>
+    tidyr::pivot_wider(names_from = "score", values_from = "value") |>
+    dplyr::arrange(match(model, ranked$model)) |>
+    dplyr::select(model, release, dplyr::any_of(c("log_fc", "scaled.p_value", "t_statistic"))) |>
+    wide_table(
+      caption = paste0(
+        "pAUC_10 on ", dataset_name, " at the latest release of each model, all contrasts pooled, for ranking by ",
+        "fold change, scaled p-value and t statistic; sorted by scaled p-value. In parentheses: change from the ",
+        "model's previous recorded release, where there is one. MSstats, proDA and msqrob2 labelled with their ",
+        "version. All scores, also per contrast: <a href=\"", history_url, "\">score_history.tsv</a>."
+      ),
+      digits = 1
+    )
 }
 ```
 
 # Timings
 
-Median elapsed seconds over 3 repetitions, IonStar MaxQuant peptides, all proteins with at least 2 peptides. `transform`: log2 and robust scaling on the human proteins; `aggregate`: median polish to proteins; `fit_lm`: one lm per protein; `contrasts_lm`: Wald contrasts with variance moderation; `facade_<method>`: `build_contrast_analysis()`, fit and contrasts. Timings compare only within one machine: `r paste(unique(history$tool_version[history$metric == "elapsed_s"]), collapse = ", ")`.
+Median elapsed seconds over 3 repetitions, IonStar MaxQuant peptides, all proteins with at least 2 peptides. Timings compare only within one machine: `r paste(unique(history$tool_version[history$metric == "elapsed_s"]), collapse = ", ")`.
 
-```{r timings, results = "asis"}
-timings <- dplyr::filter(history, metric == "elapsed_s")
-timings |>
-  by_release("method") |>
-  wide_table(caption = "Elapsed seconds per step and release.", digits = 2)
+```{r timingsFacades, fig.height = 4, fig.cap = "Elapsed seconds of build_contrast_analysis() per prolfqua release, fit and contrasts, for the methods lm, limma, lm_impute and rlm (rows facade_lm, facade_limma, facade_lm_impute and facade_rlm of score_history.tsv), median of 3 runs on the IonStar MaxQuant peptides. Colour and shape as in the pAUC_10 figures."}
+facade_timings <- history |>
+  dplyr::filter(metric == "elapsed_s", startsWith(method, "facade_")) |>
+  dplyr::mutate(method = sub("^facade_", "prolfqua_", method))
+release_plot(facade_timings, "elapsed seconds (median of 3)") +
+  prolfquabenchmark::method_scales(facade_timings$method)
 ```
 
-```{r timingsPlot, fig.height = 5}
-release_plot(timings, "elapsed seconds (median of 3)")
+```{r timingsSteps, fig.height = 4, fig.cap = "Elapsed seconds of the core prolfqua steps per release, median of 3 runs on the IonStar MaxQuant peptides. transform: log2 and robust scaling on the human proteins; aggregate: median polish to proteins; fit_lm: one lm per protein; contrasts_lm: Wald contrasts with variance moderation."}
+release_plot(dplyr::filter(history, metric == "elapsed_s", !startsWith(method, "facade_")), "elapsed seconds (median of 3)")
+```
+
+```{r timings, results = "asis"}
+history |>
+  dplyr::filter(metric == "elapsed_s") |>
+  dplyr::select(release = prolfqua_version, method, value) |>
+  tidyr::pivot_wider(names_from = "method", values_from = "value", names_sort = TRUE) |>
+  tidyr::complete(release) |>
+  dplyr::arrange(release) |>
+  wide_table(caption = "Elapsed seconds per step and release.", digits = 2)
 ```

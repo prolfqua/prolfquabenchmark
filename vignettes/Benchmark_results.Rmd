@@ -29,7 +29,7 @@ The benchmark pipeline (`make benchmark`; `workflow/Snakefile`, `config/config.y
 - Pareto front (red): the methods no other method beats on both pAUC_5 and proteins tested
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; a calibrated FDR lies on the diagonal
-- Encoding: solid lines and circles for prolfqua protein models, long dashes and squares for prolfqua peptide models (nested and hurdle), short dashes and triangles for external tools; each method keeps its colour in every figure
+- Encoding: colour is the model family of the [prolfqua factory figure](https://github.com/fgcz/prolfqua#readme) (linear models, limma, limpa, LOD imputation, peptide level, hurdle); point shape and line type tell the models of a family apart; external tools are dark grey with open shapes. A method looks the same in every figure here and in the vignette `Score_history` (`method_scales()`, styles from prolfqua's `facade_styles.tsv`)
 
 ```{r read}
 extdata <- function(name) {
@@ -43,33 +43,14 @@ preprocessing <- utils::read.delim("../inst/extdata/benchmark_preprocessing.tsv"
 ```
 
 ```{r method-style}
-# One colour per method within its group, in config order; the groups reuse the colours and differ by line type and
-# point shape
-series_colours <- c("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6")
-style_groups <- data.frame(
-  group = c("prolfqua protein", "prolfqua peptide", "external"),
-  linetype = c("solid", "longdash", "22"),
-  shape = c(16, 15, 17)
-)
-method_style <- methods |>
-  dplyr::distinct(.data$method, .data$tool, .data$level) |>
-  dplyr::mutate(group = dplyr::case_when(
-    .data$tool != "prolfqua" ~ "external",
-    .data$level == "protein" ~ "prolfqua protein",
-    .default = "prolfqua peptide"
-  )) |>
-  dplyr::mutate(colour = series_colours[dplyr::row_number()], .by = "group") |>
-  dplyr::left_join(style_groups, by = "group") |>
-  dplyr::arrange(match(.data$group, style_groups$group))
-by_method <- function(column) stats::setNames(method_style[[column]], method_style$method)
-as_method <- function(x) factor(x, levels = method_style$method)
-method_scales <- list(
-  ggplot2::scale_colour_manual(values = by_method("colour")),
-  ggplot2::scale_linetype_manual(values = by_method("linetype")),
-  ggplot2::scale_shape_manual(values = by_method("shape")),
-  ggplot2::theme_bw(),
-  ggplot2::theme(legend.key.width = grid::unit(2.5, "lines"))
-)
+# Colour by model family, shape and line type by model within the family: the same in every figure of both vignettes
+method_style <- function(method) {
+  list(
+    prolfquabenchmark::method_scales(method),
+    ggplot2::theme_bw(),
+    ggplot2::theme(legend.key.width = grid::unit(2.5, "lines"))
+  )
+}
 # TRUE for the points no other point beats in both x and y (higher or equal in both, higher in one)
 pareto_optimal <- function(x, y) {
   vapply(seq_along(x), function(i) !any(x >= x[i] & y >= y[i] & (x > x[i] | y > y[i])), logical(1))
@@ -111,7 +92,7 @@ for (dataset_name in datasets$dataset) {
     dplyr::filter(.data$contrast == "all") |>
     dplyr::select("model_name", "score", "pAUC_5") |>
     dplyr::left_join(tested, by = c("model_name", "score")) |>
-    dplyr::mutate(method = as_method(.data$model_name))
+    dplyr::mutate(method = .data$model_name)
   front <- pauc_5 |>
     dplyr::filter(pareto_optimal(.data$pAUC_5, .data$proteins), .by = "score") |>
     dplyr::arrange(.data$score, .data$pAUC_5)
@@ -136,15 +117,16 @@ for (dataset_name in datasets$dataset) {
       ggplot2::facet_wrap(~score, ncol = 1) +
       ggplot2::labs(x = "pAUC_5 (all contrasts pooled)", y = "proteins tested per contrast",
                     title = paste(dataset_name, "pAUC_5 vs proteins tested")) +
-      method_scales,
+      method_style(pauc_5$method),
     height = 11,
     caption = paste0(
       "Ranking accuracy against the number of proteins tested on ", dataset_name, ". Each point is one method. ",
       "x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), ", pooled,
       "; the ROC curve separates ", positive, " proteins (changed) from ", negative, " proteins (unchanged). ",
       "y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), ",
-      "by p-value signed by the fold change (scaled.p_value) and by t statistic. Circles are prolfqua protein ",
-      "models, squares prolfqua peptide models, triangles external tools. The red staircase is the Pareto front: ",
+      "by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the ",
+      "prolfqua factory figure; shape: model within its family; grey open shapes: external tools. ",
+      "The red staircase is the Pareto front: ",
       "no other method has both a higher pAUC_5 and more proteins tested."
     )
   )
@@ -172,8 +154,7 @@ for (dataset_name in datasets$dataset) {
       )
     ) |>
     cat()
-  dataset_curves <- dplyr::filter(curves, .data$dataset == dataset_name) |>
-    dplyr::mutate(method = as_method(.data$method))
+  dataset_curves <- dplyr::filter(curves, .data$dataset == dataset_name)
   print_with_height(
     ggplot2::ggplot(dplyr::filter(dataset_curves, .data$curve == "ROC"),
                     ggplot2::aes(x = x, y = y, colour = method, linetype = method)) +
@@ -181,14 +162,14 @@ for (dataset_name in datasets$dataset) {
       ggplot2::coord_cartesian(xlim = c(0, 0.2)) +
       ggplot2::facet_wrap(~score) +
       ggplot2::labs(x = "false positive rate", y = "true positive rate", title = paste(dataset_name, "ROC")) +
-      method_scales,
+      method_style(dataset_curves$method),
     height = 4.5,
     caption = paste0(
       "ROC curves on ", dataset_name, ", ", pooled, ". y: fraction of ", positive, " proteins (changed) ranked ",
       "above a threshold, the true positive rate; x: fraction of ", negative, " proteins (unchanged) above it, ",
       "the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled ",
-      "p-value and t statistic. Solid lines are prolfqua protein models, long dashes prolfqua peptide models, ",
-      "short dashes external tools."
+      "p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its ",
+      "family; grey: external tools."
     )
   )
   print_with_height(
@@ -197,12 +178,12 @@ for (dataset_name in datasets$dataset) {
       ggplot2::geom_abline(colour = "grey60") +
       ggplot2::geom_step() +
       ggplot2::labs(x = "nominal FDR", y = "false discovery proportion", title = paste(dataset_name, "FDP vs FDR")) +
-      method_scales,
+      method_style(dataset_curves$method),
     height = 4.5,
     caption = paste0(
       "Calibration of the FDR each method reports on ", dataset_name, ", ", pooled, ". x: nominal FDR threshold; ",
       "y: fraction of ", negative, " proteins (unchanged) among the proteins called significant at that ",
-      "threshold, the false discovery proportion. One curve per method, line types as in the ROC figure. A ",
+      "threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A ",
       "calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false ",
       "discoveries than the FDR promises."
     )
