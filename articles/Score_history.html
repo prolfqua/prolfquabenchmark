@@ -83,7 +83,7 @@
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-11-24</h4>
+            <h4 data-toc-skip class="date">2026-11-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Score_history.Rmd" class="external-link"><code>vignettes/Score_history.Rmd</code></a></small>
       <div class="hidden name"><code>Score_history.Rmd</code></div>
@@ -94,2469 +94,153 @@ Wolski</h4>
     
 <p><code>make score-history</code> runs the benchmark pipeline
 (<code>workflow/Snakefile</code>) with the installed prolfqua and
-appends its scores and step timings to
-<code>inst/extdata/score_history.tsv</code>, one block of rows per
-prolfqua release. This vignette reads only that table; the current
-results with ROC curves are in the vignette
+appends its scores and step timings to <a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv" class="external-link"><code>inst/extdata/score_history.tsv</code></a>,
+one block of rows per prolfqua release. This page shows the partial AUC
+pAUC_10 per release; the file holds every score (AUC, pAUC_10, pAUC_20,
+AP, pAP_50, pAP_80), per contrast and for all contrasts pooled. The
+current results with ROC curves are in the vignette
 <code>Benchmark_results</code>.</p>
 <ul>
-<li>Scores: AUC, pAUC_10, pAUC_20, AP, pAP_50, pAP_80 on a 0–100 scale,
-computed with <code><a href="../reference/benchmark_from_file.html">benchmark_from_file()</a></code> from the contrasts of
-each fit, per contrast and for all contrasts pooled (<code>all</code>),
-for the rankings by <code>log_fc</code>, <code>t_statistic</code> and
-<code>scaled.p_value</code>
+<li>Releases: 1.9.0 (2026-11-02), 1.9.5 (2026-11-24)</li>
+<li>pAUC_10: partial area under the ROC curve up to a false positive
+rate of 0.1, on a 0 to 100 scale, all contrasts of a dataset pooled;
+ranking by fold change (<code>log_fc</code>), by p-value signed by the
+fold change (<code>scaled.p_value</code>) and by t statistic
+(<code>t_statistic</code>)</li>
+<li>Encoding: colour is the model family of the <a href="https://github.com/fgcz/prolfqua#readme" class="external-link">prolfqua factory
+figure</a>, point shape the model within its family; MSstats, proDA and
+msqrob2 are dark grey with open shapes. A model looks the same here and
+in <code>Benchmark_results</code>
 </li>
 <li>
-<code>tool_version</code>: the software that fitted the model. Rows
-of MSstats, proDA and msqrob2 carry their own version, so a change there
-can come from their release instead of prolfqua’s</li>
-<li>Timings: median elapsed seconds of the core prolfqua steps on the
-IonStar MaxQuant peptides
-(<code>workflow/scripts/time_prolfqua_steps.R</code>)</li>
-<li>The history starts with prolfqua 1.9.0 (commit
-<code>f4dfb7f3</code>, 2026-11-02, before the rOpenSci self-review),
-rerun with the pipeline from a library holding that release and the
-prolfquapp of its time
+<code>tool_version</code> in the data: the software that fitted the
+model; MSstats, proDA and msqrob2 carry their own version, so their
+scores change with their releases, not with prolfqua’s</li>
+<li>History starts with prolfqua 1.9.0 (commit <code>f4dfb7f3</code>,
+2026-11-02, before the rOpenSci self-review), rerun with the pipeline
 (<code>make score-history-release V=1.9.0 PROLFQUA=f4dfb7f3 PROLFQUAPP=18914707</code>);
-its <code>date</code> is the date of the prolfqua commit. Each tagged
-prolfqua release adds a block: install it, then
-<code>make score-history</code>. A release runs every prolfqua method
-whose facade it has, on every dataset that provides the method’s
-input</li>
+each tagged release adds a block: install it, then
+<code>make score-history</code>
+</li>
 </ul>
 <div class="section level2">
-<h2 id="releases">Releases<a class="anchor" aria-label="anchor" href="#releases"></a>
+<h2 id="pauc_10-across-releases">pAUC_10 across releases<a class="anchor" aria-label="anchor" href="#pauc_10-across-releases"></a>
 </h2>
-<table class="table">
-<caption>Recorded prolfqua releases.</caption>
-<thead><tr class="header">
-<th align="left">prolfqua_version</th>
-<th align="left">date</th>
-<th align="right">datasets</th>
-<th align="right">methods</th>
-<th align="right">rows</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">1.9.0</td>
-<td align="left">2026-11-02</td>
-<td align="right">5</td>
-<td align="right">50</td>
-<td align="right">5408</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">2026-11-24</td>
-<td align="right">5</td>
-<td align="right">64</td>
-<td align="right">7238</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level2">
-<h2 id="changes-between-releases">Changes between releases<a class="anchor" aria-label="anchor" href="#changes-between-releases"></a>
-</h2>
-<p>Changes of the prolfqua models from the previous recorded release of
-the same dataset, method, contrast, score and metric: at least 0.5
-points for AUC, pAUC and AP, any change for counts.</p>
-<table style="width:100%;" class="table">
-<caption>126 changes above the thresholds.</caption>
-<colgroup>
-<col width="4%">
-<col width="10%">
-<col width="9%">
-<col width="14%">
-<col width="5%">
-<col width="9%">
-<col width="12%">
-<col width="5%">
-<col width="5%">
-<col width="4%">
-<col width="9%">
-<col width="9%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">release</th>
-<th align="left">previous_release</th>
-<th align="left">dataset</th>
-<th align="left">method</th>
-<th align="left">contrast</th>
-<th align="left">score</th>
-<th align="left">metric</th>
-<th align="right">previous</th>
-<th align="right">value</th>
-<th align="right">delta</th>
-<th align="left">previous_tool</th>
-<th align="left">tool_version</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">61.479</td>
-<td align="right">78.808</td>
-<td align="right">17.329</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">61.248</td>
-<td align="right">78.696</td>
-<td align="right">17.448</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">61.479</td>
-<td align="right">78.808</td>
-<td align="right">17.329</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">61.248</td>
-<td align="right">78.696</td>
-<td align="right">17.448</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AUC</td>
-<td align="right">90.312</td>
-<td align="right">92.591</td>
-<td align="right">2.280</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">AUC</td>
-<td align="right">90.519</td>
-<td align="right">92.608</td>
-<td align="right">2.088</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AUC</td>
-<td align="right">90.312</td>
-<td align="right">92.591</td>
-<td align="right">2.280</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">AUC</td>
-<td align="right">90.519</td>
-<td align="right">92.608</td>
-<td align="right">2.088</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_50</td>
-<td align="right">82.336</td>
-<td align="right">91.429</td>
-<td align="right">9.093</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">77.939</td>
-<td align="right">91.429</td>
-<td align="right">13.489</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_50</td>
-<td align="right">82.336</td>
-<td align="right">91.429</td>
-<td align="right">9.093</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">77.939</td>
-<td align="right">91.429</td>
-<td align="right">13.489</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">73.138</td>
-<td align="right">90.293</td>
-<td align="right">17.155</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">72.768</td>
-<td align="right">89.947</td>
-<td align="right">17.180</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">73.138</td>
-<td align="right">90.293</td>
-<td align="right">17.155</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">72.768</td>
-<td align="right">89.947</td>
-<td align="right">17.180</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">73.554</td>
-<td align="right">83.138</td>
-<td align="right">9.585</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_10</td>
-<td align="right">75.254</td>
-<td align="right">83.233</td>
-<td align="right">7.979</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">73.554</td>
-<td align="right">83.138</td>
-<td align="right">9.585</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_10</td>
-<td align="right">75.254</td>
-<td align="right">83.233</td>
-<td align="right">7.979</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_20</td>
-<td align="right">79.634</td>
-<td align="right">86.565</td>
-<td align="right">6.931</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_20</td>
-<td align="right">80.484</td>
-<td align="right">86.648</td>
-<td align="right">6.164</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_20</td>
-<td align="right">79.634</td>
-<td align="right">86.565</td>
-<td align="right">6.931</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_20</td>
-<td align="right">80.484</td>
-<td align="right">86.648</td>
-<td align="right">6.164</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">61.540</td>
-<td align="right">69.739</td>
-<td align="right">8.199</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">56.976</td>
-<td align="right">68.007</td>
-<td align="right">11.031</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">61.540</td>
-<td align="right">69.739</td>
-<td align="right">8.199</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">AP</td>
-<td align="right">56.976</td>
-<td align="right">68.007</td>
-<td align="right">11.031</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AUC</td>
-<td align="right">91.280</td>
-<td align="right">92.497</td>
-<td align="right">1.217</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">AUC</td>
-<td align="right">91.362</td>
-<td align="right">92.506</td>
-<td align="right">1.144</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AUC</td>
-<td align="right">91.280</td>
-<td align="right">92.497</td>
-<td align="right">1.217</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">AUC</td>
-<td align="right">91.362</td>
-<td align="right">92.506</td>
-<td align="right">1.144</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">88.000</td>
-<td align="right">89.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">88.000</td>
-<td align="right">89.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">88.000</td>
-<td align="right">89.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">88.000</td>
-<td align="right">89.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">88.000</td>
-<td align="right">89.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">88.000</td>
-<td align="right">89.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_50</td>
-<td align="right">85.804</td>
-<td align="right">88.302</td>
-<td align="right">2.498</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">74.962</td>
-<td align="right">82.825</td>
-<td align="right">7.863</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_50</td>
-<td align="right">85.804</td>
-<td align="right">88.302</td>
-<td align="right">2.498</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_50</td>
-<td align="right">74.962</td>
-<td align="right">82.825</td>
-<td align="right">7.863</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">73.452</td>
-<td align="right">82.319</td>
-<td align="right">8.867</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">67.759</td>
-<td align="right">80.160</td>
-<td align="right">12.401</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">73.452</td>
-<td align="right">82.319</td>
-<td align="right">8.867</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">pAP_80</td>
-<td align="right">67.759</td>
-<td align="right">80.160</td>
-<td align="right">12.401</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">71.476</td>
-<td align="right">76.734</td>
-<td align="right">5.258</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_10</td>
-<td align="right">72.161</td>
-<td align="right">76.758</td>
-<td align="right">4.597</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">71.476</td>
-<td align="right">76.734</td>
-<td align="right">5.258</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_10</td>
-<td align="right">72.161</td>
-<td align="right">76.758</td>
-<td align="right">4.597</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_20</td>
-<td align="right">78.949</td>
-<td align="right">84.060</td>
-<td align="right">5.111</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_20</td>
-<td align="right">79.457</td>
-<td align="right">84.143</td>
-<td align="right">4.686</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_20</td>
-<td align="right">78.949</td>
-<td align="right">84.060</td>
-<td align="right">5.111</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_deqms_voom</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">pAUC_20</td>
-<td align="right">79.457</td>
-<td align="right">84.143</td>
-<td align="right">4.686</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1244.000</td>
-<td align="right">1243.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1244.000</td>
-<td align="right">1243.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1244.000</td>
-<td align="right">1243.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1244.000</td>
-<td align="right">1243.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">all</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">b_vs_a</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1279.000</td>
-<td align="right">1278.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1279.000</td>
-<td align="right">1278.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1279.000</td>
-<td align="right">1278.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limma</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1279.000</td>
-<td align="right">1278.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1292.000</td>
-<td align="right">1291.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1292.000</td>
-<td align="right">1291.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1292.000</td>
-<td align="right">1291.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1292.000</td>
-<td align="right">1291.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">all</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">b_vs_a</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1333.000</td>
-<td align="right">1332.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1333.000</td>
-<td align="right">1332.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1333.000</td>
-<td align="right">1332.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_limpa</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1333.000</td>
-<td align="right">1332.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_TN</td>
-<td align="right">1210.000</td>
-<td align="right">1209.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">b_vs_a</td>
-<td align="left">log_fc</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_missing_contrasts</td>
-<td align="right">34.000</td>
-<td align="right">35.000</td>
-<td align="right">1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">all</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_lm</td>
-<td align="left">b_vs_a</td>
-<td align="left">t_statistic</td>
-<td align="left">n_total</td>
-<td align="right">1245.000</td>
-<td align="right">1244.000</td>
-<td align="right">-1.000</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_ropeca_nested</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">67.324</td>
-<td align="right">71.073</td>
-<td align="right">3.749</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_ropeca_nested</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">AP</td>
-<td align="right">67.324</td>
-<td align="right">71.073</td>
-<td align="right">3.749</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_ropeca_nested</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_50</td>
-<td align="right">83.152</td>
-<td align="right">86.201</td>
-<td align="right">3.049</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_ropeca_nested</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_50</td>
-<td align="right">83.152</td>
-<td align="right">86.201</td>
-<td align="right">3.049</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_ropeca_nested</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">77.439</td>
-<td align="right">81.929</td>
-<td align="right">4.490</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_ropeca_nested</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAP_80</td>
-<td align="right">77.439</td>
-<td align="right">81.929</td>
-<td align="right">4.490</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="odd">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_ropeca_nested</td>
-<td align="left">all</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">81.848</td>
-<td align="right">82.634</td>
-<td align="right">0.787</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-<tr class="even">
-<td align="left">1.9.5</td>
-<td align="left">1.9.0</td>
-<td align="left">CPTAC_MaxQuant</td>
-<td align="left">prolfqua_ropeca_nested</td>
-<td align="left">b_vs_a</td>
-<td align="left">scaled.p_value</td>
-<td align="left">pAUC_10</td>
-<td align="right">81.848</td>
-<td align="right">82.634</td>
-<td align="right">0.787</td>
-<td align="left">prolfqua 1.9.0</td>
-<td align="left">prolfqua 1.9.5</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level2">
-<h2 id="ranking-of-e--coli-against-human-proteins">Ranking of E. coli against human proteins<a class="anchor" aria-label="anchor" href="#ranking-of-e--coli-against-human-proteins"></a>
-</h2>
-<p>One table per dataset: one row per model and prolfqua release,
-columns metric / ranking score (<code>log_fc</code>,
-<code>t_statistic</code>, <code>scaled.p_value</code>), all contrasts
-pooled. A model has no row for a release without its facade
-(<code>prolfqua_ropecaV2_nested</code> came with prolfqua 1.9.4).
-MSstats, proDA and msqrob2 follow at the end of the table, labelled with
-their version, with their latest recorded scores only: they change with
-their own releases, not with prolfqua’s. The plots show the prolfqua
-models.</p>
+<p>One figure and one table per dataset; the numbers of every release
+are in <a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv" class="external-link"><code>score_history.tsv</code></a>.
+Lines join the releases of a prolfqua model; a model has no point at a
+release without its facade (<code>prolfqua_ropecaV2_nested</code> came
+with prolfqua 1.9.4). MSstats, proDA and msqrob2 are shown at their
+latest recorded run only.</p>
 <div class="section level3">
 <h3 id="cptac_maxquant">CPTAC_MaxQuant<a class="anchor" aria-label="anchor" href="#cptac_maxquant"></a>
 </h3>
+<div class="figure">
+<img src="Score_history_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="pAUC_10 on CPTAC_MaxQuant per prolfqua release: partial area under the ROC curve up to a false positive rate of 0.1 (0 to 100), all contrasts pooled, separating UPS proteins (changed) from YEAST proteins (unchanged). Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Lines join the releases of a prolfqua model. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: MSstats, proDA and msqrob2 at their latest recorded run." width="864"><p class="caption">
+pAUC_10 on CPTAC_MaxQuant per prolfqua release: partial area under the
+ROC curve up to a false positive rate of 0.1 (0 to 100), all contrasts
+pooled, separating UPS proteins (changed) from YEAST proteins
+(unchanged). Panels rank proteins by fold change (log_fc), by p-value
+signed by the fold change (scaled.p_value) and by t statistic. Lines
+join the releases of a prolfqua model. Colour: model family as in the
+prolfqua factory figure; shape: model within its family; grey open
+shapes: MSstats, proDA and msqrob2 at their latest recorded run.
+</p>
+</div>
 <div style="overflow-x: auto;">
 <table class="table table table-condensed">
 <caption>
-CPTAC_MaxQuant: all contrasts pooled.
+pAUC_10 on CPTAC_MaxQuant at the latest release of each model, all
+contrasts pooled, for ranking by fold change, scaled p-value and t
+statistic; sorted by scaled p-value. In parentheses: change from the
+model’s previous recorded release, where there is one. MSstats, proDA
+and msqrob2 labelled with their version. All scores, also per contrast:
+<a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv" class="external-link">score_history.tsv</a>.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
 model
 </th>
 <th style="text-align:left;">
-level
-</th>
-<th style="text-align:left;">
 release
 </th>
-<th style="text-align:right;">
-AUC / log_fc
+<th style="text-align:left;">
+log_fc
 </th>
-<th style="text-align:right;">
-AUC / scaled.p_value
+<th style="text-align:left;">
+scaled.p_value
 </th>
-<th style="text-align:right;">
-AUC / t_statistic
-</th>
-<th style="text-align:right;">
-pAUC_10 / log_fc
-</th>
-<th style="text-align:right;">
-pAUC_10 / scaled.p_value
-</th>
-<th style="text-align:right;">
-pAUC_10 / t_statistic
+<th style="text-align:left;">
+t_statistic
 </th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-90.3
-</td>
-<td style="text-align:right;">
-90.5
-</td>
-<td style="text-align:right;">
-89.0
-</td>
-<td style="text-align:right;">
-73.6
-</td>
-<td style="text-align:right;">
-75.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-92.6
-</td>
-<td style="text-align:right;">
-92.6
-</td>
-<td style="text-align:right;">
-89.0
-</td>
-<td style="text-align:right;">
-83.1
-</td>
-<td style="text-align:right;">
-83.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-94.5
-</td>
-<td style="text-align:right;">
-91.3
-</td>
-<td style="text-align:right;">
-91.4
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-<td style="text-align:right;">
-71.5
-</td>
-<td style="text-align:right;">
-72.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-94.5
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-<td style="text-align:right;">
-76.7
-</td>
-<td style="text-align:right;">
-76.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_hurdle_nested
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-86.5
-</td>
-<td style="text-align:right;">
-84.6
-</td>
-<td style="text-align:right;">
-85.3
-</td>
-<td style="text-align:right;">
-72.5
-</td>
-<td style="text-align:right;">
-73.2
-</td>
-<td style="text-align:right;">
-67.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_hurdle_nested
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-86.5
-</td>
-<td style="text-align:right;">
-84.6
-</td>
-<td style="text-align:right;">
-85.3
-</td>
-<td style="text-align:right;">
-72.5
-</td>
-<td style="text-align:right;">
-73.2
-</td>
-<td style="text-align:right;">
-67.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-89.0
-</td>
-<td style="text-align:right;">
-84.2
-</td>
-<td style="text-align:right;">
-84.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-89.0
-</td>
-<td style="text-align:right;">
-84.5
-</td>
-<td style="text-align:right;">
-84.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-91.5
-</td>
-<td style="text-align:right;">
-89.2
-</td>
-<td style="text-align:right;">
-89.3
-</td>
-<td style="text-align:right;">
-79.5
-</td>
-<td style="text-align:right;">
-69.3
-</td>
-<td style="text-align:right;">
-69.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-91.5
-</td>
-<td style="text-align:right;">
-89.3
-</td>
-<td style="text-align:right;">
-89.3
-</td>
-<td style="text-align:right;">
-79.5
-</td>
-<td style="text-align:right;">
-69.4
-</td>
-<td style="text-align:right;">
-69.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-97.6
-</td>
-<td style="text-align:right;">
-95.4
-</td>
-<td style="text-align:right;">
-95.4
-</td>
-<td style="text-align:right;">
-86.8
-</td>
-<td style="text-align:right;">
-81.2
-</td>
-<td style="text-align:right;">
-81.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-97.6
-</td>
-<td style="text-align:right;">
-95.4
-</td>
-<td style="text-align:right;">
-95.4
-</td>
-<td style="text-align:right;">
-86.8
-</td>
-<td style="text-align:right;">
-81.2
-</td>
-<td style="text-align:right;">
-81.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-89.0
-</td>
-<td style="text-align:right;">
-83.9
-</td>
-<td style="text-align:right;">
-84.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-89.0
-</td>
-<td style="text-align:right;">
-84.0
-</td>
-<td style="text-align:right;">
-84.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-86.5
-</td>
-<td style="text-align:right;">
-85.3
-</td>
-<td style="text-align:right;">
-85.3
-</td>
-<td style="text-align:right;">
-72.5
-</td>
-<td style="text-align:right;">
-67.3
-</td>
-<td style="text-align:right;">
-67.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-86.5
-</td>
-<td style="text-align:right;">
-85.3
-</td>
-<td style="text-align:right;">
-85.3
-</td>
-<td style="text-align:right;">
-72.5
-</td>
-<td style="text-align:right;">
-67.3
-</td>
-<td style="text-align:right;">
-67.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lmer_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-93.9
-</td>
-<td style="text-align:right;">
-90.8
-</td>
-<td style="text-align:right;">
-90.8
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-77.8
-</td>
-<td style="text-align:right;">
-77.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lmer_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-93.9
-</td>
-<td style="text-align:right;">
-90.8
-</td>
-<td style="text-align:right;">
-90.8
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-77.8
-</td>
-<td style="text-align:right;">
-77.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-96.5
-</td>
-<td style="text-align:right;">
-96.4
-</td>
-<td style="text-align:right;">
-96.4
-</td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 92.8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 91.0
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 91.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+89.0
+</td>
+<td style="text-align:left;">
+84.5 (+0.3)
+</td>
+<td style="text-align:left;">
+84.4 (+0.2)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+89.0
+</td>
+<td style="text-align:left;">
+84.0 (+0.1)
+</td>
+<td style="text-align:left;">
+84.0 (+0.1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+89.0
+</td>
+<td style="text-align:left;">
+83.1 (+9.6)
+</td>
+<td style="text-align:left;">
+83.2 (+8.0)
 </td>
 </tr>
 <tr>
@@ -2564,86 +248,67 @@ peptide
 prolfqua_ropeca_nested
 </td>
 <td style="text-align:left;">
-peptide
+1.9.5
 </td>
 <td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-91.8
-</td>
-<td style="text-align:right;">
-92.9
-</td>
-<td style="text-align:right;">
-95.1
-</td>
-<td style="text-align:right;">
 88.6
 </td>
-<td style="text-align:right;">
-81.8
+<td style="text-align:left;">
+82.6 (+0.8)
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 80.9
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-prolfqua_ropeca_nested
-</td>
-<td style="text-align:left;">
-peptide
+prolfqua_limpa_nested
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-91.8
+<td style="text-align:left;">
+86.8
 </td>
-<td style="text-align:right;">
-93.0
+<td style="text-align:left;">
+81.2
 </td>
-<td style="text-align:right;">
-95.1
-</td>
-<td style="text-align:right;">
-88.6
-</td>
-<td style="text-align:right;">
-82.6
-</td>
-<td style="text-align:right;">
-80.9
+<td style="text-align:left;">
+81.3
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-msqrob2 1.20.0
-</td>
-<td style="text-align:left;">
-protein + peptide
+prolfqua_lmer_nested
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-91.2
+<td style="text-align:left;">
+91.6
 </td>
-<td style="text-align:right;">
-89.1
+<td style="text-align:left;">
+77.8
 </td>
-<td style="text-align:right;">
-88.8
+<td style="text-align:left;">
+77.8
 </td>
-<td style="text-align:right;">
-72.5
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
 </td>
-<td style="text-align:right;">
-68.9
+<td style="text-align:left;">
+1.9.5
 </td>
-<td style="text-align:right;">
-66.1
+<td style="text-align:left;">
+91.7
+</td>
+<td style="text-align:left;">
+76.7 (+5.3)
+</td>
+<td style="text-align:left;">
+76.8 (+4.6)
 </td>
 </tr>
 <tr>
@@ -2651,621 +316,147 @@ protein + peptide
 msqrob2_hurdle (msqrob2 1.20.0)
 </td>
 <td style="text-align:left;">
-protein + peptide
+1.9.5
+</td>
+<td style="text-align:left;">
+72.5
+</td>
+<td style="text-align:left;">
+74.0
+</td>
+<td style="text-align:left;">
+66.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-91.2
-</td>
-<td style="text-align:right;">
-90.0
-</td>
-<td style="text-align:right;">
-88.8
-</td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 72.5
 </td>
-<td style="text-align:right;">
-74.0
+<td style="text-align:left;">
+73.2
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
+67.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+79.5
+</td>
+<td style="text-align:left;">
+69.4 (+0.1)
+</td>
+<td style="text-align:left;">
+69.3 (+0.1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2 1.20.0
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+72.5
+</td>
+<td style="text-align:left;">
+68.9
+</td>
+<td style="text-align:left;">
 66.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+72.5
+</td>
+<td style="text-align:left;">
+67.3
+</td>
+<td style="text-align:left;">
+67.1
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><img src="Score_history_files/figure-html/ranking-1.png" class="r-plt" alt="" width="864"></p>
 </div>
 <div class="section level3">
 <h3 id="ionstar_fragpipe_msstats">IonStar_FragPipe_MSstats<a class="anchor" aria-label="anchor" href="#ionstar_fragpipe_msstats"></a>
 </h3>
+<div class="figure">
+<img src="Score_history_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="pAUC_10 on IonStar_FragPipe_MSstats per prolfqua release: partial area under the ROC curve up to a false positive rate of 0.1 (0 to 100), all contrasts pooled, separating ECOLI proteins (changed) from HUMAN proteins (unchanged). Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Lines join the releases of a prolfqua model. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: MSstats, proDA and msqrob2 at their latest recorded run." width="864"><p class="caption">
+pAUC_10 on IonStar_FragPipe_MSstats per prolfqua release: partial area
+under the ROC curve up to a false positive rate of 0.1 (0 to 100), all
+contrasts pooled, separating ECOLI proteins (changed) from HUMAN
+proteins (unchanged). Panels rank proteins by fold change (log_fc), by
+p-value signed by the fold change (scaled.p_value) and by t statistic.
+Lines join the releases of a prolfqua model. Colour: model family as in
+the prolfqua factory figure; shape: model within its family; grey open
+shapes: MSstats, proDA and msqrob2 at their latest recorded run.
+</p>
+</div>
 <div style="overflow-x: auto;">
 <table class="table table table-condensed">
 <caption>
-IonStar_FragPipe_MSstats: all contrasts pooled.
+pAUC_10 on IonStar_FragPipe_MSstats at the latest release of each model,
+all contrasts pooled, for ranking by fold change, scaled p-value and t
+statistic; sorted by scaled p-value. In parentheses: change from the
+model’s previous recorded release, where there is one. MSstats, proDA
+and msqrob2 labelled with their version. All scores, also per contrast:
+<a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv" class="external-link">score_history.tsv</a>.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
 model
 </th>
 <th style="text-align:left;">
-level
-</th>
-<th style="text-align:left;">
 release
 </th>
-<th style="text-align:right;">
-AUC / log_fc
+<th style="text-align:left;">
+log_fc
 </th>
-<th style="text-align:right;">
-AUC / scaled.p_value
+<th style="text-align:left;">
+scaled.p_value
 </th>
-<th style="text-align:right;">
-AUC / t_statistic
-</th>
-<th style="text-align:right;">
-pAUC_10 / log_fc
-</th>
-<th style="text-align:right;">
-pAUC_10 / scaled.p_value
-</th>
-<th style="text-align:right;">
-pAUC_10 / t_statistic
+<th style="text-align:left;">
+t_statistic
 </th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-95.9
-</td>
-<td style="text-align:right;">
-96.9
-</td>
-<td style="text-align:right;">
-96.9
-</td>
-<td style="text-align:right;">
-77.7
-</td>
-<td style="text-align:right;">
-86.2
-</td>
-<td style="text-align:right;">
-86.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-95.9
-</td>
-<td style="text-align:right;">
-96.9
-</td>
-<td style="text-align:right;">
-96.9
-</td>
-<td style="text-align:right;">
-77.7
-</td>
-<td style="text-align:right;">
-86.2
-</td>
-<td style="text-align:right;">
-86.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-96.2
-</td>
-<td style="text-align:right;">
-97.1
-</td>
-<td style="text-align:right;">
-97.1
-</td>
-<td style="text-align:right;">
-79.0
-</td>
-<td style="text-align:right;">
-86.1
-</td>
-<td style="text-align:right;">
-86.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-96.2
-</td>
-<td style="text-align:right;">
-97.1
-</td>
-<td style="text-align:right;">
-97.1
-</td>
-<td style="text-align:right;">
-79.0
-</td>
-<td style="text-align:right;">
-86.1
-</td>
-<td style="text-align:right;">
-86.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_hurdle_nested
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-95.1
-</td>
-<td style="text-align:right;">
-95.9
-</td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-75.3
-</td>
-<td style="text-align:right;">
-83.9
-</td>
-<td style="text-align:right;">
-84.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_hurdle_nested
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-95.1
-</td>
-<td style="text-align:right;">
-95.9
-</td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-75.3
-</td>
-<td style="text-align:right;">
-83.9
-</td>
-<td style="text-align:right;">
-84.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-94.2
-</td>
-<td style="text-align:right;">
-94.9
-</td>
-<td style="text-align:right;">
-94.9
-</td>
-<td style="text-align:right;">
-76.4
-</td>
-<td style="text-align:right;">
-81.7
-</td>
-<td style="text-align:right;">
-81.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-94.2
-</td>
-<td style="text-align:right;">
-94.9
-</td>
-<td style="text-align:right;">
-94.9
-</td>
-<td style="text-align:right;">
-76.4
-</td>
-<td style="text-align:right;">
-81.7
-</td>
-<td style="text-align:right;">
-81.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-94.0
-</td>
-<td style="text-align:right;">
-94.6
-</td>
-<td style="text-align:right;">
-94.6
-</td>
-<td style="text-align:right;">
-77.6
-</td>
-<td style="text-align:right;">
-78.6
-</td>
-<td style="text-align:right;">
-78.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-94.0
-</td>
-<td style="text-align:right;">
-94.6
-</td>
-<td style="text-align:right;">
-94.6
-</td>
-<td style="text-align:right;">
-77.6
-</td>
-<td style="text-align:right;">
-78.6
-</td>
-<td style="text-align:right;">
-78.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-95.2
-</td>
-<td style="text-align:right;">
-94.6
-</td>
-<td style="text-align:right;">
-94.6
-</td>
-<td style="text-align:right;">
-75.2
-</td>
-<td style="text-align:right;">
-72.9
-</td>
-<td style="text-align:right;">
-72.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-95.2
-</td>
-<td style="text-align:right;">
-94.6
-</td>
-<td style="text-align:right;">
-94.6
-</td>
-<td style="text-align:right;">
-75.2
-</td>
-<td style="text-align:right;">
-72.9
-</td>
-<td style="text-align:right;">
-72.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-95.9
-</td>
-<td style="text-align:right;">
-96.9
-</td>
-<td style="text-align:right;">
-96.9
-</td>
-<td style="text-align:right;">
-77.7
-</td>
-<td style="text-align:right;">
-86.2
-</td>
-<td style="text-align:right;">
-86.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-95.9
-</td>
-<td style="text-align:right;">
-96.9
-</td>
-<td style="text-align:right;">
-96.9
-</td>
-<td style="text-align:right;">
-77.7
-</td>
-<td style="text-align:right;">
-86.2
-</td>
-<td style="text-align:right;">
-86.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-95.1
-</td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-75.3
-</td>
-<td style="text-align:right;">
-84.1
-</td>
-<td style="text-align:right;">
-84.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-95.1
-</td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-75.3
-</td>
-<td style="text-align:right;">
-84.1
-</td>
-<td style="text-align:right;">
-84.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lmer_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-95.5
-</td>
-<td style="text-align:right;">
-96.0
-</td>
-<td style="text-align:right;">
-96.0
-</td>
-<td style="text-align:right;">
-74.5
-</td>
-<td style="text-align:right;">
-80.6
-</td>
-<td style="text-align:right;">
-80.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lmer_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-95.5
-</td>
-<td style="text-align:right;">
-96.0
-</td>
-<td style="text-align:right;">
-96.0
-</td>
-<td style="text-align:right;">
-74.5
-</td>
-<td style="text-align:right;">
-80.6
-</td>
-<td style="text-align:right;">
-80.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-96.0
-</td>
-<td style="text-align:right;">
-97.6
-</td>
-<td style="text-align:right;">
-98.3
-</td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 76.5
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 91.6
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 92.0
 </td>
 </tr>
@@ -3274,57 +465,152 @@ peptide
 prolfqua_ropeca_nested
 </td>
 <td style="text-align:left;">
-peptide
+1.9.5
 </td>
 <td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-95.8
-</td>
-<td style="text-align:right;">
-97.6
-</td>
-<td style="text-align:right;">
-98.1
-</td>
-<td style="text-align:right;">
 75.4
 </td>
-<td style="text-align:right;">
-90.2
+<td style="text-align:left;">
+90.2 (+0.1)
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 90.0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-prolfqua_ropeca_nested
-</td>
-<td style="text-align:left;">
-peptide
+prolfqua_lm
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-95.8
+<td style="text-align:left;">
+77.7
 </td>
-<td style="text-align:right;">
-97.7
+<td style="text-align:left;">
+86.2
 </td>
-<td style="text-align:right;">
-98.1
+<td style="text-align:left;">
+86.2
 </td>
-<td style="text-align:right;">
-75.4
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
 </td>
-<td style="text-align:right;">
-90.2
+<td style="text-align:left;">
+1.9.5
 </td>
-<td style="text-align:right;">
-90.0
+<td style="text-align:left;">
+77.7
+</td>
+<td style="text-align:left;">
+86.2
+</td>
+<td style="text-align:left;">
+86.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+79.0
+</td>
+<td style="text-align:left;">
+86.1
+</td>
+<td style="text-align:left;">
+86.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+75.3
+</td>
+<td style="text-align:left;">
+84.1
+</td>
+<td style="text-align:left;">
+84.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle (msqrob2 1.20.0)
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+77.3
+</td>
+<td style="text-align:left;">
+83.9
+</td>
+<td style="text-align:left;">
+83.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+75.3
+</td>
+<td style="text-align:left;">
+83.9
+</td>
+<td style="text-align:left;">
+84.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2 1.20.0
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+77.3
+</td>
+<td style="text-align:left;">
+83.4
+</td>
+<td style="text-align:left;">
+83.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+76.4
+</td>
+<td style="text-align:left;">
+81.7
+</td>
+<td style="text-align:left;">
+81.7
 </td>
 </tr>
 <tr>
@@ -3332,1128 +618,313 @@ peptide
 MSstats 4.20.0
 </td>
 <td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-96.6
-</td>
-<td style="text-align:right;">
-96.6
-</td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 74.5
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 81.5
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 81.5
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-msqrob2 1.20.0
-</td>
-<td style="text-align:left;">
-protein + peptide
+prolfqua_lmer_nested
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-95.3
+<td style="text-align:left;">
+74.5
 </td>
-<td style="text-align:right;">
-96.1
+<td style="text-align:left;">
+80.6
 </td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-77.3
-</td>
-<td style="text-align:right;">
-83.4
-</td>
-<td style="text-align:right;">
-83.1
+<td style="text-align:left;">
+80.8
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-msqrob2_hurdle (msqrob2 1.20.0)
-</td>
-<td style="text-align:left;">
-protein + peptide
+prolfqua_limpa
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-95.3
+<td style="text-align:left;">
+77.6
 </td>
-<td style="text-align:right;">
-96.0
+<td style="text-align:left;">
+78.6
 </td>
-<td style="text-align:right;">
-96.1
+<td style="text-align:left;">
+78.6
 </td>
-<td style="text-align:right;">
-77.3
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
 </td>
-<td style="text-align:right;">
-83.9
+<td style="text-align:left;">
+1.9.5
 </td>
-<td style="text-align:right;">
-83.1
+<td style="text-align:left;">
+75.2
+</td>
+<td style="text-align:left;">
+72.9
+</td>
+<td style="text-align:left;">
+72.9
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><img src="Score_history_files/figure-html/ranking-2.png" class="r-plt" alt="" width="864"></p>
 </div>
 <div class="section level3">
 <h3 id="ionstar_fragpipe_protein">IonStar_FragPipe_protein<a class="anchor" aria-label="anchor" href="#ionstar_fragpipe_protein"></a>
 </h3>
+<div class="figure">
+<img src="Score_history_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="pAUC_10 on IonStar_FragPipe_protein per prolfqua release: partial area under the ROC curve up to a false positive rate of 0.1 (0 to 100), all contrasts pooled, separating ECOLI proteins (changed) from HUMAN proteins (unchanged). Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Lines join the releases of a prolfqua model. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: MSstats, proDA and msqrob2 at their latest recorded run." width="864"><p class="caption">
+pAUC_10 on IonStar_FragPipe_protein per prolfqua release: partial area
+under the ROC curve up to a false positive rate of 0.1 (0 to 100), all
+contrasts pooled, separating ECOLI proteins (changed) from HUMAN
+proteins (unchanged). Panels rank proteins by fold change (log_fc), by
+p-value signed by the fold change (scaled.p_value) and by t statistic.
+Lines join the releases of a prolfqua model. Colour: model family as in
+the prolfqua factory figure; shape: model within its family; grey open
+shapes: MSstats, proDA and msqrob2 at their latest recorded run.
+</p>
+</div>
 <div style="overflow-x: auto;">
 <table class="table table table-condensed">
 <caption>
-IonStar_FragPipe_protein: all contrasts pooled.
+pAUC_10 on IonStar_FragPipe_protein at the latest release of each model,
+all contrasts pooled, for ranking by fold change, scaled p-value and t
+statistic; sorted by scaled p-value. In parentheses: change from the
+model’s previous recorded release, where there is one. MSstats, proDA
+and msqrob2 labelled with their version. All scores, also per contrast:
+<a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv" class="external-link">score_history.tsv</a>.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
 model
 </th>
 <th style="text-align:left;">
-level
-</th>
-<th style="text-align:left;">
 release
 </th>
-<th style="text-align:right;">
-AUC / log_fc
+<th style="text-align:left;">
+log_fc
 </th>
-<th style="text-align:right;">
-AUC / scaled.p_value
+<th style="text-align:left;">
+scaled.p_value
 </th>
-<th style="text-align:right;">
-AUC / t_statistic
-</th>
-<th style="text-align:right;">
-pAUC_10 / log_fc
-</th>
-<th style="text-align:right;">
-pAUC_10 / scaled.p_value
-</th>
-<th style="text-align:right;">
-pAUC_10 / t_statistic
+<th style="text-align:left;">
+t_statistic
 </th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-97.0
-</td>
-<td style="text-align:right;">
-98.3
-</td>
-<td style="text-align:right;">
-98.3
-</td>
-<td style="text-align:right;">
-80.1
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-97.0
-</td>
-<td style="text-align:right;">
-98.3
-</td>
-<td style="text-align:right;">
-98.3
-</td>
-<td style="text-align:right;">
-80.1
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-98.1
-</td>
-<td style="text-align:right;">
-98.2
-</td>
-<td style="text-align:right;">
-98.1
-</td>
-<td style="text-align:right;">
-85.7
-</td>
-<td style="text-align:right;">
-88.0
-</td>
-<td style="text-align:right;">
-87.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-98.1
-</td>
-<td style="text-align:right;">
-98.2
-</td>
-<td style="text-align:right;">
-98.1
-</td>
-<td style="text-align:right;">
-85.7
-</td>
-<td style="text-align:right;">
-88.0
-</td>
-<td style="text-align:right;">
-87.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-93.9
-</td>
-<td style="text-align:right;">
-93.9
-</td>
-<td style="text-align:right;">
-76.9
-</td>
-<td style="text-align:right;">
-87.4
-</td>
-<td style="text-align:right;">
-86.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-93.9
-</td>
-<td style="text-align:right;">
-93.9
-</td>
-<td style="text-align:right;">
-76.9
-</td>
-<td style="text-align:right;">
-87.4
-</td>
-<td style="text-align:right;">
-86.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-90.9
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-75.6
-</td>
-<td style="text-align:right;">
-74.4
-</td>
-<td style="text-align:right;">
-74.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-90.9
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-75.6
-</td>
-<td style="text-align:right;">
-74.4
-</td>
-<td style="text-align:right;">
-74.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-97.0
-</td>
-<td style="text-align:right;">
-98.3
-</td>
-<td style="text-align:right;">
-98.3
-</td>
-<td style="text-align:right;">
-80.1
-</td>
-<td style="text-align:right;">
-91.8
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-97.0
-</td>
-<td style="text-align:right;">
-98.3
-</td>
-<td style="text-align:right;">
-98.3
-</td>
-<td style="text-align:right;">
-80.1
-</td>
-<td style="text-align:right;">
-91.8
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-94.2
-</td>
-<td style="text-align:right;">
-94.1
-</td>
-<td style="text-align:right;">
-70.1
-</td>
-<td style="text-align:right;">
-80.4
-</td>
-<td style="text-align:right;">
-79.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-94.2
-</td>
-<td style="text-align:right;">
-94.1
-</td>
-<td style="text-align:right;">
-70.1
-</td>
-<td style="text-align:right;">
-80.4
-</td>
-<td style="text-align:right;">
-79.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 msqrob2_protein (msqrob2 1.20.0)
 </td>
 <td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-98.2
-</td>
-<td style="text-align:right;">
-99.2
-</td>
-<td style="text-align:right;">
-99.2
-</td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 86.6
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 96.1
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 95.8
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-proDA 1.26.0
-</td>
-<td style="text-align:left;">
-protein
+prolfqua_lm
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-91.9
+<td style="text-align:left;">
+80.1
 </td>
-<td style="text-align:right;">
-94.2
+<td style="text-align:left;">
+91.8
 </td>
-<td style="text-align:right;">
-94.2
+<td style="text-align:left;">
+91.7
 </td>
-<td style="text-align:right;">
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+80.1
+</td>
+<td style="text-align:left;">
+91.6
+</td>
+<td style="text-align:left;">
+91.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+85.7
+</td>
+<td style="text-align:left;">
+88.0
+</td>
+<td style="text-align:left;">
+87.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+76.9
+</td>
+<td style="text-align:left;">
+87.4
+</td>
+<td style="text-align:left;">
+86.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+70.1
+</td>
+<td style="text-align:left;">
+80.4
+</td>
+<td style="text-align:left;">
+79.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+proDA 1.26.0
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
 61.7
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 80.0
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 80.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+75.6
+</td>
+<td style="text-align:left;">
+74.4
+</td>
+<td style="text-align:left;">
+74.4
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><img src="Score_history_files/figure-html/ranking-3.png" class="r-plt" alt="" width="864"></p>
 </div>
 <div class="section level3">
 <h3 id="ionstar_maxquant">IonStar_MaxQuant<a class="anchor" aria-label="anchor" href="#ionstar_maxquant"></a>
 </h3>
+<div class="figure">
+<img src="Score_history_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="pAUC_10 on IonStar_MaxQuant per prolfqua release: partial area under the ROC curve up to a false positive rate of 0.1 (0 to 100), all contrasts pooled, separating ECOLI proteins (changed) from HUMAN proteins (unchanged). Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Lines join the releases of a prolfqua model. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: MSstats, proDA and msqrob2 at their latest recorded run." width="864"><p class="caption">
+pAUC_10 on IonStar_MaxQuant per prolfqua release: partial area under the
+ROC curve up to a false positive rate of 0.1 (0 to 100), all contrasts
+pooled, separating ECOLI proteins (changed) from HUMAN proteins
+(unchanged). Panels rank proteins by fold change (log_fc), by p-value
+signed by the fold change (scaled.p_value) and by t statistic. Lines
+join the releases of a prolfqua model. Colour: model family as in the
+prolfqua factory figure; shape: model within its family; grey open
+shapes: MSstats, proDA and msqrob2 at their latest recorded run.
+</p>
+</div>
 <div style="overflow-x: auto;">
 <table class="table table table-condensed">
 <caption>
-IonStar_MaxQuant: all contrasts pooled.
+pAUC_10 on IonStar_MaxQuant at the latest release of each model, all
+contrasts pooled, for ranking by fold change, scaled p-value and t
+statistic; sorted by scaled p-value. In parentheses: change from the
+model’s previous recorded release, where there is one. MSstats, proDA
+and msqrob2 labelled with their version. All scores, also per contrast:
+<a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv" class="external-link">score_history.tsv</a>.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
 model
 </th>
 <th style="text-align:left;">
-level
-</th>
-<th style="text-align:left;">
 release
 </th>
-<th style="text-align:right;">
-AUC / log_fc
+<th style="text-align:left;">
+log_fc
 </th>
-<th style="text-align:right;">
-AUC / scaled.p_value
+<th style="text-align:left;">
+scaled.p_value
 </th>
-<th style="text-align:right;">
-AUC / t_statistic
-</th>
-<th style="text-align:right;">
-pAUC_10 / log_fc
-</th>
-<th style="text-align:right;">
-pAUC_10 / scaled.p_value
-</th>
-<th style="text-align:right;">
-pAUC_10 / t_statistic
+<th style="text-align:left;">
+t_statistic
 </th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-93.5
-</td>
-<td style="text-align:right;">
-93.5
-</td>
-<td style="text-align:right;">
-67.1
-</td>
-<td style="text-align:right;">
-75.4
-</td>
-<td style="text-align:right;">
-75.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-93.5
-</td>
-<td style="text-align:right;">
-93.5
-</td>
-<td style="text-align:right;">
-67.1
-</td>
-<td style="text-align:right;">
-75.4
-</td>
-<td style="text-align:right;">
-75.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-94.0
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-69.9
-</td>
-<td style="text-align:right;">
-65.9
-</td>
-<td style="text-align:right;">
-65.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-94.0
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-69.9
-</td>
-<td style="text-align:right;">
-65.9
-</td>
-<td style="text-align:right;">
-65.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_hurdle_nested
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-73.4
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_hurdle_nested
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-73.4
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-91.5
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-66.3
-</td>
-<td style="text-align:right;">
-70.8
-</td>
-<td style="text-align:right;">
-70.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-91.5
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-66.3
-</td>
-<td style="text-align:right;">
-70.8
-</td>
-<td style="text-align:right;">
-70.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-<td style="text-align:right;">
-91.2
-</td>
-<td style="text-align:right;">
-91.2
-</td>
-<td style="text-align:right;">
-69.3
-</td>
-<td style="text-align:right;">
-67.4
-</td>
-<td style="text-align:right;">
-67.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-<td style="text-align:right;">
-91.2
-</td>
-<td style="text-align:right;">
-91.2
-</td>
-<td style="text-align:right;">
-69.3
-</td>
-<td style="text-align:right;">
-67.4
-</td>
-<td style="text-align:right;">
-67.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.6
-</td>
-<td style="text-align:right;">
-92.1
-</td>
-<td style="text-align:right;">
-92.1
-</td>
-<td style="text-align:right;">
-63.4
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.6
-</td>
-<td style="text-align:right;">
-92.1
-</td>
-<td style="text-align:right;">
-92.1
-</td>
-<td style="text-align:right;">
-63.4
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-93.6
-</td>
-<td style="text-align:right;">
-93.6
-</td>
-<td style="text-align:right;">
-67.1
-</td>
-<td style="text-align:right;">
-75.6
-</td>
-<td style="text-align:right;">
-75.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-93.6
-</td>
-<td style="text-align:right;">
-93.6
-</td>
-<td style="text-align:right;">
-67.1
-</td>
-<td style="text-align:right;">
-75.6
-</td>
-<td style="text-align:right;">
-75.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.3
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-92.8
-</td>
-<td style="text-align:right;">
-66.4
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-<td style="text-align:right;">
-73.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lmer_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.6
-</td>
-<td style="text-align:right;">
-93.0
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-66.3
-</td>
-<td style="text-align:right;">
-73.2
-</td>
-<td style="text-align:right;">
-73.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lmer_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.6
-</td>
-<td style="text-align:right;">
-93.0
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-66.3
-</td>
-<td style="text-align:right;">
-73.2
-</td>
-<td style="text-align:right;">
-73.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-92.0
-</td>
-<td style="text-align:right;">
-93.7
-</td>
-<td style="text-align:right;">
-94.1
-</td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 64.0
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 77.9
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 77.9
 </td>
 </tr>
@@ -4462,86 +933,67 @@ peptide
 prolfqua_ropeca_nested
 </td>
 <td style="text-align:left;">
-peptide
+1.9.5
 </td>
 <td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-91.8
-</td>
-<td style="text-align:right;">
-93.6
-</td>
-<td style="text-align:right;">
-94.0
-</td>
-<td style="text-align:right;">
 63.0
 </td>
-<td style="text-align:right;">
-77.1
+<td style="text-align:left;">
+77.1 (+0.1)
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 75.8
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-prolfqua_ropeca_nested
-</td>
-<td style="text-align:left;">
-peptide
+prolfqua_lm
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-91.8
+<td style="text-align:left;">
+67.1
 </td>
-<td style="text-align:right;">
-93.6
+<td style="text-align:left;">
+75.6
 </td>
-<td style="text-align:right;">
-94.0
-</td>
-<td style="text-align:right;">
-63.0
-</td>
-<td style="text-align:right;">
-77.1
-</td>
-<td style="text-align:right;">
-75.8
+<td style="text-align:left;">
+75.6
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-msqrob2 1.20.0
-</td>
-<td style="text-align:left;">
-protein + peptide
+prolfqua_deqms
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-92.6
+<td style="text-align:left;">
+67.1
 </td>
-<td style="text-align:right;">
-93.0
+<td style="text-align:left;">
+75.4
 </td>
-<td style="text-align:right;">
-93.0
+<td style="text-align:left;">
+75.4
 </td>
-<td style="text-align:right;">
-66.2
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
 </td>
-<td style="text-align:right;">
-73.1
+<td style="text-align:left;">
+1.9.5
 </td>
-<td style="text-align:right;">
-72.9
+<td style="text-align:left;">
+66.4
+</td>
+<td style="text-align:left;">
+73.9
+</td>
+<td style="text-align:left;">
+73.9
 </td>
 </tr>
 <tr>
@@ -4549,448 +1001,284 @@ protein + peptide
 msqrob2_hurdle (msqrob2 1.20.0)
 </td>
 <td style="text-align:left;">
-protein + peptide
+1.9.5
+</td>
+<td style="text-align:left;">
+66.2
+</td>
+<td style="text-align:left;">
+73.6
+</td>
+<td style="text-align:left;">
+72.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-92.6
+<td style="text-align:left;">
+66.4
 </td>
-<td style="text-align:right;">
-92.8
+<td style="text-align:left;">
+73.4
 </td>
-<td style="text-align:right;">
-93.0
+<td style="text-align:left;">
+73.9
 </td>
-<td style="text-align:right;">
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lmer_nested
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+66.3
+</td>
+<td style="text-align:left;">
+73.2
+</td>
+<td style="text-align:left;">
+73.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2 1.20.0
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
 66.2
 </td>
-<td style="text-align:right;">
-73.6
+<td style="text-align:left;">
+73.1
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 72.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+66.3
+</td>
+<td style="text-align:left;">
+70.8
+</td>
+<td style="text-align:left;">
+70.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+69.3
+</td>
+<td style="text-align:left;">
+67.4
+</td>
+<td style="text-align:left;">
+67.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+63.4
+</td>
+<td style="text-align:left;">
+66.4
+</td>
+<td style="text-align:left;">
+66.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+69.9
+</td>
+<td style="text-align:left;">
+65.9
+</td>
+<td style="text-align:left;">
+65.8
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><img src="Score_history_files/figure-html/ranking-4.png" class="r-plt" alt="" width="864"></p>
 </div>
 <div class="section level3">
 <h3 id="ionstar_maxquant_protein">IonStar_MaxQuant_protein<a class="anchor" aria-label="anchor" href="#ionstar_maxquant_protein"></a>
 </h3>
+<div class="figure">
+<img src="Score_history_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="pAUC_10 on IonStar_MaxQuant_protein per prolfqua release: partial area under the ROC curve up to a false positive rate of 0.1 (0 to 100), all contrasts pooled, separating ECOLI proteins (changed) from HUMAN proteins (unchanged). Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Lines join the releases of a prolfqua model. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: MSstats, proDA and msqrob2 at their latest recorded run." width="864"><p class="caption">
+pAUC_10 on IonStar_MaxQuant_protein per prolfqua release: partial area
+under the ROC curve up to a false positive rate of 0.1 (0 to 100), all
+contrasts pooled, separating ECOLI proteins (changed) from HUMAN
+proteins (unchanged). Panels rank proteins by fold change (log_fc), by
+p-value signed by the fold change (scaled.p_value) and by t statistic.
+Lines join the releases of a prolfqua model. Colour: model family as in
+the prolfqua factory figure; shape: model within its family; grey open
+shapes: MSstats, proDA and msqrob2 at their latest recorded run.
+</p>
+</div>
 <div style="overflow-x: auto;">
 <table class="table table table-condensed">
 <caption>
-IonStar_MaxQuant_protein: all contrasts pooled.
+pAUC_10 on IonStar_MaxQuant_protein at the latest release of each model,
+all contrasts pooled, for ranking by fold change, scaled p-value and t
+statistic; sorted by scaled p-value. In parentheses: change from the
+model’s previous recorded release, where there is one. MSstats, proDA
+and msqrob2 labelled with their version. All scores, also per contrast:
+<a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv" class="external-link">score_history.tsv</a>.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
 model
 </th>
 <th style="text-align:left;">
-level
-</th>
-<th style="text-align:left;">
 release
 </th>
-<th style="text-align:right;">
-AUC / log_fc
+<th style="text-align:left;">
+log_fc
 </th>
-<th style="text-align:right;">
-AUC / scaled.p_value
+<th style="text-align:left;">
+scaled.p_value
 </th>
-<th style="text-align:right;">
-AUC / t_statistic
-</th>
-<th style="text-align:right;">
-pAUC_10 / log_fc
-</th>
-<th style="text-align:right;">
-pAUC_10 / scaled.p_value
-</th>
-<th style="text-align:right;">
-pAUC_10 / t_statistic
+<th style="text-align:left;">
+t_statistic
 </th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-81.2
-</td>
-<td style="text-align:right;">
-82.5
-</td>
-<td style="text-align:right;">
-82.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-81.2
-</td>
-<td style="text-align:right;">
-82.5
-</td>
-<td style="text-align:right;">
-82.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-97.0
-</td>
-<td style="text-align:right;">
-96.3
-</td>
-<td style="text-align:right;">
-96.3
-</td>
-<td style="text-align:right;">
-86.9
-</td>
-<td style="text-align:right;">
-82.3
-</td>
-<td style="text-align:right;">
-82.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-97.0
-</td>
-<td style="text-align:right;">
-96.3
-</td>
-<td style="text-align:right;">
-96.3
-</td>
-<td style="text-align:right;">
-86.9
-</td>
-<td style="text-align:right;">
-82.3
-</td>
-<td style="text-align:right;">
-82.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-78.9
-</td>
-<td style="text-align:right;">
-79.1
-</td>
-<td style="text-align:right;">
-78.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limma
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-78.9
-</td>
-<td style="text-align:right;">
-79.1
-</td>
-<td style="text-align:right;">
-78.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-87.2
-</td>
-<td style="text-align:right;">
-86.9
-</td>
-<td style="text-align:right;">
-86.9
-</td>
-<td style="text-align:right;">
-66.3
-</td>
-<td style="text-align:right;">
-62.8
-</td>
-<td style="text-align:right;">
-62.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_limpa
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-87.2
-</td>
-<td style="text-align:right;">
-86.9
-</td>
-<td style="text-align:right;">
-86.9
-</td>
-<td style="text-align:right;">
-66.3
-</td>
-<td style="text-align:right;">
-62.8
-</td>
-<td style="text-align:right;">
-62.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-81.2
-</td>
-<td style="text-align:right;">
-82.2
-</td>
-<td style="text-align:right;">
-82.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-81.2
-</td>
-<td style="text-align:right;">
-82.2
-</td>
-<td style="text-align:right;">
-82.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.0
-</td>
-<td style="text-align:right;">
-87.9
-</td>
-<td style="text-align:right;">
-88.3
-</td>
-<td style="text-align:right;">
-88.1
-</td>
-<td style="text-align:right;">
-63.8
-</td>
-<td style="text-align:right;">
-65.9
-</td>
-<td style="text-align:right;">
-65.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm_impute
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:left;">
-1.9.5
-</td>
-<td style="text-align:right;">
-87.9
-</td>
-<td style="text-align:right;">
-88.3
-</td>
-<td style="text-align:right;">
-88.1
-</td>
-<td style="text-align:right;">
-63.8
-</td>
-<td style="text-align:right;">
-65.9
-</td>
-<td style="text-align:right;">
-65.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 msqrob2_protein (msqrob2 1.20.0)
 </td>
 <td style="text-align:left;">
-protein
+1.9.5
+</td>
+<td style="text-align:left;">
+86.9
+</td>
+<td style="text-align:left;">
+88.0
+</td>
+<td style="text-align:left;">
+87.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-97.1
+<td style="text-align:left;">
+81.2
 </td>
-<td style="text-align:right;">
-97.2
+<td style="text-align:left;">
+82.5
 </td>
-<td style="text-align:right;">
-97.2
+<td style="text-align:left;">
+82.6
 </td>
-<td style="text-align:right;">
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
 86.9
 </td>
-<td style="text-align:right;">
-88.0
+<td style="text-align:left;">
+82.3
 </td>
-<td style="text-align:right;">
-87.9
+<td style="text-align:left;">
+82.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+81.2
+</td>
+<td style="text-align:left;">
+82.2
+</td>
+<td style="text-align:left;">
+82.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+78.9
+</td>
+<td style="text-align:left;">
+79.1
+</td>
+<td style="text-align:left;">
+78.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:left;">
+1.9.5
+</td>
+<td style="text-align:left;">
+63.8
+</td>
+<td style="text-align:left;">
+65.9
+</td>
+<td style="text-align:left;">
+65.4
 </td>
 </tr>
 <tr>
@@ -4998,47 +1286,63 @@ protein
 proDA 1.26.0
 </td>
 <td style="text-align:left;">
-protein
+1.9.5
+</td>
+<td style="text-align:left;">
+49.7
+</td>
+<td style="text-align:left;">
+65.8
+</td>
+<td style="text-align:left;">
+65.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
 </td>
 <td style="text-align:left;">
 1.9.5
 </td>
-<td style="text-align:right;">
-87.1
+<td style="text-align:left;">
+66.3
 </td>
-<td style="text-align:right;">
-88.7
+<td style="text-align:left;">
+62.8
 </td>
-<td style="text-align:right;">
-88.7
-</td>
-<td style="text-align:right;">
-49.7
-</td>
-<td style="text-align:right;">
-65.8
-</td>
-<td style="text-align:right;">
-65.8
+<td style="text-align:left;">
+62.9
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><img src="Score_history_files/figure-html/ranking-5.png" class="r-plt" alt="" width="864"></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="timings">Timings<a class="anchor" aria-label="anchor" href="#timings"></a>
 </h2>
 <p>Median elapsed seconds over 3 repetitions, IonStar MaxQuant peptides,
-all proteins with at least 2 peptides. <code>transform</code>: log2 and
-robust scaling on the human proteins; <code>aggregate</code>: median
-polish to proteins; <code>fit_lm</code>: one lm per protein;
-<code>contrasts_lm</code>: Wald contrasts with variance moderation;
-<code>facade_&lt;method&gt;</code>:
-<code>build_contrast_analysis()</code>, fit and contrasts. Timings
-compare only within one machine: R 4.6.2 aarch64-apple-darwin23.</p>
+all proteins with at least 2 peptides. Timings compare only within one
+machine: R 4.6.2 aarch64-apple-darwin23.</p>
+<div class="figure">
+<img src="Score_history_files/figure-html/timingsFacades-1.png" class="r-plt" alt="Elapsed seconds of build_contrast_analysis() per prolfqua release, fit and contrasts, for the methods lm, limma, lm_impute and rlm (rows facade_lm, facade_limma, facade_lm_impute and facade_rlm of score_history.tsv), median of 3 runs on the IonStar MaxQuant peptides. Colour and shape as in the pAUC_10 figures." width="864"><p class="caption">
+Elapsed seconds of build_contrast_analysis() per prolfqua release, fit
+and contrasts, for the methods lm, limma, lm_impute and rlm (rows
+facade_lm, facade_limma, facade_lm_impute and facade_rlm of
+score_history.tsv), median of 3 runs on the IonStar MaxQuant peptides.
+Colour and shape as in the pAUC_10 figures.
+</p>
+</div>
+<div class="figure">
+<img src="Score_history_files/figure-html/timingsSteps-1.png" class="r-plt" alt="Elapsed seconds of the core prolfqua steps per release, median of 3 runs on the IonStar MaxQuant peptides. transform: log2 and robust scaling on the human proteins; aggregate: median polish to proteins; fit_lm: one lm per protein; contrasts_lm: Wald contrasts with variance moderation." width="864"><p class="caption">
+Elapsed seconds of the core prolfqua steps per release, median of 3 runs
+on the IonStar MaxQuant peptides. transform: log2 and robust scaling on
+the human proteins; aggregate: median polish to proteins; fit_lm: one lm
+per protein; contrasts_lm: Wald contrasts with variance moderation.
+</p>
+</div>
 <div style="overflow-x: auto;">
 <table class="table table table-condensed">
 <caption>
@@ -5135,7 +1439,6 @@ transform
 </tbody>
 </table>
 </div>
-<p><img src="Score_history_files/figure-html/timingsPlot-1.png" class="r-plt" alt="" width="864"></p>
 </div>
   </div>
 

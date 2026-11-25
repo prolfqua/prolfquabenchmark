@@ -83,7 +83,7 @@
                         <h4 data-toc-skip class="author">Witold E.
 Wolski</h4>
             
-            <h4 data-toc-skip class="date">2026-11-24</h4>
+            <h4 data-toc-skip class="date">2026-11-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/wolski/proLFQuaBenchmark/blob/main/vignettes/Benchmark_results.Rmd" class="external-link"><code>vignettes/Benchmark_results.Rmd</code></a></small>
       <div class="hidden name"><code>Benchmark_results.Rmd</code></div>
@@ -118,10 +118,13 @@ and proteins tested</li>
 on peptides)</li>
 <li>FDP vs FDR: the false discovery proportion at each nominal FDR; a
 calibrated FDR lies on the diagonal</li>
-<li>Encoding: solid lines and circles for prolfqua protein models, long
-dashes and squares for prolfqua peptide models (nested and hurdle),
-short dashes and triangles for external tools; each method keeps its
-colour in every figure</li>
+<li>Encoding: colour is the model family of the <a href="https://github.com/fgcz/prolfqua#readme" class="external-link">prolfqua factory
+figure</a> (linear models, limma, limpa, LOD imputation, peptide level,
+hurdle); point shape and line type tell the models of a family apart;
+external tools are dark grey with open shapes. A method looks the same
+in every figure here and in the vignette <code>Score_history</code>
+(<code><a href="../reference/method_scales.html">method_scales()</a></code>, styles from prolfqua’s
+<code>facade_styles.tsv</code>)</li>
 </ul>
 <div class="section level2">
 <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a>
@@ -714,7 +717,7 @@ weighted by the number of peptides</li>
 (msqrob2 median-polishes them itself)</li>
 </ul>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on IonStar_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Circles are prolfqua protein models, squares prolfqua peptide models, triangles external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on IonStar_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
 Ranking accuracy against the number of proteins tested on
 IonStar_MaxQuant. Each point is one method. x: pAUC_5, the partial area
 under the ROC curve up to a false positive rate of 0.05 (0 to 100), all
@@ -722,9 +725,10 @@ under the ROC curve up to a false positive rate of 0.05 (0 to 100), all
 from HUMAN proteins (unchanged). y: proteins with a result, averaged
 over the contrasts. Panels rank proteins by fold change (log_fc), by
 p-value signed by the fold change (scaled.p_value) and by t statistic.
-Circles are prolfqua protein models, squares prolfqua peptide models,
-triangles external tools. The red staircase is the Pareto front: no
-other method has both a higher pAUC_5 and more proteins tested.
+Colour: model family as in the prolfqua factory figure; shape: model
+within its family; grey open shapes: external tools. The red staircase
+is the Pareto front: no other method has both a higher pAUC_5 and more
+proteins tested.
 </p>
 </div>
 <table class="table table table-condensed">
@@ -1146,25 +1150,25 @@ protein
 </tbody>
 </table>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="ROC curves on IonStar_MaxQuant, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Solid lines are prolfqua protein models, long dashes prolfqua peptide models, short dashes external tools." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="ROC curves on IonStar_MaxQuant, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools." width="864"><p class="caption">
 ROC curves on IonStar_MaxQuant, all 4 contrasts pooled. y: fraction of
 ECOLI proteins (changed) ranked above a threshold, the true positive
 rate; x: fraction of HUMAN proteins (unchanged) above it, the false
 positive rate, shown up to 0.2. One curve per method; panels rank by
-fold change, scaled p-value and t statistic. Solid lines are prolfqua
-protein models, long dashes prolfqua peptide models, short dashes
+fold change, scaled p-value and t statistic. Colour: model family as in
+the prolfqua factory figure; line type: model within its family; grey:
 external tools.
 </p>
 </div>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="Calibration of the FDR each method reports on IonStar_MaxQuant, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="Calibration of the FDR each method reports on IonStar_MaxQuant, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
 Calibration of the FDR each method reports on IonStar_MaxQuant, all 4
 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN
 proteins (unchanged) among the proteins called significant at that
-threshold, the false discovery proportion. One curve per method, line
-types as in the ROC figure. A calibrated FDR lies on the grey diagonal;
-curves above it are anti-conservative, with more false discoveries than
-the FDR promises.
+threshold, the false discovery proportion. One curve per method, colours
+and line types as in the ROC figure. A calibrated FDR lies on the grey
+diagonal; curves above it are anti-conservative, with more false
+discoveries than the FDR promises.
 </p>
 </div>
 </div>
@@ -1182,7 +1186,7 @@ the FDR promises.
 the prolfqua fits and is the DEqMS count</li>
 </ul>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on IonStar_MaxQuant_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Circles are prolfqua protein models, squares prolfqua peptide models, triangles external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on IonStar_MaxQuant_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
 Ranking accuracy against the number of proteins tested on
 IonStar_MaxQuant_protein. Each point is one method. x: pAUC_5, the
 partial area under the ROC curve up to a false positive rate of 0.05 (0
@@ -1190,9 +1194,10 @@ to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins
 (changed) from HUMAN proteins (unchanged). y: proteins with a result,
 averaged over the contrasts. Panels rank proteins by fold change
 (log_fc), by p-value signed by the fold change (scaled.p_value) and by t
-statistic. Circles are prolfqua protein models, squares prolfqua peptide
-models, triangles external tools. The red staircase is the Pareto front:
-no other method has both a higher pAUC_5 and more proteins tested.
+statistic. Colour: model family as in the prolfqua factory figure;
+shape: model within its family; grey open shapes: external tools. The
+red staircase is the Pareto front: no other method has both a higher
+pAUC_5 and more proteins tested.
 </p>
 </div>
 <table class="table table table-condensed">
@@ -1469,25 +1474,25 @@ protein
 </tbody>
 </table>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="ROC curves on IonStar_MaxQuant_protein, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Solid lines are prolfqua protein models, long dashes prolfqua peptide models, short dashes external tools." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="ROC curves on IonStar_MaxQuant_protein, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools." width="864"><p class="caption">
 ROC curves on IonStar_MaxQuant_protein, all 4 contrasts pooled. y:
 fraction of ECOLI proteins (changed) ranked above a threshold, the true
 positive rate; x: fraction of HUMAN proteins (unchanged) above it, the
 false positive rate, shown up to 0.2. One curve per method; panels rank
-by fold change, scaled p-value and t statistic. Solid lines are prolfqua
-protein models, long dashes prolfqua peptide models, short dashes
-external tools.
+by fold change, scaled p-value and t statistic. Colour: model family as
+in the prolfqua factory figure; line type: model within its family;
+grey: external tools.
 </p>
 </div>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="Calibration of the FDR each method reports on IonStar_MaxQuant_protein, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="Calibration of the FDR each method reports on IonStar_MaxQuant_protein, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
 Calibration of the FDR each method reports on IonStar_MaxQuant_protein,
 all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN
 proteins (unchanged) among the proteins called significant at that
-threshold, the false discovery proportion. One curve per method, line
-types as in the ROC figure. A calibrated FDR lies on the grey diagonal;
-curves above it are anti-conservative, with more false discoveries than
-the FDR promises.
+threshold, the false discovery proportion. One curve per method, colours
+and line types as in the ROC figure. A calibrated FDR lies on the grey
+diagonal; curves above it are anti-conservative, with more false
+discoveries than the FDR promises.
 </p>
 </div>
 </div>
@@ -1509,7 +1514,7 @@ peptides, its own dataProcess (log2, median equalization, Tukey median
 polish, imputation of censored values)</li>
 </ul>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on IonStar_FragPipe_MSstats. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Circles are prolfqua protein models, squares prolfqua peptide models, triangles external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on IonStar_FragPipe_MSstats. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
 Ranking accuracy against the number of proteins tested on
 IonStar_FragPipe_MSstats. Each point is one method. x: pAUC_5, the
 partial area under the ROC curve up to a false positive rate of 0.05 (0
@@ -1517,9 +1522,10 @@ to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins
 (changed) from HUMAN proteins (unchanged). y: proteins with a result,
 averaged over the contrasts. Panels rank proteins by fold change
 (log_fc), by p-value signed by the fold change (scaled.p_value) and by t
-statistic. Circles are prolfqua protein models, squares prolfqua peptide
-models, triangles external tools. The red staircase is the Pareto front:
-no other method has both a higher pAUC_5 and more proteins tested.
+statistic. Colour: model family as in the prolfqua factory figure;
+shape: model within its family; grey open shapes: external tools. The
+red staircase is the Pareto front: no other method has both a higher
+pAUC_5 and more proteins tested.
 </p>
 </div>
 <table class="table table table-condensed">
@@ -1970,25 +1976,25 @@ peptide
 </tbody>
 </table>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="ROC curves on IonStar_FragPipe_MSstats, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Solid lines are prolfqua protein models, long dashes prolfqua peptide models, short dashes external tools." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="ROC curves on IonStar_FragPipe_MSstats, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools." width="864"><p class="caption">
 ROC curves on IonStar_FragPipe_MSstats, all 4 contrasts pooled. y:
 fraction of ECOLI proteins (changed) ranked above a threshold, the true
 positive rate; x: fraction of HUMAN proteins (unchanged) above it, the
 false positive rate, shown up to 0.2. One curve per method; panels rank
-by fold change, scaled p-value and t statistic. Solid lines are prolfqua
-protein models, long dashes prolfqua peptide models, short dashes
-external tools.
+by fold change, scaled p-value and t statistic. Colour: model family as
+in the prolfqua factory figure; line type: model within its family;
+grey: external tools.
 </p>
 </div>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="Calibration of the FDR each method reports on IonStar_FragPipe_MSstats, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="Calibration of the FDR each method reports on IonStar_FragPipe_MSstats, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
 Calibration of the FDR each method reports on IonStar_FragPipe_MSstats,
 all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN
 proteins (unchanged) among the proteins called significant at that
-threshold, the false discovery proportion. One curve per method, line
-types as in the ROC figure. A calibrated FDR lies on the grey diagonal;
-curves above it are anti-conservative, with more false discoveries than
-the FDR promises.
+threshold, the false discovery proportion. One curve per method, colours
+and line types as in the ROC figure. A calibrated FDR lies on the grey
+diagonal; curves above it are anti-conservative, with more false
+discoveries than the FDR promises.
 </p>
 </div>
 </div>
@@ -2005,7 +2011,7 @@ the FDR promises.
 weights the prolfqua fits and is the DEqMS count</li>
 </ul>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on IonStar_FragPipe_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Circles are prolfqua protein models, squares prolfqua peptide models, triangles external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on IonStar_FragPipe_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
 Ranking accuracy against the number of proteins tested on
 IonStar_FragPipe_protein. Each point is one method. x: pAUC_5, the
 partial area under the ROC curve up to a false positive rate of 0.05 (0
@@ -2013,9 +2019,10 @@ to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins
 (changed) from HUMAN proteins (unchanged). y: proteins with a result,
 averaged over the contrasts. Panels rank proteins by fold change
 (log_fc), by p-value signed by the fold change (scaled.p_value) and by t
-statistic. Circles are prolfqua protein models, squares prolfqua peptide
-models, triangles external tools. The red staircase is the Pareto front:
-no other method has both a higher pAUC_5 and more proteins tested.
+statistic. Colour: model family as in the prolfqua factory figure;
+shape: model within its family; grey open shapes: external tools. The
+red staircase is the Pareto front: no other method has both a higher
+pAUC_5 and more proteins tested.
 </p>
 </div>
 <table class="table table table-condensed">
@@ -2292,25 +2299,25 @@ protein
 </tbody>
 </table>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="ROC curves on IonStar_FragPipe_protein, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Solid lines are prolfqua protein models, long dashes prolfqua peptide models, short dashes external tools." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="ROC curves on IonStar_FragPipe_protein, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools." width="864"><p class="caption">
 ROC curves on IonStar_FragPipe_protein, all 4 contrasts pooled. y:
 fraction of ECOLI proteins (changed) ranked above a threshold, the true
 positive rate; x: fraction of HUMAN proteins (unchanged) above it, the
 false positive rate, shown up to 0.2. One curve per method; panels rank
-by fold change, scaled p-value and t statistic. Solid lines are prolfqua
-protein models, long dashes prolfqua peptide models, short dashes
-external tools.
+by fold change, scaled p-value and t statistic. Colour: model family as
+in the prolfqua factory figure; line type: model within its family;
+grey: external tools.
 </p>
 </div>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="Calibration of the FDR each method reports on IonStar_FragPipe_protein, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="Calibration of the FDR each method reports on IonStar_FragPipe_protein, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
 Calibration of the FDR each method reports on IonStar_FragPipe_protein,
 all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN
 proteins (unchanged) among the proteins called significant at that
-threshold, the false discovery proportion. One curve per method, line
-types as in the ROC figure. A calibrated FDR lies on the grey diagonal;
-curves above it are anti-conservative, with more false discoveries than
-the FDR promises.
+threshold, the false discovery proportion. One curve per method, colours
+and line types as in the ROC figure. A calibrated FDR lies on the grey
+diagonal; curves above it are anti-conservative, with more false
+discoveries than the FDR promises.
 </p>
 </div>
 </div>
@@ -2329,17 +2336,18 @@ weighted by the number of peptides</li>
 (msqrob2 median-polishes them itself)</li>
 </ul>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on CPTAC_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), one contrast; the ROC curve separates UPS proteins (changed) from YEAST proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Circles are prolfqua protein models, squares prolfqua peptide models, triangles external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="Ranking accuracy against the number of proteins tested on CPTAC_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), one contrast; the ROC curve separates UPS proteins (changed) from YEAST proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested." width="864"><p class="caption">
 Ranking accuracy against the number of proteins tested on
 CPTAC_MaxQuant. Each point is one method. x: pAUC_5, the partial area
 under the ROC curve up to a false positive rate of 0.05 (0 to 100), one
 contrast; the ROC curve separates UPS proteins (changed) from YEAST
 proteins (unchanged). y: proteins with a result, averaged over the
 contrasts. Panels rank proteins by fold change (log_fc), by p-value
-signed by the fold change (scaled.p_value) and by t statistic. Circles
-are prolfqua protein models, squares prolfqua peptide models, triangles
-external tools. The red staircase is the Pareto front: no other method
-has both a higher pAUC_5 and more proteins tested.
+signed by the fold change (scaled.p_value) and by t statistic. Colour:
+model family as in the prolfqua factory figure; shape: model within its
+family; grey open shapes: external tools. The red staircase is the
+Pareto front: no other method has both a higher pAUC_5 and more proteins
+tested.
 </p>
 </div>
 <table class="table table table-condensed">
@@ -2760,23 +2768,23 @@ protein
 </tbody>
 </table>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="ROC curves on CPTAC_MaxQuant, one contrast. y: fraction of UPS proteins (changed) ranked above a threshold, the true positive rate; x: fraction of YEAST proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Solid lines are prolfqua protein models, long dashes prolfqua peptide models, short dashes external tools." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="ROC curves on CPTAC_MaxQuant, one contrast. y: fraction of UPS proteins (changed) ranked above a threshold, the true positive rate; x: fraction of YEAST proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools." width="864"><p class="caption">
 ROC curves on CPTAC_MaxQuant, one contrast. y: fraction of UPS proteins
 (changed) ranked above a threshold, the true positive rate; x: fraction
 of YEAST proteins (unchanged) above it, the false positive rate, shown
 up to 0.2. One curve per method; panels rank by fold change, scaled
-p-value and t statistic. Solid lines are prolfqua protein models, long
-dashes prolfqua peptide models, short dashes external tools.
+p-value and t statistic. Colour: model family as in the prolfqua factory
+figure; line type: model within its family; grey: external tools.
 </p>
 </div>
 <div class="figure">
-<img src="Benchmark_results_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="Calibration of the FDR each method reports on CPTAC_MaxQuant, one contrast. x: nominal FDR threshold; y: fraction of YEAST proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
+<img src="Benchmark_results_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="Calibration of the FDR each method reports on CPTAC_MaxQuant, one contrast. x: nominal FDR threshold; y: fraction of YEAST proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises." width="864"><p class="caption">
 Calibration of the FDR each method reports on CPTAC_MaxQuant, one
 contrast. x: nominal FDR threshold; y: fraction of YEAST proteins
 (unchanged) among the proteins called significant at that threshold, the
-false discovery proportion. One curve per method, line types as in the
-ROC figure. A calibrated FDR lies on the grey diagonal; curves above it
-are anti-conservative, with more false discoveries than the FDR
+false discovery proportion. One curve per method, colours and line types
+as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves
+above it are anti-conservative, with more false discoveries than the FDR
 promises.
 </p>
 </div>
