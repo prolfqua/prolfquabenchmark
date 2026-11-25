@@ -287,7 +287,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="unnumbered anchored" data-anchor-id="scores-of-methods-on-the-protein-and-contrast-pairs-of-a-method-on-the-pareto-front">Scores of methods on the protein and contrast pairs of a method on the Pareto front</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>A method on the Pareto front of pAUC_5 against proteins tested may be there because it tests fewer proteins, an easier set. For each ranking score and each front method, the methods that test a strict superset of its pairs are scored on exactly these pairs with [score_on_pairs()]. The pairs a method tests come from [prolfqua::ContrastsComparison]: with ‘log_fc’ the pairs with a fold change, with ‘t_statistic’ those with a t statistic, with ‘scaled.p_value’ those with a fold change and a p-value.</p>
+<p>A method on the Pareto front of pAUC_5 against contrasts computed may be there because it tests fewer proteins, an easier set. For each ranking score and each front method, the methods that test a strict superset of its pairs are scored on exactly these pairs with [score_on_pairs()]. The pairs a method tests come from [prolfqua::ContrastsComparison]: with ‘log_fc’ the pairs with a fold change, with ‘t_statistic’ those with a t statistic, with ‘scaled.p_value’ those with a fold change and a p-value.</p>
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
@@ -310,14 +310,14 @@ named list (names: methods) of the results of one dataset, each as for [score_on
 <code id="scores">scores</code>
 </td>
 <td>
-the score table rows of these methods (‘model_name’, ‘contrast’, ‘score’, ‘pAUC_5’, ‘n_total’), as in ‘benchmark_scores.tsv’; the front uses pAUC_5 of contrast ‘all’ and ‘n_total’ averaged over the other contrasts
+the score table rows of these methods (‘model_name’, ‘contrast’, ‘score’, ‘pAUC_5’, ‘n_total’), as in ‘benchmark_scores.tsv’; the front uses pAUC_5 and ‘n_total’ of contrast ‘all’, all contrasts pooled
 </td>
 </tr>
 </tbody></table>
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>data.frame with one row per ranking score, front method with a superset and method (the front method on its own pairs first, then its supersets): ‘score’, ‘front_method’, ‘proteins’ (the front method’s proteins tested per contrast), ‘method’, ‘pAUC_5’, ‘pAUC_10’</p>
+<p>data.frame with one row per ranking score, front method with a superset and method (the front method on its own pairs first, then its supersets): ‘score’, ‘front_method’, ‘contrasts’ (the front method’s contrasts computed, protein and contrast pairs scored), ‘method’, ‘pAUC_5’, ‘pAUC_10’</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>

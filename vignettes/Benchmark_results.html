@@ -293,8 +293,8 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li>Ranking scores: fold change (<code>log_fc</code>), p-value signed by the fold change (<code>scaled.p_value</code>), t statistic (<code>t_statistic</code>)</li>
 <li>AUC, pAUC_5, pAUC_10: area under the ROC curve, and partial area up to a false positive rate of 0.05 or 0.1, on a 0 to 100 scale, with all contrasts of a dataset pooled</li>
-<li>Proteins tested: proteins with a result in a contrast, averaged over the contrasts. Each method is scored on the proteins it tests, so pAUC_5 is plotted against this count, as in ProteoBench</li>
-<li>Pareto front (red): the methods no other method beats on both pAUC_5 and proteins tested</li>
+<li>Contrasts computed: protein and contrast pairs with a result for the ranking score, all contrasts together. Each method is scored on the pairs it computes, so pAUC_5 is plotted against this count</li>
+<li>Pareto front (red): the methods no other method beats on both pAUC_5 and contrasts computed</li>
 <li>Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test a strict superset of its protein and contrast pairs are scored again on exactly these pairs (<code>same_pairs_scores()</code>; figure after the Pareto front, ranking by scaled p-value; <code>benchmark_same_pairs.tsv</code> has all three ranking scores)</li>
 <li>Level: <code>protein</code> (model fitted to protein abundances), <code>peptide</code> (model fitted to peptides, one result per protein), <code>protein + peptide</code> (hurdle: intensity on proteins, detection on peptides)</li>
 <li>FDP vs FDR: the false discovery proportion at each nominal FDR; a calibrated FDR lies on the diagonal</li>
@@ -661,7 +661,7 @@ msqrob2 hurdle; Fisher combination of the intensity and detection p-values
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="864"></p>
-<figcaption>Ranking accuracy against the number of proteins tested on IonStar_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested.</figcaption></figure>
+<figcaption>Ranking accuracy against the number of contrasts computed on IonStar_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -1116,7 +1116,7 @@ protein
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="864"></p>
-<figcaption>Ranking accuracy against the number of proteins tested on IonStar_MaxQuant_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested.</figcaption></figure>
+<figcaption>Ranking accuracy against the number of contrasts computed on IonStar_MaxQuant_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -1427,7 +1427,7 @@ protein
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="864"></p>
-<figcaption>Ranking accuracy against the number of proteins tested on IonStar_FragPipe_MSstats. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested.</figcaption></figure>
+<figcaption>Ranking accuracy against the number of contrasts computed on IonStar_FragPipe_MSstats. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -1910,7 +1910,7 @@ peptide
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="864"></p>
-<figcaption>Ranking accuracy against the number of proteins tested on IonStar_FragPipe_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested.</figcaption></figure>
+<figcaption>Ranking accuracy against the number of contrasts computed on IonStar_FragPipe_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -2219,7 +2219,7 @@ protein
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="864"></p>
-<figcaption>Ranking accuracy against the number of proteins tested on CPTAC_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), one contrast; the ROC curve separates UPS proteins (changed) from YEAST proteins (unchanged). y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more proteins tested.</figcaption></figure>
+<figcaption>Ranking accuracy against the number of contrasts computed on CPTAC_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), one contrast; the ROC curve separates UPS proteins (changed) from YEAST proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
 </div>
