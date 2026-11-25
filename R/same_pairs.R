@@ -8,7 +8,7 @@
 #'
 #' A point is Pareto optimal when no other point is at least as high in both `x` and `y` and higher in one of them.
 #' The benchmark uses it for the methods with the best trade-off between ranking accuracy (pAUC) and the number of
-#' proteins tested.
+#' contrasts computed.
 #'
 #' @param x numeric, higher is better
 #' @param y numeric, the same length as `x`, higher is better
@@ -45,7 +45,7 @@ score_on_pairs <- function(result, pairs, score) {
 
 #' Scores of methods on the protein and contrast pairs of a method on the Pareto front
 #'
-#' A method on the Pareto front of pAUC_5 against proteins tested may be there because it tests fewer proteins, an
+#' A method on the Pareto front of pAUC_5 against contrasts computed may be there because it tests fewer proteins, an
 #' easier set. For each ranking score and each front method, the methods that test a strict superset of its pairs are
 #' scored on exactly these pairs with [score_on_pairs()]. The pairs a method tests come from
 #' [prolfqua::ContrastsComparison]: with `log_fc` the pairs with a fold change, with `t_statistic` those with a t
@@ -53,10 +53,10 @@ score_on_pairs <- function(result, pairs, score) {
 #'
 #' @param results named list (names: methods) of the results of one dataset, each as for [score_on_pairs()]
 #' @param scores the score table rows of these methods (`model_name`, `contrast`, `score`, `pAUC_5`, `n_total`), as in
-#'   `benchmark_scores.tsv`; the front uses pAUC_5 of contrast `all` and `n_total` averaged over the other contrasts
+#'   `benchmark_scores.tsv`; the front uses pAUC_5 and `n_total` of contrast `all`, all contrasts pooled
 #' @return data.frame with one row per ranking score, front method with a superset and method (the front method on
-#'   its own pairs first, then its supersets): `score`, `front_method`, `proteins` (the front method's proteins tested
-#'   per contrast), `method`, `pAUC_5`, `pAUC_10`
+#'   its own pairs first, then its supersets): `score`, `front_method`, `contrasts` (the front method's contrasts
+#'   computed, protein and contrast pairs scored), `method`, `pAUC_5`, `pAUC_10`
 #' @export
 #' @family same pairs
 same_pairs_scores <- function(results, scores) {
@@ -64,22 +64,22 @@ same_pairs_scores <- function(results, scores) {
   summary <- scores |>
     dplyr::summarize(
       pAUC_5 = .data$pAUC_5[.data$contrast == "all"],
-      proteins = mean(.data$n_total[.data$contrast != "all"]),
+      contrasts = .data$n_total[.data$contrast == "all"],
       .by = c("model_name", "score")
     )
   rows <- list()
   for (score in names(.pair_columns)) {
     score_summary <- summary[summary$score == score, ]
-    front <- pareto_optimal(score_summary$pAUC_5, score_summary$proteins)
+    front <- pareto_optimal(score_summary$pAUC_5, score_summary$contrasts)
     for (i in which(front)) {
       front_method <- score_summary$model_name[i]
-      rows[[length(rows) + 1]] <- .front_scores(comparison, results, score, front_method, score_summary$proteins[i])
+      rows[[length(rows) + 1]] <- .front_scores(comparison, results, score, front_method, score_summary$contrasts[i])
     }
   }
   empty <- data.frame(
     score = character(),
     front_method = character(),
-    proteins = numeric(),
+    contrasts = numeric(),
     method = character(),
     pAUC_5 = numeric(),
     pAUC_10 = numeric()
@@ -92,9 +92,9 @@ same_pairs_scores <- function(results, scores) {
 #' @param results named list of the methods' results
 #' @param score ranking score
 #' @param front_method method on the Pareto front
-#' @param proteins proteins the front method tests per contrast
+#' @param contrasts contrasts the front method computes (protein and contrast pairs scored)
 #' @noRd
-.front_scores <- function(comparison, results, score, front_method, proteins) {
+.front_scores <- function(comparison, results, score, front_method, contrasts) {
   columns <- .pair_columns[[score]]
   pair_keys <- function(method) do.call(paste, c(comparison$pairs(method, columns), sep = "\r"))
   front_keys <- pair_keys(front_method)
@@ -115,7 +115,7 @@ same_pairs_scores <- function(results, scores) {
   data.frame(
     score = score,
     front_method = front_method,
-    proteins = proteins,
+    contrasts = contrasts,
     method = methods,
     pAUC_5 = pauc["pAUC_5", ],
     pAUC_10 = pauc["pAUC_10", ],

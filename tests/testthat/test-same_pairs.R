@@ -44,7 +44,7 @@ same_pairs_results <- function() {
   )
 }
 
-# Score table rows with a known front: selective (pAUC_5 100, 4 proteins) and complete (50, 6); partial and equal are
+# Score table rows with a known front: selective (pAUC_5 100, 8 contrasts) and complete (50, 12); partial and equal are
 # dominated
 same_pairs_score_table <- function() {
   summary <- data.frame(
@@ -60,6 +60,8 @@ same_pairs_score_table <- function() {
       stringsAsFactors = FALSE
     )
   )
+  # contrast `all` pools the two contrasts
+  rows$n_total[rows$contrast == "all"] <- 2 * rows$n_total[rows$contrast == "all"]
   rows
 }
 
@@ -94,7 +96,7 @@ test_that("same_pairs_scores scores the strict supersets of a front method on it
   log_fc <- scores[scores$score == "log_fc", ]
   expect_equal(log_fc$front_method, c("selective", "selective"))
   expect_equal(log_fc$method, c("selective", "complete"))
-  expect_equal(log_fc$proteins, c(4, 4))
+  expect_equal(log_fc$contrasts, c(8, 8))
   selective_pairs <- results$selective$data[!is.na(results$selective$data$log_fc), c("protein_id", "contrast")]
   expect_equal(
     unlist(log_fc[2, c("pAUC_5", "pAUC_10")]),
@@ -111,5 +113,5 @@ test_that("same_pairs_scores returns the columns also when no front method has a
   table <- same_pairs_score_table()
   scores <- same_pairs_scores(results, table[table$model_name %in% c("partial", "equal"), ])
   expect_equal(nrow(scores), 0)
-  expect_equal(colnames(scores), c("score", "front_method", "proteins", "method", "pAUC_5", "pAUC_10"))
+  expect_equal(colnames(scores), c("score", "front_method", "contrasts", "method", "pAUC_5", "pAUC_10"))
 })

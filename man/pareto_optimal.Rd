@@ -17,7 +17,7 @@ logical, one per point
 \description{
 A point is Pareto optimal when no other point is at least as high in both `x` and `y` and higher in one of them.
 The benchmark uses it for the methods with the best trade-off between ranking accuracy (pAUC) and the number of
-proteins tested.
+contrasts computed.
 }
 \examples{
 pareto_optimal(c(1, 2, 3), c(3, 2, 1))

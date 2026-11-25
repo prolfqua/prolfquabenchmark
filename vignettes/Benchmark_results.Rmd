@@ -25,8 +25,8 @@ The benchmark pipeline (`make benchmark`; `workflow/Snakefile`, `config/config.y
 
 - Ranking scores: fold change (`log_fc`), p-value signed by the fold change (`scaled.p_value`), t statistic (`t_statistic`)
 - AUC, pAUC_5, pAUC_10: area under the ROC curve, and partial area up to a false positive rate of 0.05 or 0.1, on a 0 to 100 scale, with all contrasts of a dataset pooled
-- Proteins tested: proteins with a result in a contrast, averaged over the contrasts. Each method is scored on the proteins it tests, so pAUC_5 is plotted against this count, as in ProteoBench
-- Pareto front (red): the methods no other method beats on both pAUC_5 and proteins tested
+- Contrasts computed: protein and contrast pairs with a result for the ranking score, all contrasts together. Each method is scored on the pairs it computes, so pAUC_5 is plotted against this count
+- Pareto front (red): the methods no other method beats on both pAUC_5 and contrasts computed
 - Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test a strict superset of its protein and contrast pairs are scored again on exactly these pairs (`same_pairs_scores()`; figure after the Pareto front, ranking by scaled p-value; `benchmark_same_pairs.tsv` has all three ranking scores)
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; a calibrated FDR lies on the diagonal
@@ -95,20 +95,16 @@ for (dataset_name in datasets$dataset) {
   negative <- datasets$negative[datasets$dataset == dataset_name]
   n_contrasts <- length(setdiff(unique(dataset_scores$contrast), "all"))
   pooled <- if (n_contrasts == 1) "one contrast" else paste("all", n_contrasts, "contrasts pooled")
-  tested <- dataset_scores |>
-    dplyr::filter(.data$contrast != "all") |>
-    dplyr::summarize(proteins = mean(.data$n_total), .by = c("model_name", "score"))
   pauc_5 <- dataset_scores |>
     dplyr::filter(.data$contrast == "all") |>
-    dplyr::select("model_name", "score", "pAUC_5") |>
-    dplyr::left_join(tested, by = c("model_name", "score")) |>
+    dplyr::select("model_name", "score", "pAUC_5", contrasts = "n_total") |>
     dplyr::mutate(method = .data$model_name)
   front <- pauc_5 |>
-    dplyr::filter(prolfquabenchmark::pareto_optimal(.data$pAUC_5, .data$proteins), .by = "score") |>
+    dplyr::filter(prolfquabenchmark::pareto_optimal(.data$pAUC_5, .data$contrasts), .by = "score") |>
     dplyr::arrange(.data$score, .data$pAUC_5)
   print_with_height(
-    ggplot2::ggplot(pauc_5, ggplot2::aes(x = pAUC_5, y = proteins, colour = method, shape = method)) +
-      ggplot2::geom_step(data = front, ggplot2::aes(x = pAUC_5, y = proteins), direction = "vh",
+    ggplot2::ggplot(pauc_5, ggplot2::aes(x = pAUC_5, y = contrasts, colour = method, shape = method)) +
+      ggplot2::geom_step(data = front, ggplot2::aes(x = pAUC_5, y = contrasts), direction = "vh",
                          colour = "#e34948", linewidth = 1, inherit.aes = FALSE) +
       ggplot2::geom_point(size = 3) +
       ggrepel::geom_text_repel(
@@ -125,26 +121,26 @@ for (dataset_name in datasets$dataset) {
       ) +
       ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.15, 0.4))) +
       ggplot2::facet_wrap(~score, ncol = 1) +
-      ggplot2::labs(x = "pAUC_5 (all contrasts pooled)", y = "proteins tested per contrast",
-                    title = paste(dataset_name, "pAUC_5 vs proteins tested")) +
+      ggplot2::labs(x = "pAUC_5 (all contrasts pooled)", y = "contrasts computed (protein and contrast pairs)",
+                    title = paste(dataset_name, "pAUC_5 vs contrasts computed")) +
       method_style(pauc_5$method),
     height = 11,
     caption = paste0(
-      "Ranking accuracy against the number of proteins tested on ", dataset_name, ". Each point is one method. ",
+      "Ranking accuracy against the number of contrasts computed on ", dataset_name, ". Each point is one method. ",
       "x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), ", pooled,
       "; the ROC curve separates ", positive, " proteins (changed) from ", negative, " proteins (unchanged). ",
-      "y: proteins with a result, averaged over the contrasts. Panels rank proteins by fold change (log_fc), ",
+      "y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), ",
       "by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the ",
       "prolfqua factory figure; shape: model within its family; grey open shapes: external tools. ",
       "The red staircase is the Pareto front: ",
-      "no other method has both a higher pAUC_5 and more proteins tested."
+      "no other method has both a higher pAUC_5 and more contrasts computed."
     )
   )
   dataset_same <- dplyr::filter(same_pairs, .data$dataset == dataset_name, .data$score == "scaled.p_value")
   if (nrow(dataset_same) > 0) {
     dataset_same <- dataset_same |>
-      dplyr::mutate(panel = paste0(.data$front_method, ": ", round(.data$proteins), " proteins per contrast")) |>
-      dplyr::arrange(dplyr::desc(.data$proteins), .data$pAUC_5) |>
+      dplyr::mutate(panel = paste0(.data$front_method, ": ", .data$contrasts, " contrasts")) |>
+      dplyr::arrange(dplyr::desc(.data$contrasts), .data$pAUC_5) |>
       dplyr::mutate(
         panel = factor(.data$panel, levels = unique(.data$panel)),
         row = paste(.data$panel, .data$method, sep = "\r"),

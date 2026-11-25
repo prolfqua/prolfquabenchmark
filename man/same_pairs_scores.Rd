@@ -10,15 +10,15 @@ same_pairs_scores(results, scores)
 \item{results}{named list (names: methods) of the results of one dataset, each as for [score_on_pairs()]}
 
 \item{scores}{the score table rows of these methods (`model_name`, `contrast`, `score`, `pAUC_5`, `n_total`), as in
-`benchmark_scores.tsv`; the front uses pAUC_5 of contrast `all` and `n_total` averaged over the other contrasts}
+`benchmark_scores.tsv`; the front uses pAUC_5 and `n_total` of contrast `all`, all contrasts pooled}
 }
 \value{
 data.frame with one row per ranking score, front method with a superset and method (the front method on
-  its own pairs first, then its supersets): `score`, `front_method`, `proteins` (the front method's proteins tested
-  per contrast), `method`, `pAUC_5`, `pAUC_10`
+  its own pairs first, then its supersets): `score`, `front_method`, `contrasts` (the front method's contrasts
+  computed, protein and contrast pairs scored), `method`, `pAUC_5`, `pAUC_10`
 }
 \description{
-A method on the Pareto front of pAUC_5 against proteins tested may be there because it tests fewer proteins, an
+A method on the Pareto front of pAUC_5 against contrasts computed may be there because it tests fewer proteins, an
 easier set. For each ranking score and each front method, the methods that test a strict superset of its pairs are
 scored on exactly these pairs with [score_on_pairs()]. The pairs a method tests come from
 [prolfqua::ContrastsComparison]: with `log_fc` the pairs with a fold change, with `t_statistic` those with a t
