@@ -33,6 +33,8 @@ datasets <- utils::read.delim(
 )
 history_url <- "https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv"
 releases <- as.character(sort(unique(package_version(history$prolfqua_version))))
+# models removed from prolfqua have no rows at the latest release and are not shown; score_history.tsv keeps them
+history <- history[history$method %in% history$method[history$prolfqua_version == dplyr::last(releases)], ]
 history$prolfqua_version <- factor(history$prolfqua_version, levels = releases)
 release_dates <- history |>
   dplyr::summarise(date = max(date), .by = "prolfqua_version") |>
@@ -82,7 +84,7 @@ print_with_height <- function(plot, height, caption) {
 
 # pAUC_10 across releases
 
-One figure and one table per dataset; the numbers of every release are in [`score_history.tsv`](`r history_url`). Lines join the releases of a prolfqua model; a model has no point at a release without its facade (`prolfqua_ropecaV2_nested` came with prolfqua 1.9.4). MSstats, proDA and msqrob2 are shown at their latest recorded run only.
+One figure and one table per dataset; the numbers of every release are in [`score_history.tsv`](`r history_url`). Lines join the releases of a prolfqua model; a model has no point at a release without its facade (`prolfqua_ropecaV2_nested` came with prolfqua 1.9.4); models removed from prolfqua are not shown, their rows stay in `score_history.tsv`. MSstats, proDA and msqrob2 are shown at their latest recorded run only.
 
 ```{r pauc, results = "asis"}
 pauc <- history |>
