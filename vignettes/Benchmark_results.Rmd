@@ -27,6 +27,7 @@ The benchmark pipeline (`make benchmark`; `workflow/Snakefile`, `config/config.y
 - AUC, pAUC_5, pAUC_10: area under the ROC curve, and partial area up to a false positive rate of 0.05 or 0.1, on a 0 to 100 scale, with all contrasts of a dataset pooled
 - Proteins tested: proteins with a result in a contrast, averaged over the contrasts. Each method is scored on the proteins it tests, so pAUC_5 is plotted against this count, as in ProteoBench
 - Pareto front (red): the methods no other method beats on both pAUC_5 and proteins tested
+- Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test a strict superset of its protein and contrast pairs are scored again on exactly these pairs (`same_pairs_scores()`; figure after the Pareto front, ranking by scaled p-value; `benchmark_same_pairs.tsv` has all three ranking scores)
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; a calibrated FDR lies on the diagonal
 - Encoding: colour is the model family of the [prolfqua factory figure](https://github.com/fgcz/prolfqua#readme) (linear models, limma, limpa, LOD imputation, peptide level, hurdle); point shape and line type tell the models of a family apart; external tools are dark grey with open shapes. A method looks the same in every figure here and in the vignette `Score_history` (`method_scales()`, styles from prolfqua's `facade_styles.tsv`)
@@ -42,6 +43,7 @@ curves <- extdata("benchmark_curves.tsv")
 methods <- extdata("benchmark_methods.tsv", col_classes = c(tool_version = "character"))
 datasets <- extdata("benchmark_datasets.tsv")
 preprocessing <- extdata("benchmark_preprocessing.tsv")
+same_pairs <- extdata("benchmark_same_pairs.tsv")
 ```
 
 ```{r method-style}
@@ -52,10 +54,6 @@ method_style <- function(method) {
     ggplot2::theme_bw(),
     ggplot2::theme(legend.key.width = grid::unit(2.5, "lines"))
   )
-}
-# TRUE for the points no other point beats in both x and y (higher or equal in both, higher in one)
-pareto_optimal <- function(x, y) {
-  vapply(seq_along(x), function(i) !any(x >= x[i] & y >= y[i] & (x > x[i] | y > y[i])), logical(1))
 }
 # Prints a plot from inside the results = "asis" loop, in order with the text, with its own height and caption
 print_with_height <- function(plot, height, caption) {
@@ -106,7 +104,7 @@ for (dataset_name in datasets$dataset) {
     dplyr::left_join(tested, by = c("model_name", "score")) |>
     dplyr::mutate(method = .data$model_name)
   front <- pauc_5 |>
-    dplyr::filter(pareto_optimal(.data$pAUC_5, .data$proteins), .by = "score") |>
+    dplyr::filter(prolfquabenchmark::pareto_optimal(.data$pAUC_5, .data$proteins), .by = "score") |>
     dplyr::arrange(.data$score, .data$pAUC_5)
   print_with_height(
     ggplot2::ggplot(pauc_5, ggplot2::aes(x = pAUC_5, y = proteins, colour = method, shape = method)) +
@@ -142,6 +140,41 @@ for (dataset_name in datasets$dataset) {
       "no other method has both a higher pAUC_5 and more proteins tested."
     )
   )
+  dataset_same <- dplyr::filter(same_pairs, .data$dataset == dataset_name, .data$score == "scaled.p_value")
+  if (nrow(dataset_same) > 0) {
+    dataset_same <- dataset_same |>
+      dplyr::mutate(panel = paste0(.data$front_method, ": ", round(.data$proteins), " proteins per contrast")) |>
+      dplyr::arrange(dplyr::desc(.data$proteins), .data$pAUC_5) |>
+      dplyr::mutate(
+        panel = factor(.data$panel, levels = unique(.data$panel)),
+        row = paste(.data$panel, .data$method, sep = "\r"),
+        row = factor(.data$row, levels = unique(.data$row))
+      )
+    print_with_height(
+      # the points of all methods first: the first layer sets the row order of each panel
+      ggplot2::ggplot(dataset_same, ggplot2::aes(x = pAUC_5, y = row, colour = method, shape = method)) +
+        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_point(
+          data = dplyr::filter(dataset_same, .data$method == .data$front_method),
+          ggplot2::aes(x = pAUC_5, y = row),
+          shape = 21, size = 5.5, stroke = 1.2, colour = "#e34948", inherit.aes = FALSE
+        ) +
+        ggplot2::scale_y_discrete(labels = function(row) sub(".*\r", "", row)) +
+        ggplot2::facet_wrap(~panel, ncol = 1, scales = "free_y") +
+        ggplot2::labs(x = "pAUC_5 on the front method's pairs (all contrasts pooled)", y = NULL,
+                      title = paste(dataset_name, "same pairs, ranking by scaled.p_value")) +
+        method_style(dataset_same$method) +
+        ggplot2::theme(legend.position = "none"),
+      height = 1 + 0.28 * nrow(dataset_same) + 0.5 * dplyr::n_distinct(dataset_same$panel),
+      caption = paste0(
+        "Ranking accuracy on the same proteins on ", dataset_name, ", ranking by scaled p-value. Each panel is a ",
+        "method on the Pareto front of the figure above (red circle) with the methods that test every protein and ",
+        "contrast it tests and more; all are scored on the front method's pairs only (pAUC_5, ", pooled, "). A ",
+        "method to the right of the red circle ranks these proteins better: the front method's position then comes ",
+        "from testing fewer, easier proteins rather than from ranking them better."
+      )
+    )
+  }
   computed <- dataset_scores |>
     dplyr::filter(.data$contrast == "all", .data$score == "scaled.p_value") |>
     dplyr::select(model = "model_name", `contrasts computed` = "n_total")

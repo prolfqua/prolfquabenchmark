@@ -137,6 +137,24 @@ rule score:
         "{output.scores} {output.curves} > {log} 2>&1"
 
 
+# Scores every method of a dataset that tests a strict superset of a Pareto-front method's pairs on those pairs
+rule score_same_pairs:
+    input:
+        script="workflow/scripts/score_same_pairs.R",
+        common="workflow/scripts/common.R",
+        contrasts=lambda w: [f"{RESULTS}/contrasts/{w.dataset}/{m}/contrasts.tsv" for d, m in JOBS if d == w.dataset],
+        scores=lambda w: [f"{RESULTS}/scores/{w.dataset}/{m}.tsv" for d, m in JOBS if d == w.dataset],
+    output:
+        f"{RESULTS}/same_pairs/{{dataset}}.tsv",
+    params:
+        packages=lambda w: {name: PACKAGES[name] for name in ["prolfqua", "prolfquabenchmark"]},
+        methods=lambda w: " ".join(m for d, m in JOBS if d == w.dataset),
+    log:
+        f"{LOGS}/score_same_pairs_{{dataset}}.log",
+    shell:
+        "Rscript {input.script} {wildcards.dataset} {output} {params.methods} > {log} 2>&1"
+
+
 rule export:
     input:
         script="workflow/scripts/export.R",
@@ -146,12 +164,14 @@ rule export:
         curves=[f"{RESULTS}/curves/{dataset}/{method}.tsv" for dataset, method in JOBS],
         metadata=[f"{RESULTS}/contrasts/{dataset}/{method}/metadata.yaml" for dataset, method in JOBS],
         fit_times=[f"{RESULTS}/benchmarks/{dataset}/{method}.tsv" for dataset, method in JOBS],
+        same_pairs=[f"{RESULTS}/same_pairs/{dataset}.tsv" for dataset in sorted({d for d, m in JOBS})],
     output:
         scores="inst/extdata/benchmark_scores.tsv",
         curves="inst/extdata/benchmark_curves.tsv",
         methods="inst/extdata/benchmark_methods.tsv",
         datasets="inst/extdata/benchmark_datasets.tsv",
         preprocessing="inst/extdata/benchmark_preprocessing.tsv",
+        same_pairs="inst/extdata/benchmark_same_pairs.tsv",
     log:
         "logs/export.log",
     shell:

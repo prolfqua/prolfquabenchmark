@@ -1,6 +1,7 @@
-# Exports the current benchmark for the display vignettes (vignettes/Benchmark_results.Rmd): scores, curves, a
-# methods table (tool version, level, input, fit time), a datasets table (with the labels of the changed and unchanged
-# proteins) and their preprocessing steps, as TSV files in <out_dir>. The score
+# Exports the current benchmark for the display vignettes (vignettes/Benchmark_results.Rmd): scores, curves, the
+# scores on the pairs of the Pareto-front methods (results/same_pairs/<dataset>.tsv), a methods table (tool version,
+# level, input, fit time), a datasets table (with the labels of the changed and unchanged proteins) and their
+# preprocessing steps, as TSV files in <out_dir>. The score
 # files (results/scores/<dataset>/<method>.tsv) name the jobs; the Snakefile passes them.
 #   Rscript workflow/scripts/export.R <config> <out_dir> <score files...>
 source("workflow/scripts/common.R")
@@ -21,6 +22,10 @@ write_tsv <- function(data, name) {
 
 write_tsv(read_tables(job_file("scores", ".tsv"), c(tool_version = "character")), "benchmark_scores.tsv")
 write_tsv(read_tables(job_file("curves", ".tsv")), "benchmark_curves.tsv")
+write_tsv(
+  read_tables(file.path("results/same_pairs", paste0(sort(unique(jobs$dataset)), ".tsv"))),
+  "benchmark_same_pairs.tsv"
+)
 
 methods <- dplyr::bind_rows(lapply(seq_len(nrow(jobs)), function(i) {
   metadata <- yaml::read_yaml(file.path("results/contrasts", jobs$dataset[i], jobs$method[i], "metadata.yaml"))
