@@ -119,6 +119,13 @@ methods:
     input: [proteins]
     level: protein
     description: "lm with variance moderation; no contrast where a group has no observations"
+  prolfqua_rlm:
+    tool: prolfqua
+    script: fit_prolfqua.R
+    facade: rlm
+    input: [proteins]
+    level: protein
+    description: "robust linear model (MASS::rlm) with variance moderation"
   prolfqua_lm_impute:
     tool: prolfqua
     script: fit_prolfqua.R
@@ -176,6 +183,20 @@ methods:
     input: [peptides]
     level: peptide
     description: "ROPECA, correlation-aware null of the median z-score"
+  prolfqua_ropeca_impute_nested:
+    tool: prolfqua
+    script: fit_prolfqua.R
+    facade: ropeca_impute_nested
+    input: [peptides]
+    level: peptide
+    description: "ROPECA on peptide models refit at the LOD where a group has no observations, as lm_impute"
+  prolfqua_ropecaV2_impute_nested:
+    tool: prolfqua
+    script: fit_prolfqua.R
+    facade: ropecaV2_impute_nested
+    input: [peptides]
+    level: peptide
+    description: "ROPECA V2 on peptide models refit at the LOD where a group has no observations, as lm_impute"
   prolfqua_limpa_nested:
     tool: prolfqua
     script: fit_prolfqua.R
