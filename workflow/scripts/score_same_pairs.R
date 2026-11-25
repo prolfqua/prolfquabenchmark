@@ -1,5 +1,5 @@
-# Scores the methods of one dataset on the protein and contrast pairs of each Pareto-front method they strictly contain
-# (prolfquabenchmark::same_pairs_scores()), rounded to 4 digits.
+# Scores the methods of one dataset on the protein and contrast pairs of each Pareto-front method whose pairs they all
+# test (prolfquabenchmark::same_pairs_scores()), rounded to 4 digits.
 #   Rscript workflow/scripts/score_same_pairs.R <dataset> <output.tsv> <methods...>
 source("workflow/scripts/common.R")
 args <- script_args(c("dataset", "output"), rest = "methods")

@@ -19,7 +19,7 @@ data.frame with one row per ranking score, front method with a superset and meth
 }
 \description{
 A method on the Pareto front of pAUC_5 against contrasts computed may be there because it tests fewer proteins, an
-easier set. For each ranking score and each front method, the methods that test a strict superset of its pairs are
+easier set. For each ranking score and each front method, the other methods that test every one of its pairs are
 scored on exactly these pairs with [score_on_pairs()]. The pairs a method tests come from
 [prolfqua::ContrastsComparison]: with `log_fc` the pairs with a fold change, with `t_statistic` those with a t
 statistic, with `scaled.p_value` those with a fold change and a p-value.

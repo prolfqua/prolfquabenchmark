@@ -88,24 +88,25 @@ test_that("score_on_pairs scores the rows of the given pairs only", {
   )
 })
 
-test_that("same_pairs_scores scores the strict supersets of a front method on its pairs", {
+test_that("same_pairs_scores scores the methods that test all pairs of a front method on its pairs", {
   results <- same_pairs_results()
   scores <- same_pairs_scores(results, same_pairs_score_table())
 
-  # complete tests every pair of selective with a fold change, so it is scored there for log_fc and t_statistic
+  # complete tests every pair of selective with a fold change and more, equal the same pairs
   log_fc <- scores[scores$score == "log_fc", ]
-  expect_equal(log_fc$front_method, c("selective", "selective"))
-  expect_equal(log_fc$method, c("selective", "complete"))
-  expect_equal(log_fc$contrasts, c(8, 8))
+  expect_equal(log_fc$front_method, rep("selective", 3))
+  expect_equal(log_fc$method, c("selective", "complete", "equal"))
+  expect_equal(log_fc$contrasts, c(8, 8, 8))
   selective_pairs <- results$selective$data[!is.na(results$selective$data$log_fc), c("protein_id", "contrast")]
   expect_equal(
     unlist(log_fc[2, c("pAUC_5", "pAUC_10")]),
     score_on_pairs(results$complete, selective_pairs, "log_fc")
   )
-  expect_equal(scores$method[scores$score == "t_statistic"], c("selective", "complete"))
-  # P2 in c2 has no p-value in complete, so complete is no superset for scaled.p_value; partial and equal never are
-  expect_false("scaled.p_value" %in% scores$score)
-  expect_false(any(c("partial", "equal") %in% scores$method))
+  expect_equal(scores$method[scores$score == "t_statistic"], c("selective", "complete", "equal"))
+  # P2 in c2 has no p-value in complete, so complete misses a pair of selective for scaled.p_value
+  expect_equal(scores$method[scores$score == "scaled.p_value"], c("selective", "equal"))
+  # partial misses P1
+  expect_false("partial" %in% scores$method)
 })
 
 test_that("same_pairs_scores returns the columns also when no front method has a superset", {

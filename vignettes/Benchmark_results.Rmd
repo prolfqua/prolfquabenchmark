@@ -27,7 +27,7 @@ The benchmark pipeline (`make benchmark`; `workflow/Snakefile`, `config/config.y
 - AUC, pAUC_5, pAUC_10: area under the ROC curve, and partial area up to a false positive rate of 0.05 or 0.1, on a 0 to 100 scale, with all contrasts of a dataset pooled
 - Contrasts computed: protein and contrast pairs with a result for the ranking score, all contrasts together. Each method is scored on the pairs it computes, so pAUC_5 is plotted against this count
 - Pareto front (red): the methods no other method beats on both pAUC_5 and contrasts computed
-- Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test a strict superset of its protein and contrast pairs are scored again on exactly these pairs (`same_pairs_scores()`; figure after the Pareto front, ranking by scaled p-value; `benchmark_same_pairs.tsv` has all three ranking scores)
+- Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test all its protein and contrast pairs (the same or more) are scored again on exactly these pairs (`same_pairs_scores()`; figure after the Pareto front, ranking by scaled p-value; `benchmark_same_pairs.tsv` has all three ranking scores)
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; a calibrated FDR lies on the diagonal
 - Encoding: colour is the model family of the [prolfqua factory figure](https://github.com/fgcz/prolfqua#readme) (linear models, limma, limpa, LOD imputation, peptide level, hurdle); point shape and line type tell the models of a family apart; external tools are dark grey with open shapes. A method looks the same in every figure here and in the vignette `Score_history` (`method_scales()`, styles from prolfqua's `facade_styles.tsv`)
@@ -138,36 +138,44 @@ for (dataset_name in datasets$dataset) {
   )
   dataset_same <- dplyr::filter(same_pairs, .data$dataset == dataset_name, .data$score == "scaled.p_value")
   if (nrow(dataset_same) > 0) {
-    dataset_same <- dataset_same |>
-      dplyr::mutate(panel = paste0(.data$front_method, ": ", .data$contrasts, " contrasts")) |>
-      dplyr::arrange(dplyr::desc(.data$contrasts), .data$pAUC_5) |>
-      dplyr::mutate(
-        panel = factor(.data$panel, levels = unique(.data$panel)),
-        row = paste(.data$panel, .data$method, sep = "\r"),
-        row = factor(.data$row, levels = unique(.data$row))
-      )
+    lines <- dataset_same |>
+      dplyr::summarize(from = min(.data$pAUC_5), to = max(.data$pAUC_5), .by = c("front_method", "contrasts"))
+    front_points <- dplyr::filter(dataset_same, .data$method == .data$front_method)
     print_with_height(
-      # the points of all methods first: the first layer sets the row order of each panel
-      ggplot2::ggplot(dataset_same, ggplot2::aes(x = pAUC_5, y = row, colour = method, shape = method)) +
+      ggplot2::ggplot(dataset_same, ggplot2::aes(x = pAUC_5, y = contrasts, colour = method, shape = method)) +
+        ggplot2::geom_step(data = dplyr::filter(front, .data$score == "scaled.p_value"),
+                           ggplot2::aes(x = pAUC_5, y = contrasts), direction = "vh",
+                           colour = "#e34948", linewidth = 1, inherit.aes = FALSE) +
+        ggplot2::geom_segment(data = lines, ggplot2::aes(x = from, xend = to, y = contrasts, yend = contrasts),
+                              colour = "grey40", linetype = "dashed", inherit.aes = FALSE) +
         ggplot2::geom_point(size = 3) +
-        ggplot2::geom_point(
-          data = dplyr::filter(dataset_same, .data$method == .data$front_method),
-          ggplot2::aes(x = pAUC_5, y = row),
-          shape = 21, size = 5.5, stroke = 1.2, colour = "#e34948", inherit.aes = FALSE
+        ggplot2::geom_point(data = front_points, ggplot2::aes(x = pAUC_5, y = contrasts),
+                            shape = 21, size = 5.5, stroke = 1.2, colour = "#e34948", inherit.aes = FALSE) +
+        ggrepel::geom_text_repel(
+          ggplot2::aes(label = method),
+          colour = "grey20",
+          size = 3,
+          segment.colour = "grey60",
+          min.segment.length = 0,
+          box.padding = 0.5,
+          force = 6,
+          max.overlaps = Inf,
+          show.legend = FALSE,
+          seed = 1
         ) +
-        ggplot2::scale_y_discrete(labels = function(row) sub(".*\r", "", row)) +
-        ggplot2::facet_wrap(~panel, ncol = 1, scales = "free_y") +
-        ggplot2::labs(x = "pAUC_5 on the front method's pairs (all contrasts pooled)", y = NULL,
-                      title = paste(dataset_name, "same pairs, ranking by scaled.p_value")) +
-        method_style(dataset_same$method) +
-        ggplot2::theme(legend.position = "none"),
-      height = 1 + 0.28 * nrow(dataset_same) + 0.5 * dplyr::n_distinct(dataset_same$panel),
+        ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.15, 0.3))) +
+        ggplot2::labs(x = "pAUC_5 on the front method's contrasts (all contrasts pooled)",
+                      y = "contrasts computed by the front method",
+                      title = paste(dataset_name, "same contrasts, ranking by scaled.p_value")) +
+        method_style(dataset_same$method),
+      height = 8,
       caption = paste0(
-        "Ranking accuracy on the same proteins on ", dataset_name, ", ranking by scaled p-value. Each panel is a ",
-        "method on the Pareto front of the figure above (red circle) with the methods that test every protein and ",
-        "contrast it tests and more; all are scored on the front method's pairs only (pAUC_5, ", pooled, "). A ",
-        "method to the right of the red circle ranks these proteins better: the front method's position then comes ",
-        "from testing fewer, easier proteins rather than from ranking them better."
+        "Ranking accuracy on the same contrasts on ", dataset_name, ", ranking by scaled p-value. The red staircase ",
+        "is the Pareto front of the figure above. Each dashed line starts at a front method (red circle) and holds the ",
+        "methods that compute every contrast it computes, the same or more; they are scored on the front method's ",
+        "contrasts only (pAUC_5, ", pooled, "), so all points of a line have the front method's number of contrasts ",
+        "computed. A method to the right of the red circle ranks these contrasts better: the front method's position ",
+        "then comes from computing fewer, easier contrasts rather than from ranking them better."
       )
     )
   }

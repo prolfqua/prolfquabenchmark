@@ -46,7 +46,7 @@ score_on_pairs <- function(result, pairs, score) {
 #' Scores of methods on the protein and contrast pairs of a method on the Pareto front
 #'
 #' A method on the Pareto front of pAUC_5 against contrasts computed may be there because it tests fewer proteins, an
-#' easier set. For each ranking score and each front method, the methods that test a strict superset of its pairs are
+#' easier set. For each ranking score and each front method, the other methods that test every one of its pairs are
 #' scored on exactly these pairs with [score_on_pairs()]. The pairs a method tests come from
 #' [prolfqua::ContrastsComparison]: with `log_fc` the pairs with a fold change, with `t_statistic` those with a t
 #' statistic, with `scaled.p_value` those with a fold change and a p-value.
@@ -87,7 +87,7 @@ same_pairs_scores <- function(results, scores) {
   dplyr::bind_rows(empty, rows)
 }
 
-#' Scores of one front method and of its strict supersets on its pairs; NULL without a superset
+#' Scores of one front method and of the other methods that test all its pairs, on its pairs; NULL without such a method
 #' @param comparison prolfqua::ContrastsComparison of the methods
 #' @param results named list of the methods' results
 #' @param score ranking score
@@ -98,12 +98,10 @@ same_pairs_scores <- function(results, scores) {
   columns <- .pair_columns[[score]]
   pair_keys <- function(method) do.call(paste, c(comparison$pairs(method, columns), sep = "\r"))
   front_keys <- pair_keys(front_method)
+  # every pair of the front method; the same pairs count, the front method itself not
   superset <- vapply(
     names(results),
-    function(method) {
-      keys <- pair_keys(method)
-      length(keys) > length(front_keys) && all(front_keys %in% keys)
-    },
+    function(method) method != front_method && all(front_keys %in% pair_keys(method)),
     logical(1)
   )
   if (!any(superset)) {

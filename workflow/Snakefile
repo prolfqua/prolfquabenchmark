@@ -137,7 +137,7 @@ rule score:
         "{output.scores} {output.curves} > {log} 2>&1"
 
 
-# Scores every method of a dataset that tests a strict superset of a Pareto-front method's pairs on those pairs
+# Scores every method of a dataset that tests all the pairs of a Pareto-front method on those pairs
 rule score_same_pairs:
     input:
         script="workflow/scripts/score_same_pairs.R",
