@@ -43,7 +43,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -291,7 +291,7 @@ ul.task-list li input[type="checkbox"] {
 
 </header><p><code>make score-history</code> runs the benchmark pipeline (<code>workflow/Snakefile</code>) with the installed prolfqua and appends its scores and step timings to <a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv"><code>inst/extdata/score_history.tsv</code></a>, one block of rows per prolfqua release. This page shows the partial AUC pAUC_10 per release; the file holds every score (AUC, pAUC_10, pAUC_20, AP, pAP_50, pAP_80), per contrast and for all contrasts pooled. The current results with ROC curves are in the vignette <code>Benchmark_results</code>.</p>
 <ul>
-<li>Releases: 1.9.0 (2026-11-02), 1.9.5 (2026-11-24), 1.9.7 (2026-11-25), 1.9.9 (2026-11-25)</li>
+<li>Releases: 1.9.0 (2026-11-02), 1.9.5 (2026-11-24), 1.9.7 (2026-11-25), 1.9.9 (2026-11-25), 1.9.10 (2026-11-25)</li>
 <li>pAUC_10: partial area under the ROC curve up to a false positive rate of 0.1, on a 0 to 100 scale, all contrasts of a dataset pooled; ranking by fold change (<code>log_fc</code>), by p-value signed by the fold change (<code>scaled.p_value</code>) and by t statistic (<code>t_statistic</code>)</li>
 <li>Encoding: colour is the model family of the <a href="https://github.com/fgcz/prolfqua#readme">prolfqua factory figure</a>, point shape the model within its family; MSstats, proDA and msqrob2 are dark grey with open shapes. A model looks the same here and in <code>Benchmark_results</code>
 </li>
@@ -301,7 +301,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
 </ul>
 <section id="pauc_10-across-releases" class="level1"><h1>pAUC_10 across releases</h1>
-<p>One figure and one table per dataset; the numbers of every release are in <a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv"><code>score_history.tsv</code></a>. Lines join the releases of a prolfqua model; a model has no point at a release without its facade (<code>prolfqua_ropecaV2_nested</code> came with prolfqua 1.9.4). MSstats, proDA and msqrob2 are shown at their latest recorded run only.</p>
+<p>One figure and one table per dataset; the numbers of every release are in <a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv"><code>score_history.tsv</code></a>. Lines join the releases of a prolfqua model; a model has no point at a release without its facade (<code>prolfqua_ropecaV2_nested</code> came with prolfqua 1.9.4); models removed from prolfqua are not shown, their rows stay in <code>score_history.tsv</code>. MSstats, proDA and msqrob2 are shown at their latest recorded run only.</p>
 <section id="cptac_maxquant" class="level2"><h2 class="anchored" data-anchor-id="cptac_maxquant">CPTAC_MaxQuant</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -339,7 +339,7 @@ t_statistic
 prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 92.8
@@ -356,7 +356,7 @@ prolfqua_ropecaV2_nested
 prolfqua_rlm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 92.2
@@ -373,7 +373,7 @@ prolfqua_rlm
 prolfqua_limma
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 89.0
@@ -390,7 +390,7 @@ prolfqua_limma
 prolfqua_lm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 89.0
@@ -407,7 +407,7 @@ prolfqua_lm
 prolfqua_deqms
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 89.0
@@ -424,7 +424,7 @@ prolfqua_deqms
 prolfqua_ropeca_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 88.6
@@ -441,7 +441,7 @@ prolfqua_ropeca_nested
 prolfqua_limpa_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 86.8
@@ -458,7 +458,7 @@ prolfqua_limpa_nested
 prolfqua_lmer_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 91.6
@@ -475,7 +475,7 @@ prolfqua_lmer_nested
 prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 91.7
@@ -492,7 +492,7 @@ prolfqua_deqms_voom
 msqrob2_hurdle (msqrob2 1.20.0)
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 72.5
@@ -509,7 +509,7 @@ msqrob2_hurdle (msqrob2 1.20.0)
 prolfqua_hurdle_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 72.5
@@ -526,7 +526,7 @@ prolfqua_hurdle_nested
 prolfqua_limpa
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 79.5
@@ -543,7 +543,7 @@ prolfqua_limpa
 msqrob2 1.20.0
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 72.5
@@ -560,7 +560,7 @@ msqrob2 1.20.0
 prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 72.5
@@ -570,40 +570,6 @@ prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
 67.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropecaV2_impute_nested
-</td>
-<td style="text-align:left;">
-1.9.9
-</td>
-<td style="text-align:left;">
-40.8
-</td>
-<td style="text-align:left;">
-42.0
-</td>
-<td style="text-align:left;">
-42.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropeca_impute_nested
-</td>
-<td style="text-align:left;">
-1.9.9
-</td>
-<td style="text-align:left;">
-40.8
-</td>
-<td style="text-align:left;">
-32.1
-</td>
-<td style="text-align:left;">
-34.4
 </td>
 </tr>
 </tbody>
@@ -646,7 +612,7 @@ t_statistic
 prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 76.5
@@ -663,7 +629,7 @@ prolfqua_ropecaV2_nested
 prolfqua_ropeca_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 75.4
@@ -680,7 +646,7 @@ prolfqua_ropeca_nested
 prolfqua_rlm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 80.2
@@ -697,7 +663,7 @@ prolfqua_rlm
 prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 77.7
@@ -714,7 +680,7 @@ prolfqua_deqms_voom
 prolfqua_lm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 77.7
@@ -731,7 +697,7 @@ prolfqua_lm
 prolfqua_limma
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 77.7
@@ -748,7 +714,7 @@ prolfqua_limma
 prolfqua_deqms
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 77.7
@@ -765,7 +731,7 @@ prolfqua_deqms
 prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 75.3
@@ -782,7 +748,7 @@ prolfqua_lm_impute
 msqrob2_hurdle (msqrob2 1.20.0)
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 77.3
@@ -799,7 +765,7 @@ msqrob2_hurdle (msqrob2 1.20.0)
 prolfqua_hurdle_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 75.3
@@ -816,7 +782,7 @@ prolfqua_hurdle_nested
 msqrob2 1.20.0
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 77.3
@@ -833,7 +799,7 @@ msqrob2 1.20.0
 prolfqua_limpa
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 77.6
@@ -850,7 +816,7 @@ prolfqua_limpa
 MSstats 4.20.0
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 74.5
@@ -867,7 +833,7 @@ MSstats 4.20.0
 prolfqua_lmer_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 74.5
@@ -884,7 +850,7 @@ prolfqua_lmer_nested
 prolfqua_limpa_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 75.2
@@ -894,40 +860,6 @@ prolfqua_limpa_nested
 </td>
 <td style="text-align:left;">
 79.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropecaV2_impute_nested
-</td>
-<td style="text-align:left;">
-1.9.9
-</td>
-<td style="text-align:left;">
-70.6
-</td>
-<td style="text-align:left;">
-78.6
-</td>
-<td style="text-align:left;">
-78.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropeca_impute_nested
-</td>
-<td style="text-align:left;">
-1.9.9
-</td>
-<td style="text-align:left;">
-70.6
-</td>
-<td style="text-align:left;">
-76.7
-</td>
-<td style="text-align:left;">
-77.6
 </td>
 </tr>
 </tbody>
@@ -970,7 +902,7 @@ t_statistic
 msqrob2_protein (msqrob2 1.20.0)
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 86.6
@@ -987,7 +919,7 @@ msqrob2_protein (msqrob2 1.20.0)
 prolfqua_lm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 80.1
@@ -1004,7 +936,7 @@ prolfqua_lm
 prolfqua_deqms
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 80.1
@@ -1021,7 +953,7 @@ prolfqua_deqms
 prolfqua_limma
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 80.1
@@ -1038,7 +970,7 @@ prolfqua_limma
 prolfqua_rlm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 81.1
@@ -1055,7 +987,7 @@ prolfqua_rlm
 prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 80.1
@@ -1072,7 +1004,7 @@ prolfqua_deqms_voom
 prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 70.1
@@ -1089,7 +1021,7 @@ prolfqua_lm_impute
 proDA 1.26.0
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 61.7
@@ -1106,7 +1038,7 @@ proDA 1.26.0
 prolfqua_limpa
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 75.6
@@ -1158,7 +1090,7 @@ t_statistic
 prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 64.0
@@ -1175,7 +1107,7 @@ prolfqua_ropecaV2_nested
 prolfqua_ropeca_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 63.0
@@ -1192,7 +1124,7 @@ prolfqua_ropeca_nested
 prolfqua_lm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 67.1
@@ -1209,7 +1141,7 @@ prolfqua_lm
 prolfqua_limma
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 67.1
@@ -1226,7 +1158,7 @@ prolfqua_limma
 prolfqua_deqms
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 67.1
@@ -1243,7 +1175,7 @@ prolfqua_deqms
 prolfqua_rlm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 69.1
@@ -1260,7 +1192,7 @@ prolfqua_rlm
 prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 66.4
@@ -1277,7 +1209,7 @@ prolfqua_lm_impute
 msqrob2_hurdle (msqrob2 1.20.0)
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 66.2
@@ -1294,7 +1226,7 @@ msqrob2_hurdle (msqrob2 1.20.0)
 prolfqua_hurdle_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 66.4
@@ -1311,7 +1243,7 @@ prolfqua_hurdle_nested
 prolfqua_lmer_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 66.3
@@ -1328,7 +1260,7 @@ prolfqua_lmer_nested
 msqrob2 1.20.0
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 66.2
@@ -1345,7 +1277,7 @@ msqrob2 1.20.0
 prolfqua_limpa
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 69.3
@@ -1362,7 +1294,7 @@ prolfqua_limpa
 prolfqua_limpa_nested
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 63.4
@@ -1379,7 +1311,7 @@ prolfqua_limpa_nested
 prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 67.0
@@ -1389,40 +1321,6 @@ prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
 71.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropecaV2_impute_nested
-</td>
-<td style="text-align:left;">
-1.9.9
-</td>
-<td style="text-align:left;">
-61.6
-</td>
-<td style="text-align:left;">
-69.7
-</td>
-<td style="text-align:left;">
-69.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropeca_impute_nested
-</td>
-<td style="text-align:left;">
-1.9.9
-</td>
-<td style="text-align:left;">
-61.6
-</td>
-<td style="text-align:left;">
-67.2
-</td>
-<td style="text-align:left;">
-68.0
 </td>
 </tr>
 </tbody>
@@ -1465,7 +1363,7 @@ t_statistic
 msqrob2_protein (msqrob2 1.20.0)
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 86.9
@@ -1482,7 +1380,7 @@ msqrob2_protein (msqrob2 1.20.0)
 prolfqua_rlm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 81.1
@@ -1499,7 +1397,7 @@ prolfqua_rlm
 prolfqua_deqms
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 81.2
@@ -1516,7 +1414,7 @@ prolfqua_deqms
 prolfqua_lm
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 81.2
@@ -1533,7 +1431,7 @@ prolfqua_lm
 prolfqua_limma
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 81.2
@@ -1550,7 +1448,7 @@ prolfqua_limma
 prolfqua_deqms_voom
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 81.2
@@ -1567,7 +1465,7 @@ prolfqua_deqms_voom
 prolfqua_lm_impute
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 63.8
@@ -1584,7 +1482,7 @@ prolfqua_lm_impute
 proDA 1.26.0
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 49.7
@@ -1601,7 +1499,7 @@ proDA 1.26.0
 prolfqua_limpa
 </td>
 <td style="text-align:left;">
-1.9.9
+1.9.10
 </td>
 <td style="text-align:left;">
 66.3
@@ -1780,6 +1678,35 @@ transform
 </td>
 <td style="text-align:right;">
 1.74
+</td>
+<td style="text-align:right;">
+0.18
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1.9.10
+</td>
+<td style="text-align:right;">
+5.15
+</td>
+<td style="text-align:right;">
+2.44
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+4.50
+</td>
+<td style="text-align:right;">
+4.42
+</td>
+<td style="text-align:right;">
+6.93
+</td>
+<td style="text-align:right;">
+1.81
 </td>
 <td style="text-align:right;">
 0.18
