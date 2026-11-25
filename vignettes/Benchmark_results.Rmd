@@ -138,44 +138,47 @@ for (dataset_name in datasets$dataset) {
   )
   dataset_same <- dplyr::filter(same_pairs, .data$dataset == dataset_name, .data$score == "scaled.p_value")
   if (nrow(dataset_same) > 0) {
+    # one panel per set of contrasts, each with its own x axis; labels alternate above and below the line
+    dataset_same <- dataset_same |>
+      dplyr::mutate(panel = paste0(.data$front_method, ": ", .data$contrasts, " contrasts")) |>
+      dplyr::arrange(dplyr::desc(.data$contrasts), .data$pAUC_5) |>
+      dplyr::mutate(panel = factor(.data$panel, levels = unique(.data$panel)), y = 0) |>
+      dplyr::mutate(label_y = ifelse(seq_along(.data$pAUC_5) %% 2 == 1, 0.55, -0.55), .by = "panel")
     lines <- dataset_same |>
-      dplyr::summarize(from = min(.data$pAUC_5), to = max(.data$pAUC_5), .by = c("front_method", "contrasts"))
+      dplyr::summarize(from = min(.data$pAUC_5), to = max(.data$pAUC_5), .by = "panel")
     front_points <- dplyr::filter(dataset_same, .data$method == .data$front_method)
     print_with_height(
-      ggplot2::ggplot(dataset_same, ggplot2::aes(x = pAUC_5, y = contrasts, colour = method, shape = method)) +
-        ggplot2::geom_step(data = dplyr::filter(front, .data$score == "scaled.p_value"),
-                           ggplot2::aes(x = pAUC_5, y = contrasts), direction = "vh",
-                           colour = "#e34948", linewidth = 1, inherit.aes = FALSE) +
-        ggplot2::geom_segment(data = lines, ggplot2::aes(x = from, xend = to, y = contrasts, yend = contrasts),
+      ggplot2::ggplot(dataset_same, ggplot2::aes(x = pAUC_5, y = y, colour = method, shape = method)) +
+        ggplot2::geom_segment(data = lines, ggplot2::aes(x = from, xend = to, y = 0, yend = 0),
                               colour = "grey40", linetype = "dashed", inherit.aes = FALSE) +
         ggplot2::geom_point(size = 3) +
-        ggplot2::geom_point(data = front_points, ggplot2::aes(x = pAUC_5, y = contrasts),
+        ggplot2::geom_point(data = front_points, ggplot2::aes(x = pAUC_5, y = y),
                             shape = 21, size = 5.5, stroke = 1.2, colour = "#e34948", inherit.aes = FALSE) +
         ggrepel::geom_text_repel(
           ggplot2::aes(label = method),
+          nudge_y = dataset_same$label_y,
+          direction = "x",
           colour = "grey20",
           size = 3,
           segment.colour = "grey60",
           min.segment.length = 0,
-          box.padding = 0.5,
-          force = 6,
           max.overlaps = Inf,
           show.legend = FALSE,
           seed = 1
         ) +
-        ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.15, 0.3))) +
-        ggplot2::labs(x = "pAUC_5 on the front method's contrasts (all contrasts pooled)",
-                      y = "contrasts computed by the front method",
+        ggplot2::scale_y_continuous(limits = c(-1, 1), breaks = NULL) +
+        ggplot2::facet_wrap(~panel, ncol = 1, scales = "free_x") +
+        ggplot2::labs(x = "pAUC_5 on the panel's contrasts (all contrasts pooled)", y = NULL,
                       title = paste(dataset_name, "same contrasts, ranking by scaled.p_value")) +
         method_style(dataset_same$method),
-      height = 8,
+      height = 1 + 1.6 * dplyr::n_distinct(dataset_same$panel),
       caption = paste0(
-        "Ranking accuracy on the same contrasts on ", dataset_name, ", ranking by scaled p-value. The red staircase ",
-        "is the Pareto front of the figure above. Each dashed line starts at a front method (red circle) and holds the ",
-        "methods that compute every contrast it computes, the same or more; they are scored on the front method's ",
-        "contrasts only (pAUC_5, ", pooled, "), so all points of a line have the front method's number of contrasts ",
-        "computed. A method to the right of the red circle ranks these contrasts better: the front method's position ",
-        "then comes from computing fewer, easier contrasts rather than from ranking them better."
+        "Ranking accuracy on the same contrasts on ", dataset_name, ", ranking by scaled p-value. Each panel is one ",
+        "set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their ",
+        "number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or ",
+        "more, scored on these contrasts only (pAUC_5, ", pooled, "); each panel has its own x axis. A method to the ",
+        "right of the red circle ranks these contrasts better: the front method's position then comes from computing ",
+        "fewer, easier contrasts rather than from ranking them better."
       )
     )
   }
