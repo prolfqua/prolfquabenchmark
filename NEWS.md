@@ -1,5 +1,6 @@
 # prolfquabenchmark 0.3.4
 
+- Benchmark rerun with prolfqua 1.9.7 and its scores added to the score history. prolfqua 1.9.6 computes each protein's limma contrasts from its own observed samples: `prolfqua_limma`, `prolfqua_deqms_voom`, `prolfqua_limpa` and `prolfqua_limpa_nested` score higher (pAUC_5 on IonStar MaxQuant: limma 63.9 to 69.2, deqms_voom 57.9 to 64.5, limpa 60.0 to 67.0), and the vooma methods test more proteins; the other methods are unchanged.
 - The documentation site is built with altdoc (`make site`, GitHub workflow `altdoc.yml`) instead of pkgdown; the vignettes are at `https://prolfqua.github.io/prolfquabenchmark/vignettes/<name>.html` (formerly `articles/`). The vignettes read the benchmark tables of the installed package, so run `make install` after `make benchmark` before rendering them.
 - `Benchmark_results` lists the methods once each (16 rows instead of one per dataset and method), with the number of datasets they ran on; the per-dataset rows and fit times are in the linked `benchmark_methods.tsv`.
 - New `method_scales()`: ggplot2 colour, shape and line type scales by method, from prolfqua's `facade_styles.tsv` (colour of the facade's family in the prolfqua factory figure, shape and line type per facade) plus dark grey open shapes for MSstats, proDA and msqrob2. Both vignettes style every method plot with it.
