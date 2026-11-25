@@ -16,3 +16,6 @@ results/
 logs/
 .snakemake/
 .venv/
+/_quarto/
+/altdoc/freeze.rds
+/altdoc/pkgdown.yml

@@ -32,14 +32,16 @@ The benchmark pipeline (`make benchmark`; `workflow/Snakefile`, `config/config.y
 - Encoding: colour is the model family of the [prolfqua factory figure](https://github.com/fgcz/prolfqua#readme) (linear models, limma, limpa, LOD imputation, peptide level, hurdle); point shape and line type tell the models of a family apart; external tools are dark grey with open shapes. A method looks the same in every figure here and in the vignette `Score_history` (`method_scales()`, styles from prolfqua's `facade_styles.tsv`)
 
 ```{r read}
-extdata <- function(name) {
-  utils::read.delim(file.path("../inst/extdata", name), stringsAsFactors = FALSE, colClasses = c(tool_version = "character"))
+# The tables of the installed package: `make install` after `make benchmark`
+extdata <- function(name, col_classes = NA) {
+  path <- system.file("extdata", name, package = "prolfquabenchmark", mustWork = TRUE)
+  utils::read.delim(path, stringsAsFactors = FALSE, colClasses = col_classes)
 }
-scores <- extdata("benchmark_scores.tsv")
-curves <- utils::read.delim("../inst/extdata/benchmark_curves.tsv", stringsAsFactors = FALSE)
-methods <- extdata("benchmark_methods.tsv")
-datasets <- utils::read.delim("../inst/extdata/benchmark_datasets.tsv", stringsAsFactors = FALSE)
-preprocessing <- utils::read.delim("../inst/extdata/benchmark_preprocessing.tsv", stringsAsFactors = FALSE)
+scores <- extdata("benchmark_scores.tsv", col_classes = c(tool_version = "character"))
+curves <- extdata("benchmark_curves.tsv")
+methods <- extdata("benchmark_methods.tsv", col_classes = c(tool_version = "character"))
+datasets <- extdata("benchmark_datasets.tsv")
+preprocessing <- extdata("benchmark_preprocessing.tsv")
 ```
 
 ```{r method-style}
@@ -66,14 +68,24 @@ print_with_height <- function(plot, height, caption) {
 
 # Methods
 
-```{r methods}
+```{r methods, results = "asis"}
+methods_url <- "https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/benchmark_methods.tsv"
 methods |>
-  dplyr::select(dataset, method, tool_version, level, input, description, fit_seconds) |>
-  dplyr::arrange(dataset, method) |>
-  knitr::kable(caption = paste(
-    "Methods fitted to each dataset, with tool version, model level, the input the method fits and a short",
-    "description. fit_seconds is the wall time of the fit job; jobs ran in parallel."
-  ))
+  dplyr::summarise(datasets = dplyr::n(), .by = c("method", "tool", "tool_version", "level", "input", "description")) |>
+  dplyr::arrange(.data$tool != "prolfqua", .data$level, .data$method) |>
+  dplyr::select("method", "tool_version", "level", "input", "datasets", "description") |>
+  knitr::kable(
+    format = "html",
+    escape = FALSE,
+    table.attr = "class=\"table table-condensed\"",
+    caption = paste0(
+      "The ", dplyr::n_distinct(methods$method), " methods, with tool version, model level, the input the method ",
+      "fits, the number of datasets it ran on (every dataset that provides its input, of ",
+      dplyr::n_distinct(methods$dataset), ") and a short description. Per dataset and with the wall time of each ",
+      "fit: <a href=\"", methods_url, "\">benchmark_methods.tsv</a>."
+    )
+  ) |>
+  cat()
 ```
 
 ```{r datasets, results = "asis"}

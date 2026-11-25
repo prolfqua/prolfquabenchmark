@@ -13,7 +13,8 @@ itself.
 
 Benchmark of the prolfqua models against MSstats, proDA and msqrob2 on the IonStar and CPTAC spike-in datasets. A
 Snakemake pipeline (`workflow/Snakefile`, `config/config.yaml`, scripts in `workflow/scripts`) runs the benchmark;
-the vignettes `Benchmark_results` and `Score_history` only read the tables it exports to `inst/extdata`.
+the vignettes `Benchmark_results` and `Score_history` only read the tables it exports to `inst/extdata`, from the
+installed package: run `make install` after `make benchmark` before rendering them.
 
 ## Build & Test
 
@@ -25,6 +26,7 @@ make benchmark-dry       # list the jobs
 make score-history       # append scores and step timings of the installed prolfqua (REPLACE=1 to rerun a version)
 make score-history-release V=1.9.0 PROLFQUA=f4dfb7f3 PROLFQUAPP=18914707   # an earlier release, own library
 make vignette V=Benchmark_results
+make site                # altdoc site into docs/ (deployed by .github/workflows/altdoc.yml)
 ```
 
 - Add a method: an entry under `methods` in `config/config.yaml` with the `input` it needs; it runs on every dataset whose `inputs` contain all of them; a prolfqua facade needs no new script; prolfqua methods are named `prolfqua_<facade>`

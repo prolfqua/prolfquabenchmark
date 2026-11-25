@@ -27,3 +27,5 @@
 ^\.venv$
 ^pyproject\.toml$
 ^uv\.lock$
+^altdoc$
+^_quarto$

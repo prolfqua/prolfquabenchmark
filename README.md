@@ -6,8 +6,8 @@ Benchmark of differential expression methods for label-free proteomics — the *
 
 Rendered results: **https://prolfqua.github.io/prolfquabenchmark/**
 
-- [Benchmark results](https://prolfqua.github.io/prolfquabenchmark/articles/Benchmark_results.html): current scores, ROC and FDP-vs-FDR curves per dataset and method
-- [Benchmark scores across prolfqua releases](https://prolfqua.github.io/prolfquabenchmark/articles/Score_history.html): AUC, pAUC and step timings per release
+- [Benchmark results](https://prolfqua.github.io/prolfquabenchmark/vignettes/Benchmark_results.html): current scores, ROC and FDP-vs-FDR curves per dataset and method
+- [Benchmark scores across prolfqua releases](https://prolfqua.github.io/prolfquabenchmark/vignettes/Score_history.html): pAUC_10 and step timings per release
 
 ## The benchmark pipeline
 

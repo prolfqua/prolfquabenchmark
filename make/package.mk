@@ -1,3 +1,6 @@
+# Build the documentation site with altdoc instead of pkgdown.
+SITE_CMD := Rscript -e "altdoc::render_docs(freeze = FALSE)"
+
 INSTALL_BUILD_TARGET = build-install
 
 .PHONY: build-install benchmark benchmark-dry score-history score-history-release

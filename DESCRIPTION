@@ -10,8 +10,8 @@ Description: We benchmark MSstats, proDA, msqrob and proflqua packages, using th
 License: MIT + file LICENSE
 Encoding: UTF-8
 VignetteBuilder: knitr
-URL: https://github.com/wolski/proLFQuaBenchmark
-BugReports: https://github.com/wolski/proLFQuaBenchmark/issues
+URL: https://github.com/prolfqua/prolfquabenchmark, https://prolfqua.github.io/prolfquabenchmark/
+BugReports: https://github.com/prolfqua/prolfquabenchmark/issues
 LazyData: true
 Imports:
     dplyr,
@@ -27,6 +27,7 @@ Imports:
     tidyselect,
     yaml
 Suggests:
+    altdoc,
     bookdown,
     conflicted,
     covr,
@@ -41,7 +42,6 @@ Suggests:
     MSstats,
     MsDataHub,
     msqrob2,
-    pkgdown,
     plotly,
     proDA,
     prolfquapp,

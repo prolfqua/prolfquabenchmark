@@ -23,11 +23,14 @@ options(knitr.kable.NA = "")
 
 ```{r readHistory}
 history <- utils::read.delim(
-  "../inst/extdata/score_history.tsv",
+  system.file("extdata", "score_history.tsv", package = "prolfquabenchmark", mustWork = TRUE),
   stringsAsFactors = FALSE,
   colClasses = c(prolfqua_version = "character", date = "character", tool_version = "character", level = "character")
 )
-datasets <- utils::read.delim("../inst/extdata/benchmark_datasets.tsv", stringsAsFactors = FALSE)
+datasets <- utils::read.delim(
+  system.file("extdata", "benchmark_datasets.tsv", package = "prolfquabenchmark", mustWork = TRUE),
+  stringsAsFactors = FALSE
+)
 history_url <- "https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/score_history.tsv"
 releases <- as.character(sort(unique(package_version(history$prolfqua_version))))
 history$prolfqua_version <- factor(history$prolfqua_version, levels = releases)
