@@ -9,6 +9,8 @@ contrasts:
     "dilution_(4.5/3)_1.5": "dilution.b - dilution.a"
   cptac:
     b_vs_a: "group.b - group.a"
+  proteobench:
+    B_vs_A: "group.B - group.A"
 
 # inputs: what the dataset provides. peptides and proteins: the prepared LFQData (results/prepared/<dataset>), proteins
 # aggregated by prolfqua where the dataset has peptides; protein_table: the protein quantification of the search
@@ -88,6 +90,26 @@ datasets:
       id_column: protein_id
       positive: {label: ECOLI, pattern: ECOLI}
       negative: {label: HUMAN, pattern: HUMAN}
+  IonStar_MetaMorpheus:
+    prepare: prepare_ionstar_metamorpheus.R
+    inputs: [peptides, proteins]
+    input_file: "Zenodo record 24418695 metamorpheus_ionstar.zip/QuantifiedPeaks.tsv (PXD057758)"
+    description: "IonStar, MetaMorpheus 1.0.7 and FlashLFQ 1.3 QuantifiedPeaks.tsv, with match-between-runs (PIP)"
+    preprocessing:
+      - "Decoys and random-RT controls removed"
+      - "Peak intensities summed to base sequences; identification confidence 1 for MS/MS peaks, 1 - PIP PEP for match-between-runs peaks"
+      - "Protein groups of one organism (human or E. coli)"
+      - "Proteins with at least 2 peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "log2, robust scaling on the human proteins"
+      - "prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides"
+      - "prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)"
+    formula: "~ dilution."
+    contrasts: ionstar
+    ground_truth:
+      id_column: protein_id
+      positive: {label: ECOLI, pattern: ECOLI}
+      negative: {label: HUMAN, pattern: HUMAN}
   CPTAC_MaxQuant:
     prepare: prepare_cptac_maxquant.R
     inputs: [peptides, proteins]
@@ -105,6 +127,85 @@ datasets:
       id_column: protein_id
       positive: {label: UPS, pattern: _UPS}
       negative: {label: YEAST, pattern: _YEAST}
+  SingleCell_DIANN:
+    prepare: prepare_singlecell_diann.R
+    inputs: [peptides, proteins]
+    input_file: "ProteoBench DIA single-cell submission 239b93c09a51038aab992c15c0702ff3658fe1c1 (DIA-NN 2.5.0)"
+    description: "ProteoBench DIA single-cell (Orbitrap Astral, 250 pg), DIA-NN 2.5.0 report"
+    preprocessing:
+      - "Protein groups at 1% q-value (library and run)"
+      - "Precursor quantities summed to stripped sequences; identification confidence 1 - the smallest precursor PEP"
+      - "Protein groups of one species (ProteoBench FASTA); contaminants removed"
+      - "Proteins with at least 2 peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "log2, robust scaling on the human proteins"
+      - "prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides"
+      - "prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)"
+    formula: "~ group."
+    contrasts: proteobench
+    ground_truth:
+      id_column: protein_id
+      positive: {label: YEAST, pattern: _YEAST}
+      negative: {label: HUMAN, pattern: _HUMAN}
+  SingleCell_MaxQuant:
+    prepare: prepare_singlecell_maxquant.R
+    inputs: [peptides, proteins]
+    input_file: "ProteoBench DIA single-cell submission 090d5f63ab4b453cbbc318eb5f8ccfe557ab8621 (MaxQuant 2.7.5.0)"
+    description: "ProteoBench DIA single-cell (Orbitrap Astral, 250 pg), MaxQuant 2.7.5.0 DIA evidence.txt"
+    preprocessing:
+      - "Proteotypic evidence, decoys removed"
+      - "Evidence intensities summed to peptides; identification confidence 1 - the smallest evidence PEP"
+      - "Leading razor proteins of one species (ProteoBench FASTA); contaminants removed"
+      - "Proteins with at least 2 peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "log2, robust scaling on the human proteins"
+      - "prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides"
+      - "prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)"
+    formula: "~ group."
+    contrasts: proteobench
+    ground_truth:
+      id_column: protein_id
+      positive: {label: YEAST, pattern: _YEAST}
+      negative: {label: HUMAN, pattern: _HUMAN}
+  diaPASEF_DIANN:
+    prepare: prepare_diapasef_diann.R
+    inputs: [peptides, proteins]
+    input_file: "ProteoBench DIA diaPASEF submission 53bb223d26d0227ac35d403947eb7de30decf38d (DIA-NN 2.5.0)"
+    description: "ProteoBench DIA diaPASEF (timsTOF, human/yeast/E. coli; E. coli 4x up, yeast 2x down), DIA-NN 2.5.0 report"
+    preprocessing:
+      - "Protein groups at 1% q-value (library and run)"
+      - "Precursor quantities summed to stripped sequences; identification confidence 1 - the smallest precursor PEP"
+      - "Protein groups of one species (ProteoBench FASTA); contaminants removed"
+      - "Proteins with at least 2 peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "log2, robust scaling on the human proteins"
+      - "prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides"
+      - "prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)"
+    formula: "~ group."
+    contrasts: proteobench
+    ground_truth:
+      id_column: protein_id
+      positive: {label: YEAST_ECOLI, pattern: _YEAST|_ECOLI, down: _YEAST}
+      negative: {label: HUMAN, pattern: _HUMAN}
+  diaPASEF_Spectronaut:
+    prepare: prepare_diapasef_spectronaut.R
+    inputs: [peptides, proteins]
+    input_file: "ProteoBench DIA diaPASEF submission e0b85747554042cf392ea706aee617abcf70901f (Spectronaut 21.0)"
+    description: "ProteoBench DIA diaPASEF (timsTOF, human/yeast/E. coli; E. coli 4x up, yeast 2x down), Spectronaut 21.0 report"
+    preprocessing:
+      - "Precursor quantities summed to peptides (PEP.GroupingKey); identification confidence 1 - the smallest precursor q-value"
+      - "Protein groups of one species (ProteoBench FASTA); contaminants removed"
+      - "Proteins with at least 2 peptides"
+      - "Intensities below 4 (zeros) removed"
+      - "log2, robust scaling on the human proteins"
+      - "prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides"
+      - "prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)"
+    formula: "~ group."
+    contrasts: proteobench
+    ground_truth:
+      id_column: protein_id
+      positive: {label: YEAST_ECOLI, pattern: _YEAST|_ECOLI, down: _YEAST}
+      negative: {label: HUMAN, pattern: _HUMAN}
 
 # Every method runs on every dataset that provides all of its inputs.
 # tool: prolfqua (fitted with build_contrast_analysis(), method = facade) or an external tool

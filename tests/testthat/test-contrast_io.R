@@ -147,3 +147,24 @@ test_that("write_contrast_results errors on missing required columns", {
     "Missing required columns"
   )
 })
+
+test_that("annotate_ground_truth negates the statistics of positives expected to decrease", {
+  data <- data.frame(
+    protein_id = c("P1_HUMAN", "P2_ECOLI", "P3_YEAST", "P4_MOUSE"),
+    log_fc = c(0.1, 2, -1, 3),
+    t_statistic = c(0.5, 4, -3, 6)
+  )
+  ground_truth <- list(
+    id_column = "protein_id",
+    positive = list(label = "YEAST_ECOLI", pattern = "_YEAST|_ECOLI", down = "_YEAST"),
+    negative = list(label = "HUMAN", pattern = "_HUMAN")
+  )
+  res <- annotate_ground_truth(data, ground_truth)
+  expect_equal(res$protein_id, c("P1_HUMAN", "P2_ECOLI", "P3_YEAST"))
+  expect_equal(res$TP, c(FALSE, TRUE, TRUE))
+  expect_equal(res$log_fc, c(0.1, 2, 1))
+  expect_equal(res$t_statistic, c(0.5, 4, 3))
+
+  ground_truth$positive$down <- NULL
+  expect_equal(annotate_ground_truth(data, ground_truth)$log_fc, c(0.1, 2, -1))
+})

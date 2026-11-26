@@ -3,4 +3,9 @@ IonStar_MaxQuant	MAXQuant_IonStar2018_PXD003881.zip/peptides.txt	IonStar, MaxQua
 IonStar_MaxQuant_protein	MAXQuant_IonStar2018_PXD003881.zip/proteinGroups.txt	IonStar, MaxQuant proteinGroups.txt (protein level)	ECOLI	HUMAN
 IonStar_FragPipe_MSstats	MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/MSstats.csv	IonStar, FragPipe MSstats.csv	ECOLI	HUMAN
 IonStar_FragPipe_protein	MSFragger_IonStar2018_PXD003881.zip/IonstarWithMSFragger/combined_protein.tsv	IonStar, FragPipe combined_protein.tsv (protein level)	ECOLI	HUMAN
+IonStar_MetaMorpheus	Zenodo record 24418695 metamorpheus_ionstar.zip/QuantifiedPeaks.tsv (PXD057758)	IonStar, MetaMorpheus 1.0.7 and FlashLFQ 1.3 QuantifiedPeaks.tsv, with match-between-runs (PIP)	ECOLI	HUMAN
 CPTAC_MaxQuant	MsDataHub::cptac_a_b_peptides.txt()	CPTAC study 6, UPS1 in yeast, MaxQuant peptides.txt (Bioconductor MsDataHub)	UPS	YEAST
+SingleCell_DIANN	ProteoBench DIA single-cell submission 239b93c09a51038aab992c15c0702ff3658fe1c1 (DIA-NN 2.5.0)	ProteoBench DIA single-cell (Orbitrap Astral, 250 pg), DIA-NN 2.5.0 report	YEAST	HUMAN
+SingleCell_MaxQuant	ProteoBench DIA single-cell submission 090d5f63ab4b453cbbc318eb5f8ccfe557ab8621 (MaxQuant 2.7.5.0)	ProteoBench DIA single-cell (Orbitrap Astral, 250 pg), MaxQuant 2.7.5.0 DIA evidence.txt	YEAST	HUMAN
+diaPASEF_DIANN	ProteoBench DIA diaPASEF submission 53bb223d26d0227ac35d403947eb7de30decf38d (DIA-NN 2.5.0)	ProteoBench DIA diaPASEF (timsTOF, human/yeast/E. coli; E. coli 4x up, yeast 2x down), DIA-NN 2.5.0 report	YEAST_ECOLI	HUMAN
+diaPASEF_Spectronaut	ProteoBench DIA diaPASEF submission e0b85747554042cf392ea706aee617abcf70901f (Spectronaut 21.0)	ProteoBench DIA diaPASEF (timsTOF, human/yeast/E. coli; E. coli 4x up, yeast 2x down), Spectronaut 21.0 report	YEAST_ECOLI	HUMAN

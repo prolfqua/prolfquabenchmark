@@ -137,8 +137,16 @@ write_contrast_results <- function(
 #' Annotate ground truth species and TP columns
 #'
 #' @param data data.frame with contrast results
+#' Positives expected to decrease are named by \code{positive$down}; their
+#' \code{log_fc} and \code{t_statistic} are negated, so that the benchmark
+#' scores, which rank by these signed statistics (and \code{scaled.p_value},
+#' which takes the sign of \code{log_fc}), rank them like the positives that
+#' increase.
+#'
+#' @param data data.frame with contrast results
 #' @param ground_truth list with \code{id_column}, \code{positive} (list with
-#'   \code{label} and \code{pattern}), and \code{negative} (list with
+#'   \code{label}, \code{pattern} and optionally \code{down}, a pattern of the
+#'   positives expected to decrease), and \code{negative} (list with
 #'   \code{label} and \code{pattern})
 #' @return data.frame with added \code{species} and \code{TP} columns, filtered
 #'   to remove rows matching neither positive nor negative pattern
@@ -166,7 +174,19 @@ annotate_ground_truth <- function(data, ground_truth) {
       )
     ) |>
     dplyr::filter(.data$species != "OTHER") |>
-    dplyr::mutate(TP = (.data$species == ground_truth$positive$label))
+    dplyr::mutate(TP = (.data$species == ground_truth$positive$label)) |>
+    .flip_decreasing(ground_truth$positive$down, id_col)
+}
+
+# Negates log_fc and t_statistic of the positives matching `down` (no change when `down` is NULL)
+.flip_decreasing <- function(data, down, id_col) {
+  if (is.null(down)) {
+    return(data)
+  }
+  direction <- ifelse(data$TP & grepl(down, data[[id_col]]), -1, 1)
+  data$log_fc <- direction * data$log_fc
+  data$t_statistic <- direction * data$t_statistic
+  data
 }
 
 

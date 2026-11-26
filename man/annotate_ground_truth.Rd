@@ -10,7 +10,8 @@ annotate_ground_truth(data, ground_truth)
 \item{data}{data.frame with contrast results}
 
 \item{ground_truth}{list with \code{id_column}, \code{positive} (list with
-\code{label} and \code{pattern}), and \code{negative} (list with
+\code{label}, \code{pattern} and optionally \code{down}, a pattern of the
+positives expected to decrease), and \code{negative} (list with
 \code{label} and \code{pattern})}
 }
 \value{

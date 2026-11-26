@@ -21,7 +21,13 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width 
 options(knitr.kable.NA = "")
 ```
 
-The benchmark pipeline (`make benchmark`; `workflow/Snakefile`, `config/config.yaml`) prepares each dataset once, fits every method to the input it needs, and scores how well each method ranks proteins with a known change above unchanged ones: E. coli spiked into a human background in IonStar, UPS1 spiked into yeast in CPTAC. The tables and figures come from the files the pipeline exports to `inst/extdata`, so this page renders without data downloads.
+The benchmark pipeline (`make benchmark`; `workflow/Snakefile`, `config/config.yaml`) prepares each dataset once, fits every method to the input it needs, and scores how well each method ranks proteins with a known change above unchanged ones. The tables and figures come from the files the pipeline exports to `inst/extdata`, so this page renders without data downloads.
+
+- IonStar: E. coli spiked into a human background at five dilutions; quantified with MaxQuant, FragPipe and MetaMorpheus/FlashLFQ (with match-between-runs)
+- CPTAC study 6: UPS1 spiked into yeast; MaxQuant
+- ProteoBench DIA single-cell (Orbitrap Astral, 250 pg): yeast up fivefold against human; DIA-NN and MaxQuant
+- ProteoBench DIA diaPASEF (timsTOF): E. coli up fourfold and yeast down twofold against human; DIA-NN and Spectronaut. The scores rank by signed statistics, so the fold change and t statistic of yeast are negated before ranking and both species count as changed
+- Identification confidence (1 − PEP, or 1 − q-value for Spectronaut), which prolfqua's models use as weight, varies across samples in the ProteoBench and MetaMorpheus datasets; in the MaxQuant peptides.txt datasets it is one value per peptide; the FragPipe datasets carry none
 
 - Ranking scores: fold change (`log_fc`), p-value signed by the fold change (`scaled.p_value`), t statistic (`t_statistic`)
 - AUC, pAUC_5, pAUC_10: area under the ROC curve, and partial area up to a false positive rate of 0.05 or 0.1, on a 0 to 100 scale, with all contrasts of a dataset pooled
@@ -81,6 +87,31 @@ methods |>
       "fits, the number of datasets it ran on (every dataset that provides its input, of ",
       dplyr::n_distinct(methods$dataset), ") and a short description. Per dataset and with the wall time of each ",
       "fit: <a href=\"", methods_url, "\">benchmark_methods.tsv</a>."
+    )
+  ) |>
+  cat()
+```
+
+# Summary
+
+```{r summary, results = "asis"}
+summary_scores <- scores |>
+  dplyr::filter(.data$contrast == "all", .data$score == "scaled.p_value") |>
+  dplyr::select(method = "model_name", "dataset", "pAUC_10") |>
+  tidyr::pivot_wider(names_from = "dataset", values_from = "pAUC_10") |>
+  dplyr::select("method", dplyr::any_of(datasets$dataset))
+summary_scores$median <- apply(summary_scores[, -1], 1, stats::median, na.rm = TRUE)
+summary_scores |>
+  dplyr::arrange(dplyr::desc(.data$median)) |>
+  knitr::kable(
+    digits = 1,
+    format = "html",
+    table.attr = "class=\"table table-condensed\"",
+    caption = paste0(
+      "pAUC_10 of every method on every dataset, ranking by p-value signed by the fold change (scaled.p_value), ",
+      "all contrasts of a dataset pooled; empty where the dataset does not provide the method's input. Sorted by the ",
+      "median over the datasets the method ran on. Each method is scored on the contrasts it computes; the dataset ",
+      "sections below give the number of contrasts and the same-pairs comparison."
     )
   ) |>
   cat()
