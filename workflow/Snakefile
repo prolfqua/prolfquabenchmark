@@ -66,6 +66,8 @@ JOBS = [
 ]
 SCORES = [f"{RESULTS}/scores/{dataset}/{method}.tsv" for dataset, method in JOBS]
 PROLFQUA_VERSION = PACKAGES["prolfqua"].split(" ")[0]
+# Datasets with peptides and proteins: the peptide consistency weights (vignette Peptide_consistency_weights)
+CONSISTENCY_DATASETS = [d for d, spec in DATASETS.items() if {"peptides", "proteins"} <= set(spec["inputs"])]
 
 wildcard_constraints:
     dataset="|".join(DATASETS),
@@ -76,6 +78,7 @@ rule all:
     input:
         SCORES,
         [] if RELEASE else "inst/extdata/benchmark_scores.tsv",
+        [] if RELEASE else "inst/extdata/peptide_consistency_scores.tsv",
 
 
 rule prepare:
@@ -176,6 +179,41 @@ rule export:
         "logs/export.log",
     shell:
         "Rscript {input.script} {input.config} inst/extdata {input.scores} > {log} 2>&1"
+
+
+# Weights of the protein abundances from the consistency of their peptides, one dataset per job: the lm, limma, deqms
+# and rlm facades fitted with each weight variant and scored
+rule peptide_consistency:
+    input:
+        script="workflow/scripts/peptide_consistency_weights.R",
+        common="workflow/scripts/common.R",
+        config=CONFIG_FILE,
+        prepared=f"{RESULTS}/prepared/{{dataset}}",
+    output:
+        scores=f"{RESULTS}/peptide_consistency/{{dataset}}/scores.tsv",
+        priors=f"{RESULTS}/peptide_consistency/{{dataset}}/priors.tsv",
+    params:
+        packages=lambda w: {name: PACKAGES[name] for name in ["prolfqua", "prolfquabenchmark"]},
+    log:
+        f"{LOGS}/peptide_consistency_{{dataset}}.log",
+    shell:
+        f"Rscript {{input.script}} {{input.config}} {{wildcards.dataset}} {{input.prepared}} "
+        f"{RESULTS}/peptide_consistency/{{wildcards.dataset}} > {{log}} 2>&1"
+
+
+rule export_peptide_consistency:
+    input:
+        script="workflow/scripts/export_peptide_consistency.R",
+        common="workflow/scripts/common.R",
+        scores=[f"{RESULTS}/peptide_consistency/{dataset}/scores.tsv" for dataset in CONSISTENCY_DATASETS],
+        priors=[f"{RESULTS}/peptide_consistency/{dataset}/priors.tsv" for dataset in CONSISTENCY_DATASETS],
+    output:
+        scores="inst/extdata/peptide_consistency_scores.tsv",
+        priors="inst/extdata/peptide_consistency_priors.tsv",
+    log:
+        "logs/export_peptide_consistency.log",
+    shell:
+        "Rscript {input.script} inst/extdata {input.scores} > {log} 2>&1"
 
 
 rule timing_input:
