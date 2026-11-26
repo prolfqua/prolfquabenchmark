@@ -43,7 +43,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -640,6 +640,113 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 \tilde s^2_P = \frac{d_0 s_0^2 + d_P \, k_P s^2_P}{d_0 + d_P},
 \]</span></p>
 <p>with <span class="math inline">\(d_0\)</span> and <span class="math inline">\(s_0^2\)</span> estimated from all proteins. A protein-specific <span class="math inline">\(k_P\)</span> changes where each protein’s variance stands against the prior and so changes its <span class="math inline">\(t\)</span>. <code>protein_ivw</code> and <code>sample_ivw</code> carry <span class="math inline">\(k_P = 1 / \tilde\sigma^2_P\)</span>, which divides each protein’s variance by its peptide noise; <code>sample_rel</code> keeps the weights of every protein on the scale of the peptide count and changes only how the protein’s samples are weighted against each other.</p>
+</section><section id="illustration-on-ionstar-maxquant" class="level1"><h1>Illustration on IonStar MaxQuant</h1>
+<p>The dataset IonStar_MaxQuant (E. coli spiked into human at five dilutions, four runs each) shows how the variants differ. Four proteins with at least 4 peptides observed in every run are picked by rule: the E. coli protein whose p-value for the contrast dilution_(7.5/6)_1.25 falls most from <code>count</code> to <code>sample_rel</code> with lm, the human protein with p &lt; 0.01 under <code>count</code> whose p-value rises most, and the proteins with the most and the least consistent peptides (smallest and largest <span class="math inline">\(\tilde\sigma^2_P\)</span>).</p>
+<p>Two properties tell the variants apart:</p>
+<ul>
+<li>
+<strong>Shape</strong>: how the samples of one protein are weighted against each other. <code>count</code> and <code>protein_ivw</code> weight them by the peptide count <span class="math inline">\(n_{Ps}\)</span>; <code>sample_ivw</code> and <code>sample_rel</code> by <span class="math inline">\(n_{Ps} f_{Ps}\)</span>, the count times the peptide consistency of the sample</li>
+<li>
+<strong>Scale</strong>: how the weights of one protein stand against those of other proteins. <code>count</code> and <code>sample_rel</code> keep the scale of the peptide count; <code>protein_ivw</code> and <code>sample_ivw</code> multiply it by <span class="math inline">\(1 / \tilde\sigma^2_P\)</span>
+</li>
+</ul>
+<table class="caption-top table">
+<thead><tr class="header">
+<th></th>
+<th>scale of the peptide count</th>
+<th>scale <span class="math inline">\(1 / \tilde\sigma^2_P\)</span>
+</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>shape <span class="math inline">\(n_{Ps}\)</span>
+</td>
+<td><code>count</code></td>
+<td><code>protein_ivw</code></td>
+</tr>
+<tr class="even">
+<td>shape <span class="math inline">\(n_{Ps} f_{Ps}\)</span>
+</td>
+<td><code>sample_rel</code></td>
+<td><code>sample_ivw</code></td>
+</tr>
+</tbody>
+</table>
+<p>The shape changes the fit of each protein; the scale changes nothing in an unmoderated fit and acts only through the variance moderation across proteins.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Peptide_consistency_weights_files/figure-html/examplePeptides-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Peptides of the four example proteins of IonStar_MaxQuant (panels; role and protein). x: runs, ordered by dilution (a to e, four runs each); y: normalized log2 intensity, one line per peptide; point size: absolute median polish residual; black: the protein estimate of the median polish. Consistent peptides run parallel to each other and to the estimate.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Peptide_consistency_weights_files/figure-html/exampleWeights-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Weights of the example proteins per run under four variants (colour), as log2 of the weight over the protein’s mean peptide count, so that count is near 0. Vertical distance between count and protein_ivw, and between sample_rel and sample_ivw: the protein scale log2(1 / sigma2_P). Dips of sample_rel and sample_ivw: runs whose peptides agree less than in the protein’s other runs.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Peptide_consistency_weights_files/figure-html/scaleFigure-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Protein scale of each variant against the protein residual variance, all proteins of IonStar_MaxQuant. y: mean weight of the protein over its mean peptide count; x: shrunk protein residual variance (log scales). count and sample_rel stay near 1 for every protein; protein_ivw and sample_ivw fall with the variance, so the variance moderation sees each protein’s variance divided by its peptide noise.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Peptide_consistency_weights_files/figure-html/shrinkageFigure-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Empirical Bayes shrinkage in IonStar_MaxQuant. Left: protein residual variance, raw (x) against shrunk (y), colour the residual degrees of freedom d_P. Right: ratio of a run’s residual variance to its protein’s, raw (x) against shrunk (y), for 10000 random protein x run cells with at least one residual degree of freedom, colour d_Ps. Dashed: the diagonal. Variances with few degrees of freedom are pulled furthest towards the prior.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Peptide_consistency_weights_files/figure-html/testFigure-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Why the variants rank differently: -log10 p-value of lm for the contrast dilution_(7.5/6)_1.25 under count (x) against three other variants (panels), every protein of IonStar_MaxQuant; orange: changed (E. coli), grey: unchanged (human). Changed proteins above the diagonal and unchanged ones below it improve the ranking. Black circles: the example proteins.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-condensed caption-top table-sm table-striped small">
+<caption>Proteins of IonStar_MaxQuant with an lm p-value below 0.01 for the contrast dilution_(7.5/6)_1.25 under each variant: changed (E. coli, true positives) and unchanged (human, false positives).</caption>
+<thead><tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variant</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">changed, p &lt; 0.01</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">unchanged, p &lt; 0.01</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">count</td>
+<td style="text-align: right;">279</td>
+<td style="text-align: right;">34</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">protein_ivw</td>
+<td style="text-align: right;">280</td>
+<td style="text-align: right;">35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sample_ivw</td>
+<td style="text-align: right;">304</td>
+<td style="text-align: right;">44</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sample_rel</td>
+<td style="text-align: right;">301</td>
+<td style="text-align: right;">41</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section><section id="calibration" class="level1"><h1>Calibration</h1>
 <p>The weights come from the same data as the fit, and the fit treats them as known. A sample whose peptides agree by chance gets more weight, and the residual degrees of freedom do not account for the estimated weights, so the variance of the contrast tends to be underestimated and the FDR to be anti-conservative. vooma and msqrob2’s robust weights share this.</p>
 </section><section id="benchmark" class="level1"><h1>Benchmark</h1>
