@@ -1,7 +1,7 @@
 # Scores one result directory: the summary table of Benchmark$to_summary_table() (AUC, pAUC, AP per contrast and
 # ranking score) plus the partial AUC up to a false positive rate of 0.05 (pAUC_5), and the curves of the pooled
-# contrast on fixed grids (TPR at FPR 0 to 0.2 by 0.002 per ranking score; false discovery proportion at nominal FDR
-# 0 to 0.25 by 0.0025), rounded to 4 digits.
+# contrast on fixed grids (TPR at FPR 0 to 0.2 by 0.002 per ranking score; false discovery proportion, curve FDP, and
+# number of true discoveries, curve TP, at nominal FDR 0 to 0.25 by 0.0025), rounded to 4 digits.
 #   Rscript workflow/scripts/score.R <contrast_dir> <scores.tsv> <curves.tsv>
 source("workflow/scripts/common.R")
 args <- script_args(c("contrast_dir", "scores", "curves"))
@@ -38,9 +38,12 @@ fdr_grid <- seq(0, 0.25, by = 0.0025)
 fdp_curves <- lapply(split(fdp, fdp$what), function(curve) {
   data.frame(curve = "FDP", score = curve$what[1], x = fdr_grid, y = on_grid(curve$scorecol, curve$FDP, fdr_grid))
 })
+tp_curves <- lapply(split(fdp, fdp$what), function(curve) {
+  data.frame(curve = "TP", score = curve$what[1], x = fdr_grid, y = on_grid(curve$scorecol, curve$TP_hits, fdr_grid))
+})
 curves <- cbind(
   dataset = metadata$dataset,
   method = metadata$method,
-  do.call(rbind, c(roc_curves, fdp_curves))
+  do.call(rbind, c(roc_curves, fdp_curves, tp_curves))
 )
 utils::write.table(curves, args$curves, sep = "\t", row.names = FALSE, quote = FALSE)
