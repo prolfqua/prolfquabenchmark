@@ -303,7 +303,7 @@ ul.task-list li input[type="checkbox"] {
 <li><p>ProteoBench DIA diaPASEF (timsTOF): E. coli up fourfold and yeast down twofold against human; DIA-NN and Spectronaut. The scores rank by signed statistics, so the fold change and t statistic of yeast are negated before ranking and both species count as changed</p></li>
 <li><p>Identification confidence (1 − PEP, or 1 − q-value for Spectronaut), which prolfqua’s models use as weight, varies across samples in the ProteoBench and MetaMorpheus datasets; in the MaxQuant peptides.txt datasets it is one value per peptide; the FragPipe datasets carry none</p></li>
 <li><p>Ranking scores: fold change (<code>log_fc</code>), p-value signed by the fold change (<code>scaled.p_value</code>), t statistic (<code>t_statistic</code>)</p></li>
-<li><p>AUC, pAUC_5, pAUC_10: area under the ROC curve, and partial area up to a false positive rate of 0.05 or 0.1, on a 0 to 100 scale, with all contrasts of a dataset pooled</p></li>
+<li><p>AUC, pAUC_5: area under the ROC curve, and partial area up to a false positive rate of 0.05, on a 0 to 100 scale, with all contrasts of a dataset pooled</p></li>
 <li><p>Contrasts computed: protein and contrast pairs with a result for the ranking score, all contrasts together. Each method is scored on the pairs it computes, so pAUC_5 is plotted against this count</p></li>
 <li><p>Pareto front (red): the methods no other method beats on both pAUC_5 and contrasts computed</p></li>
 <li><p>Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test all its protein and contrast pairs (the same or more) are scored again on exactly these pairs (<code>same_pairs_scores()</code>; figure after the Pareto front, ranking by scaled p-value; <code>benchmark_same_pairs.tsv</code> has all three ranking scores)</p></li>
@@ -683,7 +683,7 @@ msqrob2 hurdle; Fisher combination of the intensity and detection p-values
 </table></section><section id="summary" class="level1"><h1>Summary</h1>
 <table class="table table-condensed">
 <caption>
-pAUC_10 of every method on every dataset, ranking by p-value signed by the fold change (scaled.p_value), all contrasts of a dataset pooled; empty where the dataset does not provide the method’s input. Sorted by the median over the datasets the method ran on. Each method is scored on the contrasts it computes; the dataset sections below give the number of contrasts and the same-pairs comparison.
+pAUC_5 of every method on every dataset, ranking by p-value signed by the fold change (scaled.p_value), all contrasts of a dataset pooled; empty where the dataset does not provide the method’s input. Sorted by the median over the datasets the method ran on. Each method is scored on the contrasts it computes; the dataset sections below give the number of contrasts and the same-pairs comparison.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -731,16 +731,12 @@ msqrob2_protein
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-87.4
+84.1
 </td>
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-95.3
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
+93.3
 </td>
 <td style="text-align:right;">
 </td>
@@ -751,81 +747,11 @@ msqrob2_protein
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-91.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropecaV2_nested
-</td>
-<td style="text-align:right;">
-73.0
 </td>
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-83.7
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-70.3
-</td>
-<td style="text-align:right;">
-90.1
-</td>
-<td style="text-align:right;">
-96.2
-</td>
-<td style="text-align:right;">
-81.8
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-85.2
-</td>
-<td style="text-align:right;">
-84.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_rlm
-</td>
-<td style="text-align:right;">
-70.6
-</td>
-<td style="text-align:right;">
-83.1
-</td>
-<td style="text-align:right;">
-80.7
-</td>
-<td style="text-align:right;">
-90.0
-</td>
-<td style="text-align:right;">
-67.6
-</td>
-<td style="text-align:right;">
-85.8
-</td>
-<td style="text-align:right;">
-93.0
-</td>
-<td style="text-align:right;">
-77.5
-</td>
-<td style="text-align:right;">
-91.4
-</td>
-<td style="text-align:right;">
-83.8
-</td>
-<td style="text-align:right;">
-83.4
+88.7
 </td>
 </tr>
 <tr>
@@ -833,75 +759,73 @@ prolfqua_rlm
 prolfqua_lm
 </td>
 <td style="text-align:right;">
-70.9
+64.0
 </td>
 <td style="text-align:right;">
-82.2
+77.1
 </td>
 <td style="text-align:right;">
-80.3
+74.8
 </td>
 <td style="text-align:right;">
-90.9
+87.6
 </td>
 <td style="text-align:right;">
-68.6
+62.4
 </td>
 <td style="text-align:right;">
-84.1
+81.8
 </td>
 <td style="text-align:right;">
-95.8
+94.5
 </td>
 <td style="text-align:right;">
-79.9
+75.7
 </td>
 <td style="text-align:right;">
-93.9
+91.8
 </td>
 <td style="text-align:right;">
-86.1
+82.0
 </td>
 <td style="text-align:right;">
-83.2
+79.5
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-prolfqua_deqms
+prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:right;">
-70.8
+66.5
 </td>
 <td style="text-align:right;">
-82.6
 </td>
 <td style="text-align:right;">
-80.1
+76.6
 </td>
 <td style="text-align:right;">
-90.7
 </td>
 <td style="text-align:right;">
-68.5
+64.2
 </td>
 <td style="text-align:right;">
-83.5
+85.6
 </td>
 <td style="text-align:right;">
-95.5
+94.4
+</td>
+<td style="text-align:right;">
+77.8
+</td>
+<td style="text-align:right;">
+89.2
+</td>
+<td style="text-align:right;">
+81.1
 </td>
 <td style="text-align:right;">
 79.4
-</td>
-<td style="text-align:right;">
-92.9
-</td>
-<td style="text-align:right;">
-85.2
-</td>
-<td style="text-align:right;">
-83.0
 </td>
 </tr>
 <tr>
@@ -909,73 +833,113 @@ prolfqua_deqms
 prolfqua_limma
 </td>
 <td style="text-align:right;">
-70.7
+63.7
 </td>
 <td style="text-align:right;">
-81.8
+76.5
 </td>
 <td style="text-align:right;">
-80.0
+74.5
+</td>
+<td style="text-align:right;">
+87.0
+</td>
+<td style="text-align:right;">
+62.0
+</td>
+<td style="text-align:right;">
+82.4
+</td>
+<td style="text-align:right;">
+94.1
+</td>
+<td style="text-align:right;">
+74.9
+</td>
+<td style="text-align:right;">
+91.2
+</td>
+<td style="text-align:right;">
+82.1
+</td>
+<td style="text-align:right;">
+79.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
+</td>
+<td style="text-align:right;">
+63.9
+</td>
+<td style="text-align:right;">
+77.6
+</td>
+<td style="text-align:right;">
+74.7
+</td>
+<td style="text-align:right;">
+87.4
+</td>
+<td style="text-align:right;">
+62.2
+</td>
+<td style="text-align:right;">
+81.0
+</td>
+<td style="text-align:right;">
+93.9
+</td>
+<td style="text-align:right;">
+75.3
 </td>
 <td style="text-align:right;">
 90.5
 </td>
 <td style="text-align:right;">
-68.4
+81.0
 </td>
 <td style="text-align:right;">
-84.0
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-<td style="text-align:right;">
-79.2
-</td>
-<td style="text-align:right;">
-93.3
-</td>
-<td style="text-align:right;">
-86.1
-</td>
-<td style="text-align:right;">
-82.9
+79.3
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-prolfqua_ropeca_nested
+prolfqua_rlm
 </td>
 <td style="text-align:right;">
-72.0
+62.7
 </td>
 <td style="text-align:right;">
+77.8
 </td>
 <td style="text-align:right;">
-83.4
+73.7
 </td>
 <td style="text-align:right;">
+85.6
 </td>
 <td style="text-align:right;">
-67.9
+59.3
 </td>
 <td style="text-align:right;">
-81.3
+80.0
 </td>
 <td style="text-align:right;">
-94.7
+89.5
+</td>
+<td style="text-align:right;">
+70.7
+</td>
+<td style="text-align:right;">
+87.8
 </td>
 <td style="text-align:right;">
 78.0
 </td>
 <td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-86.5
-</td>
-<td style="text-align:right;">
-82.3
+77.9
 </td>
 </tr>
 <tr>
@@ -983,35 +947,71 @@ prolfqua_ropeca_nested
 prolfqua_lmer_nested
 </td>
 <td style="text-align:right;">
-73.3
+66.5
 </td>
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-80.5
+74.3
 </td>
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-77.9
+72.3
 </td>
 <td style="text-align:right;">
-77.8
+76.7
 </td>
 <td style="text-align:right;">
-93.6
+92.0
 </td>
 <td style="text-align:right;">
-79.6
+75.7
 </td>
 <td style="text-align:right;">
-89.9
+87.1
 </td>
 <td style="text-align:right;">
-86.3
+82.5
 </td>
 <td style="text-align:right;">
-80.0
+76.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:right;">
+63.9
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+77.5
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+60.1
+</td>
+<td style="text-align:right;">
+73.1
+</td>
+<td style="text-align:right;">
+91.5
+</td>
+<td style="text-align:right;">
+71.9
+</td>
+<td style="text-align:right;">
+88.4
+</td>
+<td style="text-align:right;">
+81.5
+</td>
+<td style="text-align:right;">
+75.3
 </td>
 </tr>
 <tr>
@@ -1019,37 +1019,37 @@ prolfqua_lmer_nested
 prolfqua_deqms_voom
 </td>
 <td style="text-align:right;">
-67.2
+60.3
 </td>
 <td style="text-align:right;">
-79.2
+72.9
 </td>
 <td style="text-align:right;">
-74.9
+67.7
 </td>
 <td style="text-align:right;">
-88.2
+84.2
 </td>
 <td style="text-align:right;">
-61.5
+53.6
 </td>
 <td style="text-align:right;">
-77.5
+70.3
 </td>
 <td style="text-align:right;">
-94.1
+91.7
 </td>
 <td style="text-align:right;">
-73.4
+66.9
 </td>
 <td style="text-align:right;">
-89.1
+84.9
 </td>
 <td style="text-align:right;">
-82.8
+78.0
 </td>
 <td style="text-align:right;">
-78.3
+71.6
 </td>
 </tr>
 <tr>
@@ -1057,35 +1057,71 @@ prolfqua_deqms_voom
 prolfqua_limpa_nested
 </td>
 <td style="text-align:right;">
-65.8
+58.5
 </td>
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-67.8
+61.1
 </td>
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-48.2
+42.2
 </td>
 <td style="text-align:right;">
-81.0
+78.5
 </td>
 <td style="text-align:right;">
-79.5
+71.7
 </td>
 <td style="text-align:right;">
-83.0
+79.2
 </td>
 <td style="text-align:right;">
-75.4
+69.8
 </td>
 <td style="text-align:right;">
-84.7
+80.2
 </td>
 <td style="text-align:right;">
-77.5
+70.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:right;">
+59.6
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+64.8
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+56.9
+</td>
+<td style="text-align:right;">
+69.5
+</td>
+<td style="text-align:right;">
+67.7
+</td>
+<td style="text-align:right;">
+73.9
+</td>
+<td style="text-align:right;">
+73.4
+</td>
+<td style="text-align:right;">
+82.8
+</td>
+<td style="text-align:right;">
+68.6
 </td>
 </tr>
 <tr>
@@ -1097,7 +1133,7 @@ MSstats
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-76.1
+68.4
 </td>
 <td style="text-align:right;">
 </td>
@@ -1114,43 +1150,7 @@ MSstats
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-76.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2_hurdle
-</td>
-<td style="text-align:right;">
-66.6
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-70.6
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-62.9
-</td>
-<td style="text-align:right;">
-73.8
-</td>
-<td style="text-align:right;">
-77.5
-</td>
-<td style="text-align:right;">
-79.7
-</td>
-<td style="text-align:right;">
-79.4
-</td>
-<td style="text-align:right;">
-87.7
-</td>
-<td style="text-align:right;">
-75.7
+68.4
 </td>
 </tr>
 <tr>
@@ -1158,71 +1158,35 @@ msqrob2_hurdle
 prolfqua_hurdle_nested
 </td>
 <td style="text-align:right;">
-66.3
+59.5
 </td>
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-71.2
+65.3
 </td>
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-57.4
+48.7
 </td>
 <td style="text-align:right;">
-70.9
+66.5
 </td>
 <td style="text-align:right;">
-74.6
+69.3
 </td>
 <td style="text-align:right;">
-83.0
+79.1
 </td>
 <td style="text-align:right;">
-78.9
+75.1
 </td>
 <td style="text-align:right;">
-88.4
+84.8
 </td>
 <td style="text-align:right;">
-72.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2
-</td>
-<td style="text-align:right;">
-66.1
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-69.9
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-63.6
-</td>
-<td style="text-align:right;">
-68.7
-</td>
-<td style="text-align:right;">
-73.0
-</td>
-<td style="text-align:right;">
-74.0
-</td>
-<td style="text-align:right;">
-74.0
-</td>
-<td style="text-align:right;">
-84.1
-</td>
-<td style="text-align:right;">
-71.5
+67.9
 </td>
 </tr>
 <tr>
@@ -1230,37 +1194,37 @@ msqrob2
 prolfqua_lm_impute
 </td>
 <td style="text-align:right;">
-66.8
+60.1
 </td>
 <td style="text-align:right;">
-57.3
+52.7
 </td>
 <td style="text-align:right;">
-72.0
+66.6
 </td>
 <td style="text-align:right;">
-79.0
+75.1
 </td>
 <td style="text-align:right;">
-57.7
+49.4
 </td>
 <td style="text-align:right;">
-67.3
+64.8
 </td>
 <td style="text-align:right;">
-67.9
+63.0
 </td>
 <td style="text-align:right;">
-75.8
+71.4
 </td>
 <td style="text-align:right;">
-73.6
+69.7
 </td>
 <td style="text-align:right;">
-85.3
+81.3
 </td>
 <td style="text-align:right;">
-70.0
+65.7
 </td>
 </tr>
 <tr>
@@ -1268,37 +1232,37 @@ prolfqua_lm_impute
 prolfqua_limpa
 </td>
 <td style="text-align:right;">
-66.2
+59.8
 </td>
 <td style="text-align:right;">
-55.4
+51.7
 </td>
 <td style="text-align:right;">
-70.2
-</td>
-<td style="text-align:right;">
-74.5
-</td>
-<td style="text-align:right;">
-63.0
-</td>
-<td style="text-align:right;">
-68.6
+65.5
 </td>
 <td style="text-align:right;">
 70.8
 </td>
 <td style="text-align:right;">
-78.5
+57.8
 </td>
 <td style="text-align:right;">
-69.1
+66.0
 </td>
 <td style="text-align:right;">
-84.6
+63.5
 </td>
 <td style="text-align:right;">
-69.6
+74.0
+</td>
+<td style="text-align:right;">
+64.9
+</td>
+<td style="text-align:right;">
+79.8
+</td>
+<td style="text-align:right;">
+65.2
 </td>
 </tr>
 <tr>
@@ -1308,18 +1272,12 @@ proDA
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-58.1
+53.3
 </td>
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-78.8
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
-</td>
-<td style="text-align:right;">
+74.5
 </td>
 <td style="text-align:right;">
 </td>
@@ -1328,7 +1286,49 @@ proDA
 <td style="text-align:right;">
 </td>
 <td style="text-align:right;">
-68.5
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+63.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:right;">
+59.7
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+64.3
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+57.6
+</td>
+<td style="text-align:right;">
+62.2
+</td>
+<td style="text-align:right;">
+62.4
+</td>
+<td style="text-align:right;">
+67.8
+</td>
+<td style="text-align:right;">
+67.2
+</td>
+<td style="text-align:right;">
+78.0
+</td>
+<td style="text-align:right;">
+63.4
 </td>
 </tr>
 </tbody>
@@ -2590,7 +2590,7 @@ msqrob2_hurdle
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on IonStar_MaxQuant, all 4 contrasts pooled, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on IonStar_MaxQuant, all 4 contrasts pooled, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -2612,45 +2612,16 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-prolfqua_lmer_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:right;">
-15920
-</td>
-<td style="text-align:right;">
-92.6
-</td>
-<td style="text-align:right;">
-93.0
-</td>
-<td style="text-align:right;">
-93.1
-</td>
-<td style="text-align:right;">
-66.5
-</td>
-<td style="text-align:right;">
-73.3
-</td>
-<td style="text-align:right;">
-73.5
-</td>
-</tr>
 <tr>
 <td style="text-align:left;">
 prolfqua_ropecaV2_nested
@@ -2671,42 +2642,42 @@ peptide
 92.5
 </td>
 <td style="text-align:right;">
-56.4
+34.0
 </td>
 <td style="text-align:right;">
-73.0
+66.5
 </td>
 <td style="text-align:right;">
-73.0
+66.5
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-prolfqua_ropeca_nested
+prolfqua_lmer_nested
 </td>
 <td style="text-align:left;">
 peptide
 </td>
 <td style="text-align:right;">
-18355
+15920
 </td>
 <td style="text-align:right;">
-90.0
+92.6
 </td>
 <td style="text-align:right;">
-92.1
+93.0
 </td>
 <td style="text-align:right;">
-92.3
+93.1
 </td>
 <td style="text-align:right;">
-55.3
+48.9
 </td>
 <td style="text-align:right;">
-72.0
+66.5
 </td>
 <td style="text-align:right;">
-69.5
+66.9
 </td>
 </tr>
 <tr>
@@ -2729,13 +2700,13 @@ protein
 92.0
 </td>
 <td style="text-align:right;">
-58.6
+37.0
 </td>
 <td style="text-align:right;">
-70.9
+64.0
 </td>
 <td style="text-align:right;">
-70.8
+63.8
 </td>
 </tr>
 <tr>
@@ -2758,13 +2729,42 @@ protein
 92.0
 </td>
 <td style="text-align:right;">
-58.6
+37.0
 </td>
 <td style="text-align:right;">
-70.8
+63.9
 </td>
 <td style="text-align:right;">
-70.7
+63.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+18355
+</td>
+<td style="text-align:right;">
+90.0
+</td>
+<td style="text-align:right;">
+92.1
+</td>
+<td style="text-align:right;">
+92.3
+</td>
+<td style="text-align:right;">
+32.7
+</td>
+<td style="text-align:right;">
+63.9
+</td>
+<td style="text-align:right;">
+57.7
 </td>
 </tr>
 <tr>
@@ -2787,13 +2787,13 @@ protein
 92.0
 </td>
 <td style="text-align:right;">
-58.6
+37.0
 </td>
 <td style="text-align:right;">
-70.7
+63.7
 </td>
 <td style="text-align:right;">
-70.5
+63.3
 </td>
 </tr>
 <tr>
@@ -2816,13 +2816,13 @@ protein
 92.2
 </td>
 <td style="text-align:right;">
-60.4
+39.8
 </td>
 <td style="text-align:right;">
-70.6
+62.7
 </td>
 <td style="text-align:right;">
-70.0
+61.5
 </td>
 </tr>
 <tr>
@@ -2845,13 +2845,13 @@ protein
 91.3
 </td>
 <td style="text-align:right;">
-58.6
+36.8
 </td>
 <td style="text-align:right;">
-67.2
+60.3
 </td>
 <td style="text-align:right;">
-67.2
+60.2
 </td>
 </tr>
 <tr>
@@ -2874,71 +2874,13 @@ protein
 90.2
 </td>
 <td style="text-align:right;">
-56.8
+37.7
 </td>
 <td style="text-align:right;">
-66.8
+60.1
 </td>
 <td style="text-align:right;">
-66.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2_hurdle
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-19108
-</td>
-<td style="text-align:right;">
-89.4
-</td>
-<td style="text-align:right;">
-90.3
-</td>
-<td style="text-align:right;">
-90.3
-</td>
-<td style="text-align:right;">
-53.2
-</td>
-<td style="text-align:right;">
-66.6
-</td>
-<td style="text-align:right;">
-65.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_hurdle_nested
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-19108
-</td>
-<td style="text-align:right;">
-89.5
-</td>
-<td style="text-align:right;">
-89.8
-</td>
-<td style="text-align:right;">
-90.2
-</td>
-<td style="text-align:right;">
-56.8
-</td>
-<td style="text-align:right;">
-66.3
-</td>
-<td style="text-align:right;">
-66.6
+59.7
 </td>
 </tr>
 <tr>
@@ -2961,13 +2903,13 @@ protein
 89.2
 </td>
 <td style="text-align:right;">
-61.8
+46.6
 </td>
 <td style="text-align:right;">
-66.2
+59.8
 </td>
 <td style="text-align:right;">
-66.2
+59.8
 </td>
 </tr>
 <tr>
@@ -2990,13 +2932,71 @@ protein + peptide
 90.3
 </td>
 <td style="text-align:right;">
-53.2
+28.7
 </td>
 <td style="text-align:right;">
-66.1
+59.7
 </td>
 <td style="text-align:right;">
-65.7
+59.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+19108
+</td>
+<td style="text-align:right;">
+89.4
+</td>
+<td style="text-align:right;">
+90.3
+</td>
+<td style="text-align:right;">
+90.3
+</td>
+<td style="text-align:right;">
+28.7
+</td>
+<td style="text-align:right;">
+59.6
+</td>
+<td style="text-align:right;">
+59.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+19108
+</td>
+<td style="text-align:right;">
+89.5
+</td>
+<td style="text-align:right;">
+89.8
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+37.7
+</td>
+<td style="text-align:right;">
+59.5
+</td>
+<td style="text-align:right;">
+59.7
 </td>
 </tr>
 <tr>
@@ -3019,13 +3019,13 @@ peptide
 90.9
 </td>
 <td style="text-align:right;">
-53.3
+31.7
 </td>
 <td style="text-align:right;">
-65.8
+58.5
 </td>
 <td style="text-align:right;">
-65.8
+58.5
 </td>
 </tr>
 </tbody>
@@ -4284,7 +4284,7 @@ msqrob2_protein
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on IonStar_MaxQuant_protein, all 4 contrasts pooled, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on IonStar_MaxQuant_protein, all 4 contrasts pooled, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -4306,13 +4306,13 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
@@ -4336,13 +4336,13 @@ protein
 96.7
 </td>
 <td style="text-align:right;">
-85.5
+77.4
 </td>
 <td style="text-align:right;">
-87.4
+84.1
 </td>
 <td style="text-align:right;">
-87.3
+83.8
 </td>
 </tr>
 <tr>
@@ -4365,13 +4365,13 @@ protein
 95.7
 </td>
 <td style="text-align:right;">
-80.2
+69.4
 </td>
 <td style="text-align:right;">
-83.1
+77.8
 </td>
 <td style="text-align:right;">
-82.7
+76.9
 </td>
 </tr>
 <tr>
@@ -4394,13 +4394,13 @@ protein
 95.4
 </td>
 <td style="text-align:right;">
-80.1
+69.1
 </td>
 <td style="text-align:right;">
-82.6
+77.6
 </td>
 <td style="text-align:right;">
-82.6
+77.6
 </td>
 </tr>
 <tr>
@@ -4423,13 +4423,13 @@ protein
 95.4
 </td>
 <td style="text-align:right;">
-80.1
+69.1
 </td>
 <td style="text-align:right;">
-82.2
+77.1
 </td>
 <td style="text-align:right;">
-82.2
+77.0
 </td>
 </tr>
 <tr>
@@ -4452,13 +4452,13 @@ protein
 95.3
 </td>
 <td style="text-align:right;">
-80.1
+69.1
 </td>
 <td style="text-align:right;">
-81.8
+76.5
 </td>
 <td style="text-align:right;">
-81.7
+76.1
 </td>
 </tr>
 <tr>
@@ -4481,13 +4481,13 @@ protein
 95.0
 </td>
 <td style="text-align:right;">
-80.1
+69.1
 </td>
 <td style="text-align:right;">
-79.2
+72.9
 </td>
 <td style="text-align:right;">
-79.2
+72.9
 </td>
 </tr>
 <tr>
@@ -4510,13 +4510,13 @@ protein
 85.5
 </td>
 <td style="text-align:right;">
-42.3
+17.1
 </td>
 <td style="text-align:right;">
-58.1
+53.3
 </td>
 <td style="text-align:right;">
-58.1
+53.3
 </td>
 </tr>
 <tr>
@@ -4539,13 +4539,13 @@ protein
 84.9
 </td>
 <td style="text-align:right;">
-55.1
+45.8
 </td>
 <td style="text-align:right;">
-57.3
+52.7
 </td>
 <td style="text-align:right;">
-56.8
+51.7
 </td>
 </tr>
 <tr>
@@ -4568,13 +4568,13 @@ protein
 83.9
 </td>
 <td style="text-align:right;">
-57.2
+52.9
 </td>
 <td style="text-align:right;">
-55.4
+51.7
 </td>
 <td style="text-align:right;">
-55.4
+51.8
 </td>
 </tr>
 </tbody>
@@ -5943,7 +5943,7 @@ msqrob2_hurdle
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on IonStar_FragPipe_MSstats, all 4 contrasts pooled, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on IonStar_FragPipe_MSstats, all 4 contrasts pooled, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -5965,45 +5965,16 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropecaV2_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:right;">
-19233
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-95.8
-</td>
-<td style="text-align:right;">
-96.3
-</td>
-<td style="text-align:right;">
-61.3
-</td>
-<td style="text-align:right;">
-83.7
-</td>
-<td style="text-align:right;">
-83.9
-</td>
-</tr>
 <tr>
 <td style="text-align:left;">
 prolfqua_ropeca_nested
@@ -6024,71 +5995,42 @@ peptide
 96.0
 </td>
 <td style="text-align:right;">
-59.9
+33.5
 </td>
 <td style="text-align:right;">
-83.4
+77.5
 </td>
 <td style="text-align:right;">
-81.8
+72.9
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-prolfqua_rlm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-19171
-</td>
-<td style="text-align:right;">
-93.6
-</td>
-<td style="text-align:right;">
-95.4
-</td>
-<td style="text-align:right;">
-95.3
-</td>
-<td style="text-align:right;">
-63.9
-</td>
-<td style="text-align:right;">
-80.7
-</td>
-<td style="text-align:right;">
-79.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lmer_nested
+prolfqua_ropecaV2_nested
 </td>
 <td style="text-align:left;">
 peptide
 </td>
 <td style="text-align:right;">
-15296
+19233
 </td>
 <td style="text-align:right;">
-95.4
+93.4
 </td>
 <td style="text-align:right;">
-95.9
+95.8
 </td>
 <td style="text-align:right;">
-96.0
+96.3
 </td>
 <td style="text-align:right;">
-74.4
+35.3
 </td>
 <td style="text-align:right;">
-80.5
+76.6
 </td>
 <td style="text-align:right;">
-80.7
+76.8
 </td>
 </tr>
 <tr>
@@ -6111,13 +6053,13 @@ protein
 95.3
 </td>
 <td style="text-align:right;">
-61.5
+36.0
 </td>
 <td style="text-align:right;">
-80.3
+74.8
 </td>
 <td style="text-align:right;">
-80.1
+74.2
 </td>
 </tr>
 <tr>
@@ -6140,13 +6082,13 @@ protein
 95.3
 </td>
 <td style="text-align:right;">
-61.5
+36.0
 </td>
 <td style="text-align:right;">
-80.1
+74.7
 </td>
 <td style="text-align:right;">
-80.0
+74.5
 </td>
 </tr>
 <tr>
@@ -6169,13 +6111,71 @@ protein
 95.2
 </td>
 <td style="text-align:right;">
-61.5
+36.0
 </td>
 <td style="text-align:right;">
-80.0
+74.5
 </td>
 <td style="text-align:right;">
-79.7
+73.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lmer_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+15296
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+95.9
+</td>
+<td style="text-align:right;">
+96.0
+</td>
+<td style="text-align:right;">
+57.2
+</td>
+<td style="text-align:right;">
+74.3
+</td>
+<td style="text-align:right;">
+74.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_rlm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+19171
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+95.3
+</td>
+<td style="text-align:right;">
+38.3
+</td>
+<td style="text-align:right;">
+73.7
+</td>
+<td style="text-align:right;">
+71.3
 </td>
 </tr>
 <tr>
@@ -6198,13 +6198,13 @@ protein
 94.9
 </td>
 <td style="text-align:right;">
-61.1
+39.6
 </td>
 <td style="text-align:right;">
-76.1
+68.4
 </td>
 <td style="text-align:right;">
-75.3
+66.6
 </td>
 </tr>
 <tr>
@@ -6227,13 +6227,13 @@ protein
 94.5
 </td>
 <td style="text-align:right;">
-61.5
+35.6
 </td>
 <td style="text-align:right;">
-74.9
+67.7
 </td>
 <td style="text-align:right;">
-74.8
+67.4
 </td>
 </tr>
 <tr>
@@ -6256,71 +6256,13 @@ protein
 91.9
 </td>
 <td style="text-align:right;">
-56.8
+35.2
 </td>
 <td style="text-align:right;">
-72.0
+66.6
 </td>
 <td style="text-align:right;">
-71.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_hurdle_nested
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-20468
-</td>
-<td style="text-align:right;">
-90.5
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-<td style="text-align:right;">
-91.9
-</td>
-<td style="text-align:right;">
-56.8
-</td>
-<td style="text-align:right;">
-71.2
-</td>
-<td style="text-align:right;">
-71.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2_hurdle
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-20468
-</td>
-<td style="text-align:right;">
-89.3
-</td>
-<td style="text-align:right;">
-91.7
-</td>
-<td style="text-align:right;">
-91.6
-</td>
-<td style="text-align:right;">
-49.4
-</td>
-<td style="text-align:right;">
-70.6
-</td>
-<td style="text-align:right;">
-69.3
+65.2
 </td>
 </tr>
 <tr>
@@ -6343,13 +6285,71 @@ protein
 90.7
 </td>
 <td style="text-align:right;">
-62.7
+46.0
 </td>
 <td style="text-align:right;">
-70.2
+65.5
 </td>
 <td style="text-align:right;">
-70.3
+65.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+20468
+</td>
+<td style="text-align:right;">
+90.5
+</td>
+<td style="text-align:right;">
+91.7
+</td>
+<td style="text-align:right;">
+91.9
+</td>
+<td style="text-align:right;">
+35.2
+</td>
+<td style="text-align:right;">
+65.3
+</td>
+<td style="text-align:right;">
+65.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+20468
+</td>
+<td style="text-align:right;">
+89.3
+</td>
+<td style="text-align:right;">
+91.7
+</td>
+<td style="text-align:right;">
+91.6
+</td>
+<td style="text-align:right;">
+21.0
+</td>
+<td style="text-align:right;">
+64.8
+</td>
+<td style="text-align:right;">
+63.5
 </td>
 </tr>
 <tr>
@@ -6372,13 +6372,13 @@ protein + peptide
 91.6
 </td>
 <td style="text-align:right;">
-49.4
+21.0
 </td>
 <td style="text-align:right;">
-69.9
+64.3
 </td>
 <td style="text-align:right;">
-69.3
+63.5
 </td>
 </tr>
 <tr>
@@ -6401,13 +6401,13 @@ peptide
 91.3
 </td>
 <td style="text-align:right;">
-58.0
+38.8
 </td>
 <td style="text-align:right;">
-67.8
+61.1
 </td>
 <td style="text-align:right;">
-67.8
+61.1
 </td>
 </tr>
 </tbody>
@@ -7267,7 +7267,7 @@ msqrob2_protein
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on IonStar_FragPipe_protein, all 4 contrasts pooled, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on IonStar_FragPipe_protein, all 4 contrasts pooled, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -7289,13 +7289,13 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
@@ -7319,13 +7319,13 @@ protein
 99.0
 </td>
 <td style="text-align:right;">
-86.0
+73.8
 </td>
 <td style="text-align:right;">
-95.3
+93.3
 </td>
 <td style="text-align:right;">
-95.0
+92.8
 </td>
 </tr>
 <tr>
@@ -7348,13 +7348,13 @@ protein
 98.0
 </td>
 <td style="text-align:right;">
-79.0
+61.7
 </td>
 <td style="text-align:right;">
-90.9
+87.6
 </td>
 <td style="text-align:right;">
-90.8
+87.3
 </td>
 </tr>
 <tr>
@@ -7377,13 +7377,13 @@ protein
 98.0
 </td>
 <td style="text-align:right;">
-79.0
+61.7
 </td>
 <td style="text-align:right;">
-90.7
+87.4
 </td>
 <td style="text-align:right;">
-90.8
+87.4
 </td>
 </tr>
 <tr>
@@ -7406,13 +7406,13 @@ protein
 97.9
 </td>
 <td style="text-align:right;">
-79.0
+61.7
 </td>
 <td style="text-align:right;">
-90.5
+87.0
 </td>
 <td style="text-align:right;">
-90.1
+86.1
 </td>
 </tr>
 <tr>
@@ -7435,13 +7435,13 @@ protein
 97.8
 </td>
 <td style="text-align:right;">
-80.1
+63.7
 </td>
 <td style="text-align:right;">
-90.0
+85.6
 </td>
 <td style="text-align:right;">
-89.0
+83.5
 </td>
 </tr>
 <tr>
@@ -7464,13 +7464,13 @@ protein
 97.6
 </td>
 <td style="text-align:right;">
-79.0
+61.7
 </td>
 <td style="text-align:right;">
-88.2
+84.2
 </td>
 <td style="text-align:right;">
-88.3
+84.2
 </td>
 </tr>
 <tr>
@@ -7493,13 +7493,13 @@ protein
 93.6
 </td>
 <td style="text-align:right;">
-69.0
+53.5
 </td>
 <td style="text-align:right;">
-79.0
+75.1
 </td>
 <td style="text-align:right;">
-78.0
+73.0
 </td>
 </tr>
 <tr>
@@ -7522,13 +7522,13 @@ protein
 93.8
 </td>
 <td style="text-align:right;">
-60.9
+34.5
 </td>
 <td style="text-align:right;">
-78.8
+74.5
 </td>
 <td style="text-align:right;">
-78.8
+74.5
 </td>
 </tr>
 <tr>
@@ -7551,13 +7551,13 @@ protein
 91.4
 </td>
 <td style="text-align:right;">
-74.9
+66.8
 </td>
 <td style="text-align:right;">
-74.5
+70.8
 </td>
 <td style="text-align:right;">
-74.5
+70.8
 </td>
 </tr>
 </tbody>
@@ -9159,7 +9159,7 @@ msqrob2_hurdle
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on IonStar_MetaMorpheus, all 4 contrasts pooled, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on IonStar_MetaMorpheus, all 4 contrasts pooled, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -9181,13 +9181,13 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
@@ -9211,13 +9211,13 @@ peptide
 94.8
 </td>
 <td style="text-align:right;">
-70.4
+52.1
 </td>
 <td style="text-align:right;">
-77.9
+72.3
 </td>
 <td style="text-align:right;">
-78.1
+72.6
 </td>
 </tr>
 <tr>
@@ -9240,13 +9240,13 @@ peptide
 91.2
 </td>
 <td style="text-align:right;">
-49.7
+25.1
 </td>
 <td style="text-align:right;">
-70.3
+64.2
 </td>
 <td style="text-align:right;">
-70.4
+64.2
 </td>
 </tr>
 <tr>
@@ -9269,13 +9269,13 @@ protein
 90.7
 </td>
 <td style="text-align:right;">
-49.9
+25.1
 </td>
 <td style="text-align:right;">
-68.6
+62.4
 </td>
 <td style="text-align:right;">
-68.5
+62.1
 </td>
 </tr>
 <tr>
@@ -9298,13 +9298,13 @@ protein
 90.7
 </td>
 <td style="text-align:right;">
-49.9
+25.1
 </td>
 <td style="text-align:right;">
-68.5
+62.2
 </td>
 <td style="text-align:right;">
-68.4
+62.0
 </td>
 </tr>
 <tr>
@@ -9327,13 +9327,13 @@ protein
 90.6
 </td>
 <td style="text-align:right;">
-49.9
+25.1
 </td>
 <td style="text-align:right;">
-68.4
+62.0
 </td>
 <td style="text-align:right;">
-68.1
+61.5
 </td>
 </tr>
 <tr>
@@ -9356,13 +9356,13 @@ peptide
 90.8
 </td>
 <td style="text-align:right;">
-48.2
+23.6
 </td>
 <td style="text-align:right;">
-67.9
+60.1
 </td>
 <td style="text-align:right;">
-63.8
+50.9
 </td>
 </tr>
 <tr>
@@ -9385,42 +9385,13 @@ protein
 90.9
 </td>
 <td style="text-align:right;">
-53.3
+29.1
 </td>
 <td style="text-align:right;">
-67.6
+59.3
 </td>
 <td style="text-align:right;">
-66.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-38376
-</td>
-<td style="text-align:right;">
-81.1
-</td>
-<td style="text-align:right;">
-87.0
-</td>
-<td style="text-align:right;">
-87.0
-</td>
-<td style="text-align:right;">
-6.3
-</td>
-<td style="text-align:right;">
-63.6
-</td>
-<td style="text-align:right;">
-63.5
+57.6
 </td>
 </tr>
 <tr>
@@ -9443,13 +9414,42 @@ protein
 86.7
 </td>
 <td style="text-align:right;">
-50.0
+32.0
 </td>
 <td style="text-align:right;">
-63.0
+57.8
 </td>
 <td style="text-align:right;">
-63.0
+57.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+38376
+</td>
+<td style="text-align:right;">
+81.1
+</td>
+<td style="text-align:right;">
+87.0
+</td>
+<td style="text-align:right;">
+87.0
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:right;">
+57.6
+</td>
+<td style="text-align:right;">
+57.4
 </td>
 </tr>
 <tr>
@@ -9472,13 +9472,13 @@ protein + peptide
 87.0
 </td>
 <td style="text-align:right;">
-6.3
+2.0
 </td>
 <td style="text-align:right;">
-62.9
+56.9
 </td>
 <td style="text-align:right;">
-63.5
+57.4
 </td>
 </tr>
 <tr>
@@ -9501,13 +9501,13 @@ protein
 89.5
 </td>
 <td style="text-align:right;">
-50.1
+25.4
 </td>
 <td style="text-align:right;">
-61.5
+53.6
 </td>
 <td style="text-align:right;">
-61.2
+53.1
 </td>
 </tr>
 <tr>
@@ -9530,13 +9530,13 @@ protein
 85.2
 </td>
 <td style="text-align:right;">
-41.4
+17.3
 </td>
 <td style="text-align:right;">
-57.7
+49.4
 </td>
 <td style="text-align:right;">
-55.2
+44.5
 </td>
 </tr>
 <tr>
@@ -9559,13 +9559,13 @@ protein + peptide
 85.2
 </td>
 <td style="text-align:right;">
-41.4
+17.3
 </td>
 <td style="text-align:right;">
-57.4
+48.7
 </td>
 <td style="text-align:right;">
-55.2
+44.5
 </td>
 </tr>
 <tr>
@@ -9588,13 +9588,13 @@ peptide
 83.9
 </td>
 <td style="text-align:right;">
-4.3
+0.7
 </td>
 <td style="text-align:right;">
-48.2
+42.2
 </td>
 <td style="text-align:right;">
-46.1
+39.2
 </td>
 </tr>
 </tbody>
@@ -10565,7 +10565,7 @@ msqrob2_hurdle
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on CPTAC_MaxQuant, one contrast, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on CPTAC_MaxQuant, one contrast, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -10587,13 +10587,13 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
@@ -10617,71 +10617,13 @@ peptide
 96.4
 </td>
 <td style="text-align:right;">
-92.0
-</td>
-<td style="text-align:right;">
 90.1
 </td>
 <td style="text-align:right;">
-90.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_rlm
-</td>
-<td style="text-align:left;">
-protein
+85.6
 </td>
 <td style="text-align:right;">
-1332
-</td>
-<td style="text-align:right;">
-94.7
-</td>
-<td style="text-align:right;">
-93.3
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-91.9
-</td>
-<td style="text-align:right;">
-85.8
-</td>
-<td style="text-align:right;">
-85.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-1332
-</td>
-<td style="text-align:right;">
-93.5
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-88.7
-</td>
-<td style="text-align:right;">
-84.1
-</td>
-<td style="text-align:right;">
-84.2
+85.6
 </td>
 </tr>
 <tr>
@@ -10704,13 +10646,42 @@ protein
 92.7
 </td>
 <td style="text-align:right;">
-88.7
+86.6
 </td>
 <td style="text-align:right;">
-84.0
+82.4
 </td>
 <td style="text-align:right;">
-84.1
+82.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+1332
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+92.7
+</td>
+<td style="text-align:right;">
+92.7
+</td>
+<td style="text-align:right;">
+86.6
+</td>
+<td style="text-align:right;">
+81.8
+</td>
+<td style="text-align:right;">
+81.8
 </td>
 </tr>
 <tr>
@@ -10733,42 +10704,42 @@ protein
 92.7
 </td>
 <td style="text-align:right;">
-88.7
+86.6
 </td>
 <td style="text-align:right;">
-83.5
+81.0
 </td>
 <td style="text-align:right;">
-83.6
+81.4
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-prolfqua_ropeca_nested
+prolfqua_rlm
 </td>
 <td style="text-align:left;">
-peptide
+protein
 </td>
 <td style="text-align:right;">
-1312
+1332
 </td>
 <td style="text-align:right;">
-91.9
+94.7
 </td>
 <td style="text-align:right;">
-92.9
+93.3
 </td>
 <td style="text-align:right;">
-95.0
+93.4
 </td>
 <td style="text-align:right;">
-89.0
+90.1
 </td>
 <td style="text-align:right;">
-81.3
+80.0
 </td>
 <td style="text-align:right;">
-79.6
+80.2
 </td>
 </tr>
 <tr>
@@ -10791,13 +10762,13 @@ peptide
 95.5
 </td>
 <td style="text-align:right;">
-86.1
+80.2
 </td>
 <td style="text-align:right;">
-81.0
+78.5
 </td>
 <td style="text-align:right;">
-81.1
+78.6
 </td>
 </tr>
 <tr>
@@ -10820,13 +10791,42 @@ peptide
 90.8
 </td>
 <td style="text-align:right;">
-91.5
+89.0
 </td>
 <td style="text-align:right;">
-77.8
+76.7
 </td>
 <td style="text-align:right;">
-78.0
+76.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+1312
+</td>
+<td style="text-align:right;">
+91.9
+</td>
+<td style="text-align:right;">
+92.9
+</td>
+<td style="text-align:right;">
+95.0
+</td>
+<td style="text-align:right;">
+87.0
+</td>
+<td style="text-align:right;">
+73.1
+</td>
+<td style="text-align:right;">
+70.5
 </td>
 </tr>
 <tr>
@@ -10849,13 +10849,13 @@ protein
 92.6
 </td>
 <td style="text-align:right;">
-91.4
+89.1
 </td>
 <td style="text-align:right;">
-77.5
+70.3
 </td>
 <td style="text-align:right;">
-78.3
+71.2
 </td>
 </tr>
 <tr>
@@ -10878,13 +10878,13 @@ protein + peptide
 88.9
 </td>
 <td style="text-align:right;">
-66.6
+41.4
 </td>
 <td style="text-align:right;">
-73.8
+69.5
 </td>
 <td style="text-align:right;">
-65.9
+59.9
 </td>
 </tr>
 <tr>
@@ -10907,42 +10907,13 @@ protein + peptide
 86.1
 </td>
 <td style="text-align:right;">
-72.5
+69.4
 </td>
 <td style="text-align:right;">
-70.9
+66.5
 </td>
 <td style="text-align:right;">
-67.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-1460
-</td>
-<td style="text-align:right;">
-90.7
-</td>
-<td style="text-align:right;">
-89.2
-</td>
-<td style="text-align:right;">
-88.9
-</td>
-<td style="text-align:right;">
-66.6
-</td>
-<td style="text-align:right;">
-68.7
-</td>
-<td style="text-align:right;">
-65.9
+64.2
 </td>
 </tr>
 <tr>
@@ -10965,13 +10936,13 @@ protein
 89.6
 </td>
 <td style="text-align:right;">
-79.1
+77.7
 </td>
 <td style="text-align:right;">
-68.6
+66.0
 </td>
 <td style="text-align:right;">
-68.6
+66.0
 </td>
 </tr>
 <tr>
@@ -10994,13 +10965,42 @@ protein
 86.1
 </td>
 <td style="text-align:right;">
-72.5
+69.4
 </td>
 <td style="text-align:right;">
-67.3
+64.8
 </td>
 <td style="text-align:right;">
-67.1
+64.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+1460
+</td>
+<td style="text-align:right;">
+90.7
+</td>
+<td style="text-align:right;">
+89.2
+</td>
+<td style="text-align:right;">
+88.9
+</td>
+<td style="text-align:right;">
+41.4
+</td>
+<td style="text-align:right;">
+62.2
+</td>
+<td style="text-align:right;">
+59.9
 </td>
 </tr>
 </tbody>
@@ -11969,7 +11969,7 @@ msqrob2_hurdle
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on SingleCell_DIANN, one contrast, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on SingleCell_DIANN, one contrast, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -11991,45 +11991,16 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropecaV2_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:right;">
-6366
-</td>
-<td style="text-align:right;">
-99.4
-</td>
-<td style="text-align:right;">
-99.4
-</td>
-<td style="text-align:right;">
-99.4
-</td>
-<td style="text-align:right;">
-97.3
-</td>
-<td style="text-align:right;">
-96.2
-</td>
-<td style="text-align:right;">
-96.2
-</td>
-</tr>
 <tr>
 <td style="text-align:left;">
 prolfqua_lm
@@ -12050,13 +12021,42 @@ protein
 99.2
 </td>
 <td style="text-align:right;">
-95.9
+94.3
 </td>
 <td style="text-align:right;">
-95.8
+94.5
 </td>
 <td style="text-align:right;">
-95.9
+94.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropecaV2_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+6366
+</td>
+<td style="text-align:right;">
+99.4
+</td>
+<td style="text-align:right;">
+99.4
+</td>
+<td style="text-align:right;">
+99.4
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+94.4
+</td>
+<td style="text-align:right;">
+94.4
 </td>
 </tr>
 <tr>
@@ -12079,13 +12079,13 @@ protein
 99.1
 </td>
 <td style="text-align:right;">
-95.9
+94.3
 </td>
 <td style="text-align:right;">
-95.6
+94.1
 </td>
 <td style="text-align:right;">
-95.7
+94.2
 </td>
 </tr>
 <tr>
@@ -12108,71 +12108,13 @@ protein
 99.2
 </td>
 <td style="text-align:right;">
-95.9
+94.3
 </td>
 <td style="text-align:right;">
-95.5
-</td>
-<td style="text-align:right;">
-95.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropeca_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:right;">
-6366
-</td>
-<td style="text-align:right;">
-99.2
-</td>
-<td style="text-align:right;">
-99.2
-</td>
-<td style="text-align:right;">
-99.0
-</td>
-<td style="text-align:right;">
-96.4
-</td>
-<td style="text-align:right;">
-94.7
-</td>
-<td style="text-align:right;">
-93.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_deqms_voom
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-6462
-</td>
-<td style="text-align:right;">
-98.9
-</td>
-<td style="text-align:right;">
-99.0
-</td>
-<td style="text-align:right;">
-99.0
-</td>
-<td style="text-align:right;">
-95.9
+93.9
 </td>
 <td style="text-align:right;">
 94.1
-</td>
-<td style="text-align:right;">
-94.4
 </td>
 </tr>
 <tr>
@@ -12195,13 +12137,71 @@ peptide
 98.8
 </td>
 <td style="text-align:right;">
-95.9
+93.4
 </td>
 <td style="text-align:right;">
-93.6
+92.0
 </td>
 <td style="text-align:right;">
-93.6
+92.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+6462
+</td>
+<td style="text-align:right;">
+98.9
+</td>
+<td style="text-align:right;">
+99.0
+</td>
+<td style="text-align:right;">
+99.0
+</td>
+<td style="text-align:right;">
+94.3
+</td>
+<td style="text-align:right;">
+91.7
+</td>
+<td style="text-align:right;">
+92.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+6366
+</td>
+<td style="text-align:right;">
+99.2
+</td>
+<td style="text-align:right;">
+99.2
+</td>
+<td style="text-align:right;">
+99.0
+</td>
+<td style="text-align:right;">
+94.6
+</td>
+<td style="text-align:right;">
+91.5
+</td>
+<td style="text-align:right;">
+88.0
 </td>
 </tr>
 <tr>
@@ -12224,13 +12224,13 @@ protein
 98.9
 </td>
 <td style="text-align:right;">
-95.8
+94.2
 </td>
 <td style="text-align:right;">
-93.0
+89.5
 </td>
 <td style="text-align:right;">
-93.0
+89.4
 </td>
 </tr>
 <tr>
@@ -12253,42 +12253,13 @@ peptide
 96.3
 </td>
 <td style="text-align:right;">
-81.6
+69.6
 </td>
 <td style="text-align:right;">
-79.5
+71.7
 </td>
 <td style="text-align:right;">
-79.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2_hurdle
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-8506
-</td>
-<td style="text-align:right;">
-96.7
-</td>
-<td style="text-align:right;">
-97.1
-</td>
-<td style="text-align:right;">
-96.4
-</td>
-<td style="text-align:right;">
-77.8
-</td>
-<td style="text-align:right;">
-77.5
-</td>
-<td style="text-align:right;">
-70.2
+72.0
 </td>
 </tr>
 <tr>
@@ -12311,18 +12282,18 @@ protein + peptide
 92.9
 </td>
 <td style="text-align:right;">
-68.9
+63.3
 </td>
 <td style="text-align:right;">
-74.6
+69.3
 </td>
 <td style="text-align:right;">
-68.0
+63.1
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-msqrob2
+msqrob2_hurdle
 </td>
 <td style="text-align:left;">
 protein + peptide
@@ -12334,19 +12305,19 @@ protein + peptide
 96.7
 </td>
 <td style="text-align:right;">
-96.7
+97.1
 </td>
 <td style="text-align:right;">
 96.4
 </td>
 <td style="text-align:right;">
-77.8
+58.0
 </td>
 <td style="text-align:right;">
-73.0
+67.7
 </td>
 <td style="text-align:right;">
-70.2
+57.1
 </td>
 </tr>
 <tr>
@@ -12369,13 +12340,13 @@ protein
 94.2
 </td>
 <td style="text-align:right;">
-74.8
+67.5
 </td>
 <td style="text-align:right;">
-70.8
+63.5
 </td>
 <td style="text-align:right;">
-71.5
+64.7
 </td>
 </tr>
 <tr>
@@ -12398,13 +12369,42 @@ protein
 92.9
 </td>
 <td style="text-align:right;">
-68.9
+63.3
 </td>
 <td style="text-align:right;">
-67.9
+63.0
 </td>
 <td style="text-align:right;">
-68.0
+63.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+8506
+</td>
+<td style="text-align:right;">
+96.7
+</td>
+<td style="text-align:right;">
+96.7
+</td>
+<td style="text-align:right;">
+96.4
+</td>
+<td style="text-align:right;">
+58.0
+</td>
+<td style="text-align:right;">
+62.4
+</td>
+<td style="text-align:right;">
+57.1
 </td>
 </tr>
 </tbody>
@@ -12759,7 +12759,7 @@ msqrob2_hurdle
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on SingleCell_MaxQuant, one contrast, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on SingleCell_MaxQuant, one contrast, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -12781,13 +12781,13 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
@@ -12811,13 +12811,13 @@ peptide
 95.6
 </td>
 <td style="text-align:right;">
-83.9
+76.1
 </td>
 <td style="text-align:right;">
-83.0
+79.2
 </td>
 <td style="text-align:right;">
-83.1
+79.2
 </td>
 </tr>
 <tr>
@@ -12840,13 +12840,13 @@ protein + peptide
 92.7
 </td>
 <td style="text-align:right;">
-77.2
+68.6
 </td>
 <td style="text-align:right;">
-83.0
+79.1
 </td>
 <td style="text-align:right;">
-76.0
+71.4
 </td>
 </tr>
 <tr>
@@ -12869,13 +12869,13 @@ peptide
 94.6
 </td>
 <td style="text-align:right;">
-81.7
+72.4
 </td>
 <td style="text-align:right;">
-81.8
+77.8
 </td>
 <td style="text-align:right;">
-81.8
+77.8
 </td>
 </tr>
 <tr>
@@ -12898,42 +12898,13 @@ protein
 93.7
 </td>
 <td style="text-align:right;">
-79.4
+69.5
 </td>
 <td style="text-align:right;">
-79.9
+75.7
 </td>
 <td style="text-align:right;">
-80.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2_hurdle
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-5212
-</td>
-<td style="text-align:right;">
-94.4
-</td>
-<td style="text-align:right;">
-94.8
-</td>
-<td style="text-align:right;">
-93.8
-</td>
-<td style="text-align:right;">
-77.1
-</td>
-<td style="text-align:right;">
-79.7
-</td>
-<td style="text-align:right;">
-71.7
+75.8
 </td>
 </tr>
 <tr>
@@ -12956,13 +12927,13 @@ peptide
 93.5
 </td>
 <td style="text-align:right;">
-81.6
+72.8
 </td>
 <td style="text-align:right;">
-79.6
+75.7
 </td>
 <td style="text-align:right;">
-79.8
+76.0
 </td>
 </tr>
 <tr>
@@ -12985,13 +12956,13 @@ protein
 93.8
 </td>
 <td style="text-align:right;">
-79.4
+69.5
 </td>
 <td style="text-align:right;">
-79.4
+75.3
 </td>
 <td style="text-align:right;">
-79.7
+75.6
 </td>
 </tr>
 <tr>
@@ -13014,13 +12985,13 @@ protein
 93.4
 </td>
 <td style="text-align:right;">
-79.4
+69.5
 </td>
 <td style="text-align:right;">
-79.2
+74.9
 </td>
 <td style="text-align:right;">
-79.4
+74.9
 </td>
 </tr>
 <tr>
@@ -13043,13 +13014,42 @@ protein
 94.9
 </td>
 <td style="text-align:right;">
-80.3
+72.6
 </td>
 <td style="text-align:right;">
-78.5
+74.0
 </td>
 <td style="text-align:right;">
-78.6
+74.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+5212
+</td>
+<td style="text-align:right;">
+94.4
+</td>
+<td style="text-align:right;">
+94.8
+</td>
+<td style="text-align:right;">
+93.8
+</td>
+<td style="text-align:right;">
+62.5
+</td>
+<td style="text-align:right;">
+73.9
+</td>
+<td style="text-align:right;">
+65.5
 </td>
 </tr>
 <tr>
@@ -13072,42 +13072,13 @@ peptide
 93.5
 </td>
 <td style="text-align:right;">
-79.9
+69.6
 </td>
 <td style="text-align:right;">
-78.0
+71.9
 </td>
 <td style="text-align:right;">
-78.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_rlm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-5072
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-93.4
-</td>
-<td style="text-align:right;">
-80.6
-</td>
-<td style="text-align:right;">
-77.5
-</td>
-<td style="text-align:right;">
-77.2
+69.4
 </td>
 </tr>
 <tr>
@@ -13130,13 +13101,42 @@ protein
 92.7
 </td>
 <td style="text-align:right;">
-77.2
+68.6
 </td>
 <td style="text-align:right;">
-75.8
+71.4
 </td>
 <td style="text-align:right;">
-76.0
+71.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_rlm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+5072
+</td>
+<td style="text-align:right;">
+93.4
+</td>
+<td style="text-align:right;">
+93.4
+</td>
+<td style="text-align:right;">
+93.4
+</td>
+<td style="text-align:right;">
+71.2
+</td>
+<td style="text-align:right;">
+70.7
+</td>
+<td style="text-align:right;">
+69.7
 </td>
 </tr>
 <tr>
@@ -13159,13 +13159,13 @@ protein + peptide
 93.8
 </td>
 <td style="text-align:right;">
-77.1
+62.5
 </td>
 <td style="text-align:right;">
-74.0
+67.8
 </td>
 <td style="text-align:right;">
-71.7
+65.5
 </td>
 </tr>
 <tr>
@@ -13188,13 +13188,13 @@ protein
 92.9
 </td>
 <td style="text-align:right;">
-79.9
+70.2
 </td>
 <td style="text-align:right;">
-73.4
+66.9
 </td>
 <td style="text-align:right;">
-73.5
+67.0
 </td>
 </tr>
 </tbody>
@@ -14163,7 +14163,7 @@ msqrob2_hurdle
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on diaPASEF_DIANN, one contrast, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on diaPASEF_DIANN, one contrast, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -14185,13 +14185,13 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
@@ -14215,13 +14215,13 @@ protein
 98.4
 </td>
 <td style="text-align:right;">
-94.5
+91.2
 </td>
 <td style="text-align:right;">
-93.9
+91.8
 </td>
 <td style="text-align:right;">
-94.1
+92.2
 </td>
 </tr>
 <tr>
@@ -14244,13 +14244,13 @@ protein
 98.2
 </td>
 <td style="text-align:right;">
-94.5
+91.2
 </td>
 <td style="text-align:right;">
-93.3
+91.2
 </td>
 <td style="text-align:right;">
-93.4
+91.3
 </td>
 </tr>
 <tr>
@@ -14273,42 +14273,13 @@ protein
 98.3
 </td>
 <td style="text-align:right;">
-94.5
+91.2
 </td>
 <td style="text-align:right;">
-92.9
+90.5
 </td>
 <td style="text-align:right;">
-93.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropeca_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:right;">
-9840
-</td>
-<td style="text-align:right;">
-98.6
-</td>
-<td style="text-align:right;">
-98.6
-</td>
-<td style="text-align:right;">
-98.7
-</td>
-<td style="text-align:right;">
-94.6
-</td>
-<td style="text-align:right;">
-92.7
-</td>
-<td style="text-align:right;">
-92.8
+91.0
 </td>
 </tr>
 <tr>
@@ -14331,13 +14302,42 @@ peptide
 98.6
 </td>
 <td style="text-align:right;">
-96.1
+93.6
 </td>
 <td style="text-align:right;">
-92.5
+89.2
 </td>
 <td style="text-align:right;">
-92.5
+89.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+9840
+</td>
+<td style="text-align:right;">
+98.6
+</td>
+<td style="text-align:right;">
+98.6
+</td>
+<td style="text-align:right;">
+98.7
+</td>
+<td style="text-align:right;">
+90.9
+</td>
+<td style="text-align:right;">
+88.4
+</td>
+<td style="text-align:right;">
+87.9
 </td>
 </tr>
 <tr>
@@ -14360,13 +14360,13 @@ protein
 98.1
 </td>
 <td style="text-align:right;">
-94.5
+91.2
 </td>
 <td style="text-align:right;">
-91.4
+87.8
 </td>
 <td style="text-align:right;">
-91.5
+87.6
 </td>
 </tr>
 <tr>
@@ -14389,13 +14389,13 @@ peptide
 97.5
 </td>
 <td style="text-align:right;">
-94.8
+91.3
 </td>
 <td style="text-align:right;">
-89.9
+87.1
 </td>
 <td style="text-align:right;">
-90.8
+88.6
 </td>
 </tr>
 <tr>
@@ -14418,42 +14418,13 @@ protein
 97.8
 </td>
 <td style="text-align:right;">
-94.5
+91.3
 </td>
 <td style="text-align:right;">
-89.1
+84.9
 </td>
 <td style="text-align:right;">
-89.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2_hurdle
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-12242
-</td>
-<td style="text-align:right;">
-95.4
-</td>
-<td style="text-align:right;">
-96.3
-</td>
-<td style="text-align:right;">
-94.7
-</td>
-<td style="text-align:right;">
-67.7
-</td>
-<td style="text-align:right;">
-79.4
-</td>
-<td style="text-align:right;">
-69.5
+85.8
 </td>
 </tr>
 <tr>
@@ -14476,13 +14447,42 @@ protein + peptide
 90.8
 </td>
 <td style="text-align:right;">
-75.0
+68.6
 </td>
 <td style="text-align:right;">
-78.9
+75.1
 </td>
 <td style="text-align:right;">
-73.6
+69.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+12242
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+96.3
+</td>
+<td style="text-align:right;">
+94.7
+</td>
+<td style="text-align:right;">
+38.7
+</td>
+<td style="text-align:right;">
+73.4
+</td>
+<td style="text-align:right;">
+61.6
 </td>
 </tr>
 <tr>
@@ -14505,42 +14505,13 @@ peptide
 94.6
 </td>
 <td style="text-align:right;">
-75.5
+54.8
 </td>
 <td style="text-align:right;">
-75.4
+69.8
 </td>
 <td style="text-align:right;">
-75.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-12242
-</td>
-<td style="text-align:right;">
-95.4
-</td>
-<td style="text-align:right;">
-95.3
-</td>
-<td style="text-align:right;">
-94.7
-</td>
-<td style="text-align:right;">
-67.7
-</td>
-<td style="text-align:right;">
-74.0
-</td>
-<td style="text-align:right;">
-69.5
+70.3
 </td>
 </tr>
 <tr>
@@ -14563,13 +14534,42 @@ protein
 90.8
 </td>
 <td style="text-align:right;">
-75.0
+68.6
 </td>
 <td style="text-align:right;">
-73.6
+69.7
 </td>
 <td style="text-align:right;">
-73.6
+69.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+12242
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+95.3
+</td>
+<td style="text-align:right;">
+94.7
+</td>
+<td style="text-align:right;">
+38.7
+</td>
+<td style="text-align:right;">
+67.2
+</td>
+<td style="text-align:right;">
+61.6
 </td>
 </tr>
 <tr>
@@ -14592,13 +14592,13 @@ protein
 92.0
 </td>
 <td style="text-align:right;">
-77.5
+71.4
 </td>
 <td style="text-align:right;">
-69.1
+64.9
 </td>
 <td style="text-align:right;">
-69.9
+65.6
 </td>
 </tr>
 </tbody>
@@ -14952,7 +14952,7 @@ msqrob2_hurdle
 </div>
 <table class="table table-condensed">
 <caption>
-Ranking scores on diaPASEF_Spectronaut, one contrast, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+Ranking scores on diaPASEF_Spectronaut, one contrast, sorted by pAUC_5 of scaled.p_value. AUC is the area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -14974,13 +14974,13 @@ AUC / scaled.p_value
 AUC / t_statistic
 </th>
 <th style="text-align:right;">
-pAUC_10 / log_fc
+pAUC_5 / log_fc
 </th>
 <th style="text-align:right;">
-pAUC_10 / scaled.p_value
+pAUC_5 / scaled.p_value
 </th>
 <th style="text-align:right;">
-pAUC_10 / t_statistic
+pAUC_5 / t_statistic
 </th>
 </tr></thead>
 <tbody>
@@ -15004,13 +15004,13 @@ protein + peptide
 96.3
 </td>
 <td style="text-align:right;">
-88.2
+82.7
 </td>
 <td style="text-align:right;">
-88.4
+84.8
 </td>
 <td style="text-align:right;">
-85.5
+81.4
 </td>
 </tr>
 <tr>
@@ -15033,42 +15033,13 @@ protein + peptide
 96.6
 </td>
 <td style="text-align:right;">
-88.2
+80.9
 </td>
 <td style="text-align:right;">
-87.7
+82.8
 </td>
 <td style="text-align:right;">
-83.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_ropeca_nested
-</td>
-<td style="text-align:left;">
-peptide
-</td>
-<td style="text-align:right;">
-12219
-</td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-96.3
-</td>
-<td style="text-align:right;">
-96.5
-</td>
-<td style="text-align:right;">
-88.1
-</td>
-<td style="text-align:right;">
-86.5
-</td>
-<td style="text-align:right;">
-87.0
+77.0
 </td>
 </tr>
 <tr>
@@ -15091,42 +15062,13 @@ peptide
 96.7
 </td>
 <td style="text-align:right;">
-92.0
+88.4
 </td>
 <td style="text-align:right;">
-86.3
+82.5
 </td>
 <td style="text-align:right;">
-87.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_lm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-12228
-</td>
-<td style="text-align:right;">
-96.4
-</td>
-<td style="text-align:right;">
-96.5
-</td>
-<td style="text-align:right;">
-96.5
-</td>
-<td style="text-align:right;">
-88.9
-</td>
-<td style="text-align:right;">
-86.1
-</td>
-<td style="text-align:right;">
-86.2
+83.6
 </td>
 </tr>
 <tr>
@@ -15149,13 +15091,71 @@ protein
 96.5
 </td>
 <td style="text-align:right;">
-88.9
+83.3
 </td>
 <td style="text-align:right;">
-86.1
+82.1
 </td>
 <td style="text-align:right;">
-86.1
+82.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+12228
+</td>
+<td style="text-align:right;">
+96.4
+</td>
+<td style="text-align:right;">
+96.5
+</td>
+<td style="text-align:right;">
+96.5
+</td>
+<td style="text-align:right;">
+83.3
+</td>
+<td style="text-align:right;">
+82.0
+</td>
+<td style="text-align:right;">
+82.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+12219
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+96.3
+</td>
+<td style="text-align:right;">
+96.5
+</td>
+<td style="text-align:right;">
+82.2
+</td>
+<td style="text-align:right;">
+81.5
+</td>
+<td style="text-align:right;">
+81.5
 </td>
 </tr>
 <tr>
@@ -15178,13 +15178,13 @@ protein
 96.3
 </td>
 <td style="text-align:right;">
-88.2
+82.7
 </td>
 <td style="text-align:right;">
-85.3
+81.3
 </td>
 <td style="text-align:right;">
-85.5
+81.4
 </td>
 </tr>
 <tr>
@@ -15207,13 +15207,13 @@ peptide
 96.5
 </td>
 <td style="text-align:right;">
-88.6
+82.9
 </td>
 <td style="text-align:right;">
-85.2
+81.1
 </td>
 <td style="text-align:right;">
-85.2
+81.1
 </td>
 </tr>
 <tr>
@@ -15236,13 +15236,13 @@ protein
 96.4
 </td>
 <td style="text-align:right;">
-88.9
+83.3
 </td>
 <td style="text-align:right;">
-85.2
+81.0
 </td>
 <td style="text-align:right;">
-85.3
+81.1
 </td>
 </tr>
 <tr>
@@ -15265,13 +15265,13 @@ peptide
 96.4
 </td>
 <td style="text-align:right;">
-90.4
+85.5
 </td>
 <td style="text-align:right;">
-84.7
+80.2
 </td>
 <td style="text-align:right;">
-84.7
+80.2
 </td>
 </tr>
 <tr>
@@ -15294,71 +15294,13 @@ protein
 96.6
 </td>
 <td style="text-align:right;">
-88.9
+83.3
 </td>
 <td style="text-align:right;">
-84.6
+79.8
 </td>
 <td style="text-align:right;">
-84.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-msqrob2
-</td>
-<td style="text-align:left;">
-protein + peptide
-</td>
-<td style="text-align:right;">
-12371
-</td>
-<td style="text-align:right;">
-96.8
-</td>
-<td style="text-align:right;">
-96.7
-</td>
-<td style="text-align:right;">
-96.6
-</td>
-<td style="text-align:right;">
-88.2
-</td>
-<td style="text-align:right;">
-84.1
-</td>
-<td style="text-align:right;">
-83.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prolfqua_rlm
-</td>
-<td style="text-align:left;">
-protein
-</td>
-<td style="text-align:right;">
-12228
-</td>
-<td style="text-align:right;">
-96.3
-</td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-96.1
-</td>
-<td style="text-align:right;">
-89.0
-</td>
-<td style="text-align:right;">
-83.8
-</td>
-<td style="text-align:right;">
-83.6
+79.9
 </td>
 </tr>
 <tr>
@@ -15381,13 +15323,71 @@ protein
 96.0
 </td>
 <td style="text-align:right;">
-88.7
+83.1
 </td>
 <td style="text-align:right;">
-82.8
+78.0
 </td>
 <td style="text-align:right;">
-82.9
+78.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+12371
+</td>
+<td style="text-align:right;">
+96.8
+</td>
+<td style="text-align:right;">
+96.7
+</td>
+<td style="text-align:right;">
+96.6
+</td>
+<td style="text-align:right;">
+80.9
+</td>
+<td style="text-align:right;">
+78.0
+</td>
+<td style="text-align:right;">
+77.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_rlm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+12228
+</td>
+<td style="text-align:right;">
+96.3
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+83.6
+</td>
+<td style="text-align:right;">
+78.0
+</td>
+<td style="text-align:right;">
+77.5
 </td>
 </tr>
 </tbody>
