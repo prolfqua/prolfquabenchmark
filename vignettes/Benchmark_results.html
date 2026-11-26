@@ -289,21 +289,26 @@ ul.task-list li input[type="checkbox"] {
   
 
 
-</header><p>The benchmark pipeline (<code>make benchmark</code>; <code>workflow/Snakefile</code>, <code>config/config.yaml</code>) prepares each dataset once, fits every method to the input it needs, and scores how well each method ranks proteins with a known change above unchanged ones: E. coli spiked into a human background in IonStar, UPS1 spiked into yeast in CPTAC. The tables and figures come from the files the pipeline exports to <code>inst/extdata</code>, so this page renders without data downloads.</p>
+</header><p>The benchmark pipeline (<code>make benchmark</code>; <code>workflow/Snakefile</code>, <code>config/config.yaml</code>) prepares each dataset once, fits every method to the input it needs, and scores how well each method ranks proteins with a known change above unchanged ones. The tables and figures come from the files the pipeline exports to <code>inst/extdata</code>, so this page renders without data downloads.</p>
 <ul>
-<li>Ranking scores: fold change (<code>log_fc</code>), p-value signed by the fold change (<code>scaled.p_value</code>), t statistic (<code>t_statistic</code>)</li>
-<li>AUC, pAUC_5, pAUC_10: area under the ROC curve, and partial area up to a false positive rate of 0.05 or 0.1, on a 0 to 100 scale, with all contrasts of a dataset pooled</li>
-<li>Contrasts computed: protein and contrast pairs with a result for the ranking score, all contrasts together. Each method is scored on the pairs it computes, so pAUC_5 is plotted against this count</li>
-<li>Pareto front (red): the methods no other method beats on both pAUC_5 and contrasts computed</li>
-<li>Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test all its protein and contrast pairs (the same or more) are scored again on exactly these pairs (<code>same_pairs_scores()</code>; figure after the Pareto front, ranking by scaled p-value; <code>benchmark_same_pairs.tsv</code> has all three ranking scores)</li>
-<li>Level: <code>protein</code> (model fitted to protein abundances), <code>peptide</code> (model fitted to peptides, one result per protein), <code>protein + peptide</code> (hurdle: intensity on proteins, detection on peptides)</li>
-<li>FDP vs FDR: the false discovery proportion at each nominal FDR; a calibrated FDR lies on the diagonal</li>
-<li>Encoding: colour is the model family of the <a href="https://github.com/fgcz/prolfqua#readme">prolfqua factory figure</a> (linear models, limma, limpa, LOD imputation, peptide level, hurdle); point shape and line type tell the models of a family apart; external tools are dark grey with open shapes. A method looks the same in every figure here and in the vignette <code>Score_history</code> (<code>method_scales()</code>, styles from prolfqua’s <code>facade_styles.tsv</code>)</li>
+<li><p>IonStar: E. coli spiked into a human background at five dilutions; quantified with MaxQuant, FragPipe and MetaMorpheus/FlashLFQ (with match-between-runs)</p></li>
+<li><p>CPTAC study 6: UPS1 spiked into yeast; MaxQuant</p></li>
+<li><p>ProteoBench DIA single-cell (Orbitrap Astral, 250 pg): yeast up fivefold against human; DIA-NN and MaxQuant</p></li>
+<li><p>ProteoBench DIA diaPASEF (timsTOF): E. coli up fourfold and yeast down twofold against human; DIA-NN and Spectronaut. The scores rank by signed statistics, so the fold change and t statistic of yeast are negated before ranking and both species count as changed</p></li>
+<li><p>Identification confidence (1 − PEP, or 1 − q-value for Spectronaut), which prolfqua’s models use as weight, varies across samples in the ProteoBench and MetaMorpheus datasets; in the MaxQuant peptides.txt datasets it is one value per peptide; the FragPipe datasets carry none</p></li>
+<li><p>Ranking scores: fold change (<code>log_fc</code>), p-value signed by the fold change (<code>scaled.p_value</code>), t statistic (<code>t_statistic</code>)</p></li>
+<li><p>AUC, pAUC_5, pAUC_10: area under the ROC curve, and partial area up to a false positive rate of 0.05 or 0.1, on a 0 to 100 scale, with all contrasts of a dataset pooled</p></li>
+<li><p>Contrasts computed: protein and contrast pairs with a result for the ranking score, all contrasts together. Each method is scored on the pairs it computes, so pAUC_5 is plotted against this count</p></li>
+<li><p>Pareto front (red): the methods no other method beats on both pAUC_5 and contrasts computed</p></li>
+<li><p>Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test all its protein and contrast pairs (the same or more) are scored again on exactly these pairs (<code>same_pairs_scores()</code>; figure after the Pareto front, ranking by scaled p-value; <code>benchmark_same_pairs.tsv</code> has all three ranking scores)</p></li>
+<li><p>Level: <code>protein</code> (model fitted to protein abundances), <code>peptide</code> (model fitted to peptides, one result per protein), <code>protein + peptide</code> (hurdle: intensity on proteins, detection on peptides)</p></li>
+<li><p>FDP vs FDR: the false discovery proportion at each nominal FDR; a calibrated FDR lies on the diagonal</p></li>
+<li><p>Encoding: colour is the model family of the <a href="https://github.com/fgcz/prolfqua#readme">prolfqua factory figure</a> (linear models, limma, limpa, LOD imputation, peptide level, hurdle); point shape and line type tell the models of a family apart; external tools are dark grey with open shapes. A method looks the same in every figure here and in the vignette <code>Score_history</code> (<code>method_scales()</code>, styles from prolfqua’s <code>facade_styles.tsv</code>)</p></li>
 </ul>
 <section id="methods" class="level1"><h1>Methods</h1>
 <table class="table table-condensed">
 <caption>
-The 17 methods, with tool version, model level, the input the method fits, the number of datasets it ran on (every dataset that provides its input, of 5) and a short description. Per dataset and with the wall time of each fit: <a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/benchmark_methods.tsv">benchmark_methods.tsv</a>.
+The 17 methods, with tool version, model level, the input the method fits, the number of datasets it ran on (every dataset that provides its input, of 10) and a short description. Per dataset and with the wall time of each fit: <a href="https://github.com/prolfqua/prolfquabenchmark/blob/main/inst/extdata/benchmark_methods.tsv">benchmark_methods.tsv</a>.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -340,7 +345,7 @@ peptide
 peptides
 </td>
 <td style="text-align:right;">
-3
+8
 </td>
 <td style="text-align:left;">
 limpa: DPC quantification of the peptides to proteins, vooma fit
@@ -360,7 +365,7 @@ peptide
 peptides
 </td>
 <td style="text-align:right;">
-3
+8
 </td>
 <td style="text-align:left;">
 mixed model, peptide and sample random effects
@@ -380,7 +385,7 @@ peptide
 peptides
 </td>
 <td style="text-align:right;">
-3
+8
 </td>
 <td style="text-align:left;">
 ROPECA, correlation-aware null of the median z-score
@@ -400,7 +405,7 @@ peptide
 peptides
 </td>
 <td style="text-align:right;">
-3
+8
 </td>
 <td style="text-align:left;">
 ROPECA, beta null of the median signed p-value
@@ -420,7 +425,7 @@ protein
 proteins
 </td>
 <td style="text-align:right;">
-5
+10
 </td>
 <td style="text-align:left;">
 lm with DEqMS moderation (variance prior by number of peptides)
@@ -440,7 +445,7 @@ protein
 proteins
 </td>
 <td style="text-align:right;">
-5
+10
 </td>
 <td style="text-align:left;">
 limma with vooma precision weights and DEqMS moderation
@@ -460,7 +465,7 @@ protein
 proteins
 </td>
 <td style="text-align:right;">
-5
+10
 </td>
 <td style="text-align:left;">
 limma empirical Bayes
@@ -480,7 +485,7 @@ protein
 proteins
 </td>
 <td style="text-align:right;">
-5
+10
 </td>
 <td style="text-align:left;">
 limpa vooma fit with imputation-aware degrees of freedom on the proteins
@@ -500,7 +505,7 @@ protein
 proteins
 </td>
 <td style="text-align:right;">
-5
+10
 </td>
 <td style="text-align:left;">
 lm with variance moderation; no contrast where a group has no observations
@@ -520,7 +525,7 @@ protein
 proteins
 </td>
 <td style="text-align:right;">
-5
+10
 </td>
 <td style="text-align:left;">
 lm with imputed group means where a group has no observations
@@ -540,7 +545,7 @@ protein
 proteins
 </td>
 <td style="text-align:right;">
-5
+10
 </td>
 <td style="text-align:left;">
 robust linear model (MASS::rlm) with variance moderation
@@ -560,7 +565,7 @@ protein + peptide
 peptides
 </td>
 <td style="text-align:right;">
-3
+8
 </td>
 <td style="text-align:left;">
 hurdle: lm_impute on median-polished proteins and binomial_firth_nested on peptide detection, Fisher
@@ -640,7 +645,7 @@ protein + peptide
 peptides + proteins
 </td>
 <td style="text-align:right;">
-3
+8
 </td>
 <td style="text-align:left;">
 msqrob2 hurdle; intensity estimate where it exists, else the detection estimate
@@ -660,10 +665,662 @@ protein + peptide
 peptides + proteins
 </td>
 <td style="text-align:right;">
-3
+8
 </td>
 <td style="text-align:left;">
 msqrob2 hurdle; Fisher combination of the intensity and detection p-values
+</td>
+</tr>
+</tbody>
+</table></section><section id="summary" class="level1"><h1>Summary</h1>
+<table class="table table-condensed">
+<caption>
+pAUC_10 of every method on every dataset, ranking by p-value signed by the fold change (scaled.p_value), all contrasts of a dataset pooled; empty where the dataset does not provide the method’s input. Sorted by the median over the datasets the method ran on. Each method is scored on the contrasts it computes; the dataset sections below give the number of contrasts and the same-pairs comparison.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+method
+</th>
+<th style="text-align:right;">
+IonStar_MaxQuant
+</th>
+<th style="text-align:right;">
+IonStar_MaxQuant_protein
+</th>
+<th style="text-align:right;">
+IonStar_FragPipe_MSstats
+</th>
+<th style="text-align:right;">
+IonStar_FragPipe_protein
+</th>
+<th style="text-align:right;">
+IonStar_MetaMorpheus
+</th>
+<th style="text-align:right;">
+CPTAC_MaxQuant
+</th>
+<th style="text-align:right;">
+SingleCell_DIANN
+</th>
+<th style="text-align:right;">
+SingleCell_MaxQuant
+</th>
+<th style="text-align:right;">
+diaPASEF_DIANN
+</th>
+<th style="text-align:right;">
+diaPASEF_Spectronaut
+</th>
+<th style="text-align:right;">
+median
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+msqrob2_protein
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+88.0
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+92.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropecaV2_nested
+</td>
+<td style="text-align:right;">
+77.9
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+91.6
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+69.8
+</td>
+<td style="text-align:right;">
+90.5
+</td>
+<td style="text-align:right;">
+96.5
+</td>
+<td style="text-align:right;">
+84.5
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+89.4
+</td>
+<td style="text-align:right;">
+89.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_rlm
+</td>
+<td style="text-align:right;">
+75.2
+</td>
+<td style="text-align:right;">
+83.2
+</td>
+<td style="text-align:right;">
+87.1
+</td>
+<td style="text-align:right;">
+91.1
+</td>
+<td style="text-align:right;">
+69.5
+</td>
+<td style="text-align:right;">
+85.9
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+<td style="text-align:right;">
+78.2
+</td>
+<td style="text-align:right;">
+91.9
+</td>
+<td style="text-align:right;">
+88.0
+</td>
+<td style="text-align:right;">
+86.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:right;">
+77.1
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+66.5
+</td>
+<td style="text-align:right;">
+82.6
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+79.7
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+86.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:right;">
+75.6
+</td>
+<td style="text-align:right;">
+81.9
+</td>
+<td style="text-align:right;">
+86.2
+</td>
+<td style="text-align:right;">
+91.5
+</td>
+<td style="text-align:right;">
+75.9
+</td>
+<td style="text-align:right;">
+84.5
+</td>
+<td style="text-align:right;">
+95.8
+</td>
+<td style="text-align:right;">
+79.9
+</td>
+<td style="text-align:right;">
+94.0
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+85.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:right;">
+75.7
+</td>
+<td style="text-align:right;">
+82.2
+</td>
+<td style="text-align:right;">
+86.2
+</td>
+<td style="text-align:right;">
+91.8
+</td>
+<td style="text-align:right;">
+76.0
+</td>
+<td style="text-align:right;">
+84.1
+</td>
+<td style="text-align:right;">
+96.0
+</td>
+<td style="text-align:right;">
+80.4
+</td>
+<td style="text-align:right;">
+94.3
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+85.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
+</td>
+<td style="text-align:right;">
+73.4
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+83.9
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+73.8
+</td>
+<td style="text-align:right;">
+71.1
+</td>
+<td style="text-align:right;">
+87.1
+</td>
+<td style="text-align:right;">
+85.8
+</td>
+<td style="text-align:right;">
+90.3
+</td>
+<td style="text-align:right;">
+92.9
+</td>
+<td style="text-align:right;">
+84.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
+</td>
+<td style="text-align:right;">
+75.4
+</td>
+<td style="text-align:right;">
+82.5
+</td>
+<td style="text-align:right;">
+86.2
+</td>
+<td style="text-align:right;">
+91.6
+</td>
+<td style="text-align:right;">
+75.4
+</td>
+<td style="text-align:right;">
+83.1
+</td>
+<td style="text-align:right;">
+95.7
+</td>
+<td style="text-align:right;">
+79.8
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+89.6
+</td>
+<td style="text-align:right;">
+84.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:right;">
+73.6
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+83.9
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+78.7
+</td>
+<td style="text-align:right;">
+74.0
+</td>
+<td style="text-align:right;">
+88.9
+</td>
+<td style="text-align:right;">
+83.1
+</td>
+<td style="text-align:right;">
+89.7
+</td>
+<td style="text-align:right;">
+92.3
+</td>
+<td style="text-align:right;">
+83.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:right;">
+71.3
+</td>
+<td style="text-align:right;">
+81.0
+</td>
+<td style="text-align:right;">
+86.2
+</td>
+<td style="text-align:right;">
+89.1
+</td>
+<td style="text-align:right;">
+68.6
+</td>
+<td style="text-align:right;">
+76.8
+</td>
+<td style="text-align:right;">
+95.1
+</td>
+<td style="text-align:right;">
+75.3
+</td>
+<td style="text-align:right;">
+83.8
+</td>
+<td style="text-align:right;">
+88.1
+</td>
+<td style="text-align:right;">
+82.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MSstats
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+81.5
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+81.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
+</td>
+<td style="text-align:right;">
+72.5
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+79.0
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+64.5
+</td>
+<td style="text-align:right;">
+81.2
+</td>
+<td style="text-align:right;">
+90.9
+</td>
+<td style="text-align:right;">
+85.4
+</td>
+<td style="text-align:right;">
+81.7
+</td>
+<td style="text-align:right;">
+89.7
+</td>
+<td style="text-align:right;">
+81.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:right;">
+73.1
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+83.4
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+78.8
+</td>
+<td style="text-align:right;">
+68.9
+</td>
+<td style="text-align:right;">
+86.0
+</td>
+<td style="text-align:right;">
+78.4
+</td>
+<td style="text-align:right;">
+84.7
+</td>
+<td style="text-align:right;">
+89.3
+</td>
+<td style="text-align:right;">
+81.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lmer_nested
+</td>
+<td style="text-align:right;">
+73.3
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+80.6
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+74.7
+</td>
+<td style="text-align:right;">
+77.9
+</td>
+<td style="text-align:right;">
+93.7
+</td>
+<td style="text-align:right;">
+79.5
+</td>
+<td style="text-align:right;">
+89.8
+</td>
+<td style="text-align:right;">
+86.3
+</td>
+<td style="text-align:right;">
+80.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:right;">
+73.9
+</td>
+<td style="text-align:right;">
+65.9
+</td>
+<td style="text-align:right;">
+84.1
+</td>
+<td style="text-align:right;">
+80.4
+</td>
+<td style="text-align:right;">
+73.2
+</td>
+<td style="text-align:right;">
+67.3
+</td>
+<td style="text-align:right;">
+79.2
+</td>
+<td style="text-align:right;">
+78.5
+</td>
+<td style="text-align:right;">
+84.7
+</td>
+<td style="text-align:right;">
+89.9
+</td>
+<td style="text-align:right;">
+78.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:right;">
+72.9
+</td>
+<td style="text-align:right;">
+63.3
+</td>
+<td style="text-align:right;">
+82.9
+</td>
+<td style="text-align:right;">
+75.6
+</td>
+<td style="text-align:right;">
+74.9
+</td>
+<td style="text-align:right;">
+69.4
+</td>
+<td style="text-align:right;">
+82.1
+</td>
+<td style="text-align:right;">
+80.7
+</td>
+<td style="text-align:right;">
+79.0
+</td>
+<td style="text-align:right;">
+89.5
+</td>
+<td style="text-align:right;">
+77.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+proDA
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+65.8
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+80.0
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+72.9
 </td>
 </tr>
 </tbody>
@@ -680,7 +1337,7 @@ msqrob2 hurdle; Fisher combination of the intensity and detection p-values
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy against the number of contrasts computed on IonStar_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
@@ -688,7 +1345,7 @@ msqrob2 hurdle; Fisher combination of the intensity and detection p-values
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy on the same contrasts on IonStar_MaxQuant, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, all 4 contrasts pooled); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
 </div>
 </div>
@@ -753,7 +1410,7 @@ peptide
 77.9
 </td>
 <td style="text-align:right;">
-77.9
+78.0
 </td>
 </tr>
 <tr>
@@ -808,7 +1465,7 @@ protein
 67.1
 </td>
 <td style="text-align:right;">
-75.6
+75.7
 </td>
 <td style="text-align:right;">
 75.6
@@ -912,7 +1569,7 @@ protein
 16712
 </td>
 <td style="text-align:right;">
-92.3
+92.2
 </td>
 <td style="text-align:right;">
 92.8
@@ -970,7 +1627,7 @@ protein + peptide
 16712
 </td>
 <td style="text-align:right;">
-92.3
+92.2
 </td>
 <td style="text-align:right;">
 92.5
@@ -1002,19 +1659,19 @@ peptide
 92.6
 </td>
 <td style="text-align:right;">
-93.0
+93.1
 </td>
 <td style="text-align:right;">
 93.1
 </td>
 <td style="text-align:right;">
-66.3
+66.5
 </td>
 <td style="text-align:right;">
-73.2
+73.3
 </td>
 <td style="text-align:right;">
-73.4
+73.6
 </td>
 </tr>
 <tr>
@@ -1118,10 +1775,10 @@ protein
 92.7
 </td>
 <td style="text-align:right;">
-92.7
+92.8
 </td>
 <td style="text-align:right;">
-92.7
+92.8
 </td>
 <td style="text-align:right;">
 67.0
@@ -1130,7 +1787,7 @@ protein
 71.3
 </td>
 <td style="text-align:right;">
-71.3
+71.4
 </td>
 </tr>
 </tbody>
@@ -1138,7 +1795,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>ROC curves on IonStar_MaxQuant, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
 </div>
 </div>
@@ -1146,7 +1803,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Calibration of the FDR each method reports on IonStar_MaxQuant, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
 </div>
 </div>
@@ -1164,7 +1821,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy against the number of contrasts computed on IonStar_MaxQuant_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
@@ -1172,7 +1829,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy on the same contrasts on IonStar_MaxQuant_protein, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, all 4 contrasts pooled); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
 </div>
 </div>
@@ -1477,7 +2134,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>ROC curves on IonStar_MaxQuant_protein, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
 </div>
 </div>
@@ -1485,7 +2142,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Calibration of the FDR each method reports on IonStar_MaxQuant_protein, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
 </div>
 </div>
@@ -1504,7 +2161,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy against the number of contrasts computed on IonStar_FragPipe_MSstats. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
@@ -1512,7 +2169,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy on the same contrasts on IonStar_FragPipe_MSstats, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, all 4 contrasts pooled); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
 </div>
 </div>
@@ -1991,7 +2648,7 @@ peptide
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>ROC curves on IonStar_FragPipe_MSstats, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
 </div>
 </div>
@@ -1999,7 +2656,7 @@ peptide
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Calibration of the FDR each method reports on IonStar_FragPipe_MSstats, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
 </div>
 </div>
@@ -2016,7 +2673,7 @@ peptide
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy against the number of contrasts computed on IonStar_FragPipe_protein. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
@@ -2024,7 +2681,7 @@ peptide
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy on the same contrasts on IonStar_FragPipe_protein, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, all 4 contrasts pooled); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
 </div>
 </div>
@@ -2329,7 +2986,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>ROC curves on IonStar_FragPipe_protein, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
 </div>
 </div>
@@ -2337,8 +2994,494 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Calibration of the FDR each method reports on IonStar_FragPipe_protein, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="ionstar_metamorpheus" class="level1"><h1>IonStar_MetaMorpheus</h1>
+<p>IonStar, MetaMorpheus 1.0.7 and FlashLFQ 1.3 QuantifiedPeaks.tsv, with match-between-runs (PIP)</p>
+<ul>
+<li>Decoys and random-RT controls removed</li>
+<li>Peak intensities summed to base sequences; identification confidence 1 for MS/MS peaks, 1 - PIP PEP for match-between-runs peaks</li>
+<li>Protein groups of one organism (human or E. coli)</li>
+<li>Proteins with at least 2 peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>log2, robust scaling on the human proteins</li>
+<li>prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides</li>
+<li>prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy against the number of contrasts computed on IonStar_MetaMorpheus. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), all 4 contrasts pooled; the ROC curve separates ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy on the same contrasts on IonStar_MetaMorpheus, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, all 4 contrasts pooled); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
+</div>
+</div>
+</div>
+<table class="table table-condensed">
+<caption>
+Ranking scores on IonStar_MetaMorpheus, all 4 contrasts pooled, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+model
+</th>
+<th style="text-align:left;">
+level
+</th>
+<th style="text-align:right;">
+contrasts computed
+</th>
+<th style="text-align:right;">
+AUC / log_fc
+</th>
+<th style="text-align:right;">
+AUC / scaled.p_value
+</th>
+<th style="text-align:right;">
+AUC / t_statistic
+</th>
+<th style="text-align:right;">
+pAUC_10 / log_fc
+</th>
+<th style="text-align:right;">
+pAUC_10 / scaled.p_value
+</th>
+<th style="text-align:right;">
+pAUC_10 / t_statistic
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+22108
+</td>
+<td style="text-align:right;">
+91.9
+</td>
+<td style="text-align:right;">
+94.5
+</td>
+<td style="text-align:right;">
+94.5
+</td>
+<td style="text-align:right;">
+48.9
+</td>
+<td style="text-align:right;">
+78.8
+</td>
+<td style="text-align:right;">
+78.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+22108
+</td>
+<td style="text-align:right;">
+91.9
+</td>
+<td style="text-align:right;">
+94.4
+</td>
+<td style="text-align:right;">
+94.5
+</td>
+<td style="text-align:right;">
+48.9
+</td>
+<td style="text-align:right;">
+78.7
+</td>
+<td style="text-align:right;">
+78.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+20373
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+64.6
+</td>
+<td style="text-align:right;">
+76.0
+</td>
+<td style="text-align:right;">
+75.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+20524
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+64.6
+</td>
+<td style="text-align:right;">
+75.9
+</td>
+<td style="text-align:right;">
+75.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+20373
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+93.1
+</td>
+<td style="text-align:right;">
+64.6
+</td>
+<td style="text-align:right;">
+75.4
+</td>
+<td style="text-align:right;">
+75.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+22108
+</td>
+<td style="text-align:right;">
+92.1
+</td>
+<td style="text-align:right;">
+92.4
+</td>
+<td style="text-align:right;">
+92.4
+</td>
+<td style="text-align:right;">
+64.3
+</td>
+<td style="text-align:right;">
+74.9
+</td>
+<td style="text-align:right;">
+74.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lmer_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+19424
+</td>
+<td style="text-align:right;">
+93.1
+</td>
+<td style="text-align:right;">
+93.0
+</td>
+<td style="text-align:right;">
+93.1
+</td>
+<td style="text-align:right;">
+66.3
+</td>
+<td style="text-align:right;">
+74.7
+</td>
+<td style="text-align:right;">
+74.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+22108
+</td>
+<td style="text-align:right;">
+91.9
+</td>
+<td style="text-align:right;">
+92.4
+</td>
+<td style="text-align:right;">
+92.0
+</td>
+<td style="text-align:right;">
+60.6
+</td>
+<td style="text-align:right;">
+73.8
+</td>
+<td style="text-align:right;">
+71.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+22108
+</td>
+<td style="text-align:right;">
+91.9
+</td>
+<td style="text-align:right;">
+92.2
+</td>
+<td style="text-align:right;">
+92.0
+</td>
+<td style="text-align:right;">
+60.6
+</td>
+<td style="text-align:right;">
+73.2
+</td>
+<td style="text-align:right;">
+71.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropecaV2_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+20219
+</td>
+<td style="text-align:right;">
+92.5
+</td>
+<td style="text-align:right;">
+91.2
+</td>
+<td style="text-align:right;">
+91.6
+</td>
+<td style="text-align:right;">
+59.8
+</td>
+<td style="text-align:right;">
+69.8
+</td>
+<td style="text-align:right;">
+70.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_rlm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+20302
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+93.1
+</td>
+<td style="text-align:right;">
+65.8
+</td>
+<td style="text-align:right;">
+69.5
+</td>
+<td style="text-align:right;">
+68.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+20373
+</td>
+<td style="text-align:right;">
+93.4
+</td>
+<td style="text-align:right;">
+92.0
+</td>
+<td style="text-align:right;">
+92.0
+</td>
+<td style="text-align:right;">
+65.0
+</td>
+<td style="text-align:right;">
+68.6
+</td>
+<td style="text-align:right;">
+68.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+20219
+</td>
+<td style="text-align:right;">
+92.5
+</td>
+<td style="text-align:right;">
+91.8
+</td>
+<td style="text-align:right;">
+91.3
+</td>
+<td style="text-align:right;">
+59.0
+</td>
+<td style="text-align:right;">
+66.5
+</td>
+<td style="text-align:right;">
+62.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+22108
+</td>
+<td style="text-align:right;">
+87.8
+</td>
+<td style="text-align:right;">
+90.3
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+28.0
+</td>
+<td style="text-align:right;">
+64.5
+</td>
+<td style="text-align:right;">
+64.1
+</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>ROC curves on IonStar_MetaMorpheus, all 4 contrasts pooled. y: fraction of ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Calibration of the FDR each method reports on IonStar_MetaMorpheus, all 4 contrasts pooled. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -2354,7 +3497,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy against the number of contrasts computed on CPTAC_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), one contrast; the ROC curve separates UPS proteins (changed) from YEAST proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
 </div>
 </div>
@@ -2362,7 +3505,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Ranking accuracy on the same contrasts on CPTAC_MaxQuant, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, one contrast); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
 </div>
 </div>
@@ -2424,10 +3567,10 @@ peptide
 92.8
 </td>
 <td style="text-align:right;">
-91.0
+90.5
 </td>
 <td style="text-align:right;">
-91.0
+90.5
 </td>
 </tr>
 <tr>
@@ -2444,7 +3587,7 @@ protein
 94.6
 </td>
 <td style="text-align:right;">
-93.3
+93.4
 </td>
 <td style="text-align:right;">
 93.4
@@ -2456,7 +3599,7 @@ protein
 85.9
 </td>
 <td style="text-align:right;">
-85.9
+86.0
 </td>
 </tr>
 <tr>
@@ -2476,7 +3619,7 @@ protein
 92.8
 </td>
 <td style="text-align:right;">
-92.7
+92.8
 </td>
 <td style="text-align:right;">
 89.0
@@ -2511,7 +3654,7 @@ protein
 89.0
 </td>
 <td style="text-align:right;">
-84.0
+84.1
 </td>
 <td style="text-align:right;">
 84.0
@@ -2618,19 +3761,19 @@ peptide
 93.9
 </td>
 <td style="text-align:right;">
-90.8
+90.2
 </td>
 <td style="text-align:right;">
-90.8
+90.2
 </td>
 <td style="text-align:right;">
 91.6
 </td>
 <td style="text-align:right;">
-77.8
+77.9
 </td>
 <td style="text-align:right;">
-77.8
+78.0
 </td>
 </tr>
 <tr>
@@ -2702,19 +3845,19 @@ protein + peptide
 1333
 </td>
 <td style="text-align:right;">
-86.5
+86.4
 </td>
 <td style="text-align:right;">
-84.6
+85.2
 </td>
 <td style="text-align:right;">
-85.3
+85.2
 </td>
 <td style="text-align:right;">
 72.5
 </td>
 <td style="text-align:right;">
-73.2
+71.1
 </td>
 <td style="text-align:right;">
 67.1
@@ -2789,13 +3932,13 @@ protein
 1333
 </td>
 <td style="text-align:right;">
-86.5
+86.4
 </td>
 <td style="text-align:right;">
-85.3
+85.2
 </td>
 <td style="text-align:right;">
-85.3
+85.2
 </td>
 <td style="text-align:right;">
 72.5
@@ -2812,7 +3955,7 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>ROC curves on CPTAC_MaxQuant, one contrast. y: fraction of UPS proteins (changed) ranked above a threshold, the true positive rate; x: fraction of YEAST proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
 </div>
 </div>
@@ -2820,8 +3963,1951 @@ protein
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Calibration of the FDR each method reports on CPTAC_MaxQuant, one contrast. x: nominal FDR threshold; y: fraction of YEAST proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="singlecell_diann" class="level1"><h1>SingleCell_DIANN</h1>
+<p>ProteoBench DIA single-cell (Orbitrap Astral, 250 pg), DIA-NN 2.5.0 report</p>
+<ul>
+<li>Protein groups at 1% q-value (library and run)</li>
+<li>Precursor quantities summed to stripped sequences; identification confidence 1 - the smallest precursor PEP</li>
+<li>Protein groups of one species (ProteoBench FASTA); contaminants removed</li>
+<li>Proteins with at least 2 peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>log2, robust scaling on the human proteins</li>
+<li>prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides</li>
+<li>prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy against the number of contrasts computed on SingleCell_DIANN. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), one contrast; the ROC curve separates YEAST proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy on the same contrasts on SingleCell_DIANN, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, one contrast); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
+</div>
+</div>
+</div>
+<table class="table table-condensed">
+<caption>
+Ranking scores on SingleCell_DIANN, one contrast, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+model
+</th>
+<th style="text-align:left;">
+level
+</th>
+<th style="text-align:right;">
+contrasts computed
+</th>
+<th style="text-align:right;">
+AUC / log_fc
+</th>
+<th style="text-align:right;">
+AUC / scaled.p_value
+</th>
+<th style="text-align:right;">
+AUC / t_statistic
+</th>
+<th style="text-align:right;">
+pAUC_10 / log_fc
+</th>
+<th style="text-align:right;">
+pAUC_10 / scaled.p_value
+</th>
+<th style="text-align:right;">
+pAUC_10 / t_statistic
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropecaV2_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+5842
+</td>
+<td style="text-align:right;">
+99.6
+</td>
+<td style="text-align:right;">
+99.5
+</td>
+<td style="text-align:right;">
+99.5
+</td>
+<td style="text-align:right;">
+97.8
+</td>
+<td style="text-align:right;">
+96.5
+</td>
+<td style="text-align:right;">
+96.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+5938
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+99.3
+</td>
+<td style="text-align:right;">
+99.3
+</td>
+<td style="text-align:right;">
+96.6
+</td>
+<td style="text-align:right;">
+96.0
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+6021
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+99.2
+</td>
+<td style="text-align:right;">
+99.2
+</td>
+<td style="text-align:right;">
+96.6
+</td>
+<td style="text-align:right;">
+95.8
+</td>
+<td style="text-align:right;">
+95.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+5938
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+99.3
+</td>
+<td style="text-align:right;">
+99.3
+</td>
+<td style="text-align:right;">
+96.6
+</td>
+<td style="text-align:right;">
+95.7
+</td>
+<td style="text-align:right;">
+95.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+5842
+</td>
+<td style="text-align:right;">
+99.4
+</td>
+<td style="text-align:right;">
+99.4
+</td>
+<td style="text-align:right;">
+99.2
+</td>
+<td style="text-align:right;">
+97.1
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+93.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+5938
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+99.2
+</td>
+<td style="text-align:right;">
+96.6
+</td>
+<td style="text-align:right;">
+95.1
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lmer_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+5955
+</td>
+<td style="text-align:right;">
+99.0
+</td>
+<td style="text-align:right;">
+98.8
+</td>
+<td style="text-align:right;">
+98.8
+</td>
+<td style="text-align:right;">
+95.9
+</td>
+<td style="text-align:right;">
+93.7
+</td>
+<td style="text-align:right;">
+93.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_rlm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+5935
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+99.0
+</td>
+<td style="text-align:right;">
+99.0
+</td>
+<td style="text-align:right;">
+96.6
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+6822
+</td>
+<td style="text-align:right;">
+99.3
+</td>
+<td style="text-align:right;">
+98.9
+</td>
+<td style="text-align:right;">
+98.9
+</td>
+<td style="text-align:right;">
+94.3
+</td>
+<td style="text-align:right;">
+90.9
+</td>
+<td style="text-align:right;">
+91.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+6822
+</td>
+<td style="text-align:right;">
+99.3
+</td>
+<td style="text-align:right;">
+98.8
+</td>
+<td style="text-align:right;">
+98.3
+</td>
+<td style="text-align:right;">
+93.0
+</td>
+<td style="text-align:right;">
+88.9
+</td>
+<td style="text-align:right;">
+83.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+6822
+</td>
+<td style="text-align:right;">
+96.3
+</td>
+<td style="text-align:right;">
+95.9
+</td>
+<td style="text-align:right;">
+96.2
+</td>
+<td style="text-align:right;">
+80.6
+</td>
+<td style="text-align:right;">
+87.1
+</td>
+<td style="text-align:right;">
+79.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+6822
+</td>
+<td style="text-align:right;">
+99.3
+</td>
+<td style="text-align:right;">
+98.6
+</td>
+<td style="text-align:right;">
+98.3
+</td>
+<td style="text-align:right;">
+93.0
+</td>
+<td style="text-align:right;">
+86.0
+</td>
+<td style="text-align:right;">
+83.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+6806
+</td>
+<td style="text-align:right;">
+97.0
+</td>
+<td style="text-align:right;">
+97.0
+</td>
+<td style="text-align:right;">
+97.1
+</td>
+<td style="text-align:right;">
+85.4
+</td>
+<td style="text-align:right;">
+82.1
+</td>
+<td style="text-align:right;">
+82.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+6819
+</td>
+<td style="text-align:right;">
+96.3
+</td>
+<td style="text-align:right;">
+96.2
+</td>
+<td style="text-align:right;">
+96.2
+</td>
+<td style="text-align:right;">
+80.6
+</td>
+<td style="text-align:right;">
+79.2
+</td>
+<td style="text-align:right;">
+79.3
+</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>ROC curves on SingleCell_DIANN, one contrast. y: fraction of YEAST proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Calibration of the FDR each method reports on SingleCell_DIANN, one contrast. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="singlecell_maxquant" class="level1"><h1>SingleCell_MaxQuant</h1>
+<p>ProteoBench DIA single-cell (Orbitrap Astral, 250 pg), MaxQuant 2.7.5.0 DIA evidence.txt</p>
+<ul>
+<li>Proteotypic evidence, decoys removed</li>
+<li>Evidence intensities summed to peptides; identification confidence 1 - the smallest evidence PEP</li>
+<li>Leading razor proteins of one species (ProteoBench FASTA); contaminants removed</li>
+<li>Proteins with at least 2 peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>log2, robust scaling on the human proteins</li>
+<li>prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides</li>
+<li>prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy against the number of contrasts computed on SingleCell_MaxQuant. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), one contrast; the ROC curve separates YEAST proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy on the same contrasts on SingleCell_MaxQuant, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, one contrast); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
+</div>
+</div>
+</div>
+<table class="table table-condensed">
+<caption>
+Ranking scores on SingleCell_MaxQuant, one contrast, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+model
+</th>
+<th style="text-align:left;">
+level
+</th>
+<th style="text-align:right;">
+contrasts computed
+</th>
+<th style="text-align:right;">
+AUC / log_fc
+</th>
+<th style="text-align:right;">
+AUC / scaled.p_value
+</th>
+<th style="text-align:right;">
+AUC / t_statistic
+</th>
+<th style="text-align:right;">
+pAUC_10 / log_fc
+</th>
+<th style="text-align:right;">
+pAUC_10 / scaled.p_value
+</th>
+<th style="text-align:right;">
+pAUC_10 / t_statistic
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+4550
+</td>
+<td style="text-align:right;">
+92.9
+</td>
+<td style="text-align:right;">
+93.9
+</td>
+<td style="text-align:right;">
+93.4
+</td>
+<td style="text-align:right;">
+79.2
+</td>
+<td style="text-align:right;">
+85.8
+</td>
+<td style="text-align:right;">
+78.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+4550
+</td>
+<td style="text-align:right;">
+96.2
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+96.1
+</td>
+<td style="text-align:right;">
+86.4
+</td>
+<td style="text-align:right;">
+85.4
+</td>
+<td style="text-align:right;">
+85.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropecaV2_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+4419
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+<td style="text-align:right;">
+94.3
+</td>
+<td style="text-align:right;">
+94.4
+</td>
+<td style="text-align:right;">
+81.7
+</td>
+<td style="text-align:right;">
+84.5
+</td>
+<td style="text-align:right;">
+84.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+4550
+</td>
+<td style="text-align:right;">
+94.8
+</td>
+<td style="text-align:right;">
+95.3
+</td>
+<td style="text-align:right;">
+94.5
+</td>
+<td style="text-align:right;">
+80.0
+</td>
+<td style="text-align:right;">
+83.1
+</td>
+<td style="text-align:right;">
+76.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+4550
+</td>
+<td style="text-align:right;">
+95.1
+</td>
+<td style="text-align:right;">
+95.2
+</td>
+<td style="text-align:right;">
+95.3
+</td>
+<td style="text-align:right;">
+82.0
+</td>
+<td style="text-align:right;">
+80.7
+</td>
+<td style="text-align:right;">
+80.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+4477
+</td>
+<td style="text-align:right;">
+92.6
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+<td style="text-align:right;">
+79.5
+</td>
+<td style="text-align:right;">
+80.4
+</td>
+<td style="text-align:right;">
+80.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+4500
+</td>
+<td style="text-align:right;">
+92.6
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+79.5
+</td>
+<td style="text-align:right;">
+79.9
+</td>
+<td style="text-align:right;">
+80.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+4477
+</td>
+<td style="text-align:right;">
+92.6
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+<td style="text-align:right;">
+79.5
+</td>
+<td style="text-align:right;">
+79.8
+</td>
+<td style="text-align:right;">
+80.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+4423
+</td>
+<td style="text-align:right;">
+92.7
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+80.1
+</td>
+<td style="text-align:right;">
+79.7
+</td>
+<td style="text-align:right;">
+79.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lmer_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+4414
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+81.6
+</td>
+<td style="text-align:right;">
+79.5
+</td>
+<td style="text-align:right;">
+79.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+4550
+</td>
+<td style="text-align:right;">
+92.9
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+93.4
+</td>
+<td style="text-align:right;">
+79.2
+</td>
+<td style="text-align:right;">
+78.5
+</td>
+<td style="text-align:right;">
+78.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+4550
+</td>
+<td style="text-align:right;">
+94.8
+</td>
+<td style="text-align:right;">
+94.7
+</td>
+<td style="text-align:right;">
+94.5
+</td>
+<td style="text-align:right;">
+80.0
+</td>
+<td style="text-align:right;">
+78.4
+</td>
+<td style="text-align:right;">
+76.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_rlm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+4477
+</td>
+<td style="text-align:right;">
+93.1
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+80.8
+</td>
+<td style="text-align:right;">
+78.2
+</td>
+<td style="text-align:right;">
+77.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+4477
+</td>
+<td style="text-align:right;">
+92.8
+</td>
+<td style="text-align:right;">
+92.9
+</td>
+<td style="text-align:right;">
+92.9
+</td>
+<td style="text-align:right;">
+80.0
+</td>
+<td style="text-align:right;">
+75.3
+</td>
+<td style="text-align:right;">
+75.5
+</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>ROC curves on SingleCell_MaxQuant, one contrast. y: fraction of YEAST proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Calibration of the FDR each method reports on SingleCell_MaxQuant, one contrast. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="diapasef_diann" class="level1"><h1>diaPASEF_DIANN</h1>
+<p>ProteoBench DIA diaPASEF (timsTOF, human/yeast/E. coli; E. coli 4x up, yeast 2x down), DIA-NN 2.5.0 report</p>
+<ul>
+<li>Protein groups at 1% q-value (library and run)</li>
+<li>Precursor quantities summed to stripped sequences; identification confidence 1 - the smallest precursor PEP</li>
+<li>Protein groups of one species (ProteoBench FASTA); contaminants removed</li>
+<li>Proteins with at least 2 peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>log2, robust scaling on the human proteins</li>
+<li>prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides</li>
+<li>prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy against the number of contrasts computed on diaPASEF_DIANN. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), one contrast; the ROC curve separates YEAST_ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy on the same contrasts on diaPASEF_DIANN, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, one contrast); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
+</div>
+</div>
+</div>
+<table class="table table-condensed">
+<caption>
+Ranking scores on diaPASEF_DIANN, one contrast, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+model
+</th>
+<th style="text-align:left;">
+level
+</th>
+<th style="text-align:right;">
+contrasts computed
+</th>
+<th style="text-align:right;">
+AUC / log_fc
+</th>
+<th style="text-align:right;">
+AUC / scaled.p_value
+</th>
+<th style="text-align:right;">
+AUC / t_statistic
+</th>
+<th style="text-align:right;">
+pAUC_10 / log_fc
+</th>
+<th style="text-align:right;">
+pAUC_10 / scaled.p_value
+</th>
+<th style="text-align:right;">
+pAUC_10 / t_statistic
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+9456
+</td>
+<td style="text-align:right;">
+98.5
+</td>
+<td style="text-align:right;">
+98.4
+</td>
+<td style="text-align:right;">
+98.5
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+94.3
+</td>
+<td style="text-align:right;">
+94.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+9543
+</td>
+<td style="text-align:right;">
+98.5
+</td>
+<td style="text-align:right;">
+98.3
+</td>
+<td style="text-align:right;">
+98.3
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+94.0
+</td>
+<td style="text-align:right;">
+94.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+9456
+</td>
+<td style="text-align:right;">
+98.5
+</td>
+<td style="text-align:right;">
+98.3
+</td>
+<td style="text-align:right;">
+98.3
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+93.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+9375
+</td>
+<td style="text-align:right;">
+98.8
+</td>
+<td style="text-align:right;">
+98.7
+</td>
+<td style="text-align:right;">
+98.8
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropecaV2_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+9375
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+98.7
+</td>
+<td style="text-align:right;">
+98.7
+</td>
+<td style="text-align:right;">
+96.6
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_rlm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+9450
+</td>
+<td style="text-align:right;">
+98.5
+</td>
+<td style="text-align:right;">
+98.1
+</td>
+<td style="text-align:right;">
+98.2
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+91.9
+</td>
+<td style="text-align:right;">
+92.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+10566
+</td>
+<td style="text-align:right;">
+95.6
+</td>
+<td style="text-align:right;">
+95.8
+</td>
+<td style="text-align:right;">
+95.2
+</td>
+<td style="text-align:right;">
+87.0
+</td>
+<td style="text-align:right;">
+90.3
+</td>
+<td style="text-align:right;">
+84.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lmer_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+9480
+</td>
+<td style="text-align:right;">
+98.6
+</td>
+<td style="text-align:right;">
+97.3
+</td>
+<td style="text-align:right;">
+97.4
+</td>
+<td style="text-align:right;">
+94.8
+</td>
+<td style="text-align:right;">
+89.8
+</td>
+<td style="text-align:right;">
+90.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+10566
+</td>
+<td style="text-align:right;">
+98.2
+</td>
+<td style="text-align:right;">
+98.4
+</td>
+<td style="text-align:right;">
+97.3
+</td>
+<td style="text-align:right;">
+85.7
+</td>
+<td style="text-align:right;">
+89.7
+</td>
+<td style="text-align:right;">
+80.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+10566
+</td>
+<td style="text-align:right;">
+98.2
+</td>
+<td style="text-align:right;">
+97.8
+</td>
+<td style="text-align:right;">
+97.3
+</td>
+<td style="text-align:right;">
+85.7
+</td>
+<td style="text-align:right;">
+84.7
+</td>
+<td style="text-align:right;">
+80.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+10559
+</td>
+<td style="text-align:right;">
+95.6
+</td>
+<td style="text-align:right;">
+95.1
+</td>
+<td style="text-align:right;">
+95.2
+</td>
+<td style="text-align:right;">
+87.0
+</td>
+<td style="text-align:right;">
+84.7
+</td>
+<td style="text-align:right;">
+84.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+9456
+</td>
+<td style="text-align:right;">
+98.5
+</td>
+<td style="text-align:right;">
+96.2
+</td>
+<td style="text-align:right;">
+96.3
+</td>
+<td style="text-align:right;">
+95.4
+</td>
+<td style="text-align:right;">
+83.8
+</td>
+<td style="text-align:right;">
+84.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+10566
+</td>
+<td style="text-align:right;">
+98.4
+</td>
+<td style="text-align:right;">
+97.2
+</td>
+<td style="text-align:right;">
+97.2
+</td>
+<td style="text-align:right;">
+89.1
+</td>
+<td style="text-align:right;">
+81.7
+</td>
+<td style="text-align:right;">
+81.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+10549
+</td>
+<td style="text-align:right;">
+97.1
+</td>
+<td style="text-align:right;">
+95.3
+</td>
+<td style="text-align:right;">
+95.5
+</td>
+<td style="text-align:right;">
+87.0
+</td>
+<td style="text-align:right;">
+79.0
+</td>
+<td style="text-align:right;">
+79.7
+</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>ROC curves on diaPASEF_DIANN, one contrast. y: fraction of YEAST_ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Calibration of the FDR each method reports on diaPASEF_DIANN, one contrast. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="diapasef_spectronaut" class="level1"><h1>diaPASEF_Spectronaut</h1>
+<p>ProteoBench DIA diaPASEF (timsTOF, human/yeast/E. coli; E. coli 4x up, yeast 2x down), Spectronaut 21.0 report</p>
+<ul>
+<li>Precursor quantities summed to peptides (PEP.GroupingKey); identification confidence 1 - the smallest precursor q-value</li>
+<li>Protein groups of one species (ProteoBench FASTA); contaminants removed</li>
+<li>Proteins with at least 2 peptides</li>
+<li>Intensities below 4 (zeros) removed</li>
+<li>log2, robust scaling on the human proteins</li>
+<li>prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides</li>
+<li>prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy against the number of contrasts computed on diaPASEF_Spectronaut. Each point is one method. x: pAUC_5, the partial area under the ROC curve up to a false positive rate of 0.05 (0 to 100), one contrast; the ROC curve separates YEAST_ECOLI proteins (changed) from HUMAN proteins (unchanged). y: contrasts computed, the protein and contrast pairs with a result. Panels rank proteins by fold change (log_fc), by p-value signed by the fold change (scaled.p_value) and by t statistic. Colour: model family as in the prolfqua factory figure; shape: model within its family; grey open shapes: external tools. The red staircase is the Pareto front: no other method has both a higher pAUC_5 and more contrasts computed.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-44-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Ranking accuracy on the same contrasts on diaPASEF_Spectronaut, ranking by scaled p-value. Each panel is one set of contrasts: those computed by a method on the Pareto front of the figure above (red circle), with their number in the panel title. On the dashed line are the methods that compute all these contrasts, the same or more, scored on these contrasts only (pAUC_5, one contrast); each panel has its own x axis. A method to the right of the red circle ranks these contrasts better: the front method’s position then comes from computing fewer, easier contrasts rather than from ranking them better.</figcaption></figure>
+</div>
+</div>
+</div>
+<table class="table table-condensed">
+<caption>
+Ranking scores on diaPASEF_Spectronaut, one contrast, sorted by pAUC_10 of scaled.p_value. AUC is the area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to 100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and contrast pairs with a p-value.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+model
+</th>
+<th style="text-align:left;">
+level
+</th>
+<th style="text-align:right;">
+contrasts computed
+</th>
+<th style="text-align:right;">
+AUC / log_fc
+</th>
+<th style="text-align:right;">
+AUC / scaled.p_value
+</th>
+<th style="text-align:right;">
+AUC / t_statistic
+</th>
+<th style="text-align:right;">
+pAUC_10 / log_fc
+</th>
+<th style="text-align:right;">
+pAUC_10 / scaled.p_value
+</th>
+<th style="text-align:right;">
+pAUC_10 / t_statistic
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+prolfqua_hurdle_nested
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+11091
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+97.8
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+93.4
+</td>
+<td style="text-align:right;">
+92.9
+</td>
+<td style="text-align:right;">
+90.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2_hurdle
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+11091
+</td>
+<td style="text-align:right;">
+98.2
+</td>
+<td style="text-align:right;">
+98.1
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+93.9
+</td>
+<td style="text-align:right;">
+92.3
+</td>
+<td style="text-align:right;">
+89.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limma
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+11053
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+90.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+11053
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+90.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropeca_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+11044
+</td>
+<td style="text-align:right;">
+97.6
+</td>
+<td style="text-align:right;">
+97.6
+</td>
+<td style="text-align:right;">
+97.8
+</td>
+<td style="text-align:right;">
+92.7
+</td>
+<td style="text-align:right;">
+90.2
+</td>
+<td style="text-align:right;">
+91.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lm_impute
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+11091
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+93.4
+</td>
+<td style="text-align:right;">
+89.9
+</td>
+<td style="text-align:right;">
+90.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+11091
+</td>
+<td style="text-align:right;">
+98.6
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+94.8
+</td>
+<td style="text-align:right;">
+89.7
+</td>
+<td style="text-align:right;">
+89.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+11053
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+89.6
+</td>
+<td style="text-align:right;">
+89.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_limpa
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+11091
+</td>
+<td style="text-align:right;">
+98.0
+</td>
+<td style="text-align:right;">
+97.8
+</td>
+<td style="text-align:right;">
+97.8
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+89.5
+</td>
+<td style="text-align:right;">
+89.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_ropecaV2_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+11044
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+92.9
+</td>
+<td style="text-align:right;">
+89.4
+</td>
+<td style="text-align:right;">
+89.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+msqrob2
+</td>
+<td style="text-align:left;">
+protein + peptide
+</td>
+<td style="text-align:right;">
+11091
+</td>
+<td style="text-align:right;">
+98.2
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+97.9
+</td>
+<td style="text-align:right;">
+93.9
+</td>
+<td style="text-align:right;">
+89.3
+</td>
+<td style="text-align:right;">
+89.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_deqms_voom
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+11053
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+97.4
+</td>
+<td style="text-align:right;">
+97.4
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+88.1
+</td>
+<td style="text-align:right;">
+88.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_rlm
+</td>
+<td style="text-align:left;">
+protein
+</td>
+<td style="text-align:right;">
+11053
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+97.3
+</td>
+<td style="text-align:right;">
+97.3
+</td>
+<td style="text-align:right;">
+93.3
+</td>
+<td style="text-align:right;">
+88.0
+</td>
+<td style="text-align:right;">
+87.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prolfqua_lmer_nested
+</td>
+<td style="text-align:left;">
+peptide
+</td>
+<td style="text-align:right;">
+11045
+</td>
+<td style="text-align:right;">
+97.4
+</td>
+<td style="text-align:right;">
+96.6
+</td>
+<td style="text-align:right;">
+96.7
+</td>
+<td style="text-align:right;">
+92.0
+</td>
+<td style="text-align:right;">
+86.3
+</td>
+<td style="text-align:right;">
+87.0
+</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>ROC curves on diaPASEF_Spectronaut, one contrast. y: fraction of YEAST_ECOLI proteins (changed) ranked above a threshold, the true positive rate; x: fraction of HUMAN proteins (unchanged) above it, the false positive rate, shown up to 0.2. One curve per method; panels rank by fold change, scaled p-value and t statistic. Colour: model family as in the prolfqua factory figure; line type: model within its family; grey: external tools.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="Benchmark_results_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Calibration of the FDR each method reports on diaPASEF_Spectronaut, one contrast. x: nominal FDR threshold; y: fraction of HUMAN proteins (unchanged) among the proteins called significant at that threshold, the false discovery proportion. One curve per method, colours and line types as in the ROC figure. A calibrated FDR lies on the grey diagonal; curves above it are anti-conservative, with more false discoveries than the FDR promises.</figcaption></figure>
 </div>
 </div>
 </div>
