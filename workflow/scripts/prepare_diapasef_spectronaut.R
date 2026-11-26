@@ -1,6 +1,6 @@
 # ProteoBench DIA diaPASEF module (timsTOF; human/yeast/E. coli 65/30/5% in A, 65/15/20% in B), Spectronaut 21.0
 # report of submission e0b85747, read with prolfquapp::read_BGS(): precursor quantities summed per run and peptide
-# (PEP.GroupingKey), confidence 1 - the smallest precursor q-value, as prolfquapp's BGS reader; then
+# (PEP.GroupingKey), confidence 1 - the smallest precursor q-value floored at 0.5, as prolfquapp's BGS reader; then
 # prepare_proteobench().
 #   Rscript workflow/scripts/prepare_diapasef_spectronaut.R <out_dir>
 source("workflow/scripts/common.R")
@@ -12,7 +12,7 @@ peptides <- prolfquapp::read_BGS(file) |>
   dplyr::filter(!is.na(.data$FG.Quantity)) |>
   dplyr::summarise(
     intensity = sum(.data$FG.Quantity),
-    identification_confidence = 1 - min(.data$FG.Qvalue),
+    identification_confidence = floor_confidence(1 - min(.data$FG.Qvalue)),
     .by = c("R.FileName", "PG.ProteinGroups", "PEP.GroupingKey")
   ) |>
   dplyr::transmute(

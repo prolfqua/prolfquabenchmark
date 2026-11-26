@@ -70,9 +70,15 @@ create_mq_peptide_config <- function() {
   config
 }
 
+# The identification confidence of an observation the software accepted is at least 0.5, the rule of prolfquapp's
+# readers (prolfquapp::floor_identification_confidence(), which release runs with older prolfquapp versions lack)
+floor_confidence <- function(x) {
+  pmax(x, 0.5)
+}
+
 # MaxQuant peptides.txt has one PEP per peptide; its identification confidence is 1 - PEP, as in prolfquapp's reader
 mq_identification_confidence <- function(peptides) {
-  peptides$identification_confidence <- 1 - peptides$pep
+  peptides$identification_confidence <- floor_confidence(1 - peptides$pep)
   peptides
 }
 
@@ -205,7 +211,8 @@ prepare_proteobench <- function(peptides, species, conditions, out_dir) {
 }
 
 # DIA-NN report of a ProteoBench submission as peptides, read like prolfquapp's DIA-NN reader: protein groups at 1%
-# (library and run), precursor quantities summed to stripped sequences, confidence 1 - the smallest precursor PEP
+# (library and run), precursor quantities summed to stripped sequences, confidence 1 - the smallest precursor PEP,
+# floored at 0.5
 proteobench_diann_peptides <- function(file) {
   report <- prolfquapp::diann_read_output(arrow::read_parquet(file), Lib.PG.Q.Value = 0.01, PG.Q.Value = 0.01)
   diann <- prolfquapp::diann_output_to_peptide(report)
@@ -214,6 +221,6 @@ proteobench_diann_peptides <- function(file) {
     protein = diann$Protein.Group,
     peptide = diann$Stripped.Sequence,
     intensity = diann$Peptide.Quantity,
-    identification_confidence = 1 - diann$PEP
+    identification_confidence = floor_confidence(1 - diann$PEP)
   )
 }

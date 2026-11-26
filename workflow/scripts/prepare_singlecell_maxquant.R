@@ -1,7 +1,7 @@
 # ProteoBench DIA single-cell module (PXD049412, Orbitrap Astral; human/yeast 240/10 pg in A, 200/50 pg in B),
 # MaxQuant 2.7.5.0 (DIA) evidence.txt of submission 090d5f63, read with prolfquapp::tidyMQ_Evidence(): proteotypic
 # evidence, intensities summed per run and peptide, protein the leading razor protein, confidence 1 - the smallest
-# evidence PEP; then prepare_proteobench().
+# evidence PEP, floored at 0.5; then prepare_proteobench().
 #   Rscript workflow/scripts/prepare_singlecell_maxquant.R <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args("out_dir")
@@ -13,7 +13,7 @@ peptides <- evidence |>
   dplyr::filter(.data$proteotypic, !.data$reverse, !is.na(.data$evidence.intensity)) |>
   dplyr::summarise(
     intensity = sum(.data$evidence.intensity),
-    identification_confidence = 1 - min(.data$pep),
+    identification_confidence = floor_confidence(1 - min(.data$pep)),
     .by = c("raw.file", "leading.razor.protein", "peptide.id")
   ) |>
   dplyr::transmute(
