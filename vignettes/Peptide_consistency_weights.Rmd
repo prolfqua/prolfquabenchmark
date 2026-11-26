@@ -34,12 +34,12 @@ scores$variant <- factor(scores$variant, variants)
 count <- dplyr::filter(scores, .data$variant == "count")
 versus_count <- dplyr::inner_join(
   scores,
-  count[, c("dataset", "facade", "pAUC_10", "FDP_5", "TP_5")],
+  count[, c("dataset", "facade", "pAUC_5", "FDP_5", "TP_5")],
   by = c("dataset", "facade"),
   suffix = c("", "_count")
 ) |>
   dplyr::mutate(
-    d_pAUC_10 = .data$pAUC_10 - .data$pAUC_10_count,
+    d_pAUC_5 = .data$pAUC_5 - .data$pAUC_5_count,
     d_FDP_5 = .data$FDP_5 - .data$FDP_5_count
   )
 summary_of <- function(facade, variant) {
@@ -54,9 +54,9 @@ fmt <- function(x, digits = 1) formatC(x, format = "f", digits = digits)
 prolfqua's protein-level models (lm, limma, DEqMS, rlm) weight each protein × sample abundance by the number of peptides it was aggregated from and by the identification confidence. This page derives a weight from how well the peptides of a protein agree with each other, the **peptide consistency**: the residuals of the median polish that aggregated them. It gives the maths and benchmarks the weights on the `r length(unique(scores$dataset))` benchmark datasets with peptides.
 
 - Best: `sample_rel`, which weights the samples of a protein by how consistent its peptides are in each sample, relative to the protein's other samples
-- lm with `sample_rel` against the peptide count: pAUC_10 median `r fmt(median(lm_rel$d_pAUC_10), 2)`, range `r fmt(min(lm_rel$d_pAUC_10), 2)` to `r fmt(max(lm_rel$d_pAUC_10), 2)` over the datasets; limma median `r fmt(median(limma_rel$d_pAUC_10), 2)`
+- lm with `sample_rel` against the peptide count: pAUC_5 median `r fmt(median(lm_rel$d_pAUC_5), 2)`, range `r fmt(min(lm_rel$d_pAUC_5), 2)` to `r fmt(max(lm_rel$d_pAUC_5), 2)` over the datasets; limma median `r fmt(median(limma_rel$d_pAUC_5), 2)`
 - Cost: the FDR is less conservative; the false discovery proportion at a nominal FDR of 5% rises by `r fmt(median(lm_rel$d_FDP_5), 3)` (median, lm), at most `r fmt(max(lm_rel$d_FDP_5), 3)`
-- One consistency value per protein (`protein_ivw`) is slightly worse than the peptide count: median `r fmt(median(lm_protein$d_pAUC_10), 2)` (lm)
+- One consistency value per protein (`protein_ivw`) is slightly worse than the peptide count: median `r fmt(median(lm_protein$d_pAUC_5), 2)` (lm)
 - The analysis is the pipeline step `peptide_consistency` (`workflow/scripts/peptide_consistency_weights.R`); the tables are `inst/extdata/peptide_consistency_scores.tsv` and `peptide_consistency_priors.tsv`
 
 # Notation
@@ -393,78 +393,79 @@ The weights come from the same data as the fit, and the fit treats them as known
 - Datasets: the `r length(unique(scores$dataset))` datasets with peptides, prepared as in the main benchmark (vignette `Benchmark_results`); the protein-table datasets have no peptides
 - The median polish is recomputed from the prepared peptides; it reproduces the prepared proteins exactly, and $n_{Ps}$ their `nr_children`
 - Facades lm, limma, deqms and rlm, each with every variant; `default` reproduces the main benchmark
-- Scores: pAUC_10 of the signed p-value, all contrasts pooled (partial area under the ROC curve up to a false positive rate of 0.1, scale 0 to 100); the false discovery proportion (FDP) and the number of true discoveries (TP) at a nominal FDR of 5%, with the unchanged proteins as nulls
+- Scores: pAUC_5 of the signed p-value, all contrasts pooled (partial area under the ROC curve up to a false positive rate of 0.05, scale 0 to 100); the false discovery proportion (FDP) and the number of true discoveries (TP) at a nominal FDR of 5%, with the unchanged proteins as nulls
 - prolfqua version: `r paste(unique(scores$tool_version), collapse = ", ")`
 
 ## Ranking
 
 ```{r medianTable}
 scores |>
-  dplyr::summarise(pAUC_10 = stats::median(.data$pAUC_10), .by = c("facade", "variant")) |>
+  dplyr::summarise(pAUC_5 = stats::median(.data$pAUC_5), .by = c("facade", "variant")) |>
   dplyr::arrange(.data$variant) |>
-  tidyr::pivot_wider(names_from = "variant", values_from = "pAUC_10") |>
+  tidyr::pivot_wider(names_from = "variant", values_from = "pAUC_5") |>
   dplyr::arrange(.data$facade) |>
   knitr::kable(
     digits = 1,
     format = "html",
     table.attr = "class=\"table table-condensed\"",
     caption = paste0(
-      "pAUC_10 of the signed p-value, median over the datasets, per facade (rows) and weight variant (columns). ",
-      "pAUC_10: partial area under the ROC curve up to a false positive rate of 0.1, scaled 0 to 100, all ",
+      "pAUC_5 of the signed p-value, median over the datasets, per facade (rows) and weight variant (columns). ",
+      "pAUC_5: partial area under the ROC curve up to a false positive rate of 0.05, scaled 0 to 100, all ",
       "contrasts pooled."
     )
   )
 ```
 
-```{r rankingFigure, fig.height = 6, fig.cap = "pAUC_10 of each weight variant minus that of the peptide count (count), per dataset (points) and facade (panels). Above the dashed line the variant ranks the changed proteins better than the peptide count."}
+```{r rankingFigure, fig.height = 6, fig.cap = "pAUC_5 of each weight variant minus that of the peptide count (count), per dataset (points) and facade (panels). Above the dashed line the variant ranks the changed proteins better than the peptide count."}
 ggplot2::ggplot(
   dplyr::filter(versus_count, .data$variant != "count"),
-  ggplot2::aes(x = .data$variant, y = .data$d_pAUC_10, colour = .data$dataset)
+  ggplot2::aes(x = .data$variant, y = .data$d_pAUC_5, colour = .data$dataset)
 ) +
   ggplot2::geom_hline(yintercept = 0, linetype = "dashed", colour = "grey40") +
   ggplot2::geom_point(position = ggplot2::position_jitter(width = 0.15, height = 0, seed = 1), size = 2) +
   ggplot2::facet_wrap(~ facade) +
-  ggplot2::labs(x = "weight variant", y = "pAUC_10 minus pAUC_10 of count", colour = "dataset") +
+  ggplot2::labs(x = "weight variant", y = "pAUC_5 minus pAUC_5 of count", colour = "dataset") +
   ggplot2::theme_bw() +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
 ```
 
 ```{r datasetTable}
 scores |>
-  dplyr::select("facade", "dataset", "variant", "pAUC_10") |>
+  dplyr::select("facade", "dataset", "variant", "pAUC_5") |>
   dplyr::arrange(.data$variant) |>
-  tidyr::pivot_wider(names_from = "variant", values_from = "pAUC_10") |>
+  tidyr::pivot_wider(names_from = "variant", values_from = "pAUC_5") |>
   dplyr::arrange(.data$facade, .data$dataset) |>
   knitr::kable(
     digits = 1,
     format = "html",
     table.attr = "class=\"table table-condensed\"",
-    caption = "pAUC_10 of the signed p-value per facade, dataset (rows) and weight variant (columns)."
+    caption = "pAUC_5 of the signed p-value per facade, dataset (rows) and weight variant (columns)."
   )
 ```
 
 ## Calibration and power
 
-```{r tradeoffFigure, fig.height = 6, fig.cap = "Change of the false discovery proportion at a nominal FDR of 5% (x) against the change of pAUC_10 (y), each against the peptide count, per dataset (points), weight variant (colour) and facade (panels). Bottom right is worse calibration without better ranking; top left better on both."}
+```{r tradeoffFigure, fig.width = 12, fig.height = 8, fig.cap = "Ranking against calibration, each as the difference to the peptide count (count, the crossing of the dashed lines): change of the false discovery proportion at a nominal FDR of 5% (x; right: more false discoveries than the FDR promises) against the change of pAUC_5 (y; up: changed proteins ranked better). Columns: weight variants; rows: facades; one point per dataset (colour). Top left is better on both; bottom right worse on both."}
 ggplot2::ggplot(
-  dplyr::filter(versus_count, .data$variant %in% c("protein_ivw", "sample_ivw", "sample_rel", "count_conf")),
-  ggplot2::aes(x = .data$d_FDP_5, y = .data$d_pAUC_10, colour = .data$variant)
+  dplyr::filter(versus_count, !.data$variant %in% c("count", "default")),
+  ggplot2::aes(x = .data$d_FDP_5, y = .data$d_pAUC_5, colour = .data$dataset)
 ) +
   ggplot2::geom_hline(yintercept = 0, linetype = "dashed", colour = "grey40") +
   ggplot2::geom_vline(xintercept = 0, linetype = "dashed", colour = "grey40") +
   ggplot2::geom_point(size = 2) +
-  ggplot2::facet_wrap(~ facade) +
+  ggplot2::facet_grid(facade ~ variant) +
   ggplot2::labs(
     x = "FDP at nominal FDR 5% minus that of count",
-    y = "pAUC_10 minus that of count",
-    colour = "variant"
+    y = "pAUC_5 minus that of count",
+    colour = "dataset"
   ) +
-  ggplot2::theme_bw()
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom", axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5))
 ```
 
 ```{r fdpTable}
 scores |>
-  dplyr::filter(.data$variant %in% c("count", "count_conf", "protein_ivw", "sample_ivw", "sample_rel")) |>
+  dplyr::filter(.data$variant != "default") |>
   dplyr::mutate(value = paste0(formatC(.data$FDP_5, format = "f", digits = 3), " (", .data$TP_5, ")")) |>
   dplyr::select("facade", "dataset", "variant", "value") |>
   dplyr::arrange(.data$variant) |>
@@ -480,11 +481,48 @@ scores |>
   )
 ```
 
+## Identification confidence
+
+```{r confidence}
+lm_scores <- dplyr::filter(scores, .data$facade == "lm")
+confidence_effect <- lm_scores |>
+  dplyr::select("dataset", "variant", "pAUC_5") |>
+  tidyr::pivot_wider(names_from = "variant", values_from = "pAUC_5") |>
+  dplyr::mutate(
+    `conf on count` = .data$count_conf - .data$count,
+    `conf on sample_rel` = .data$sample_rel_conf - .data$sample_rel
+  )
+varies <- dplyr::filter(confidence_effect, abs(.data$`conf on sample_rel`) > 0.1)
+```
+
+The confidence enters only the `_conf` variants. It changes the ranking only where it varies across the samples of a protein: in `r nrow(confidence_effect) - nrow(varies)` of the `r nrow(confidence_effect)` datasets it is 1, constant per peptide, or above the floor of 0.5, and `sample_rel_conf` equals `sample_rel`. Where it varies, it helps or hurts:
+
+```{r confidenceTable}
+confidence_effect |>
+  dplyr::select("dataset", "count", "count_conf", "sample_rel", "sample_rel_conf", "conf on count", "conf on sample_rel") |>
+  dplyr::arrange(dplyr::desc(abs(.data$`conf on sample_rel`))) |>
+  knitr::kable(
+    digits = 2,
+    format = "html",
+    table.attr = "class=\"table table-condensed\"",
+    caption = paste0(
+      "lm, pAUC_5 per dataset with and without the identification confidence: the peptide count (count, ",
+      "count_conf) and the peptide consistency (sample_rel, sample_rel_conf); the last two columns are the change ",
+      "the confidence makes."
+    )
+  )
+```
+
+- Helps: `r paste(varies$dataset[varies[["conf on sample_rel"]] > 0], collapse = ", ")`
+- Hurts: `r paste(varies$dataset[varies[["conf on sample_rel"]] < 0], collapse = ", ")`
+- IonStar_MetaMorpheus carries 1 − PIP PEP of its match-between-runs peaks (MS/MS peaks 1), SingleCell_MaxQuant 1 − the MaxQuant evidence PEP; both floored at 0.5
+- So `sample_rel_conf` is best where the confidence is informative and `sample_rel` where it is not; in the median over the datasets `sample_rel` leads
+
 # Conclusions
 
-- The within-protein part of the peptide consistency (`sample_rel`) ranks better than the peptide count on every dataset for lm and limma
+- The within-protein part of the peptide consistency (`sample_rel`) ranks better than the peptide count for lm on `r sum(lm_rel$d_pAUC_5 > 0)` of `r nrow(lm_rel)` datasets, by up to `r fmt(max(lm_rel$d_pAUC_5), 2)`; the largest loss is `r fmt(min(lm_rel$d_pAUC_5), 2)`
 - The protein-wide part ($\tilde\sigma^2_P$) does not help; through the variance moderation it costs a little ranking and calibration
-- The identification confidence on top does not help on these data, where the readers floor it at 0.5: `count_conf` ranks like `count`, and `sample_rel_conf` keeps about half the gain of `sample_rel` (lm median `r fmt(median(summary_of("lm", "sample_rel_conf")$d_pAUC_10), 2)` against `r fmt(median(lm_rel$d_pAUC_10), 2)`)
+- The identification confidence on top helps or hurts depending on the dataset (section Identification confidence); in the median `sample_rel_conf` gains `r fmt(median(summary_of("lm", "sample_rel_conf")$d_pAUC_5), 2)` against `r fmt(median(lm_rel$d_pAUC_5), 2)` for `sample_rel` (lm)
 - Open: the higher FDP. Candidates are a tempered weight ($f^{1/2}$), stronger shrinkage, or a correction of the degrees of freedom for estimated weights; then the weight would move into prolfqua's aggregation (TODO `TODO/prolfqua/TODO_aggregate_variance_weights.md`)
 
 # Reference

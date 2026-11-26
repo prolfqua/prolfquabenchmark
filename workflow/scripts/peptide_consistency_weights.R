@@ -1,10 +1,10 @@
 # Peptide consistency weights (vignette Peptide_consistency_weights): weights of the protein x sample abundances from
 # how well a protein's peptides agree, the residuals of the median polish that aggregated them. Recomputes the median
-# polish of each protein on the prepared peptides (checked against the prepared proteins), adds every weight variant
-# as a column (peptide_consistency.R), fits the protein-level prolfqua facades lm, limma, deqms and rlm with each, and
-# scores the fits like score.R: pAUC_10 and AUC of the signed p-value, all contrasts pooled, and the false discovery
-# proportion and number of true discoveries at a nominal FDR of 5%. Writes <out_dir>/scores.tsv (one row per facade
-# and variant) and <out_dir>/priors.tsv (the empirical Bayes priors of the dataset), the contrasts under
+# polish of each protein on the prepared peptides (checked against the prepared proteins), adds every weight variant as
+# a column (peptide_consistency.R), fits the protein-level prolfqua facades lm, limma, deqms and rlm with each, and
+# scores the fits like score.R (score_fit()): AUC, pAUC_5 and pAUC_10 of the signed p-value, all contrasts pooled, and
+# the false discovery proportion and number of true discoveries at a nominal FDR of 5%. Writes <out_dir>/scores.tsv (one
+# row per facade and variant) and <out_dir>/priors.tsv (the empirical Bayes priors of the dataset), the contrasts under
 # <out_dir>/contrasts/<method>/<variant>.
 #   Rscript workflow/scripts/peptide_consistency_weights.R <config> <dataset> <prepared_dir> <out_dir>
 source("workflow/scripts/common.R")
@@ -13,16 +13,6 @@ args <- script_args(c("config", "dataset", "prepared_dir", "out_dir"))
 methods <- c("prolfqua_lm", "prolfqua_limma", "prolfqua_deqms", "prolfqua_rlm")
 # default: the prepared proteins as the main benchmark fits them, with the facade's own weights
 variants <- c("default", weight_variants)
-
-# FDP and number of true discoveries at the last point with nominal FDR <= 0.05, all contrasts pooled
-at_fdr_5 <- function(bench) {
-  fdp <- dplyr::filter(bench$get_confusion_FDRvsFDP(), .data$contrast == "all", .data$scorecol <= 0.05)
-  if (nrow(fdp) == 0) {
-    return(c(FDP_5 = 0, TP_5 = 0))
-  }
-  last <- fdp[which.max(fdp$scorecol), ]
-  c(FDP_5 = last$FDP[1], TP_5 = last$TP_hits[1])
-}
 
 peptides <- readRDS(file.path(args$prepared_dir, "peptides.rds"))
 proteins <- readRDS(file.path(args$prepared_dir, "proteins.rds"))
@@ -78,23 +68,7 @@ for (method in methods) {
       method,
       software_version = paste0("prolfqua ", utils::packageVersion("prolfqua"))
     )
-    bench <- prolfquabenchmark::benchmark_from_file(dir)
-    scores <- dplyr::filter(
-      bench$to_summary_table(dataset = args$dataset),
-      .data$contrast == "all",
-      .data$score == "scaled.p_value"
-    )
-    fdr <- at_fdr_5(bench)
-    rows[[length(rows) + 1]] <- data.frame(
-      dataset = args$dataset,
-      method = method,
-      variant = variant,
-      AUC = scores$AUC,
-      pAUC_10 = scores$pAUC_10,
-      FDP_5 = fdr[["FDP_5"]],
-      TP_5 = fdr[["TP_5"]],
-      tool_version = paste0("prolfqua ", utils::packageVersion("prolfqua"))
-    )
+    rows[[length(rows) + 1]] <- score_fit(dir, args$dataset, method, variant)
     message(args$dataset, " ", method, " ", variant)
   }
 }

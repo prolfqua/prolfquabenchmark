@@ -136,3 +136,29 @@ lfq_with_weight <- function(weighted, variant) {
   config$nr_children <- paste0("weight_", variant)
   prolfqua::LFQData$new(weighted$data, config)
 }
+
+# Scores of one fit, its contrasts in `dir`, as score.R scores the main benchmark: AUC, pAUC_5 (partial AUC up to a
+# false positive rate of 0.05) and pAUC_10 of the signed p-value (scaled.p_value), all contrasts pooled; the false
+# discovery proportion and number of true discoveries at the last point with nominal FDR <= 0.05
+score_fit <- function(dir, dataset, method, variant) {
+  bench <- prolfquabenchmark::benchmark_from_file(dir)
+  roc <- dplyr::filter(bench$get_confusion_benchmark(), .data$contrast == "all", .data$what == "scaled.p_value")
+  summary <- dplyr::filter(
+    bench$to_summary_table(dataset = dataset),
+    .data$contrast == "all",
+    .data$score == "scaled.p_value"
+  )
+  fdp <- dplyr::filter(bench$get_confusion_FDRvsFDP(), .data$contrast == "all", .data$scorecol <= 0.05)
+  last <- fdp[which.max(fdp$scorecol), ]
+  data.frame(
+    dataset = dataset,
+    method = method,
+    variant = variant,
+    AUC = summary$AUC,
+    pAUC_5 = prolfquabenchmark::ms_bench_auc(roc$FPR, roc$TPR, 0.05),
+    pAUC_10 = summary$pAUC_10,
+    FDP_5 = if (nrow(last) == 0) 0 else last$FDP[1],
+    TP_5 = if (nrow(last) == 0) 0 else last$TP_hits[1],
+    tool_version = yaml::read_yaml(file.path(dir, "metadata.yaml"))$software_version
+  )
+}
