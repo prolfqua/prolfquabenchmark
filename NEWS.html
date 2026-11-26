@@ -46,7 +46,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -187,6 +187,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./man/front_set_scores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">front_set_scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./man/ionstar_bench_preprocess.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">ionstar_bench_preprocess</span></a>
   </div>
@@ -286,6 +292,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="prolfquabenchmark-0.3.4" class="level1">
 <h1>prolfquabenchmark 0.3.4</h1>
 <ul>
+<li><p>New <code>front_set_scores()</code>, a pipeline output <code>benchmark_front_sets.tsv</code> and per dataset in <code>Benchmark_results</code> a table and a figure: the Pareto-front methods define sets of contrasts, sorted by size, and every method is scored (pAUC_5) on each set it computes completely and on the contrasts the next larger set adds, with the number of positives among them. On IonStar MetaMorpheus, the 11142 contrasts that limpa computes beyond limma’s rank near random (pAUC_5 3.0; random 2.5). <code>benchmark_from_result()</code> takes the ranking scores to compute (<code>scores</code>), and <code>score_on_pairs()</code> computes only the score it reports: it failed when another score was missing for all the pairs.</p></li>
 <li><p>New vignette <code>Peptide_consistency_weights</code>: weights of the protein abundances from how well a protein’s peptides agree, the residuals of the median polish that aggregated them, with the maths (residual variances per protein and per sample, their empirical Bayes shrinkage, the weight variants, why a protein-wide factor changes moderated models) and a benchmark of the variants with the lm, limma, deqms and rlm facades on the eight datasets with peptides: ranking (pAUC_5, as the main benchmark) and the false discovery proportion at a nominal FDR of 5%. New pipeline steps <code>peptide_consistency</code> and <code>export_peptide_consistency</code> write <code>inst/extdata/peptide_consistency_scores.tsv</code> and <code>peptide_consistency_priors.tsv</code>. An illustration on IonStar MaxQuant (pipeline step <code>peptide_consistency_illustration</code>, five more <code>peptide_consistency_*.tsv</code> tables) shows how the variants differ: the peptides, residuals and weights of four example proteins, the protein scale of each variant against the protein residual variance, the shrinkage of the variances, and the lm p-values of each variant against the peptide count.</p></li>
 <li><p>The benchmark no longer filters proteins by their number of peptides: every dataset keeps all proteins, also those with one peptide (before: at least 2 peptides, or 2 unique peptides in the protein tables), and MSstats gets all precursors of MSstats.csv. Every method is scored on all proteins it computes, so the scores can be split by the number of peptides afterwards.</p></li>
 <li><p>The identification confidence of every dataset is floored at 0.5, the rule of prolfquapp’s readers: an observation the software accepted keeps at least half weight. Confidences near 0, from match-between-runs peaks with a PIP PEP near 1 in <code>IonStar_MetaMorpheus</code>, had lowered pAUC_10 by up to 12 points; with the floor, ROPECA V2 and the hurdle model gain 1 to 2 points against fitting without the confidence on IonStar MetaMorpheus and MaxQuant single-cell, and no model loses more than 1 point.</p></li>
