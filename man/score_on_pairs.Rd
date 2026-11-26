@@ -25,6 +25,7 @@ pooled.
 }
 \seealso{
 Other same pairs:
+\code{\link[=front_set_scores]{front_set_scores()}},
 \code{\link[=same_pairs_scores]{same_pairs_scores()}}
 }
 \concept{same pairs}

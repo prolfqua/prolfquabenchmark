@@ -26,6 +26,7 @@ statistic, with `scaled.p_value` those with a fold change and a p-value.
 }
 \seealso{
 Other same pairs:
+\code{\link[=front_set_scores]{front_set_scores()}},
 \code{\link[=score_on_pairs]{score_on_pairs()}}
 }
 \concept{same pairs}

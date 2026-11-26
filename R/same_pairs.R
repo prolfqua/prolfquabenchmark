@@ -38,7 +38,8 @@ pareto_optimal <- function(x, y) {
 score_on_pairs <- function(result, pairs, score) {
   score <- match.arg(score, names(.pair_columns))
   result$data <- dplyr::semi_join(result$data, pairs, by = c("protein_id", "contrast"))
-  roc <- benchmark_from_result(result)$get_confusion_benchmark()
+  # the ROC of this score only: another score may be missing for all of these pairs
+  roc <- benchmark_from_result(result, scores = score)$get_confusion_benchmark()
   roc <- roc[roc$contrast == "all" & roc$what == score, ]
   c(pAUC_5 = ms_bench_auc(roc$FPR, roc$TPR, 0.05), pAUC_10 = ms_bench_auc(roc$FPR, roc$TPR, 0.1))
 }
@@ -119,6 +120,89 @@ same_pairs_scores <- function(results, scores) {
     pAUC_10 = pauc["pAUC_10", ],
     row.names = NULL
   )
+}
+
+#' Scores of every method on the sets of contrasts of the Pareto front and on the contrasts each next set adds
+#'
+#' The methods on the Pareto front of pAUC_5 against contrasts computed define sets of protein and contrast pairs, their
+#' pairs, sorted here by size; front methods with the same pairs form one set, named by the first in alphabetical order.
+#' Every method is scored with [score_on_pairs()] on each set if it tests all of its pairs,
+#' and on the pairs the next larger set adds if it tests all of those: does a method that computes more contrasts rank
+#' the added ones well? The pairs a method tests are those of [same_pairs_scores()].
+#'
+#' @inheritParams same_pairs_scores
+#' @return data.frame with one row per ranking score, front set and method: `score`, `front_method` (the method whose
+#'   pairs form the set), `contrasts` (pairs in the set), `method`, `pAUC_5` (on the set; NA if the method does not
+#'   test all its pairs), `next_contrasts` (pairs in the next larger set), `added` (pairs of the next set not in this
+#'   one), `added_positives` (changed pairs among them, the positives of the ground truth), `pAUC_5_added` (on the added
+#'   pairs; NA if the method does not test all of them); the last four are NA for the largest set
+#' @export
+#' @family same pairs
+front_set_scores <- function(results, scores) {
+  comparison <- prolfqua::ContrastsComparison$new(lapply(results, .as_contrasts_table))
+  summary <- scores |>
+    dplyr::summarize(
+      pAUC_5 = .data$pAUC_5[.data$contrast == "all"],
+      contrasts = .data$n_total[.data$contrast == "all"],
+      .by = c("model_name", "score")
+    )
+  pair_keys <- function(pairs) do.call(paste, c(pairs, sep = "\r"))
+  score_if_tested <- function(method_keys, result, pairs, score) {
+    if (!all(pair_keys(pairs) %in% method_keys)) {
+      return(NA_real_)
+    }
+    score_on_pairs(result, pairs, score)[["pAUC_5"]]
+  }
+  rows <- list()
+  for (score in names(.pair_columns)) {
+    columns <- .pair_columns[[score]]
+    score_summary <- summary[summary$score == score, ]
+    front <- score_summary$model_name[pareto_optimal(score_summary$pAUC_5, score_summary$contrasts)]
+    sets <- lapply(stats::setNames(front, front), function(method) comparison$pairs(method, columns))
+    sets <- sets[order(vapply(sets, nrow, integer(1)), names(sets))]
+    # front methods with the same pairs form one set
+    sets <- sets[!duplicated(lapply(sets, function(pairs) sort(pair_keys(pairs))))]
+    method_keys <- lapply(stats::setNames(names(results), names(results)), function(m) {
+      pair_keys(comparison$pairs(m, columns))
+    })
+    for (i in seq_along(sets)) {
+      pairs <- sets[[i]]
+      row <- data.frame(
+        score = score,
+        front_method = names(sets)[i],
+        contrasts = nrow(pairs),
+        method = names(results),
+        pAUC_5 = vapply(
+          names(results),
+          function(m) score_if_tested(method_keys[[m]], results[[m]], pairs, score),
+          numeric(1)
+        ),
+        next_contrasts = NA_integer_,
+        added = NA_integer_,
+        added_positives = NA_integer_,
+        pAUC_5_added = NA_real_,
+        row.names = NULL
+      )
+      if (i < length(sets)) {
+        next_method <- names(sets)[i + 1]
+        added <- sets[[i + 1]][!pair_keys(sets[[i + 1]]) %in% pair_keys(pairs), ]
+        truth <- annotate_ground_truth(
+          dplyr::semi_join(results[[next_method]]$data, added, by = c("protein_id", "contrast")),
+          results[[next_method]]$metadata$ground_truth
+        )
+        row$next_contrasts <- nrow(sets[[i + 1]])
+        row$added <- nrow(added)
+        row$added_positives <- sum(truth$TP)
+        row$pAUC_5_added <- vapply(
+          names(results),
+          function(m) score_if_tested(method_keys[[m]], results[[m]], added, score),
+          numeric(1)
+        )
+      }
+      rows[[length(rows) + 1]] <- row
+    }
+  }
+  dplyr::bind_rows(rows)
 }
 
 #' A benchmark result as a prolfqua ContrastsTable, its columns named by a ContrastConfiguration

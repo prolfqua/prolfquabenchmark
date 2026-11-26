@@ -147,7 +147,8 @@ rule score:
         "{output.scores} {output.curves} > {log} 2>&1"
 
 
-# Scores every method of a dataset that tests all the pairs of a Pareto-front method on those pairs
+# Scores every method of a dataset that tests all the pairs of a Pareto-front method on those pairs, and every method
+# on each front set and on the pairs the next larger set adds
 rule score_same_pairs:
     input:
         script="workflow/scripts/score_same_pairs.R",
@@ -155,14 +156,15 @@ rule score_same_pairs:
         contrasts=lambda w: [f"{RESULTS}/contrasts/{w.dataset}/{m}/contrasts.tsv" for d, m in JOBS if d == w.dataset],
         scores=lambda w: [f"{RESULTS}/scores/{w.dataset}/{m}.tsv" for d, m in JOBS if d == w.dataset],
     output:
-        f"{RESULTS}/same_pairs/{{dataset}}.tsv",
+        same_pairs=f"{RESULTS}/same_pairs/{{dataset}}.tsv",
+        front_sets=f"{RESULTS}/front_sets/{{dataset}}.tsv",
     params:
         packages=lambda w: {name: PACKAGES[name] for name in ["prolfqua", "prolfquabenchmark"]},
         methods=lambda w: " ".join(m for d, m in JOBS if d == w.dataset),
     log:
         f"{LOGS}/score_same_pairs_{{dataset}}.log",
     shell:
-        "Rscript {input.script} {wildcards.dataset} {output} {params.methods} > {log} 2>&1"
+        "Rscript {input.script} {wildcards.dataset} {output.same_pairs} {output.front_sets} {params.methods} > {log} 2>&1"
 
 
 rule export:
@@ -175,6 +177,7 @@ rule export:
         metadata=[f"{RESULTS}/contrasts/{dataset}/{method}/metadata.yaml" for dataset, method in JOBS],
         fit_times=[f"{RESULTS}/benchmarks/{dataset}/{method}.tsv" for dataset, method in JOBS],
         same_pairs=[f"{RESULTS}/same_pairs/{dataset}.tsv" for dataset in sorted({d for d, m in JOBS})],
+        front_sets=[f"{RESULTS}/front_sets/{dataset}.tsv" for dataset in sorted({d for d, m in JOBS})],
     output:
         scores="inst/extdata/benchmark_scores.tsv",
         curves="inst/extdata/benchmark_curves.tsv",
@@ -182,6 +185,7 @@ rule export:
         datasets="inst/extdata/benchmark_datasets.tsv",
         preprocessing="inst/extdata/benchmark_preprocessing.tsv",
         same_pairs="inst/extdata/benchmark_same_pairs.tsv",
+        front_sets="inst/extdata/benchmark_front_sets.tsv",
     log:
         "logs/export.log",
     shell:

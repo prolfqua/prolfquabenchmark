@@ -34,6 +34,7 @@ The benchmark pipeline (`make benchmark`; `workflow/Snakefile`, `config/config.y
 - Contrasts computed: protein and contrast pairs with a result for the ranking score, all contrasts together. Each method is scored on the pairs it computes, so pAUC_5 is plotted against this count
 - Pareto front (red): the methods no other method beats on both pAUC_5 and contrasts computed
 - Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test all its protein and contrast pairs (the same or more) are scored again on exactly these pairs (`same_pairs_scores()`; figure after the Pareto front, ranking by scaled p-value; `benchmark_same_pairs.tsv` has all three ranking scores)
+- Front sets: the Pareto-front methods define sets of contrasts, sorted by size. Every method is scored on each set it computes completely (C2) and on the contrasts the next larger set adds (C3): are the extra contrasts of a method that computes more ranked well, or near random? (`front_set_scores()`; table and figure after the same-pairs figure, ranking by scaled p-value; `benchmark_front_sets.tsv` has all three ranking scores)
 - Level: `protein` (model fitted to protein abundances), `peptide` (model fitted to peptides, one result per protein), `protein + peptide` (hurdle: intensity on proteins, detection on peptides)
 - FDP vs FDR: the false discovery proportion at each nominal FDR; a calibrated FDR lies on the diagonal
 - Calibration and power: the false discovery proportion against the number of true discoveries at a nominal FDR of 5%, one point per method, after the FDP vs FDR curves of each dataset
@@ -51,6 +52,7 @@ methods <- extdata("benchmark_methods.tsv", col_classes = c(tool_version = "char
 datasets <- extdata("benchmark_datasets.tsv")
 preprocessing <- extdata("benchmark_preprocessing.tsv")
 same_pairs <- extdata("benchmark_same_pairs.tsv")
+front_sets <- extdata("benchmark_front_sets.tsv")
 ```
 
 ```{r method-style}
@@ -214,6 +216,73 @@ for (dataset_name in datasets$dataset) {
       )
     )
   }
+  # every method on each Pareto-front set (C1, C2) and on the contrasts the next set adds (C3)
+  dataset_front <- front_sets |>
+    dplyr::filter(.data$dataset == dataset_name, .data$score == "scaled.p_value") |>
+    dplyr::arrange(factor(.data$method, levels = unique(.data$method)), .data$contrasts)
+  dataset_front |>
+    dplyr::select(
+      Tool = "method",
+      `C1 contrasts` = "contrasts",
+      `C2 pAUC_5` = "pAUC_5",
+      `Next C1` = "next_contrasts",
+      Added = "added",
+      `Added positives` = "added_positives",
+      `C3 pAUC_5 of added` = "pAUC_5_added"
+    ) |>
+    knitr::kable(
+      digits = 1,
+      format = "html",
+      table.attr = "class=\"table table-condensed\"",
+      caption = paste0(
+        "Every method on the sets of contrasts of the Pareto front on ", dataset_name, ", ranking by scaled p-value, ",
+        pooled, ". C1: contrasts of the set, those a front method computes; C2: pAUC_5 of the method on the set; ",
+        "Next C1: contrasts of the next larger set; Added: contrasts of the next set not in this one; Added ",
+        "positives: ", positive, " (changed) pairs among them; C3: pAUC_5 of the method on the added contrasts. ",
+        "Empty: the method does not compute all these contrasts. A random ranking has a pAUC_5 of about 2.5; C3 on ",
+        "few added positives is not reliable."
+      )
+    ) |>
+    cat()
+  front_plot <- dplyr::bind_rows(
+    dataset_front |>
+      dplyr::transmute(
+        .data$method,
+        panel = "C2: pAUC_5 on the set",
+        x = paste0(.data$contrasts, "\n", sub("^prolfqua_", "", .data$front_method)),
+        order = .data$contrasts,
+        y = .data$pAUC_5
+      ),
+    dataset_front |>
+      dplyr::filter(!is.na(.data$next_contrasts)) |>
+      dplyr::transmute(
+        .data$method,
+        panel = "C3: pAUC_5 on the contrasts the next set adds",
+        x = paste0(.data$contrasts, " to ", .data$next_contrasts, "\n", .data$added_positives, " positives added"),
+        order = .data$contrasts,
+        y = .data$pAUC_5_added
+      )
+  )
+  front_plot$x <- factor(front_plot$x, levels = unique(front_plot$x[order(front_plot$panel, front_plot$order)]))
+  random <- data.frame(panel = "C3: pAUC_5 on the contrasts the next set adds", y = 2.5)
+  print_with_height(
+    ggplot2::ggplot(front_plot, ggplot2::aes(x = x, y = y, colour = method, shape = method, group = method)) +
+      ggplot2::geom_hline(data = random, ggplot2::aes(yintercept = y), linetype = "dashed", colour = "grey40") +
+      ggplot2::geom_line(linewidth = 0.5) +
+      ggplot2::geom_point(size = 3) +
+      ggplot2::facet_wrap(~panel, ncol = 1, scales = "free") +
+      ggplot2::labs(x = NULL, y = "pAUC_5", title = paste(dataset_name, "Pareto-front sets and the contrasts they add")) +
+      method_style(front_plot$method),
+    height = if (any(!is.na(dataset_front$next_contrasts))) 8 else 4.5,
+    caption = paste0(
+      "Every method on the sets of contrasts of the Pareto front on ", dataset_name, " (table above), ranking by ",
+      "scaled p-value. Top: pAUC_5 on each set, labelled by its number of contrasts and the front method that ",
+      "computes them, smallest first. Bottom: pAUC_5 on the contrasts the next larger set adds, labelled by the two ",
+      "sets and the number of ", positive, " (changed) pairs among the added contrasts; the dashed line is a random ",
+      "ranking. A method without a point does not compute all these contrasts. Colour, shape: method as in the ",
+      "other figures."
+    )
+  )
   computed <- dataset_scores |>
     dplyr::filter(.data$contrast == "all", .data$score == "scaled.p_value") |>
     dplyr::select(model = "model_name", `contrasts computed` = "n_total")

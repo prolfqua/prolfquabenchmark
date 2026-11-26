@@ -4,11 +4,17 @@
 \alias{benchmark_from_result}
 \title{Create a Benchmark object from a write_contrast_results return value}
 \usage{
-benchmark_from_result(result, ...)
+benchmark_from_result(
+  result,
+  scores = c("log_fc", "t_statistic", "scaled.p_value"),
+  ...
+)
 }
 \arguments{
 \item{result}{list with \code{data} and \code{metadata} as returned by
 \code{\link{write_contrast_results}}}
+
+\item{scores}{ranking scores of the ROC curves, by default all three}
 
 \item{...}{additional arguments passed to \code{\link{make_benchmark}}}
 }

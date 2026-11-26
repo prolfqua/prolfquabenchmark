@@ -47,6 +47,7 @@ benchmark_from_file <- function(path, ...) {
 #'
 #' @param result list with \code{data} and \code{metadata} as returned by
 #'   \code{\link{write_contrast_results}}
+#' @param scores ranking scores of the ROC curves, by default all three
 #' @param ... additional arguments passed to \code{\link{make_benchmark}}
 #' @return \code{\link{Benchmark}} R6 object
 #' @export
@@ -57,7 +58,7 @@ benchmark_from_file <- function(path, ...) {
 #' bench <- benchmark_from_result(res)
 #' bench$plot_ROC()
 #' }
-benchmark_from_result <- function(result, ...) {
+benchmark_from_result <- function(result, scores = c("log_fc", "t_statistic", "scaled.p_value"), ...) {
   data <- annotate_ground_truth(result$data, result$metadata$ground_truth)
   data <- dplyr::ungroup(data)
   make_benchmark(
@@ -69,11 +70,7 @@ benchmark_from_result <- function(result, ...) {
     toscale = c("p_value"),
     hierarchy = c("protein_id"),
     avgInt = "avg_intensity",
-    benchmark = list(
-      list(score = "log_fc", desc = TRUE),
-      list(score = "t_statistic", desc = TRUE),
-      list(score = "scaled.p_value", desc = TRUE)
-    ),
+    benchmark = lapply(scores, function(score) list(score = score, desc = TRUE)),
     FDRvsFDP = list(list(score = "p_value_adjusted", desc = FALSE)),
     summarizeNA = "t_statistic",
     ...

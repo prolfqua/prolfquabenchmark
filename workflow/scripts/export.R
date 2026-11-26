@@ -1,5 +1,6 @@
 # Exports the current benchmark for the display vignettes (vignettes/Benchmark_results.Rmd): scores, curves, the
-# scores on the pairs of the Pareto-front methods (results/same_pairs/<dataset>.tsv), a methods table (tool version,
+# scores on the pairs of the Pareto-front methods (results/same_pairs/<dataset>.tsv), the scores on the front sets and
+# on the pairs each next set adds (results/front_sets/<dataset>.tsv), a methods table (tool version,
 # level, input, fit time), a datasets table (with the labels of the changed and unchanged proteins) and their
 # preprocessing steps, as TSV files in <out_dir>. The score
 # files (results/scores/<dataset>/<method>.tsv) name the jobs; the Snakefile passes them.
@@ -25,6 +26,10 @@ write_tsv(read_tables(job_file("curves", ".tsv")), "benchmark_curves.tsv")
 write_tsv(
   read_tables(file.path("results/same_pairs", paste0(sort(unique(jobs$dataset)), ".tsv"))),
   "benchmark_same_pairs.tsv"
+)
+write_tsv(
+  read_tables(file.path("results/front_sets", paste0(sort(unique(jobs$dataset)), ".tsv"))),
+  "benchmark_front_sets.tsv"
 )
 
 methods <- dplyr::bind_rows(lapply(seq_len(nrow(jobs)), function(i) {
