@@ -1,5 +1,5 @@
-# CPTAC study 6 (UPS1 spiked into yeast), MaxQuant peptides.txt from Bioconductor MsDataHub: proteins with at least 2
-# peptides, vsn, median polish to proteins.
+# CPTAC study 6 (UPS1 spiked into yeast), MaxQuant peptides.txt from Bioconductor MsDataHub: all proteins (no minimum
+# number of peptides), vsn, median polish to proteins.
 #   Rscript workflow/scripts/prepare_cptac_maxquant.R <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args("out_dir")
@@ -13,7 +13,6 @@ config <- create_mq_peptide_config()
 config$factors["group."] <- "group"
 
 lfq <- prolfqua::LFQData$new(prolfqua::setup_analysis(peptides, config), config)
-lfq$filter_proteins_by_peptide_count()
 lfq$remove_small_intensities()
 
 normalized <- lfq$get_Transformer()$intensity_matrix(vsn::justvsn)$lfq

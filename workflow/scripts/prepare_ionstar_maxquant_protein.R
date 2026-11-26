@@ -1,7 +1,7 @@
-# IonStar, MaxQuant proteinGroups.txt (protein level): LFQ intensities, contaminants and decoys removed, proteins with
-# at least 2 peptides, log2 and robust scaling on the human proteins; the number of peptides is the child count (fit
-# weights, DEqMS). The proteins are the search software's protein table, so they are saved as both proteins and
-# protein_table.
+# IonStar, MaxQuant proteinGroups.txt (protein level): LFQ intensities, contaminants and decoys removed, all proteins
+# (no minimum number of peptides), log2 and robust scaling on the human proteins; the number of peptides is the child
+# count (fit weights, DEqMS). The proteins are the search software's protein table, so they are saved as both proteins
+# and protein_table.
 #   Rscript workflow/scripts/prepare_ionstar_maxquant_protein.R <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args("out_dir")
@@ -10,7 +10,6 @@ annotation <- readxl::read_xlsx(quantdata_file("annotation_Ionstar2018_PXD003881
 protein_groups <- prolfquapp::tidyMQ_ProteinGroups(quantdata_file("MAXQuant_IonStar2018_PXD003881.zip"))
 protein_groups <- dplyr::filter(protein_groups, !grepl("^REV__|^CON__", .data$proteinID))
 protein_groups <- dplyr::inner_join(protein_groups, annotation, by = "raw.file")
-protein_groups <- dplyr::filter(protein_groups, .data$nr.peptides > 1)
 
 config <- prolfqua::AnalysisConfiguration$new()
 config$factors[["dilution."]] <- "sample"

@@ -1,5 +1,5 @@
-# IonStar, FragPipe MSstats.csv: precursor intensities summed to peptides, proteins with at least 2 peptides, log2 and
-# robust scaling on the human proteins, median polish to proteins.
+# IonStar, FragPipe MSstats.csv: precursor intensities summed to peptides, all proteins (no minimum number of
+# peptides), log2 and robust scaling on the human proteins, median polish to proteins.
 #   Rscript workflow/scripts/prepare_ionstar_fragpipe_msstats.R <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args("out_dir")
@@ -27,7 +27,6 @@ config$factors[["run"]] <- "run_ID"
 config$factor_depth <- 1
 
 lfq <- prolfqua::LFQData$new(prolfqua::setup_analysis(peptides, config), config)
-lfq$filter_proteins_by_peptide_count()
 lfq$remove_small_intensities()
 
 normalized <- normalize_on_human(lfq)

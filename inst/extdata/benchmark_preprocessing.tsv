@@ -1,37 +1,37 @@
 dataset	step
 IonStar_MaxQuant	Contaminants and decoys (CON__, REV__) removed
-IonStar_MaxQuant	Proteins with at least 2 peptides
+IonStar_MaxQuant	All proteins, also those with one peptide
 IonStar_MaxQuant	Intensities below 4 (zeros) removed
 IonStar_MaxQuant	log2, robust scaling on the human proteins
 IonStar_MaxQuant	prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides
 IonStar_MaxQuant	prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)
 IonStar_MaxQuant_protein	LFQ intensities
 IonStar_MaxQuant_protein	Contaminants and decoys (CON__, REV__) removed
-IonStar_MaxQuant_protein	Proteins with at least 2 peptides
+IonStar_MaxQuant_protein	All proteins, also those with one peptide
 IonStar_MaxQuant_protein	Intensities below 4 (zeros) removed
 IonStar_MaxQuant_protein	log2, robust scaling on the human proteins
 IonStar_MaxQuant_protein	Every method fits this protein table; the number of peptides weights the prolfqua fits and is the DEqMS count
 IonStar_FragPipe_MSstats	Precursor intensities summed to peptides
-IonStar_FragPipe_MSstats	Proteins with at least 2 peptides
+IonStar_FragPipe_MSstats	All proteins, also those with one peptide
 IonStar_FragPipe_MSstats	Intensities below 4 (zeros) removed
 IonStar_FragPipe_MSstats	log2, robust scaling on the human proteins
 IonStar_FragPipe_MSstats	prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides
 IonStar_FragPipe_MSstats	prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)
-IonStar_FragPipe_MSstats	MSstats: the precursors of MSstats.csv, proteins with at least 2 peptides, its own dataProcess (log2, median equalization, Tukey median polish, imputation of censored values)
+IonStar_FragPipe_MSstats	MSstats: the precursors of MSstats.csv, all proteins, its own dataProcess (log2, median equalization, Tukey median polish, imputation of censored values)
 IonStar_FragPipe_protein	Razor intensities
-IonStar_FragPipe_protein	Proteins with at least 2 unique peptides
+IonStar_FragPipe_protein	All proteins, also those with one unique peptide
 IonStar_FragPipe_protein	Intensities below 4 (zeros) removed
 IonStar_FragPipe_protein	log2, robust scaling on the human proteins
 IonStar_FragPipe_protein	Every method fits this protein table; the number of unique peptides weights the prolfqua fits and is the DEqMS count
 IonStar_MetaMorpheus	Decoys and random-RT controls removed
 IonStar_MetaMorpheus	Peak intensities summed to base sequences; identification confidence 1 for MS/MS peaks, 1 - PIP PEP for match-between-runs peaks
 IonStar_MetaMorpheus	Protein groups of one organism (human or E. coli)
-IonStar_MetaMorpheus	Proteins with at least 2 peptides
+IonStar_MetaMorpheus	All proteins, also those with one peptide
 IonStar_MetaMorpheus	Intensities below 4 (zeros) removed
 IonStar_MetaMorpheus	log2, robust scaling on the human proteins
 IonStar_MetaMorpheus	prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides
 IonStar_MetaMorpheus	prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)
-CPTAC_MaxQuant	Proteins with at least 2 peptides
+CPTAC_MaxQuant	All proteins, also those with one peptide
 CPTAC_MaxQuant	Intensities below 4 (zeros) removed
 CPTAC_MaxQuant	vsn (variance-stabilizing transformation)
 CPTAC_MaxQuant	prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides
@@ -39,7 +39,7 @@ CPTAC_MaxQuant	prolfqua peptide models and msqrob2: the normalized peptides (msq
 SingleCell_DIANN	Protein groups at 1% q-value (library and run)
 SingleCell_DIANN	Precursor quantities summed to stripped sequences; identification confidence 1 - the smallest precursor PEP
 SingleCell_DIANN	Protein groups of one species (ProteoBench FASTA); contaminants removed
-SingleCell_DIANN	Proteins with at least 2 peptides
+SingleCell_DIANN	All proteins, also those with one peptide
 SingleCell_DIANN	Intensities below 4 (zeros) removed
 SingleCell_DIANN	log2, robust scaling on the human proteins
 SingleCell_DIANN	prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides
@@ -47,7 +47,7 @@ SingleCell_DIANN	prolfqua peptide models and msqrob2: the normalized peptides (m
 SingleCell_MaxQuant	Proteotypic evidence, decoys removed
 SingleCell_MaxQuant	Evidence intensities summed to peptides; identification confidence 1 - the smallest evidence PEP
 SingleCell_MaxQuant	Leading razor proteins of one species (ProteoBench FASTA); contaminants removed
-SingleCell_MaxQuant	Proteins with at least 2 peptides
+SingleCell_MaxQuant	All proteins, also those with one peptide
 SingleCell_MaxQuant	Intensities below 4 (zeros) removed
 SingleCell_MaxQuant	log2, robust scaling on the human proteins
 SingleCell_MaxQuant	prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides
@@ -55,14 +55,14 @@ SingleCell_MaxQuant	prolfqua peptide models and msqrob2: the normalized peptides
 diaPASEF_DIANN	Protein groups at 1% q-value (library and run)
 diaPASEF_DIANN	Precursor quantities summed to stripped sequences; identification confidence 1 - the smallest precursor PEP
 diaPASEF_DIANN	Protein groups of one species (ProteoBench FASTA); contaminants removed
-diaPASEF_DIANN	Proteins with at least 2 peptides
+diaPASEF_DIANN	All proteins, also those with one peptide
 diaPASEF_DIANN	Intensities below 4 (zeros) removed
 diaPASEF_DIANN	log2, robust scaling on the human proteins
 diaPASEF_DIANN	prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides
 diaPASEF_DIANN	prolfqua peptide models and msqrob2: the normalized peptides (msqrob2 median-polishes them itself)
 diaPASEF_Spectronaut	Precursor quantities summed to peptides (PEP.GroupingKey); identification confidence 1 - the smallest precursor q-value
 diaPASEF_Spectronaut	Protein groups of one species (ProteoBench FASTA); contaminants removed
-diaPASEF_Spectronaut	Proteins with at least 2 peptides
+diaPASEF_Spectronaut	All proteins, also those with one peptide
 diaPASEF_Spectronaut	Intensities below 4 (zeros) removed
 diaPASEF_Spectronaut	log2, robust scaling on the human proteins
 diaPASEF_Spectronaut	prolfqua protein models: peptides median-polished to proteins, weighted by the number of peptides

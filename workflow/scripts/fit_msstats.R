@@ -1,5 +1,5 @@
 # Fits MSstats (dataProcess, groupComparison) to its own input of one dataset: FragPipe MSstats.csv for
-# IonStar_FragPipe_MSstats, proteins with at least 2 peptides as in the prepared data of the other methods.
+# IonStar_FragPipe_MSstats, all proteins (no minimum number of peptides) as in the prepared data of the other methods.
 #   Rscript workflow/scripts/fit_msstats.R <config> <dataset> <method> <prepared_dir> <out_dir>
 source("workflow/scripts/common.R")
 args <- script_args(c("config", "dataset", "method", "prepared_dir", "out_dir"))
@@ -15,7 +15,6 @@ msstats_input <- switch(
       sep = ",",
       stringsAsFactors = FALSE
     )
-    fragpipe <- dplyr::filter(fragpipe, dplyr::n_distinct(.data$PeptideSequence) >= 2, .by = "ProteinName")
     fragpipe$BioReplicate <- NULL
     fragpipe$Condition <- NULL
     fragpipe$Run <- tolower(fragpipe$Run)

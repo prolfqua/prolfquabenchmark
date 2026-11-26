@@ -66,7 +66,6 @@ create_mq_peptide_config <- function() {
   config$hierarchy[["peptide_Id"]] <- "sequence"
   config$hierarchy_depth <- 1
   config$set_response("peptide.intensity")
-  config$min_peptides_protein <- 2
   config
 }
 
@@ -161,8 +160,8 @@ proteobench_species <- function(fasta_zip, md5) {
 
 # Prepares peptides of a spike-in dataset: `peptides` has one row per run and peptide with the columns raw.file,
 # protein_Id (ending in the species, e.g. _HUMAN), peptide, intensity, identification_confidence and the factor column
-# that `factor` names (c(<factor name> = <column>)). Proteins with at least 2 peptides, intensities below 4 removed,
-# log2 and robust scaling on the human proteins, median polish to proteins.
+# that `factor` names (c(<factor name> = <column>)). All proteins (no minimum number of peptides), intensities below 4
+# removed, log2 and robust scaling on the human proteins, median polish to proteins.
 prepare_peptides <- function(peptides, factor, out_dir) {
   config <- prolfqua::AnalysisConfiguration$new()
   config$file_name <- "raw.file"
@@ -172,10 +171,8 @@ prepare_peptides <- function(peptides, factor, out_dir) {
   config$set_response("intensity")
   config$factors[[names(factor)]] <- factor[[1]]
   config$factor_depth <- 1
-  config$min_peptides_protein <- 2
 
   lfq <- prolfqua::LFQData$new(prolfqua::setup_analysis(peptides, config), config)
-  lfq$filter_proteins_by_peptide_count()
   lfq$remove_small_intensities()
   normalized <- normalize_on_human(lfq)
   aggregator <- normalized$get_Aggregator()
