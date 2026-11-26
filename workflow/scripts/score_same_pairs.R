@@ -20,7 +20,6 @@ scores <- dplyr::bind_rows(lapply(args$methods, function(method) {
 same_pairs <- prolfquabenchmark::same_pairs_scores(results, scores)
 same_pairs <- cbind(dataset = rep(args$dataset, nrow(same_pairs)), same_pairs)
 same_pairs$pAUC_5 <- round(same_pairs$pAUC_5, 4)
-same_pairs$pAUC_10 <- round(same_pairs$pAUC_10, 4)
 utils::write.table(same_pairs, args$output, sep = "\t", row.names = FALSE, quote = FALSE)
 
 front_sets <- prolfquabenchmark::front_set_scores(results, scores)

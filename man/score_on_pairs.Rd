@@ -16,11 +16,11 @@ as written by [write_contrast_results()]}
 \item{score}{ranking score: `"log_fc"`, `"t_statistic"` or `"scaled.p_value"`}
 }
 \value{
-named numeric: `pAUC_5` and `pAUC_10`, the partial areas up to a false positive rate of 0.05 and 0.1
+numeric: pAUC_5, the partial area up to a false positive rate of 0.05
 }
 \description{
 Keeps the rows of `result` in `pairs` and scores them as the benchmark does: [benchmark_from_result()] annotates
-the ground truth and ranks the proteins by `score`; the partial areas under the ROC curve are those of all contrasts
+the ground truth and ranks the proteins by `score`; the partial area under the ROC curve is that of all contrasts
 pooled.
 }
 \seealso{

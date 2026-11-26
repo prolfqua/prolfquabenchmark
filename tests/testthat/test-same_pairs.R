@@ -82,10 +82,7 @@ test_that("score_on_pairs scores the rows of the given pairs only", {
   filtered$data <- merge(result$data, pairs)
   roc <- benchmark_from_result(filtered)$get_confusion_benchmark()
   roc <- roc[roc$contrast == "all" & roc$what == "log_fc", ]
-  expect_equal(
-    score_on_pairs(result, pairs, "log_fc"),
-    c(pAUC_5 = ms_bench_auc(roc$FPR, roc$TPR, 0.05), pAUC_10 = ms_bench_auc(roc$FPR, roc$TPR, 0.1))
-  )
+  expect_equal(score_on_pairs(result, pairs, "log_fc"), ms_bench_auc(roc$FPR, roc$TPR, 0.05))
 })
 
 test_that("score_on_pairs scores pairs with a fold change but no t statistic by the fold change", {
@@ -93,7 +90,7 @@ test_that("score_on_pairs scores pairs with a fold change but no t statistic by 
   result$data$t_statistic[result$data$contrast == "c2"] <- NA
   result$data$p_value[result$data$contrast == "c2"] <- NA
   pairs <- data.frame(protein_id = c("P1_ECOLI", "P3_HUMAN", "P5_ECOLI", "P6_HUMAN"), contrast = "c2")
-  expect_true(is.finite(score_on_pairs(result, pairs, "log_fc")[["pAUC_5"]]))
+  expect_true(is.finite(score_on_pairs(result, pairs, "log_fc")))
 })
 
 test_that("same_pairs_scores scores the methods that test all pairs of a front method on its pairs", {
@@ -106,10 +103,7 @@ test_that("same_pairs_scores scores the methods that test all pairs of a front m
   expect_equal(log_fc$method, c("selective", "complete", "equal"))
   expect_equal(log_fc$contrasts, c(8, 8, 8))
   selective_pairs <- results$selective$data[!is.na(results$selective$data$log_fc), c("protein_id", "contrast")]
-  expect_equal(
-    unlist(log_fc[2, c("pAUC_5", "pAUC_10")]),
-    score_on_pairs(results$complete, selective_pairs, "log_fc")
-  )
+  expect_equal(log_fc$pAUC_5[2], score_on_pairs(results$complete, selective_pairs, "log_fc"))
   expect_equal(scores$method[scores$score == "t_statistic"], c("selective", "complete", "equal"))
   # P2 in c2 has no p-value in complete, so complete misses a pair of selective for scaled.p_value
   expect_equal(scores$method[scores$score == "scaled.p_value"], c("selective", "equal"))
@@ -135,13 +129,13 @@ test_that("front_set_scores scores every method on each front set and on the pai
   added_pairs <- data.frame(protein_id = rep(c("P5_ECOLI", "P6_HUMAN"), 2), contrast = rep(c("c1", "c2"), each = 2))
   expect_equal(
     first$pAUC_5[first$method == "selective"],
-    score_on_pairs(results$selective, selective_pairs, "scaled.p_value")[["pAUC_5"]]
+    score_on_pairs(results$selective, selective_pairs, "scaled.p_value")
   )
   # complete misses P2 in c2 of the selective set; partial misses P6 of the added pairs
   expect_true(is.na(first$pAUC_5[first$method == "complete"]))
   expect_equal(
     first$pAUC_5_added[first$method == "complete"],
-    score_on_pairs(results$complete, added_pairs, "scaled.p_value")[["pAUC_5"]]
+    score_on_pairs(results$complete, added_pairs, "scaled.p_value")
   )
   expect_true(is.na(first$pAUC_5_added[first$method == "partial"]))
   # the largest set has no next set
@@ -164,5 +158,5 @@ test_that("same_pairs_scores returns the columns also when no front method has a
   table <- same_pairs_score_table()
   scores <- same_pairs_scores(results, table[table$model_name %in% c("partial", "equal"), ])
   expect_equal(nrow(scores), 0)
-  expect_equal(colnames(scores), c("score", "front_method", "contrasts", "method", "pAUC_5", "pAUC_10"))
+  expect_equal(colnames(scores), c("score", "front_method", "contrasts", "method", "pAUC_5"))
 })

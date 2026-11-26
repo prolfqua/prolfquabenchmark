@@ -30,7 +30,7 @@ The benchmark pipeline (`make benchmark`; `workflow/Snakefile`, `config/config.y
 - Identification confidence (1 − PEP, or 1 − q-value for Spectronaut), which prolfqua's models use as weight, varies across samples in the ProteoBench and MetaMorpheus datasets; in the MaxQuant peptides.txt datasets it is one value per peptide; the FragPipe datasets carry none
 
 - Ranking scores: fold change (`log_fc`), p-value signed by the fold change (`scaled.p_value`), t statistic (`t_statistic`)
-- AUC, pAUC_5, pAUC_10: area under the ROC curve, and partial area up to a false positive rate of 0.05 or 0.1, on a 0 to 100 scale, with all contrasts of a dataset pooled
+- AUC, pAUC_5: area under the ROC curve, and partial area up to a false positive rate of 0.05, on a 0 to 100 scale, with all contrasts of a dataset pooled
 - Contrasts computed: protein and contrast pairs with a result for the ranking score, all contrasts together. Each method is scored on the pairs it computes, so pAUC_5 is plotted against this count
 - Pareto front (red): the methods no other method beats on both pAUC_5 and contrasts computed
 - Same pairs: a method may be on the front because it tests fewer, easier proteins. The methods that test all its protein and contrast pairs (the same or more) are scored again on exactly these pairs (`same_pairs_scores()`; figure after the Pareto front, ranking by scaled p-value; `benchmark_same_pairs.tsv` has all three ranking scores)
@@ -100,8 +100,8 @@ methods |>
 ```{r summary, results = "asis"}
 summary_scores <- scores |>
   dplyr::filter(.data$contrast == "all", .data$score == "scaled.p_value") |>
-  dplyr::select(method = "model_name", "dataset", "pAUC_10") |>
-  tidyr::pivot_wider(names_from = "dataset", values_from = "pAUC_10") |>
+  dplyr::select(method = "model_name", "dataset", "pAUC_5") |>
+  tidyr::pivot_wider(names_from = "dataset", values_from = "pAUC_5") |>
   dplyr::select("method", dplyr::any_of(datasets$dataset))
 summary_scores$median <- apply(summary_scores[, -1], 1, stats::median, na.rm = TRUE)
 summary_scores |>
@@ -111,7 +111,7 @@ summary_scores |>
     format = "html",
     table.attr = "class=\"table table-condensed\"",
     caption = paste0(
-      "pAUC_10 of every method on every dataset, ranking by p-value signed by the fold change (scaled.p_value), ",
+      "pAUC_5 of every method on every dataset, ranking by p-value signed by the fold change (scaled.p_value), ",
       "all contrasts of a dataset pooled; empty where the dataset does not provide the method's input. Sorted by the ",
       "median over the datasets the method ran on. Each method is scored on the contrasts it computes; the dataset ",
       "sections below give the number of contrasts and the same-pairs comparison."
@@ -288,20 +288,20 @@ for (dataset_name in datasets$dataset) {
     dplyr::select(model = "model_name", `contrasts computed` = "n_total")
   dataset_scores |>
     dplyr::filter(.data$contrast == "all") |>
-    tidyr::pivot_longer(c("AUC", "pAUC_10"), names_to = "metric", values_to = "value") |>
+    tidyr::pivot_longer(c("AUC", "pAUC_5"), names_to = "metric", values_to = "value") |>
     tidyr::unite("column", "metric", "score", sep = " / ") |>
     dplyr::select(model = "model_name", "level", "column", "value") |>
     tidyr::pivot_wider(names_from = "column", values_from = "value", names_sort = TRUE) |>
     dplyr::left_join(computed, by = "model") |>
     dplyr::relocate("contrasts computed", .after = "level") |>
-    dplyr::arrange(dplyr::desc(.data$`pAUC_10 / scaled.p_value`)) |>
+    dplyr::arrange(dplyr::desc(.data$`pAUC_5 / scaled.p_value`)) |>
     knitr::kable(
       digits = 1,
       format = "html",
       table.attr = "class=\"table table-condensed\"",
       caption = paste0(
-        "Ranking scores on ", dataset_name, ", ", pooled, ", sorted by pAUC_10 of scaled.p_value. AUC is the ",
-        "area under the ROC curve and pAUC_10 the partial area up to a false positive rate of 0.1, both on a 0 to ",
+        "Ranking scores on ", dataset_name, ", ", pooled, ", sorted by pAUC_5 of scaled.p_value. AUC is the ",
+        "area under the ROC curve and pAUC_5 the partial area up to a false positive rate of 0.05, both on a 0 to ",
         "100 scale, for ranking by fold change, scaled p-value and t statistic. Contrasts computed: protein and ",
         "contrast pairs with a p-value."
       )

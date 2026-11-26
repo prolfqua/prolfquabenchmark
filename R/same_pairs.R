@@ -24,7 +24,7 @@ pareto_optimal <- function(x, y) {
 #' Partial AUC of benchmark results restricted to protein and contrast pairs
 #'
 #' Keeps the rows of `result` in `pairs` and scores them as the benchmark does: [benchmark_from_result()] annotates
-#' the ground truth and ranks the proteins by `score`; the partial areas under the ROC curve are those of all contrasts
+#' the ground truth and ranks the proteins by `score`; the partial area under the ROC curve is that of all contrasts
 #' pooled.
 #'
 #' @param result list with `data`, a contrast table in the format of `contrasts.tsv` (`protein_id`, `contrast`,
@@ -32,7 +32,7 @@ pareto_optimal <- function(x, y) {
 #'   as written by [write_contrast_results()]
 #' @param pairs data.frame with the columns `protein_id` and `contrast`
 #' @param score ranking score: `"log_fc"`, `"t_statistic"` or `"scaled.p_value"`
-#' @return named numeric: `pAUC_5` and `pAUC_10`, the partial areas up to a false positive rate of 0.05 and 0.1
+#' @return numeric: pAUC_5, the partial area up to a false positive rate of 0.05
 #' @export
 #' @family same pairs
 score_on_pairs <- function(result, pairs, score) {
@@ -41,7 +41,7 @@ score_on_pairs <- function(result, pairs, score) {
   # the ROC of this score only: another score may be missing for all of these pairs
   roc <- benchmark_from_result(result, scores = score)$get_confusion_benchmark()
   roc <- roc[roc$contrast == "all" & roc$what == score, ]
-  c(pAUC_5 = ms_bench_auc(roc$FPR, roc$TPR, 0.05), pAUC_10 = ms_bench_auc(roc$FPR, roc$TPR, 0.1))
+  ms_bench_auc(roc$FPR, roc$TPR, 0.05)
 }
 
 #' Scores of methods on the protein and contrast pairs of a method on the Pareto front
@@ -57,7 +57,7 @@ score_on_pairs <- function(result, pairs, score) {
 #'   `benchmark_scores.tsv`; the front uses pAUC_5 and `n_total` of contrast `all`, all contrasts pooled
 #' @return data.frame with one row per ranking score, front method with a superset and method (the front method on
 #'   its own pairs first, then its supersets): `score`, `front_method`, `contrasts` (the front method's contrasts
-#'   computed, protein and contrast pairs scored), `method`, `pAUC_5`, `pAUC_10`
+#'   computed, protein and contrast pairs scored), `method`, `pAUC_5`
 #' @export
 #' @family same pairs
 same_pairs_scores <- function(results, scores) {
@@ -82,8 +82,7 @@ same_pairs_scores <- function(results, scores) {
     front_method = character(),
     contrasts = numeric(),
     method = character(),
-    pAUC_5 = numeric(),
-    pAUC_10 = numeric()
+    pAUC_5 = numeric()
   )
   dplyr::bind_rows(empty, rows)
 }
@@ -110,14 +109,12 @@ same_pairs_scores <- function(results, scores) {
   }
   methods <- c(front_method, names(results)[superset])
   front_pairs <- comparison$pairs(front_method, columns)
-  pauc <- vapply(methods, function(method) score_on_pairs(results[[method]], front_pairs, score), numeric(2))
   data.frame(
     score = score,
     front_method = front_method,
     contrasts = contrasts,
     method = methods,
-    pAUC_5 = pauc["pAUC_5", ],
-    pAUC_10 = pauc["pAUC_10", ],
+    pAUC_5 = vapply(methods, function(method) score_on_pairs(results[[method]], front_pairs, score), numeric(1)),
     row.names = NULL
   )
 }
@@ -151,7 +148,7 @@ front_set_scores <- function(results, scores) {
     if (!all(pair_keys(pairs) %in% method_keys)) {
       return(NA_real_)
     }
-    score_on_pairs(result, pairs, score)[["pAUC_5"]]
+    score_on_pairs(result, pairs, score)
   }
   rows <- list()
   for (score in names(.pair_columns)) {

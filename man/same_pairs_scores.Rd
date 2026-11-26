@@ -15,7 +15,7 @@ same_pairs_scores(results, scores)
 \value{
 data.frame with one row per ranking score, front method with a superset and method (the front method on
   its own pairs first, then its supersets): `score`, `front_method`, `contrasts` (the front method's contrasts
-  computed, protein and contrast pairs scored), `method`, `pAUC_5`, `pAUC_10`
+  computed, protein and contrast pairs scored), `method`, `pAUC_5`
 }
 \description{
 A method on the Pareto front of pAUC_5 against contrasts computed may be there because it tests fewer proteins, an
