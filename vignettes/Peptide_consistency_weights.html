@@ -317,9 +317,9 @@ window.Quarto = {
 </header><p>prolfqua’s protein-level models (lm, limma, DEqMS, rlm) weight each protein × sample abundance by the number of peptides it was aggregated from and by the identification confidence. This page derives a weight from how well the peptides of a protein agree with each other, the <strong>peptide consistency</strong>: the residuals of the median polish that aggregated them. It gives the maths and benchmarks the weights on the 8 benchmark datasets with peptides.</p>
 <ul>
 <li>Best: <code>sample_rel</code>, which weights the samples of a protein by how consistent its peptides are in each sample, relative to the protein’s other samples</li>
-<li>lm with <code>sample_rel</code> against the peptide count: pAUC_10 median 0.86, range 0.05 to 2.75 over the datasets; limma median 0.85</li>
+<li>lm with <code>sample_rel</code> against the peptide count: pAUC_5 median 0.88, range -0.03 to 1.94 over the datasets; limma median 0.87</li>
 <li>Cost: the FDR is less conservative; the false discovery proportion at a nominal FDR of 5% rises by 0.014 (median, lm), at most 0.059</li>
-<li>One consistency value per protein (<code>protein_ivw</code>) is slightly worse than the peptide count: median -0.07 (lm)</li>
+<li>One consistency value per protein (<code>protein_ivw</code>) is slightly worse than the peptide count: median -0.19 (lm)</li>
 <li>The analysis is the pipeline step <code>peptide_consistency</code> (<code>workflow/scripts/peptide_consistency_weights.R</code>); the tables are <code>inst/extdata/peptide_consistency_scores.tsv</code> and <code>peptide_consistency_priors.tsv</code>
 </li>
 </ul>
@@ -755,14 +755,14 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <li>The median polish is recomputed from the prepared peptides; it reproduces the prepared proteins exactly, and <span class="math inline">\(n_{Ps}\)</span> their <code>nr_children</code>
 </li>
 <li>Facades lm, limma, deqms and rlm, each with every variant; <code>default</code> reproduces the main benchmark</li>
-<li>Scores: pAUC_10 of the signed p-value, all contrasts pooled (partial area under the ROC curve up to a false positive rate of 0.1, scale 0 to 100); the false discovery proportion (FDP) and the number of true discoveries (TP) at a nominal FDR of 5%, with the unchanged proteins as nulls</li>
+<li>Scores: pAUC_5 of the signed p-value, all contrasts pooled (partial area under the ROC curve up to a false positive rate of 0.05, scale 0 to 100); the false discovery proportion (FDP) and the number of true discoveries (TP) at a nominal FDR of 5%, with the unchanged proteins as nulls</li>
 <li>prolfqua version: prolfqua 1.9.10</li>
 </ul>
 <section id="ranking" class="level2"><h2 class="anchored" data-anchor-id="ranking">Ranking</h2>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-condensed caption-top table-sm table-striped small">
-<caption>pAUC_10 of the signed p-value, median over the datasets, per facade (rows) and weight variant (columns). pAUC_10: partial area under the ROC curve up to a false positive rate of 0.1, scaled 0 to 100, all contrasts pooled.</caption>
+<caption>pAUC_5 of the signed p-value, median over the datasets, per facade (rows) and weight variant (columns). pAUC_5: partial area under the ROC curve up to a false positive rate of 0.05, scaled 0 to 100, all contrasts pooled.</caption>
 <thead><tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">facade</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">default</th>
@@ -777,47 +777,47 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">lm</td>
-<td style="text-align: right;">82.2</td>
-<td style="text-align: right;">82.5</td>
-<td style="text-align: right;">82.2</td>
-<td style="text-align: right;">82.6</td>
-<td style="text-align: right;">84.0</td>
-<td style="text-align: right;">83.7</td>
-<td style="text-align: right;">84.1</td>
-<td style="text-align: right;">83.8</td>
+<td style="text-align: right;">78.8</td>
+<td style="text-align: right;">79.4</td>
+<td style="text-align: right;">78.8</td>
+<td style="text-align: right;">79.1</td>
+<td style="text-align: right;">79.8</td>
+<td style="text-align: right;">79.1</td>
+<td style="text-align: right;">80.0</td>
+<td style="text-align: right;">79.4</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">limma</td>
-<td style="text-align: right;">82.0</td>
-<td style="text-align: right;">82.2</td>
-<td style="text-align: right;">82.0</td>
-<td style="text-align: right;">82.3</td>
-<td style="text-align: right;">83.7</td>
-<td style="text-align: right;">83.5</td>
-<td style="text-align: right;">83.8</td>
-<td style="text-align: right;">83.6</td>
+<td style="text-align: right;">78.5</td>
+<td style="text-align: right;">79.1</td>
+<td style="text-align: right;">78.5</td>
+<td style="text-align: right;">79.0</td>
+<td style="text-align: right;">79.4</td>
+<td style="text-align: right;">78.8</td>
+<td style="text-align: right;">79.6</td>
+<td style="text-align: right;">79.1</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">deqms</td>
-<td style="text-align: right;">81.8</td>
-<td style="text-align: right;">82.0</td>
-<td style="text-align: right;">81.8</td>
-<td style="text-align: right;">81.9</td>
-<td style="text-align: right;">83.0</td>
-<td style="text-align: right;">82.7</td>
-<td style="text-align: right;">83.3</td>
-<td style="text-align: right;">83.1</td>
+<td style="text-align: right;">78.1</td>
+<td style="text-align: right;">78.7</td>
+<td style="text-align: right;">78.1</td>
+<td style="text-align: right;">78.5</td>
+<td style="text-align: right;">78.9</td>
+<td style="text-align: right;">78.1</td>
+<td style="text-align: right;">79.2</td>
+<td style="text-align: right;">78.6</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">rlm</td>
-<td style="text-align: right;">82.2</td>
-<td style="text-align: right;">81.9</td>
-<td style="text-align: right;">81.9</td>
-<td style="text-align: right;">81.7</td>
-<td style="text-align: right;">81.8</td>
-<td style="text-align: right;">81.8</td>
-<td style="text-align: right;">82.2</td>
-<td style="text-align: right;">82.2</td>
+<td style="text-align: right;">75.8</td>
+<td style="text-align: right;">75.9</td>
+<td style="text-align: right;">75.9</td>
+<td style="text-align: right;">75.5</td>
+<td style="text-align: right;">75.6</td>
+<td style="text-align: right;">75.6</td>
+<td style="text-align: right;">76.2</td>
+<td style="text-align: right;">76.2</td>
 </tr>
 </tbody>
 </table>
@@ -827,14 +827,14 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="Peptide_consistency_weights_files/figure-html/rankingFigure-1.png" class="img-fluid figure-img" width="864"></p>
-<figcaption>pAUC_10 of each weight variant minus that of the peptide count (count), per dataset (points) and facade (panels). Above the dashed line the variant ranks the changed proteins better than the peptide count.</figcaption></figure>
+<figcaption>pAUC_5 of each weight variant minus that of the peptide count (count), per dataset (points) and facade (panels). Above the dashed line the variant ranks the changed proteins better than the peptide count.</figcaption></figure>
 </div>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-condensed caption-top table-sm table-striped small">
-<caption>pAUC_10 of the signed p-value per facade, dataset (rows) and weight variant (columns).</caption>
+<caption>pAUC_5 of the signed p-value per facade, dataset (rows) and weight variant (columns).</caption>
 <thead><tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">facade</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">dataset</th>
@@ -851,386 +851,386 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <tr class="odd">
 <td style="text-align: left;">lm</td>
 <td style="text-align: left;">CPTAC_MaxQuant</td>
-<td style="text-align: right;">84.1</td>
-<td style="text-align: right;">84.1</td>
-<td style="text-align: right;">84.1</td>
-<td style="text-align: right;">84.1</td>
-<td style="text-align: right;">86.4</td>
-<td style="text-align: right;">86.5</td>
-<td style="text-align: right;">86.8</td>
-<td style="text-align: right;">86.8</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">lm</td>
-<td style="text-align: left;">IonStar_FragPipe_MSstats</td>
-<td style="text-align: right;">80.3</td>
-<td style="text-align: right;">80.3</td>
-<td style="text-align: right;">80.3</td>
-<td style="text-align: right;">80.2</td>
-<td style="text-align: right;">81.2</td>
-<td style="text-align: right;">81.2</td>
-<td style="text-align: right;">81.3</td>
-<td style="text-align: right;">81.3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">lm</td>
-<td style="text-align: left;">IonStar_MaxQuant</td>
-<td style="text-align: right;">70.9</td>
-<td style="text-align: right;">70.9</td>
-<td style="text-align: right;">70.9</td>
-<td style="text-align: right;">70.8</td>
-<td style="text-align: right;">71.4</td>
-<td style="text-align: right;">71.4</td>
-<td style="text-align: right;">71.7</td>
-<td style="text-align: right;">71.7</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">lm</td>
-<td style="text-align: left;">IonStar_MetaMorpheus</td>
-<td style="text-align: right;">68.6</td>
-<td style="text-align: right;">68.0</td>
-<td style="text-align: right;">68.6</td>
-<td style="text-align: right;">67.7</td>
-<td style="text-align: right;">68.8</td>
-<td style="text-align: right;">69.1</td>
-<td style="text-align: right;">69.0</td>
-<td style="text-align: right;">69.5</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">lm</td>
-<td style="text-align: left;">SingleCell_DIANN</td>
-<td style="text-align: right;">95.8</td>
-<td style="text-align: right;">95.8</td>
-<td style="text-align: right;">95.8</td>
-<td style="text-align: right;">95.9</td>
-<td style="text-align: right;">95.9</td>
-<td style="text-align: right;">95.9</td>
-<td style="text-align: right;">95.9</td>
-<td style="text-align: right;">95.9</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">lm</td>
-<td style="text-align: left;">SingleCell_MaxQuant</td>
-<td style="text-align: right;">79.9</td>
-<td style="text-align: right;">81.0</td>
-<td style="text-align: right;">79.9</td>
-<td style="text-align: right;">81.1</td>
-<td style="text-align: right;">81.9</td>
-<td style="text-align: right;">80.7</td>
-<td style="text-align: right;">82.0</td>
-<td style="text-align: right;">80.9</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">lm</td>
-<td style="text-align: left;">diaPASEF_DIANN</td>
-<td style="text-align: right;">93.9</td>
-<td style="text-align: right;">93.9</td>
-<td style="text-align: right;">93.9</td>
-<td style="text-align: right;">93.6</td>
-<td style="text-align: right;">93.6</td>
-<td style="text-align: right;">93.6</td>
-<td style="text-align: right;">94.0</td>
-<td style="text-align: right;">93.9</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">lm</td>
-<td style="text-align: left;">diaPASEF_Spectronaut</td>
-<td style="text-align: right;">86.1</td>
-<td style="text-align: right;">86.1</td>
-<td style="text-align: right;">86.1</td>
-<td style="text-align: right;">86.1</td>
-<td style="text-align: right;">86.2</td>
-<td style="text-align: right;">86.2</td>
-<td style="text-align: right;">86.2</td>
-<td style="text-align: right;">86.2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">limma</td>
-<td style="text-align: left;">CPTAC_MaxQuant</td>
-<td style="text-align: right;">84.0</td>
-<td style="text-align: right;">84.0</td>
-<td style="text-align: right;">84.0</td>
-<td style="text-align: right;">84.1</td>
-<td style="text-align: right;">86.4</td>
-<td style="text-align: right;">86.4</td>
-<td style="text-align: right;">86.8</td>
-<td style="text-align: right;">86.8</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">limma</td>
-<td style="text-align: left;">IonStar_FragPipe_MSstats</td>
-<td style="text-align: right;">80.0</td>
-<td style="text-align: right;">80.0</td>
-<td style="text-align: right;">80.0</td>
-<td style="text-align: right;">79.9</td>
-<td style="text-align: right;">80.9</td>
-<td style="text-align: right;">80.9</td>
-<td style="text-align: right;">81.1</td>
-<td style="text-align: right;">81.1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">limma</td>
-<td style="text-align: left;">IonStar_MaxQuant</td>
-<td style="text-align: right;">70.7</td>
-<td style="text-align: right;">70.7</td>
-<td style="text-align: right;">70.7</td>
-<td style="text-align: right;">70.5</td>
-<td style="text-align: right;">71.2</td>
-<td style="text-align: right;">71.2</td>
-<td style="text-align: right;">71.4</td>
-<td style="text-align: right;">71.4</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">limma</td>
-<td style="text-align: left;">IonStar_MetaMorpheus</td>
-<td style="text-align: right;">68.4</td>
-<td style="text-align: right;">67.8</td>
-<td style="text-align: right;">68.4</td>
-<td style="text-align: right;">67.4</td>
-<td style="text-align: right;">68.5</td>
-<td style="text-align: right;">68.8</td>
-<td style="text-align: right;">68.8</td>
-<td style="text-align: right;">69.2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">limma</td>
-<td style="text-align: left;">SingleCell_DIANN</td>
-<td style="text-align: right;">95.6</td>
-<td style="text-align: right;">95.6</td>
-<td style="text-align: right;">95.6</td>
-<td style="text-align: right;">95.7</td>
-<td style="text-align: right;">95.7</td>
-<td style="text-align: right;">95.6</td>
-<td style="text-align: right;">95.7</td>
-<td style="text-align: right;">95.7</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">limma</td>
-<td style="text-align: left;">SingleCell_MaxQuant</td>
-<td style="text-align: right;">79.2</td>
-<td style="text-align: right;">80.4</td>
-<td style="text-align: right;">79.2</td>
-<td style="text-align: right;">80.4</td>
-<td style="text-align: right;">81.2</td>
-<td style="text-align: right;">80.1</td>
-<td style="text-align: right;">81.3</td>
-<td style="text-align: right;">80.3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">limma</td>
-<td style="text-align: left;">diaPASEF_DIANN</td>
-<td style="text-align: right;">93.3</td>
-<td style="text-align: right;">93.3</td>
-<td style="text-align: right;">93.3</td>
-<td style="text-align: right;">92.9</td>
-<td style="text-align: right;">92.9</td>
-<td style="text-align: right;">92.9</td>
-<td style="text-align: right;">93.3</td>
-<td style="text-align: right;">93.3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">limma</td>
-<td style="text-align: left;">diaPASEF_Spectronaut</td>
-<td style="text-align: right;">86.1</td>
-<td style="text-align: right;">86.1</td>
-<td style="text-align: right;">86.1</td>
-<td style="text-align: right;">86.0</td>
-<td style="text-align: right;">86.1</td>
-<td style="text-align: right;">86.1</td>
-<td style="text-align: right;">86.2</td>
-<td style="text-align: right;">86.2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">deqms</td>
-<td style="text-align: left;">CPTAC_MaxQuant</td>
-<td style="text-align: right;">83.5</td>
-<td style="text-align: right;">83.4</td>
-<td style="text-align: right;">83.5</td>
-<td style="text-align: right;">83.4</td>
-<td style="text-align: right;">85.3</td>
-<td style="text-align: right;">85.3</td>
-<td style="text-align: right;">85.9</td>
-<td style="text-align: right;">85.9</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">deqms</td>
-<td style="text-align: left;">IonStar_FragPipe_MSstats</td>
-<td style="text-align: right;">80.1</td>
-<td style="text-align: right;">80.1</td>
-<td style="text-align: right;">80.1</td>
-<td style="text-align: right;">79.9</td>
-<td style="text-align: right;">80.6</td>
-<td style="text-align: right;">80.6</td>
-<td style="text-align: right;">81.0</td>
-<td style="text-align: right;">81.0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">deqms</td>
-<td style="text-align: left;">IonStar_MaxQuant</td>
-<td style="text-align: right;">70.8</td>
-<td style="text-align: right;">70.8</td>
-<td style="text-align: right;">70.8</td>
-<td style="text-align: right;">70.5</td>
-<td style="text-align: right;">71.0</td>
-<td style="text-align: right;">71.0</td>
-<td style="text-align: right;">71.4</td>
-<td style="text-align: right;">71.4</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">deqms</td>
-<td style="text-align: left;">IonStar_MetaMorpheus</td>
-<td style="text-align: right;">68.5</td>
-<td style="text-align: right;">67.8</td>
-<td style="text-align: right;">68.5</td>
-<td style="text-align: right;">67.5</td>
-<td style="text-align: right;">68.3</td>
-<td style="text-align: right;">68.8</td>
-<td style="text-align: right;">68.7</td>
-<td style="text-align: right;">69.2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">deqms</td>
-<td style="text-align: left;">SingleCell_DIANN</td>
-<td style="text-align: right;">95.5</td>
-<td style="text-align: right;">95.5</td>
-<td style="text-align: right;">95.5</td>
-<td style="text-align: right;">95.5</td>
-<td style="text-align: right;">95.6</td>
-<td style="text-align: right;">95.5</td>
-<td style="text-align: right;">95.6</td>
-<td style="text-align: right;">95.5</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">deqms</td>
-<td style="text-align: left;">SingleCell_MaxQuant</td>
-<td style="text-align: right;">79.4</td>
-<td style="text-align: right;">80.5</td>
-<td style="text-align: right;">79.4</td>
-<td style="text-align: right;">80.4</td>
-<td style="text-align: right;">81.2</td>
-<td style="text-align: right;">80.0</td>
-<td style="text-align: right;">81.5</td>
-<td style="text-align: right;">80.4</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">deqms</td>
-<td style="text-align: left;">diaPASEF_DIANN</td>
-<td style="text-align: right;">92.9</td>
-<td style="text-align: right;">92.9</td>
-<td style="text-align: right;">92.9</td>
-<td style="text-align: right;">92.3</td>
-<td style="text-align: right;">92.3</td>
-<td style="text-align: right;">92.2</td>
-<td style="text-align: right;">92.9</td>
-<td style="text-align: right;">92.9</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">deqms</td>
-<td style="text-align: left;">diaPASEF_Spectronaut</td>
-<td style="text-align: right;">85.2</td>
-<td style="text-align: right;">85.2</td>
-<td style="text-align: right;">85.2</td>
-<td style="text-align: right;">84.8</td>
-<td style="text-align: right;">84.8</td>
-<td style="text-align: right;">84.8</td>
-<td style="text-align: right;">85.2</td>
-<td style="text-align: right;">85.2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">rlm</td>
-<td style="text-align: left;">CPTAC_MaxQuant</td>
-<td style="text-align: right;">85.8</td>
-<td style="text-align: right;">83.5</td>
-<td style="text-align: right;">83.5</td>
-<td style="text-align: right;">83.3</td>
-<td style="text-align: right;">83.3</td>
-<td style="text-align: right;">83.4</td>
-<td style="text-align: right;">84.1</td>
-<td style="text-align: right;">84.1</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">rlm</td>
-<td style="text-align: left;">IonStar_FragPipe_MSstats</td>
-<td style="text-align: right;">80.7</td>
-<td style="text-align: right;">80.3</td>
-<td style="text-align: right;">80.3</td>
-<td style="text-align: right;">80.2</td>
-<td style="text-align: right;">80.2</td>
-<td style="text-align: right;">80.2</td>
-<td style="text-align: right;">80.3</td>
-<td style="text-align: right;">80.3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">rlm</td>
-<td style="text-align: left;">IonStar_MaxQuant</td>
-<td style="text-align: right;">70.6</td>
-<td style="text-align: right;">70.9</td>
-<td style="text-align: right;">70.9</td>
-<td style="text-align: right;">70.7</td>
-<td style="text-align: right;">70.4</td>
-<td style="text-align: right;">70.4</td>
-<td style="text-align: right;">70.8</td>
-<td style="text-align: right;">70.8</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">rlm</td>
-<td style="text-align: left;">IonStar_MetaMorpheus</td>
-<td style="text-align: right;">67.6</td>
-<td style="text-align: right;">67.8</td>
-<td style="text-align: right;">67.7</td>
-<td style="text-align: right;">67.4</td>
-<td style="text-align: right;">67.6</td>
-<td style="text-align: right;">67.3</td>
-<td style="text-align: right;">67.9</td>
-<td style="text-align: right;">67.7</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">rlm</td>
-<td style="text-align: left;">SingleCell_DIANN</td>
-<td style="text-align: right;">93.0</td>
-<td style="text-align: right;">93.3</td>
-<td style="text-align: right;">93.4</td>
-<td style="text-align: right;">93.5</td>
-<td style="text-align: right;">93.9</td>
-<td style="text-align: right;">94.0</td>
-<td style="text-align: right;">93.8</td>
-<td style="text-align: right;">93.9</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">rlm</td>
-<td style="text-align: left;">SingleCell_MaxQuant</td>
-<td style="text-align: right;">77.5</td>
-<td style="text-align: right;">77.1</td>
-<td style="text-align: right;">77.6</td>
-<td style="text-align: right;">77.0</td>
-<td style="text-align: right;">78.4</td>
-<td style="text-align: right;">78.9</td>
-<td style="text-align: right;">78.5</td>
-<td style="text-align: right;">79.2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">rlm</td>
-<td style="text-align: left;">diaPASEF_DIANN</td>
-<td style="text-align: right;">91.4</td>
-<td style="text-align: right;">91.8</td>
-<td style="text-align: right;">91.9</td>
-<td style="text-align: right;">91.5</td>
-<td style="text-align: right;">91.8</td>
-<td style="text-align: right;">91.9</td>
-<td style="text-align: right;">92.1</td>
-<td style="text-align: right;">92.2</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">rlm</td>
-<td style="text-align: left;">diaPASEF_Spectronaut</td>
+<td style="text-align: right;">81.8</td>
+<td style="text-align: right;">81.8</td>
+<td style="text-align: right;">81.8</td>
+<td style="text-align: right;">81.6</td>
+<td style="text-align: right;">82.7</td>
+<td style="text-align: right;">82.7</td>
 <td style="text-align: right;">83.8</td>
-<td style="text-align: right;">84.0</td>
-<td style="text-align: right;">84.0</td>
-<td style="text-align: right;">83.9</td>
-<td style="text-align: right;">84.1</td>
-<td style="text-align: right;">84.1</td>
-<td style="text-align: right;">84.2</td>
-<td style="text-align: right;">84.2</td>
+<td style="text-align: right;">83.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lm</td>
+<td style="text-align: left;">IonStar_FragPipe_MSstats</td>
+<td style="text-align: right;">74.8</td>
+<td style="text-align: right;">74.8</td>
+<td style="text-align: right;">74.8</td>
+<td style="text-align: right;">74.6</td>
+<td style="text-align: right;">75.8</td>
+<td style="text-align: right;">75.8</td>
+<td style="text-align: right;">75.9</td>
+<td style="text-align: right;">75.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lm</td>
+<td style="text-align: left;">IonStar_MaxQuant</td>
+<td style="text-align: right;">64.0</td>
+<td style="text-align: right;">64.0</td>
+<td style="text-align: right;">64.0</td>
+<td style="text-align: right;">63.9</td>
+<td style="text-align: right;">64.6</td>
+<td style="text-align: right;">64.6</td>
+<td style="text-align: right;">64.7</td>
+<td style="text-align: right;">64.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lm</td>
+<td style="text-align: left;">IonStar_MetaMorpheus</td>
+<td style="text-align: right;">62.4</td>
+<td style="text-align: right;">61.6</td>
+<td style="text-align: right;">62.4</td>
+<td style="text-align: right;">61.1</td>
+<td style="text-align: right;">62.5</td>
+<td style="text-align: right;">62.9</td>
+<td style="text-align: right;">62.9</td>
+<td style="text-align: right;">63.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lm</td>
+<td style="text-align: left;">SingleCell_DIANN</td>
+<td style="text-align: right;">94.5</td>
+<td style="text-align: right;">94.6</td>
+<td style="text-align: right;">94.5</td>
+<td style="text-align: right;">94.6</td>
+<td style="text-align: right;">94.6</td>
+<td style="text-align: right;">94.6</td>
+<td style="text-align: right;">94.6</td>
+<td style="text-align: right;">94.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lm</td>
+<td style="text-align: left;">SingleCell_MaxQuant</td>
+<td style="text-align: right;">75.7</td>
+<td style="text-align: right;">76.9</td>
+<td style="text-align: right;">75.7</td>
+<td style="text-align: right;">76.7</td>
+<td style="text-align: right;">77.6</td>
+<td style="text-align: right;">76.3</td>
+<td style="text-align: right;">78.0</td>
+<td style="text-align: right;">76.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lm</td>
+<td style="text-align: left;">diaPASEF_DIANN</td>
+<td style="text-align: right;">91.8</td>
+<td style="text-align: right;">91.8</td>
+<td style="text-align: right;">91.8</td>
+<td style="text-align: right;">91.3</td>
+<td style="text-align: right;">91.3</td>
+<td style="text-align: right;">91.3</td>
+<td style="text-align: right;">91.9</td>
+<td style="text-align: right;">91.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lm</td>
+<td style="text-align: left;">diaPASEF_Spectronaut</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">limma</td>
+<td style="text-align: left;">CPTAC_MaxQuant</td>
+<td style="text-align: right;">82.4</td>
+<td style="text-align: right;">82.4</td>
+<td style="text-align: right;">82.4</td>
+<td style="text-align: right;">82.2</td>
+<td style="text-align: right;">83.3</td>
+<td style="text-align: right;">83.3</td>
+<td style="text-align: right;">84.4</td>
+<td style="text-align: right;">84.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">limma</td>
+<td style="text-align: left;">IonStar_FragPipe_MSstats</td>
+<td style="text-align: right;">74.5</td>
+<td style="text-align: right;">74.5</td>
+<td style="text-align: right;">74.5</td>
+<td style="text-align: right;">74.3</td>
+<td style="text-align: right;">75.5</td>
+<td style="text-align: right;">75.5</td>
+<td style="text-align: right;">75.6</td>
+<td style="text-align: right;">75.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">limma</td>
+<td style="text-align: left;">IonStar_MaxQuant</td>
+<td style="text-align: right;">63.7</td>
+<td style="text-align: right;">63.7</td>
+<td style="text-align: right;">63.7</td>
+<td style="text-align: right;">63.5</td>
+<td style="text-align: right;">64.2</td>
+<td style="text-align: right;">64.2</td>
+<td style="text-align: right;">64.3</td>
+<td style="text-align: right;">64.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">limma</td>
+<td style="text-align: left;">IonStar_MetaMorpheus</td>
+<td style="text-align: right;">62.0</td>
+<td style="text-align: right;">61.4</td>
+<td style="text-align: right;">62.0</td>
+<td style="text-align: right;">60.8</td>
+<td style="text-align: right;">62.2</td>
+<td style="text-align: right;">62.5</td>
+<td style="text-align: right;">62.7</td>
+<td style="text-align: right;">63.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">limma</td>
+<td style="text-align: left;">SingleCell_DIANN</td>
+<td style="text-align: right;">94.1</td>
+<td style="text-align: right;">94.1</td>
+<td style="text-align: right;">94.1</td>
+<td style="text-align: right;">94.1</td>
+<td style="text-align: right;">94.1</td>
+<td style="text-align: right;">94.1</td>
+<td style="text-align: right;">94.2</td>
+<td style="text-align: right;">94.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">limma</td>
+<td style="text-align: left;">SingleCell_MaxQuant</td>
+<td style="text-align: right;">74.9</td>
+<td style="text-align: right;">76.1</td>
+<td style="text-align: right;">74.9</td>
+<td style="text-align: right;">75.9</td>
+<td style="text-align: right;">76.8</td>
+<td style="text-align: right;">75.4</td>
+<td style="text-align: right;">77.2</td>
+<td style="text-align: right;">76.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">limma</td>
+<td style="text-align: left;">diaPASEF_DIANN</td>
+<td style="text-align: right;">91.2</td>
+<td style="text-align: right;">91.2</td>
+<td style="text-align: right;">91.2</td>
+<td style="text-align: right;">90.6</td>
+<td style="text-align: right;">90.6</td>
+<td style="text-align: right;">90.6</td>
+<td style="text-align: right;">91.3</td>
+<td style="text-align: right;">91.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">limma</td>
+<td style="text-align: left;">diaPASEF_Spectronaut</td>
+<td style="text-align: right;">82.1</td>
+<td style="text-align: right;">82.1</td>
+<td style="text-align: right;">82.1</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.1</td>
+<td style="text-align: right;">82.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">deqms</td>
+<td style="text-align: left;">CPTAC_MaxQuant</td>
+<td style="text-align: right;">81.0</td>
+<td style="text-align: right;">80.9</td>
+<td style="text-align: right;">81.0</td>
+<td style="text-align: right;">80.9</td>
+<td style="text-align: right;">81.8</td>
+<td style="text-align: right;">81.7</td>
+<td style="text-align: right;">82.7</td>
+<td style="text-align: right;">82.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">deqms</td>
+<td style="text-align: left;">IonStar_FragPipe_MSstats</td>
+<td style="text-align: right;">74.7</td>
+<td style="text-align: right;">74.7</td>
+<td style="text-align: right;">74.7</td>
+<td style="text-align: right;">74.5</td>
+<td style="text-align: right;">75.3</td>
+<td style="text-align: right;">75.3</td>
+<td style="text-align: right;">75.6</td>
+<td style="text-align: right;">75.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">deqms</td>
+<td style="text-align: left;">IonStar_MaxQuant</td>
+<td style="text-align: right;">63.9</td>
+<td style="text-align: right;">63.9</td>
+<td style="text-align: right;">63.9</td>
+<td style="text-align: right;">63.7</td>
+<td style="text-align: right;">64.1</td>
+<td style="text-align: right;">64.1</td>
+<td style="text-align: right;">64.4</td>
+<td style="text-align: right;">64.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">deqms</td>
+<td style="text-align: left;">IonStar_MetaMorpheus</td>
+<td style="text-align: right;">62.2</td>
+<td style="text-align: right;">61.4</td>
+<td style="text-align: right;">62.2</td>
+<td style="text-align: right;">60.9</td>
+<td style="text-align: right;">62.1</td>
+<td style="text-align: right;">62.5</td>
+<td style="text-align: right;">62.5</td>
+<td style="text-align: right;">63.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">deqms</td>
+<td style="text-align: left;">SingleCell_DIANN</td>
+<td style="text-align: right;">93.9</td>
+<td style="text-align: right;">93.9</td>
+<td style="text-align: right;">93.9</td>
+<td style="text-align: right;">94.0</td>
+<td style="text-align: right;">94.0</td>
+<td style="text-align: right;">94.0</td>
+<td style="text-align: right;">94.0</td>
+<td style="text-align: right;">94.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">deqms</td>
+<td style="text-align: left;">SingleCell_MaxQuant</td>
+<td style="text-align: right;">75.3</td>
+<td style="text-align: right;">76.5</td>
+<td style="text-align: right;">75.3</td>
+<td style="text-align: right;">76.4</td>
+<td style="text-align: right;">77.3</td>
+<td style="text-align: right;">75.8</td>
+<td style="text-align: right;">77.6</td>
+<td style="text-align: right;">76.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">deqms</td>
+<td style="text-align: left;">diaPASEF_DIANN</td>
+<td style="text-align: right;">90.5</td>
+<td style="text-align: right;">90.5</td>
+<td style="text-align: right;">90.5</td>
+<td style="text-align: right;">89.6</td>
+<td style="text-align: right;">89.5</td>
+<td style="text-align: right;">89.5</td>
+<td style="text-align: right;">90.5</td>
+<td style="text-align: right;">90.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">deqms</td>
+<td style="text-align: left;">diaPASEF_Spectronaut</td>
+<td style="text-align: right;">81.0</td>
+<td style="text-align: right;">81.0</td>
+<td style="text-align: right;">81.0</td>
+<td style="text-align: right;">80.6</td>
+<td style="text-align: right;">80.5</td>
+<td style="text-align: right;">80.5</td>
+<td style="text-align: right;">80.9</td>
+<td style="text-align: right;">80.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rlm</td>
+<td style="text-align: left;">CPTAC_MaxQuant</td>
+<td style="text-align: right;">80.0</td>
+<td style="text-align: right;">78.3</td>
+<td style="text-align: right;">78.3</td>
+<td style="text-align: right;">77.8</td>
+<td style="text-align: right;">77.9</td>
+<td style="text-align: right;">77.9</td>
+<td style="text-align: right;">79.4</td>
+<td style="text-align: right;">79.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rlm</td>
+<td style="text-align: left;">IonStar_FragPipe_MSstats</td>
+<td style="text-align: right;">73.7</td>
+<td style="text-align: right;">73.4</td>
+<td style="text-align: right;">73.4</td>
+<td style="text-align: right;">73.3</td>
+<td style="text-align: right;">73.3</td>
+<td style="text-align: right;">73.3</td>
+<td style="text-align: right;">73.4</td>
+<td style="text-align: right;">73.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rlm</td>
+<td style="text-align: left;">IonStar_MaxQuant</td>
+<td style="text-align: right;">62.7</td>
+<td style="text-align: right;">63.0</td>
+<td style="text-align: right;">63.0</td>
+<td style="text-align: right;">62.7</td>
+<td style="text-align: right;">62.6</td>
+<td style="text-align: right;">62.6</td>
+<td style="text-align: right;">62.8</td>
+<td style="text-align: right;">62.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rlm</td>
+<td style="text-align: left;">IonStar_MetaMorpheus</td>
+<td style="text-align: right;">59.3</td>
+<td style="text-align: right;">59.8</td>
+<td style="text-align: right;">59.8</td>
+<td style="text-align: right;">59.3</td>
+<td style="text-align: right;">59.8</td>
+<td style="text-align: right;">59.5</td>
+<td style="text-align: right;">60.2</td>
+<td style="text-align: right;">59.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rlm</td>
+<td style="text-align: left;">SingleCell_DIANN</td>
+<td style="text-align: right;">89.5</td>
+<td style="text-align: right;">90.0</td>
+<td style="text-align: right;">90.1</td>
+<td style="text-align: right;">90.4</td>
+<td style="text-align: right;">91.0</td>
+<td style="text-align: right;">91.1</td>
+<td style="text-align: right;">90.8</td>
+<td style="text-align: right;">91.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rlm</td>
+<td style="text-align: left;">SingleCell_MaxQuant</td>
+<td style="text-align: right;">70.7</td>
+<td style="text-align: right;">71.1</td>
+<td style="text-align: right;">71.2</td>
+<td style="text-align: right;">71.1</td>
+<td style="text-align: right;">72.5</td>
+<td style="text-align: right;">72.3</td>
+<td style="text-align: right;">72.7</td>
+<td style="text-align: right;">72.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rlm</td>
+<td style="text-align: left;">diaPASEF_DIANN</td>
+<td style="text-align: right;">87.8</td>
+<td style="text-align: right;">88.5</td>
+<td style="text-align: right;">88.5</td>
+<td style="text-align: right;">87.9</td>
+<td style="text-align: right;">88.5</td>
+<td style="text-align: right;">88.5</td>
+<td style="text-align: right;">89.0</td>
+<td style="text-align: right;">89.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rlm</td>
+<td style="text-align: left;">diaPASEF_Spectronaut</td>
+<td style="text-align: right;">78.0</td>
+<td style="text-align: right;">78.8</td>
+<td style="text-align: right;">78.8</td>
+<td style="text-align: right;">78.7</td>
+<td style="text-align: right;">79.1</td>
+<td style="text-align: right;">79.1</td>
+<td style="text-align: right;">79.1</td>
+<td style="text-align: right;">79.1</td>
 </tr>
 </tbody>
 </table>
@@ -1240,8 +1240,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="Peptide_consistency_weights_files/figure-html/tradeoffFigure-1.png" class="img-fluid figure-img" width="864"></p>
-<figcaption>Change of the false discovery proportion at a nominal FDR of 5% (x) against the change of pAUC_10 (y), each against the peptide count, per dataset (points), weight variant (colour) and facade (panels). Bottom right is worse calibration without better ranking; top left better on both.</figcaption></figure>
+<figure class="figure"><p><img src="Peptide_consistency_weights_files/figure-html/tradeoffFigure-1.png" class="img-fluid figure-img" width="1152"></p>
+<figcaption>Ranking against calibration, each as the difference to the peptide count (count, the crossing of the dashed lines): change of the false discovery proportion at a nominal FDR of 5% (x; right: more false discoveries than the FDR promises) against the change of pAUC_5 (y; up: changed proteins ranked better). Columns: weight variants; rows: facades; one point per dataset (colour). Top left is better on both; bottom right worse on both.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -1256,7 +1256,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <th style="text-align: left;" data-quarto-table-cell-role="th">count_conf</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">protein_ivw</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">sample_ivw</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">sample_ivw_conf</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">sample_rel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">sample_rel_conf</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -1266,6 +1268,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.000 (15)</td>
 <td style="text-align: left;">0.059 (16)</td>
 <td style="text-align: left;">0.062 (15)</td>
+<td style="text-align: left;">0.062 (15)</td>
+<td style="text-align: left;">0.059 (16)</td>
 <td style="text-align: left;">0.059 (16)</td>
 </tr>
 <tr class="even">
@@ -1275,6 +1279,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.038 (1495)</td>
 <td style="text-align: left;">0.044 (1496)</td>
 <td style="text-align: left;">0.071 (1600)</td>
+<td style="text-align: left;">0.071 (1600)</td>
+<td style="text-align: left;">0.070 (1597)</td>
 <td style="text-align: left;">0.070 (1597)</td>
 </tr>
 <tr class="odd">
@@ -1284,7 +1290,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.041 (1170)</td>
 <td style="text-align: left;">0.048 (1174)</td>
 <td style="text-align: left;">0.052 (1267)</td>
+<td style="text-align: left;">0.053 (1270)</td>
 <td style="text-align: left;">0.049 (1270)</td>
+<td style="text-align: left;">0.049 (1267)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">lm</td>
@@ -1293,7 +1301,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.049 (1581)</td>
 <td style="text-align: left;">0.045 (1526)</td>
 <td style="text-align: left;">0.047 (1652)</td>
+<td style="text-align: left;">0.051 (1679)</td>
 <td style="text-align: left;">0.055 (1701)</td>
+<td style="text-align: left;">0.058 (1730)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">lm</td>
@@ -1302,6 +1312,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.350 (944)</td>
 <td style="text-align: left;">0.397 (946)</td>
 <td style="text-align: left;">0.414 (952)</td>
+<td style="text-align: left;">0.415 (950)</td>
+<td style="text-align: left;">0.365 (948)</td>
 <td style="text-align: left;">0.365 (948)</td>
 </tr>
 <tr class="even">
@@ -1311,7 +1323,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.077 (632)</td>
 <td style="text-align: left;">0.100 (655)</td>
 <td style="text-align: left;">0.117 (674)</td>
+<td style="text-align: left;">0.128 (653)</td>
 <td style="text-align: left;">0.088 (667)</td>
+<td style="text-align: left;">0.096 (657)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">lm</td>
@@ -1320,6 +1334,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.046 (2789)</td>
 <td style="text-align: left;">0.056 (2794)</td>
 <td style="text-align: left;">0.064 (2804)</td>
+<td style="text-align: left;">0.064 (2805)</td>
+<td style="text-align: left;">0.052 (2796)</td>
 <td style="text-align: left;">0.052 (2796)</td>
 </tr>
 <tr class="even">
@@ -1329,6 +1345,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.054 (3446)</td>
 <td style="text-align: left;">0.073 (3489)</td>
 <td style="text-align: left;">0.081 (3520)</td>
+<td style="text-align: left;">0.081 (3520)</td>
+<td style="text-align: left;">0.059 (3491)</td>
 <td style="text-align: left;">0.059 (3491)</td>
 </tr>
 <tr class="odd">
@@ -1338,6 +1356,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.000 (15)</td>
 <td style="text-align: left;">0.059 (16)</td>
 <td style="text-align: left;">0.062 (15)</td>
+<td style="text-align: left;">0.062 (15)</td>
+<td style="text-align: left;">0.059 (16)</td>
 <td style="text-align: left;">0.059 (16)</td>
 </tr>
 <tr class="even">
@@ -1347,6 +1367,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.038 (1494)</td>
 <td style="text-align: left;">0.044 (1494)</td>
 <td style="text-align: left;">0.070 (1600)</td>
+<td style="text-align: left;">0.070 (1600)</td>
+<td style="text-align: left;">0.070 (1597)</td>
 <td style="text-align: left;">0.070 (1597)</td>
 </tr>
 <tr class="odd">
@@ -1356,6 +1378,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.042 (1169)</td>
 <td style="text-align: left;">0.050 (1174)</td>
 <td style="text-align: left;">0.055 (1263)</td>
+<td style="text-align: left;">0.055 (1267)</td>
+<td style="text-align: left;">0.049 (1265)</td>
 <td style="text-align: left;">0.049 (1265)</td>
 </tr>
 <tr class="even">
@@ -1365,7 +1389,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.051 (1583)</td>
 <td style="text-align: left;">0.047 (1525)</td>
 <td style="text-align: left;">0.050 (1648)</td>
+<td style="text-align: left;">0.055 (1674)</td>
 <td style="text-align: left;">0.056 (1696)</td>
+<td style="text-align: left;">0.061 (1727)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">limma</td>
@@ -1374,7 +1400,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.343 (945)</td>
 <td style="text-align: left;">0.385 (944)</td>
 <td style="text-align: left;">0.404 (949)</td>
+<td style="text-align: left;">0.405 (946)</td>
 <td style="text-align: left;">0.354 (949)</td>
+<td style="text-align: left;">0.355 (949)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">limma</td>
@@ -1383,7 +1411,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.077 (634)</td>
 <td style="text-align: left;">0.102 (654)</td>
 <td style="text-align: left;">0.117 (674)</td>
+<td style="text-align: left;">0.128 (652)</td>
 <td style="text-align: left;">0.089 (667)</td>
+<td style="text-align: left;">0.097 (658)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">limma</td>
@@ -1392,6 +1422,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.047 (2781)</td>
 <td style="text-align: left;">0.059 (2781)</td>
 <td style="text-align: left;">0.067 (2795)</td>
+<td style="text-align: left;">0.067 (2797)</td>
+<td style="text-align: left;">0.055 (2793)</td>
 <td style="text-align: left;">0.055 (2793)</td>
 </tr>
 <tr class="even">
@@ -1401,7 +1433,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.054 (3446)</td>
 <td style="text-align: left;">0.072 (3488)</td>
 <td style="text-align: left;">0.081 (3521)</td>
+<td style="text-align: left;">0.081 (3521)</td>
 <td style="text-align: left;">0.060 (3491)</td>
+<td style="text-align: left;">0.060 (3489)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">deqms</td>
@@ -1410,7 +1444,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.000 (16)</td>
 <td style="text-align: left;">0.000 (14)</td>
 <td style="text-align: left;">0.000 (14)</td>
+<td style="text-align: left;">0.000 (14)</td>
 <td style="text-align: left;">0.000 (16)</td>
+<td style="text-align: left;">0.000 (15)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">deqms</td>
@@ -1419,6 +1455,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.037 (1468)</td>
 <td style="text-align: left;">0.038 (1456)</td>
 <td style="text-align: left;">0.067 (1559)</td>
+<td style="text-align: left;">0.067 (1559)</td>
+<td style="text-align: left;">0.069 (1567)</td>
 <td style="text-align: left;">0.069 (1567)</td>
 </tr>
 <tr class="odd">
@@ -1428,7 +1466,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.036 (1156)</td>
 <td style="text-align: left;">0.041 (1137)</td>
 <td style="text-align: left;">0.045 (1239)</td>
+<td style="text-align: left;">0.045 (1242)</td>
 <td style="text-align: left;">0.042 (1246)</td>
+<td style="text-align: left;">0.043 (1247)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">deqms</td>
@@ -1437,7 +1477,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.051 (1572)</td>
 <td style="text-align: left;">0.046 (1525)</td>
 <td style="text-align: left;">0.051 (1646)</td>
+<td style="text-align: left;">0.055 (1679)</td>
 <td style="text-align: left;">0.058 (1687)</td>
+<td style="text-align: left;">0.062 (1722)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">deqms</td>
@@ -1446,7 +1488,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.340 (925)</td>
 <td style="text-align: left;">0.377 (922)</td>
 <td style="text-align: left;">0.398 (927)</td>
+<td style="text-align: left;">0.398 (927)</td>
 <td style="text-align: left;">0.355 (930)</td>
+<td style="text-align: left;">0.355 (929)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">deqms</td>
@@ -1455,7 +1499,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.091 (618)</td>
 <td style="text-align: left;">0.111 (623)</td>
 <td style="text-align: left;">0.129 (642)</td>
+<td style="text-align: left;">0.139 (625)</td>
 <td style="text-align: left;">0.109 (649)</td>
+<td style="text-align: left;">0.114 (643)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">deqms</td>
@@ -1464,7 +1510,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.045 (2727)</td>
 <td style="text-align: left;">0.053 (2722)</td>
 <td style="text-align: left;">0.061 (2737)</td>
+<td style="text-align: left;">0.061 (2736)</td>
 <td style="text-align: left;">0.050 (2743)</td>
+<td style="text-align: left;">0.050 (2742)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">deqms</td>
@@ -1473,6 +1521,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.073 (3376)</td>
 <td style="text-align: left;">0.090 (3366)</td>
 <td style="text-align: left;">0.099 (3412)</td>
+<td style="text-align: left;">0.099 (3413)</td>
+<td style="text-align: left;">0.082 (3415)</td>
 <td style="text-align: left;">0.082 (3415)</td>
 </tr>
 <tr class="odd">
@@ -1482,7 +1532,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.158 (16)</td>
 <td style="text-align: left;">0.111 (16)</td>
 <td style="text-align: left;">0.200 (16)</td>
+<td style="text-align: left;">0.200 (16)</td>
 <td style="text-align: left;">0.111 (16)</td>
+<td style="text-align: left;">0.105 (17)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">rlm</td>
@@ -1491,6 +1543,8 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.117 (1667)</td>
 <td style="text-align: left;">0.112 (1663)</td>
 <td style="text-align: left;">0.150 (1718)</td>
+<td style="text-align: left;">0.150 (1718)</td>
+<td style="text-align: left;">0.148 (1731)</td>
 <td style="text-align: left;">0.148 (1731)</td>
 </tr>
 <tr class="odd">
@@ -1500,7 +1554,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.100 (1285)</td>
 <td style="text-align: left;">0.100 (1257)</td>
 <td style="text-align: left;">0.106 (1335)</td>
+<td style="text-align: left;">0.108 (1338)</td>
 <td style="text-align: left;">0.104 (1355)</td>
+<td style="text-align: left;">0.107 (1356)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">rlm</td>
@@ -1509,7 +1565,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.128 (1730)</td>
 <td style="text-align: left;">0.113 (1670)</td>
 <td style="text-align: left;">0.121 (1779)</td>
+<td style="text-align: left;">0.135 (1788)</td>
 <td style="text-align: left;">0.124 (1819)</td>
+<td style="text-align: left;">0.137 (1836)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">rlm</td>
@@ -1518,7 +1576,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.444 (936)</td>
 <td style="text-align: left;">0.472 (934)</td>
 <td style="text-align: left;">0.476 (949)</td>
+<td style="text-align: left;">0.477 (952)</td>
 <td style="text-align: left;">0.446 (946)</td>
+<td style="text-align: left;">0.447 (949)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">rlm</td>
@@ -1527,7 +1587,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.172 (663)</td>
 <td style="text-align: left;">0.193 (666)</td>
 <td style="text-align: left;">0.203 (686)</td>
+<td style="text-align: left;">0.222 (682)</td>
 <td style="text-align: left;">0.171 (693)</td>
+<td style="text-align: left;">0.183 (686)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">rlm</td>
@@ -1536,7 +1598,9 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.095 (2774)</td>
 <td style="text-align: left;">0.104 (2776)</td>
 <td style="text-align: left;">0.110 (2801)</td>
+<td style="text-align: left;">0.110 (2801)</td>
 <td style="text-align: left;">0.100 (2800)</td>
+<td style="text-align: left;">0.100 (2801)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">rlm</td>
@@ -1545,17 +1609,116 @@ s^2 \mid \sigma^2 \sim \sigma^2 \, \frac{\chi^2_d}{d}, \qquad \frac{1}{\sigma^2}
 <td style="text-align: left;">0.091 (3469)</td>
 <td style="text-align: left;">0.111 (3506)</td>
 <td style="text-align: left;">0.119 (3541)</td>
+<td style="text-align: left;">0.119 (3541)</td>
+<td style="text-align: left;">0.096 (3513)</td>
 <td style="text-align: left;">0.096 (3513)</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-</section></section><section id="conclusions" class="level1"><h1>Conclusions</h1>
+</section><section id="identification-confidence" class="level2"><h2 class="anchored" data-anchor-id="identification-confidence">Identification confidence</h2>
+<p>The confidence enters only the <code>_conf</code> variants. It changes the ranking only where it varies across the samples of a protein: in 6 of the 8 datasets it is 1, constant per peptide, or above the floor of 0.5, and <code>sample_rel_conf</code> equals <code>sample_rel</code>. Where it varies, it helps or hurts:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-condensed caption-top table-sm table-striped small">
+<caption>lm, pAUC_5 per dataset with and without the identification confidence: the peptide count (count, count_conf) and the peptide consistency (sample_rel, sample_rel_conf); the last two columns are the change the confidence makes.</caption>
+<thead><tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">dataset</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">count</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">count_conf</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sample_rel</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sample_rel_conf</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">conf on count</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">conf on sample_rel</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SingleCell_MaxQuant</td>
+<td style="text-align: right;">76.94</td>
+<td style="text-align: right;">75.74</td>
+<td style="text-align: right;">78.03</td>
+<td style="text-align: right;">76.86</td>
+<td style="text-align: right;">-1.20</td>
+<td style="text-align: right;">-1.17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">IonStar_MetaMorpheus</td>
+<td style="text-align: right;">61.61</td>
+<td style="text-align: right;">62.36</td>
+<td style="text-align: right;">62.92</td>
+<td style="text-align: right;">63.39</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">0.47</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SingleCell_DIANN</td>
+<td style="text-align: right;">94.56</td>
+<td style="text-align: right;">94.51</td>
+<td style="text-align: right;">94.65</td>
+<td style="text-align: right;">94.60</td>
+<td style="text-align: right;">-0.05</td>
+<td style="text-align: right;">-0.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">diaPASEF_DIANN</td>
+<td style="text-align: right;">91.84</td>
+<td style="text-align: right;">91.82</td>
+<td style="text-align: right;">91.90</td>
+<td style="text-align: right;">91.87</td>
+<td style="text-align: right;">-0.02</td>
+<td style="text-align: right;">-0.03</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">IonStar_MaxQuant</td>
+<td style="text-align: right;">64.05</td>
+<td style="text-align: right;">64.04</td>
+<td style="text-align: right;">64.72</td>
+<td style="text-align: right;">64.72</td>
+<td style="text-align: right;">-0.01</td>
+<td style="text-align: right;">0.01</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">diaPASEF_Spectronaut</td>
+<td style="text-align: right;">82.03</td>
+<td style="text-align: right;">82.03</td>
+<td style="text-align: right;">82.00</td>
+<td style="text-align: right;">82.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CPTAC_MaxQuant</td>
+<td style="text-align: right;">81.82</td>
+<td style="text-align: right;">81.82</td>
+<td style="text-align: right;">83.75</td>
+<td style="text-align: right;">83.75</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">IonStar_FragPipe_MSstats</td>
+<td style="text-align: right;">74.80</td>
+<td style="text-align: right;">74.80</td>
+<td style="text-align: right;">75.93</td>
+<td style="text-align: right;">75.93</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <ul>
-<li>The within-protein part of the peptide consistency (<code>sample_rel</code>) ranks better than the peptide count on every dataset for lm and limma</li>
+<li>Helps: IonStar_MetaMorpheus</li>
+<li>Hurts: SingleCell_MaxQuant</li>
+<li>IonStar_MetaMorpheus carries 1 − PIP PEP of its match-between-runs peaks (MS/MS peaks 1), SingleCell_MaxQuant 1 − the MaxQuant evidence PEP; both floored at 0.5</li>
+<li>So <code>sample_rel_conf</code> is best where the confidence is informative and <code>sample_rel</code> where it is not; in the median over the datasets <code>sample_rel</code> leads</li>
+</ul></section></section><section id="conclusions" class="level1"><h1>Conclusions</h1>
+<ul>
+<li>The within-protein part of the peptide consistency (<code>sample_rel</code>) ranks better than the peptide count for lm on 7 of 8 datasets, by up to 1.94; the largest loss is -0.03</li>
 <li>The protein-wide part (<span class="math inline">\(\tilde\sigma^2_P\)</span>) does not help; through the variance moderation it costs a little ranking and calibration</li>
-<li>The identification confidence on top does not help on these data, where the readers floor it at 0.5: <code>count_conf</code> ranks like <code>count</code>, and <code>sample_rel_conf</code> keeps about half the gain of <code>sample_rel</code> (lm median 0.43 against 0.86)</li>
+<li>The identification confidence on top helps or hurts depending on the dataset (section Identification confidence); in the median <code>sample_rel_conf</code> gains 0.35 against 0.88 for <code>sample_rel</code> (lm)</li>
 <li>Open: the higher FDP. Candidates are a tempered weight (<span class="math inline">\(f^{1/2}\)</span>), stronger shrinkage, or a correction of the degrees of freedom for estimated weights; then the weight would move into prolfqua’s aggregation (TODO <code>TODO/prolfqua/TODO_aggregate_variance_weights.md</code>)</li>
 </ul></section><section id="reference" class="level1"><h1>Reference</h1>
 <p>Smyth GK (2004). Linear models and empirical Bayes methods for assessing differential expression in microarray experiments. <em>Statistical Applications in Genetics and Molecular Biology</em> 3(1), Article 3.</p>
