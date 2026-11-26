@@ -213,6 +213,177 @@ $$
 
 with $d_0$ and $s_0^2$ estimated from all proteins. A protein-specific $k_P$ changes where each protein's variance stands against the prior and so changes its $t$. `protein_ivw` and `sample_ivw` carry $k_P = 1 / \tilde\sigma^2_P$, which divides each protein's variance by its peptide noise; `sample_rel` keeps the weights of every protein on the scale of the peptide count and changes only how the protein's samples are weighted against each other.
 
+# Illustration on IonStar MaxQuant
+
+```{r readIllustration}
+example_peptides <- utils::read.delim(extdata("peptide_consistency_example_peptides.tsv"), stringsAsFactors = FALSE)
+example_weights <- utils::read.delim(extdata("peptide_consistency_example_weights.tsv"), stringsAsFactors = FALSE)
+protein_table <- utils::read.delim(extdata("peptide_consistency_proteins.tsv"), stringsAsFactors = FALSE)
+cell_table <- utils::read.delim(extdata("peptide_consistency_cells.tsv"), stringsAsFactors = FALSE)
+tests <- utils::read.delim(extdata("peptide_consistency_tests.tsv"), stringsAsFactors = FALSE)
+illustration_dataset <- tests$dataset[1]
+illustration_contrast <- tests$contrast[1]
+roles <- c(
+  "changed, p-value falls with sample_rel",
+  "unchanged, p-value rises with sample_rel",
+  "most consistent peptides",
+  "least consistent peptides"
+)
+sample_levels <- unique(example_peptides$sample_label[order(example_peptides$condition, example_peptides$sample_label)])
+role_label <- function(data) {
+  ids <- unique(data[, c("protein_Id", "role")])
+  label <- stats::setNames(paste0(ids$role, "\n", ids$protein_Id), ids$role)
+  factor(label[data$role], levels = label[intersect(roles, names(label))])
+}
+example_peptides$panel <- role_label(example_peptides)
+example_peptides$sample_label <- factor(example_peptides$sample_label, sample_levels)
+example_weights$panel <- role_label(example_weights)
+example_weights$sample_label <- factor(example_weights$sample_label, sample_levels)
+illustrated <- c("count", "protein_ivw", "sample_ivw", "sample_rel")
+variant_colours <- c(count = "grey40", protein_ivw = "#E69F00", sample_ivw = "#56B4E9", sample_rel = "#009E73")
+```
+
+The dataset `r illustration_dataset` (E. coli spiked into human at five dilutions, four runs each) shows how the variants differ. Four proteins with at least 4 peptides observed in every run are picked by rule: the E. coli protein whose p-value for the contrast `r illustration_contrast` falls most from `count` to `sample_rel` with lm, the human protein with p < 0.01 under `count` whose p-value rises most, and the proteins with the most and the least consistent peptides (smallest and largest $\tilde\sigma^2_P$).
+
+Two properties tell the variants apart:
+
+- **Shape**: how the samples of one protein are weighted against each other. `count` and `protein_ivw` weight them by the peptide count $n_{Ps}$; `sample_ivw` and `sample_rel` by $n_{Ps} f_{Ps}$, the count times the peptide consistency of the sample
+- **Scale**: how the weights of one protein stand against those of other proteins. `count` and `sample_rel` keep the scale of the peptide count; `protein_ivw` and `sample_ivw` multiply it by $1 / \tilde\sigma^2_P$
+
+| | scale of the peptide count | scale $1 / \tilde\sigma^2_P$ |
+|---|---|---|
+| shape $n_{Ps}$ | `count` | `protein_ivw` |
+| shape $n_{Ps} f_{Ps}$ | `sample_rel` | `sample_ivw` |
+
+The shape changes the fit of each protein; the scale changes nothing in an unmoderated fit and acts only through the variance moderation across proteins.
+
+```{r examplePeptides, fig.height = 7, fig.cap = paste0("Peptides of the four example proteins of ", illustration_dataset, " (panels; role and protein). x: runs, ordered by dilution (a to e, four runs each); y: normalized log2 intensity, one line per peptide; point size: absolute median polish residual; black: the protein estimate of the median polish. Consistent peptides run parallel to each other and to the estimate.")}
+ggplot2::ggplot(example_peptides, ggplot2::aes(x = .data$sample_label, y = .data$y)) +
+  ggplot2::geom_line(ggplot2::aes(group = .data$peptide_Id, colour = .data$peptide_Id), alpha = 0.6) +
+  ggplot2::geom_point(ggplot2::aes(size = abs(.data$residual), colour = .data$peptide_Id), alpha = 0.7) +
+  ggplot2::geom_line(
+    data = dplyr::distinct(example_peptides, .data$panel, .data$sample_label, .data$estimate),
+    ggplot2::aes(y = .data$estimate, group = 1),
+    colour = "black",
+    linewidth = 1
+  ) +
+  ggplot2::facet_wrap(~ panel, scales = "free_y", ncol = 2) +
+  ggplot2::scale_size_area(max_size = 4) +
+  ggplot2::guides(colour = "none") +
+  ggplot2::labs(x = "run", y = "log2 intensity", size = "|residual|") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, size = 7))
+```
+
+```{r exampleWeights, fig.height = 7, fig.cap = paste0("Weights of the example proteins per run under four variants (colour), as log2 of the weight over the protein's mean peptide count, so that count is near 0. Vertical distance between count and protein_ivw, and between sample_rel and sample_ivw: the protein scale log2(1 / sigma2_P). Dips of sample_rel and sample_ivw: runs whose peptides agree less than in the protein's other runs.")}
+example_weights |>
+  dplyr::mutate(mean_count = mean(.data$weight_count), .by = "protein_Id") |>
+  tidyr::pivot_longer(dplyr::all_of(paste0("weight_", illustrated)), names_to = "variant", values_to = "weight") |>
+  dplyr::mutate(
+    variant = factor(sub("^weight_", "", .data$variant), illustrated),
+    relative = log2(.data$weight / .data$mean_count)
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(x = .data$sample_label, y = .data$relative, colour = .data$variant)) +
+  ggplot2::geom_line(ggplot2::aes(group = .data$variant)) +
+  ggplot2::geom_point(size = 1.5) +
+  ggplot2::facet_wrap(~ panel, scales = "free_y", ncol = 2) +
+  ggplot2::scale_colour_manual(values = variant_colours) +
+  ggplot2::labs(x = "run", y = "log2(weight / mean peptide count of the protein)", colour = "variant") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, size = 7))
+```
+
+```{r scaleFigure, fig.height = 4.5, fig.cap = paste0("Protein scale of each variant against the protein residual variance, all proteins of ", illustration_dataset, ". y: mean weight of the protein over its mean peptide count; x: shrunk protein residual variance (log scales). count and sample_rel stay near 1 for every protein; protein_ivw and sample_ivw fall with the variance, so the variance moderation sees each protein's variance divided by its peptide noise.")}
+protein_table |>
+  tidyr::pivot_longer(dplyr::all_of(paste0("scale_", illustrated)), names_to = "variant", values_to = "scale") |>
+  dplyr::mutate(variant = factor(sub("^scale_", "", .data$variant), illustrated)) |>
+  ggplot2::ggplot(ggplot2::aes(x = .data$sigma2, y = .data$scale, colour = .data$variant)) +
+  ggplot2::geom_point(alpha = 0.3, size = 0.6) +
+  ggplot2::scale_x_log10() +
+  ggplot2::scale_y_log10() +
+  ggplot2::scale_colour_manual(values = variant_colours) +
+  ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(alpha = 1, size = 2))) +
+  ggplot2::labs(x = "shrunk protein residual variance", y = "protein scale (mean weight / mean count)") +
+  ggplot2::theme_bw()
+```
+
+```{r shrinkageFigure, fig.height = 4.5, fig.cap = paste0("Empirical Bayes shrinkage in ", illustration_dataset, ". Left: protein residual variance, raw (x) against shrunk (y), colour the residual degrees of freedom d_P. Right: ratio of a run's residual variance to its protein's, raw (x) against shrunk (y), for 10000 random protein x run cells with at least one residual degree of freedom, colour d_Ps. Dashed: the diagonal. Variances with few degrees of freedom are pulled furthest towards the prior.")}
+protein_plot <- ggplot2::ggplot(
+  dplyr::filter(protein_table, .data$d > 0),
+  ggplot2::aes(x = .data$s2, y = .data$sigma2, colour = .data$d)
+) +
+  ggplot2::geom_abline(linetype = "dashed", colour = "grey40") +
+  ggplot2::geom_point(alpha = 0.4, size = 0.6) +
+  ggplot2::scale_x_log10() +
+  ggplot2::scale_y_log10() +
+  ggplot2::scale_colour_viridis_c(trans = "log10") +
+  ggplot2::labs(x = "raw protein variance", y = "shrunk", colour = "d_P", title = "proteins") +
+  ggplot2::theme_bw()
+cell_plot <- ggplot2::ggplot(
+  dplyr::filter(cell_table, .data$d_cell > 0),
+  ggplot2::aes(x = .data$ratio_raw, y = .data$ratio, colour = .data$d_cell)
+) +
+  ggplot2::geom_abline(linetype = "dashed", colour = "grey40") +
+  ggplot2::geom_point(alpha = 0.4, size = 0.6) +
+  ggplot2::scale_x_log10() +
+  ggplot2::scale_y_log10() +
+  ggplot2::scale_colour_viridis_c() +
+  ggplot2::labs(x = "raw ratio run / protein", y = "shrunk", colour = "d_Ps", title = "runs within proteins") +
+  ggplot2::theme_bw()
+ggpubr::ggarrange(protein_plot, cell_plot, ncol = 2)
+```
+
+```{r testFigure, fig.height = 4.5, fig.cap = paste0("Why the variants rank differently: -log10 p-value of lm for the contrast ", illustration_contrast, " under count (x) against three other variants (panels), every protein of ", illustration_dataset, "; orange: changed (E. coli), grey: unchanged (human). Changed proteins above the diagonal and unchanged ones below it improve the ranking. Black circles: the example proteins.")}
+example_ids <- unique(example_peptides[, c("protein_Id", "role")])
+tests_long <- tests |>
+  tidyr::pivot_longer(
+    dplyr::all_of(paste0("p_value_", c("protein_ivw", "sample_ivw", "sample_rel"))),
+    names_to = "variant",
+    values_to = "p_value"
+  ) |>
+  dplyr::mutate(
+    variant = factor(sub("^p_value_", "", .data$variant), c("protein_ivw", "sample_ivw", "sample_rel")),
+    species = ifelse(.data$changed, "changed", "unchanged")
+  )
+ggplot2::ggplot(
+  dplyr::arrange(tests_long, dplyr::desc(.data$species)),
+  ggplot2::aes(x = -log10(.data$p_value_count), y = -log10(.data$p_value), colour = .data$species)
+) +
+  ggplot2::geom_abline(linetype = "dashed", colour = "grey40") +
+  ggplot2::geom_point(alpha = 0.5, size = 0.7) +
+  ggplot2::geom_point(
+    data = dplyr::filter(tests_long, .data$protein_id %in% example_ids$protein_Id),
+    colour = "black",
+    shape = 21,
+    size = 2.5
+  ) +
+  ggplot2::facet_wrap(~ variant) +
+  ggplot2::scale_colour_manual(values = c(changed = "#D55E00", unchanged = "grey60")) +
+  ggplot2::coord_cartesian(xlim = c(0, 10), ylim = c(0, 10)) +
+  ggplot2::labs(x = "-log10 p, count", y = "-log10 p, variant", colour = "") +
+  ggplot2::theme_bw()
+```
+
+```{r testTable}
+tests |>
+  tidyr::pivot_longer(dplyr::starts_with("p_value_"), names_to = "variant", values_to = "p_value") |>
+  dplyr::mutate(variant = factor(sub("^p_value_", "", .data$variant), illustrated)) |>
+  dplyr::summarise(
+    `changed, p < 0.01` = sum(.data$changed & .data$p_value < 0.01, na.rm = TRUE),
+    `unchanged, p < 0.01` = sum(!.data$changed & .data$p_value < 0.01, na.rm = TRUE),
+    .by = "variant"
+  ) |>
+  dplyr::arrange(.data$variant) |>
+  knitr::kable(
+    format = "html",
+    table.attr = "class=\"table table-condensed\"",
+    caption = paste0(
+      "Proteins of ", illustration_dataset, " with an lm p-value below 0.01 for the contrast ", illustration_contrast,
+      " under each variant: changed (E. coli, true positives) and unchanged (human, false positives)."
+    )
+  )
+```
+
 # Calibration
 
 The weights come from the same data as the fit, and the fit treats them as known. A sample whose peptides agree by chance gets more weight, and the residual degrees of freedom do not account for the estimated weights, so the variance of the contrast tends to be underestimated and the FDR to be anti-conservative. vooma and msqrob2's robust weights share this.

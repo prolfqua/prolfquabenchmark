@@ -68,6 +68,12 @@ SCORES = [f"{RESULTS}/scores/{dataset}/{method}.tsv" for dataset, method in JOBS
 PROLFQUA_VERSION = PACKAGES["prolfqua"].split(" ")[0]
 # Datasets with peptides and proteins: the peptide consistency weights (vignette Peptide_consistency_weights)
 CONSISTENCY_DATASETS = [d for d, spec in DATASETS.items() if {"peptides", "proteins"} <= set(spec["inputs"])]
+# The dataset and contrast of the vignette's illustration of the weights
+ILLUSTRATION = {"dataset": "IonStar_MaxQuant", "contrast": "dilution_(7.5/6)_1.25"}
+ILLUSTRATION_TABLES = [
+    f"inst/extdata/peptide_consistency_{name}.tsv"
+    for name in ["example_peptides", "example_weights", "proteins", "cells", "tests"]
+]
 
 wildcard_constraints:
     dataset="|".join(DATASETS),
@@ -79,6 +85,7 @@ rule all:
         SCORES,
         [] if RELEASE else "inst/extdata/benchmark_scores.tsv",
         [] if RELEASE else "inst/extdata/peptide_consistency_scores.tsv",
+        [] if RELEASE else ILLUSTRATION_TABLES,
 
 
 rule prepare:
@@ -186,6 +193,7 @@ rule export:
 rule peptide_consistency:
     input:
         script="workflow/scripts/peptide_consistency_weights.R",
+        helpers="workflow/scripts/peptide_consistency.R",
         common="workflow/scripts/common.R",
         config=CONFIG_FILE,
         prepared=f"{RESULTS}/prepared/{{dataset}}",
@@ -214,6 +222,28 @@ rule export_peptide_consistency:
         "logs/export_peptide_consistency.log",
     shell:
         "Rscript {input.script} inst/extdata {input.scores} > {log} 2>&1"
+
+
+# Tables of the vignette's illustration on one dataset: example proteins, variances and weight scales per protein,
+# variance ratios of a sample of cells, the lm test of one contrast under four weight variants
+rule peptide_consistency_illustration:
+    input:
+        script="workflow/scripts/peptide_consistency_illustration.R",
+        helpers="workflow/scripts/peptide_consistency.R",
+        common="workflow/scripts/common.R",
+        config=CONFIG_FILE,
+        prepared=f"{RESULTS}/prepared/{ILLUSTRATION['dataset']}",
+        scores=f"{RESULTS}/peptide_consistency/{ILLUSTRATION['dataset']}/scores.tsv",
+    output:
+        ILLUSTRATION_TABLES,
+    params:
+        dataset=ILLUSTRATION["dataset"],
+        contrast=ILLUSTRATION["contrast"],
+    log:
+        "logs/peptide_consistency_illustration.log",
+    shell:
+        "Rscript {input.script} {input.config} {params.dataset} {input.prepared} "
+        f"{RESULTS}/peptide_consistency/{{params.dataset}} '{{params.contrast}}' inst/extdata > {{log}} 2>&1"
 
 
 rule timing_input:
